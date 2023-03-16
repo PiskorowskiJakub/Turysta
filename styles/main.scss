@@ -1,0 +1,181 @@
+@import "_base.scss";
+
+
+* {
+    box-sizing: border-box;
+  }
+
+  body{
+    background-image: $base-background-image;
+    font-family: $font-stack;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-position: center center;
+  }
+  .page{
+    margin:0;
+    padding: 0;
+  }
+
+  
+  .top{
+    float: left;
+    width: 79%;
+    height: 210px;
+    max-width: 1100px;
+    text-align:center;
+    color: $fifth-color;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    .infoBox, .profilBox{
+      background-repeat: no-repeat;
+      background-position: bottom, left;
+      background-size: 100% 100%;
+    }
+
+    .infoBox{
+        background-image: $info-background-image;
+
+        max-width: 600px;
+        max-height: 198px;
+        margin-top: 2%;
+        width: 65%;
+        height: 183px;
+
+        .info{
+          margin-top: 50px;
+          margin-left: 63px;
+          margin-right: 35%;
+          max-height: 70px;
+          min-width: 200px;
+          max-width: 320px;
+        }
+        
+    }
+    .profilBox{
+        background-image: $profil-background-image;
+        //display: flex;
+
+        max-width: 380px;
+        max-height: 290px;
+        width: 35%;
+        height: 210px;
+        min-width: 280px;
+        
+        
+        .profil, .profilImage{
+          margin-top: 105px;
+        }
+
+        .profil{
+          max-height: 70px;
+          margin-left: 65px;
+          text-align: left;
+          width: 100px;
+          i{
+            font-size:16px;
+          }
+          a:hover{
+            color: $third-color;
+          }
+        } 
+        .profilImage{
+          width: 53px;
+          height: 70px;
+          float: right;
+          margin-right: 60px;
+        }       
+        
+    }
+  }
+  
+  .mainBox {
+    width: 80%;
+    max-width: 1000px; 
+    
+    display: flex;
+    flex-direction: column;
+
+    .topMain, .main, .bottomMain{
+      background-repeat: no-repeat;
+      background-position: top, left;
+      background-size: 100% 100%;
+    }
+
+    .topMain{
+      background-image: $main-top-background;
+      width: 100%;
+      height: 40px;
+    }
+
+    .main{
+      background-image: $main-mid-background;
+      .content{
+        padding: 5px;
+        margin-left: 30px;
+        margin-right: 30px;
+        background-color: $fifth-color;
+        color: $first-color;
+      }
+    }
+
+    .bottomMain{
+      background-image: $main-bottom-background;
+      margin-top: 0;
+      width: 100%;
+      height: 40px;
+    }
+
+  }
+  
+  .footer{
+    background-image: $footer-background-image;
+    background-position: absolute;
+
+    border: 1px solid red;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    max-height: 200px;
+    
+    h3{
+      text-align: center;
+      color: $first-color;
+      padding-top: 3%;
+    }
+  }
+  
+  @media only screen and (max-width: $maxWidth) {
+    /* For mobile phones: */
+    .menuBox, .mainBox, .top {
+      width: 100%;
+    }
+  }
+
+  @media only screen and (max-width: $widthHeader) {
+    .top {
+      display: flex;
+      flex-direction: column;
+      min-height: 450px;
+    }
+    .infoBox, .profilBox {
+      //display: block;
+      margin-top: 0;
+      float: left;
+      width: 100%;
+    }
+    .infoBox{
+      min-width: 600px;
+      min-height: 210px;
+      .info{min-width: 200px;}
+    } 
+    .profilBox{
+      height: 210px;
+      min-width: 280px;
+      min-height: 210px;
+    }
+  }

@@ -1,0 +1,77 @@
+@import "_base.scss";
+
+
+.menuBox {
+  float: left;
+  width: 20%;
+  text-align: center;
+}
+
+.topnav {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column; 
+    min-width: 195px;
+    max-width: 200px;
+
+    a {
+      float: left;
+      display: block;
+      text-align: left;
+      padding: 14px 34px;
+      text-decoration: none;
+      color: $fifth-color;
+
+      background-image: $menu-list-background;
+      background-repeat: no-repeat;
+      background-position: top, left;
+      background-size: 100% 100%;
+      i{
+        font-size:20px;
+      }
+    }
+    
+
+    a:first-of-type{
+      background-image: $menu-main-background;
+      height: 80px;
+    }
+    a:nth-last-child(2){
+      background-image: $menu-last-background;
+    }
+    a:last-of-type{
+      background-image: $menu-last-background;
+      text-align: center;
+    }
+
+    a:hover {
+      font-size: 14px;
+      color: $third-color;
+    }
+   
+    .icon {
+      display: none;
+    }
+  }
+  
+  @media screen and (max-width: $maxWidth) {
+    .topnav a:not(:first-child) {display: none;}
+    .topnav a.icon {
+      float: right;
+      display: block;
+    }
+  }
+  
+  @media screen and (max-width: $maxWidth) {
+    .topnav.responsive {position: relative;}
+    .topnav.responsive .icon {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .topnav.responsive a {
+      float: none;
+      display: block;
+      text-align: left;
+    }
+  }
