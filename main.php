@@ -1,3 +1,7 @@
+<?php 
+if(isset($_GET["page"])) $strona = "./pages/".$_GET["page"];
+else $strona = "./pages/profile";
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -13,17 +17,14 @@
 
     <div class="page">
 
-      
-
-
       <div class="menuBox">
         <div class="topnav" id="myTopnav">
-          <a href="#home" class="active"></a>
-          <a href="#profil"><i class="fa fa-address-card"></i> Profil</a>
-          <a href="#skills"><i class="fa fa-flask"></i> Umiejetnosci</a>
-          <a href="#work"><i class="fa fa-suitcase"></i> Praca</a>
-          <a href="#badges"><i class="fa fa-address-card"></i> Odznaki</a>
-          <a href="#logout"><i class="fa fa-sign-out"></i> Wyloguj się</a>
+          <a href="main.php?page=profile" class="active"></a>
+          <a href="main.php?page=profile"><i class="fa fa-address-card"></i> Profil</a>
+          <a href="main.php?page=skills"><i class="fa fa-flask"></i> Umiejetnosci</a>
+          <a href="main.php?page=work"><i class="fa fa-suitcase"></i> Praca</a>
+          <a href="main.php?page=badges"><i class="fa fa-address-card"></i> Odznaki</a>
+          <a href="index.php"><i class="fa fa-sign-out"></i> Wyloguj się</a>
           <a href="javascript:void(0);" class="icon" onclick="myFunction()">
             <i class="fa fa-bars"></i>
           </a>
@@ -54,7 +55,7 @@
         <div class="main">
           <div class="content">
             
-            <?php include("./pages/profile.php") ?>
+            <?php if(($strona)!=null) include($strona.".php"); ?>
 
           </div>
         </div>

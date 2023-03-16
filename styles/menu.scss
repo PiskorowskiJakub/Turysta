@@ -54,6 +54,10 @@
     }
   }
   
+  //----------------------------------------------------
+  // Responsive styles
+  //----------------------------------------------------
+
   @media screen and (max-width: $maxWidth) {
     .topnav a:not(:first-child) {display: none;}
     .topnav a.icon {
