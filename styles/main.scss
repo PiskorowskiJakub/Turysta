@@ -50,11 +50,27 @@
       }
     }
     
-    .loginBox, .signinBox{
+    .loginBox, .signinBox, .screens{
       background-color: $third-color;
       border-radius: 10px;
       margin: 15px 20px;
       padding: 10px 0;
+    }
+    .screens{
+      padding: 10px 10px;
+      
+      .img{
+        
+        display: flex;
+        flex-direction: row;
+        img{
+          width: 190px;
+          height: 100px;
+        }
+      }
+    }
+    .footer{
+      color: $first-color;
     }
   }
 

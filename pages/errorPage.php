@@ -1,6 +1,5 @@
 <?php 
-if(isset($_GET["page"])) $strona = "./pages/".$_GET["page"];
-else $strona = "./pages/profile";
+include('./scripts/database.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,23 +8,13 @@ else $strona = "./pages/profile";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="./styles/main.css">
-    <link rel="stylesheet" href="./styles/menu.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/menu.css">
 
   </head>
   <body>
 
     <div class="pageLogin">
-
-      
-
-      <div class="top">
-        <div class="infoBox">
-          <div class="info">
-            Gra jest w wersji Alpha. Po wejściu w wersję Beta, wszystkie statystyki zostaną zresetowane.
-          </div>
-        </div>
-      </div>
 
       <div class="mainBox">
         <div class="topMain"><pre> </pre></div>
@@ -33,7 +22,21 @@ else $strona = "./pages/profile";
         <div class="main">
           <div class="content">    
 
-                <?php include("./pages/login.php"); ?>
+                <h1> Wystąpił bład</h1>
+
+                <?php 
+                    //$error = ChceckError();
+                    if (isset($_GET['error'])) {
+                    $error = $_GET['error'];
+                    echo $error;
+                    }
+                    else echo "nie znaleziono błędu";
+                ?>
+
+                <hr>
+                <h3>Zrób screena i wyślij do Administratora strony.</h3>
+                <p>Adres: </p>
+                <p><a href="../index.php"><input type="button" name="powrot" value="Powrót do strony głównej" class="mainButton"/></a></p>
 
           </div>
         </div>

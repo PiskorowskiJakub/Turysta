@@ -48,11 +48,29 @@ body {
   margin-left: 5px;
 }
 
-.pageLogin .loginBox, .pageLogin .signinBox {
+.pageLogin .loginBox, .pageLogin .signinBox, .pageLogin .screens {
   background-color: #56A689;
   border-radius: 10px;
   margin: 15px 20px;
   padding: 10px 0;
+}
+
+.pageLogin .screens {
+  padding: 10px 10px;
+}
+
+.pageLogin .screens .img {
+  display: flex;
+  flex-direction: row;
+}
+
+.pageLogin .screens .img img {
+  width: 190px;
+  height: 100px;
+}
+
+.pageLogin .footer {
+  color: #E4F2E7;
 }
 
 .mainButton {

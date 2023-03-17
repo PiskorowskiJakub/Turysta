@@ -28,8 +28,25 @@
         <input type="submit" name="signin" value="Zarejestruj się" class="mainButton"/>
     </form>
 
-    </br><span class="required"></span> Pola wymagane
-</div>
+    </br><span class="required"></span> Pola wymagane <?php if(ConnectDB() == true) echo "t"; else echo "f"; ?>
+    </div>
+    <div class="screens">
+        <h1>Mockupy</h1>
+        <div class="img">
+            <a href="./img/Profil.png" target="_blank">
+                <img src="./img/Profil.png" title="Profil gracza"/>
+            </a>
+            <a href="./img/Praca-progress.png" target="_blank">
+                <img src="./img/Praca-progress.png" title="Praca"/>
+            </a>
+            <a href="./img/Umiejetnosci-aktywne-1.png" target="_blank">
+                <img src="./img/Umiejetnosci-aktywne-1.png" title="Umiejetnosci"/>
+            </a>
+            <a href="./img/Odznaki.png" target="_blank">
+                <img src="./img/odznaki.png" title="Odznaki"/>
+            </a>
+        </div>
+    </div>
 
 <?php
     if(isset($_POST['signin'])) SignIn();
