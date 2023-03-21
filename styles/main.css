@@ -42,6 +42,11 @@ body {
   font-weight: bold;
 }
 
+.pageLogin .mainBox .errorInfo {
+  color: #104037;
+  background-color: #BFD9C5;
+}
+
 .pageLogin .mainBox .required::before {
   content: "*";
   color: #ff6666;
@@ -158,7 +163,8 @@ body {
 }
 
 .top .profilBox .profil i {
-  font-size: 16px;
+  margin-right: 3px;
+  font-size: 20px;
 }
 
 .top .profilBox .profil a:hover {

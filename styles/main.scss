@@ -43,6 +43,11 @@
     .mainBox{
       font-weight: bold;
 
+      .errorInfo{
+        color: $fifth-color;
+        background-color: $second-color;
+      }
+
       .required::before {
         content: "*";
         color: rgb(255, 102, 102);
@@ -164,7 +169,8 @@
           text-align: left;
           width: 100px;
           i{
-            font-size:16px;
+            margin-right: 3px;
+            font-size:20px;
           }
           a:hover{
             color: $third-color;

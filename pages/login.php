@@ -1,4 +1,5 @@
-<?php include('scripts/signin.php'); ?>
+<?php include('scripts/signin.php'); 
+?>
 
 <div class="loginBox">
     <h1>Zaloguj się </h1>
@@ -13,6 +14,7 @@
 </div>
 <div class="signinBox">
     <h1>Zarejestruj się </h1>
+    <div class="errorInfo"><?php if(isset($_SESSION["errorCreate"])) {echo $_SESSION["errorCreate"]; unset($_SESSION["errorCreate"]); } ?></div>
 
     <form method="POST">
         <label for="fname">Nazwa postaci: </label>
@@ -20,15 +22,16 @@
         <label for="fname">Email: </label>
         <input type="email" name="regEmail" required/> <span class="required"></span></br>
         <label for="fname">Hasło: </label>
-        <input type="password" name="RegPassword" required/> <span class="required"></span></br>
+        <input type="password" name="regPassword" required/> <span class="required"></span></br>
         <label for="fname">Powtórz hasło: </label>
-        <input type="password" name="RegRepassword" required/> <span class="required"></span></br>
+        <input type="password" name="regRepassword" required/> <span class="required"></span></br>
         <label for="fname">Kod polecającego: </label>
         <input type="text" name="RegInvCode" /> </br>
         <input type="submit" name="signin" value="Zarejestruj się" class="mainButton"/>
     </form>
 
-    </br><span class="required"></span> Pola wymagane <?php if(ConnectDB() == true) echo "t"; else echo "f"; ?>
+    </br><span class="required"></span> Pola wymagane </br>
+    
     </div>
     <div class="screens">
         <h1>Mockupy</h1>
@@ -50,4 +53,5 @@
 
 <?php
     if(isset($_POST['signin'])) SignIn();
+
 ?>
