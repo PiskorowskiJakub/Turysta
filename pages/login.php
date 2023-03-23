@@ -3,6 +3,7 @@
 
 <div class="loginBox">
     <h1>Zaloguj się </h1>
+    <div class="errorInfo"><?php if(isset($_SESSION["errorLogin"])) {echo $_SESSION["errorLogin"]; unset($_SESSION["errorLogin"]); } ?></div>
 
     <form method="POST">
         <label for="fname">Email: </label>
@@ -53,5 +54,6 @@
 
 <?php
     if(isset($_POST['signin'])) SignIn();
+    if(isset($_POST['login'])) LoginUser();
 
 ?>

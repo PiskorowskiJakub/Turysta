@@ -7,17 +7,21 @@ include('database.php');
 // jezeli od czasu ostatniego odswiezenia minela wiecej niz godzina to usun sesje w przeciwnym razie ustaw nowy czas
 // ------------------------
 
+//----------------------------------------------------------------------
+// Registration system
+//----------------------------------------------------------------------
+
 // Creating a new user
 function SignIn(){
     unset($_SESSION["errorCreate"]); 
     if(isset($_POST['signin']))
     {
-        if(ValidateFieldReg($_POST['regUsername'], $_POST['regEmail'], $_POST['regPassword'], $_POST['regRepassword']))
+        if(ValidateFieldReg(htmlspecialchars($_POST['regUsername']), htmlspecialchars($_POST['regEmail']), htmlspecialchars($_POST['regPassword']), htmlspecialchars($_POST['regRepassword'])))
         {
-            $username = $_POST['regUsername'];
-            $email = $_POST['regEmail'];
-            $password = password_hash($_POST['regPassword'], PASSWORD_DEFAULT);
-            $invCode = $_POST['RegInvCode'];
+            $username = htmlspecialchars($_POST['regUsername']);
+            $email = htmlspecialchars($_POST['regEmail']);
+            $password = htmlspecialchars(password_hash($_POST['regPassword'], PASSWORD_DEFAULT));
+            $invCode = htmlspecialchars($_POST['RegInvCode']);
             $conn = ConnectDB();
 
             if(SignInUser($conn, $username, $email, $password, $invCode) == true){
@@ -31,6 +35,12 @@ function SignIn(){
             }
 
         }
+        else{
+            if(!isset($_SESSION["errorCreate"])){
+                $_SESSION["errorCreate"] = "Nie mozna manipulowac w wlasciwosciach strony. Nie ładnie tak -.-' ";
+                header("Location: ./index.php"); exit;
+            }
+        }
     }
 }
 
@@ -41,13 +51,47 @@ function ValidateFieldReg($username, $email, $password, $rePassword){
             if($password == $rePassword){
                 return true;
             }
-            else return false;
+            else {
+                $_SESSION["errorCreate"] = "Hasła nie są takie same";
+                header("Location: ./index.php"); exit;
+                return false;
+            }
         }
         else return false;
     }
     else return false;
 }
 
+//----------------------------------------------------------------------
+// Login system
+//----------------------------------------------------------------------
+
+function LoginUser(){
+
+    if(isset($_POST['login']))
+    {
+        if(strlen((htmlspecialchars($_POST["email"])) != 0 && strlen(htmlspecialchars($_POST["password"])) != 0) && (filter_var(htmlspecialchars($_POST["email"]), FILTER_VALIDATE_EMAIL)))
+        {
+            $email = htmlspecialchars($_POST["email"]);
+            $password = htmlspecialchars($_POST["password"]);
+            $conn = ConnectDB();
+
+            if(CheckIfRegistered($conn, $email, $password)){
+                GetUserId($conn, $email); // uzyskanie SESSION["userId"]
+                //GetUserData($conn, $email); // save user data to session
+                header("Location: ./main.php"); exit;
+            }
+            else{
+                $_SESSION["errorLogin"] = "Taki uzytkownik nie istnieje ";
+                header("Location: ./index.php"); exit;
+            }
+        }
+        else{
+            $_SESSION["errorLogin"] = "Nie mozna manipulowac w wlasciwosciach strony. Nie ładnie tak -.-' ";
+            header("Location: ./index.php"); exit;
+        }
+    }
+}
 
 
 

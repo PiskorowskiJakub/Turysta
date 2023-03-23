@@ -1,5 +1,7 @@
 <?php
 session_start();
+include('querys.php');
+
 
 // Connecting to the database
 function ConnectDB(){
@@ -32,9 +34,11 @@ function SignInUser($conn, $username, $email, $password, $invCode){
 
     try{
       if (ChceckUserExist($conn, $username, $email) == 0){     // 1- istnieje 0- nie iestnieje
-        $sql = "INSERT INTO `users`(`ID`, `Nazwa`, `Email`, `Haslo`, `DataStworzenia`) VALUES (NULL,'$username','$email','$password','$currentData')";
-        if($result = mysqli_query($conn, $sql)){
-          if(InsertNewUserData($conn, $username, $invCode))
+        global $sqlCreateNewUser;
+        $resultCreateNewUser = ExecuteQuery($conn, 'e', $sqlCreateNewUser, 's', $username, 's', $email, 's', $password, 's', $currentData);
+
+        if($resultCreateNewUser){
+          if(InsertNewUserData($conn, $email, $invCode))
             return true; 
         }
         else{
@@ -57,7 +61,7 @@ function SignInUser($conn, $username, $email, $password, $invCode){
 }
 
 // Adding records to other tables for a new user
-function InsertNewUserData($conn, $username, $invCode){
+function InsertNewUserData($conn, $email, $invCode){
 
   // Default value
   $userStatus = 1; // Active account
@@ -74,42 +78,43 @@ function InsertNewUserData($conn, $username, $invCode){
   
   // Get user ID by username
   try{
-    $sqlGetId = "SELECT `ID` FROM `users` WHERE `Nazwa`='$username'";
-    $result = $conn -> query($sqlGetId); 
-    while($row = $result->fetch_array(MYSQLI_NUM)){
+    global $sqlGetUserId;
+    $resultGetUserId = ExecuteQuery($conn, 's', $sqlGetUserId, 's', $email);
+ 
+    while($row = $resultGetUserId->fetch_array(MYSQLI_NUM)){
         $userId = $row[0];
     }
-    $userCode = generateUniqueCode($conn, $userId);
+    $userCode = GenerateUniqueCode($conn, $userId);
     
     if(strlen($invCode) == 0) $invCode="000000";
 
     // Insert data in table "referral codes"
-    $sqlInsertInvCode = "INSERT INTO `kodypolecenia`(`ID`, `IDUzytkownika`, `KodPolecajacy`, `KodPolecajacego`) VALUES (NULL,'$userId','$userCode','$invCode')";
-    if($resultReferralCode = $conn -> query($sqlInsertInvCode)) 
+    global $sqlInsertInvCode;
+    if($resultInsertInvCode = ExecuteQuery($conn, 'e', $sqlInsertInvCode, 'i', $userId, 's', $userCode, 's', $invCode))
     {
       // Insert data in table "Status account"
-      $sqlAccoountStatus = "INSERT INTO `statuskonta`(`ID`, `IDUzytkownika`, `StatusKonta`, `Grupa`) VALUES (NULL,'$userId','$userStatus','$userGroup')";
-      if($resultStatusAccount = $conn -> query($sqlAccoountStatus)) 
+      global $sqlAccoountStatus;
+      if($resultAccoountStatus = ExecuteQuery($conn, 'e', $sqlAccoountStatus, 'i', $userId, 'i', $userStatus, 'i', $userGroup))
       {
         // Insert data in table "Wallet"
-        $sqlInsertWallet = "INSERT INTO `portfel`(`ID`, `IDUzytkownika`, `Monety`, `Bilety`, `Punkty`, `Swiat`, `Rozdzial`) VALUES ('','$userId','$startupMoney','$startupTicket','$startupPoints','$startupWorld','$startupChapter')";
-        if($resultStatusWallet = $conn -> query($sqlInsertWallet)) 
+        global $sqlInsertWallet;
+        if($resultInsertWallet = ExecuteQuery($conn, 'e', $sqlInsertWallet, 'i', $userId, 'd', $startupMoney, 'i', $startupTicket, 'd', $startupPoints, 'i', $startupWorld, 'i', $startupChapter))
         {
           // Insert data in table "Activity log"
-          $sqlInsertActivityLog ="INSERT INTO `logdzialalnosci`(`ID`, `IDUzytkownika`, `IDTypuZarobku`, `DataZarobku`, `Zarobek`) VALUES (NULL,'$userId','$typeOfEarnings','$currentData','$startupProfit')";
-          if($resultStatusActivity = $conn -> query($sqlInsertActivityLog)) 
+          global $sqlInsertActivityLog;
+          if($resultInsertActivityLog = ExecuteQuery($conn, 'e', $sqlInsertActivityLog, 'i', $userId, 'i', $typeOfEarnings, 's', $currentData, 'd', $startupProfit))
           {
             // Insert data in table "Skills log 1"
-            $sqlInsertSkillsData1 = "INSERT INTO `logumiejetnosci`(`ID`, `IDUzytkownika`, `IDUmiejetnosci`, `Data`, `Koszt`, `Poziom`) VALUES (NULL,'$userId','1','$currentData','3','0')";
-            if($resultStatusSkills1 = $conn -> query($sqlInsertSkillsData1)) 
+            global $sqlInsertSkillsData1;
+            if($resultInsertSkillsData1 = ExecuteQuery($conn, 'e', $sqlInsertSkillsData1, 'i', $userId, 's', $currentData))
             {
               // Insert data in table "Skills log 2"
-              $sqlInsertSkillsData2 = "INSERT INTO `logumiejetnosci`(`ID`, `IDUzytkownika`, `IDUmiejetnosci`, `Data`, `Koszt`, `Poziom`) VALUES (NULL,'$userId','2','$currentData','3','0')";
-              if($resultStatusSkills2 = $conn -> query($sqlInsertSkillsData2)) 
+              global $sqlInsertSkillsData2;
+              if($resultInsertSkillsData2 = ExecuteQuery($conn, 'e', $sqlInsertSkillsData2, 'i', $userId, 's', $currentData))
               {
                 // Insert data in table "Skills log 3"
-                $sqlInsertSkillsData3 = "INSERT INTO `logumiejetnosci`(`ID`, `IDUzytkownika`, `IDUmiejetnosci`, `Data`, `Koszt`, `Poziom`) VALUES (NULL,'$userId','3','$currentData','7','0')";
-                if($resultStatusSkills3 = $conn -> query($sqlInsertSkillsData3)) 
+                global $sqlInsertSkillsData3;
+                if($resultInsertSkillsData3 = ExecuteQuery($conn, 'e', $sqlInsertSkillsData3, 'i', $userId, 's', $currentData))
                 {
                   return true;
                 }
@@ -129,23 +134,23 @@ function InsertNewUserData($conn, $username, $invCode){
   }catch(Exception $e){
     $erro = "error: Dodanie rekordów do innych tabel dla nowego uzytkownika: " . $e->getMessage();
     ChceckError($erro);
-}
+  }
   
 
 }
 
 // Check if the user already exists
-function ChceckUserExist($conn, $username, $email){
-  $sql = "SELECT COUNT(*) FROM `users` WHERE `Nazwa`='$username' OR `Email`='$email'";
-  $result = $conn -> query($sql); 
-  while($row = $result->fetch_array(MYSQLI_NUM)){
+function ChceckUserExist($conn, $username, $email){ 
+  global $sqlCheckUserExist;
+  $resultCheckUserExist = ExecuteQuery($conn, 's', $sqlCheckUserExist, 's', $username, 's', $email);
+  while($row = $resultCheckUserExist->fetch_array(MYSQLI_NUM)){
       return $row[0];
   }
 
 }
 
 // Generating unique codes
-function generateUniqueCode($conn, $userId) {
+function GenerateUniqueCode($conn, $userId) {
 
   $length = 6;
   $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -155,19 +160,105 @@ function generateUniqueCode($conn, $userId) {
     $code .= $characters[rand(0, strlen($characters) - 1)];
   }
   
-  // Checking if the code already exists in the database
-  $sql = "SELECT COUNT(*) FROM `kodypolecenia` WHERE `KodPolecajacy` = '$code'";
-  $result = $conn -> query($sql); 
-  while($row = $result->fetch_array(MYSQLI_NUM)){
+  global $sqlCodeExist;
+  $resultCodeexist = ExecuteQuery($conn, 's', $sqlCodeExist, 's', $code);
+  while($row = $resultCodeexist->fetch_array(MYSQLI_NUM)){
     $stmt = $row[0];
   }
   if ($stmt > 0) {
     // The code already exists, generate a new code
-    generateUniqueCode($conn);
+    GenerateUniqueCode($conn);
   }
   
   return $code;
 }
 
+//----------------------------------------------------------------------
+// Login system
+//----------------------------------------------------------------------
+
+function CheckIfRegistered($conn, $emailForm, $passwordForm){
+  global $sqlFindUser;
+  $resultFindUser = ExecuteQuery($conn, 's', $sqlFindUser, 's', $emailForm);
+  while($row = $resultFindUser->fetch_array(MYSQLI_NUM)){
+    $email = $row[0];
+    $password = $row[1];
+  }
+
+
+  if($email != $emailForm){
+    $_SESSION["errorLogin"] = "Niepoprawny adres email ";
+    header("Location: ./index.php"); exit;
+  }
+  else if(!password_verify($passwordForm, $password)){
+    $_SESSION["errorLogin"] = "Niepoprawne hasło";
+    header("Location: ./index.php"); exit;
+  }
+  else if($email == $emailForm && password_verify($passwordForm, $password))
+    return true;
+  else{
+    $_SESSION["errorLogin"] = "Taki uzytkownik nie istnieje ";
+    header("Location: ./index.php"); exit;
+  }
+  return false;
+}
+
+function GetUserId($conn, $email){
+  try{
+    global $sqlGetUserId;
+    $resultGetUserId = ExecuteQuery($conn, 's', $sqlGetUserId, 's', $email);
+    while($row = $resultGetUserId->fetch_array(MYSQLI_NUM))
+      $_SESSION["userId"] = $row[0];
+
+  }catch(Exception $e){
+    $erro = "error: Pobranie id uzytkownika z bazy danych: " . $e->getMessage();
+    ChceckError($erro);
+  }
+}
+
+function GetUserData($conn, $emailForm){
+  $sqlGetUser = "SELECT `ID`, `Nazwa`, `Email` FROM `users` WHERE `Email`='$emailForm'";
+  $resultGetUser = $conn -> query($sqlGetUser);
+  while($row = $resultFindUser->fetch_array(MYSQLI_NUM)){
+    $_SESSION["userId"] = $row[0];
+    $_SESSION["userName"] = $row[1];
+    $_SESSION["userEmail"] = $row[2];
+  }
+}
+
+// Method to execute sql query
+function ExecuteQuery($conn, $typeSql, $sql, $type1, $parm1, $type2=null, $parm2=null, $type3=null, $parm3=null, $type4=null, $parm4=null, $type5=null, $parm5=null, $type6=null, $parm6=null, $type7=null, $parm7=null, $type8=null, $parm8=null){
+
+  // types: i-integer, d-float, s-string, 
+  $stmt = $conn->prepare($sql);
+  $type = $type1.$type2.$type3.$type4.$type5.$type6.$type7.$type8;
+  if($type2 == null) $stmt->bind_param($type, $parm1);
+  else if($type3 == null) $stmt->bind_param($type, $parm1, $parm2);
+  else if ($type4 == null) $stmt->bind_param($type, $parm1, $parm2, $parm3);
+  else if ($type5 == null) $stmt->bind_param($type, $parm1, $parm2, $parm3, $parm4);
+  else if ($type6 == null) $stmt->bind_param($type, $parm1, $parm2, $parm3, $parm4, $parm5);
+  else if ($type7 == null) $stmt->bind_param($type, $parm1, $parm2, $parm3, $parm4, $parm5, $parm6);
+  else if ($type8 == null) $stmt->bind_param($type, $parm1, $parm2, $parm3, $parm4, $parm5, $parm6, $parm7);
+  else if ($type8 != null) $stmt->bind_param($type, $parm1, $parm2, $parm3, $parm4, $parm5, $parm6, $parm7, $parm8);
+  $stmt->execute();
+  if($typeSql == 's'){ // query SELECT
+    $result = $stmt->get_result();
+    return $result;
+  }else if($typeSql == 'e'){ // query EXECUTE (insert, drop, delete)
+    return $stmt;
+  }
+}
+
+/*
+SELECT `users`.`Nazwa`, `users`.`Email`, `users`.`DataStworzenia`, `statusnazwa`.`Nazwa`, `grupanazwa`.`Nazwa`, `portfel`.`Monety`, `portfel`.`Bilety`, `portfel`.`Punkty`, `portfel`.`Swiat`, `portfel`.`Rozdzial`, `logumiejetnosci`.`Koszt`, `logumiejetnosci`.`Poziom`, `umiejetnosci`.`Nazwa`, `umiejetnosci`.`Nazwa`, `umiejetnosci`.`MaxPoziom`, `umiejetnosci`.`WspolczynnikKosztu`
+FROM `statuskonta` 
+INNER JOIN `statusnazwa` ON `statusnazwa`.`ID` = `statuskonta`.`StatusKonta` 
+INNER JOIN `grupanazwa` ON `grupanazwa`.`ID` = `statuskonta`.`Grupa`
+INNER JOIN `users` ON `users`.`ID` = `statuskonta`.`IDUzytkownika`
+INNER JOIN `portfel` ON `users`.`ID` = `portfel`.`IDUzytkownika`
+INNER JOIN `logumiejetnosci` ON `users`.`ID` = `logumiejetnosci`.`IDUzytkownika`
+INNER JOIN `umiejetnosci` ON `logumiejetnosci`.`IDUmiejetnosci` = `umiejetnosci`.`ID`
+WHERE 1
+*/
 
 ?>

@@ -1,4 +1,5 @@
 <?php 
+session_start();
 if(isset($_GET["page"])) $strona = "./pages/".$_GET["page"];
 else $strona = "./pages/profile";
 ?>
@@ -7,6 +8,7 @@ else $strona = "./pages/profile";
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--https://www.w3schools.com/icons/icons_reference.asp -->
 
     <!-- Styles -->
     <link rel="stylesheet" href="./styles/main.css">
@@ -42,6 +44,7 @@ else $strona = "./pages/profile";
               <img src="img/layout/Female-Avatar-3.png"/>
           </div>
           <div class="profil"> 
+            <a title="Nazwa"><i class="fa fa-address-card"></i> <?php if(isset($_SESSION["userId"])) echo $_SESSION["userId"]; ?> </a><br>
             <a title="Monety"><i class="fa fa-money"></i> 123.53 </a><br>
             <a title="Bilety"><i class="fa fa-file-text"></i> 16 </a><br>
             <a title="Punkty"><i class="fa fa-bar-chart"></i> 2.432.534</a>
