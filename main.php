@@ -3,6 +3,7 @@ session_start();
 if(isset($_GET["page"])) $strona = "./pages/".$_GET["page"];
 else $strona = "./pages/profile";
 ?>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -26,7 +27,7 @@ else $strona = "./pages/profile";
           <a href="main.php?page=skills"><i class="fa fa-flask"></i> Umiejetnosci</a>
           <a href="main.php?page=work"><i class="fa fa-suitcase"></i> Praca</a>
           <a href="main.php?page=badges"><i class="fa fa-address-card"></i> Odznaki</a>
-          <a href="index.php"><i class="fa fa-sign-out"></i> Wyloguj się</a>
+          <a href="index.php?logout=true"><i class="fa fa-sign-out"></i> Wyloguj się</a>
           <a href="javascript:void(0);" class="icon" onclick="myFunction()">
             <i class="fa fa-bars"></i>
           </a>
@@ -44,10 +45,10 @@ else $strona = "./pages/profile";
               <img src="img/layout/Female-Avatar-3.png"/>
           </div>
           <div class="profil"> 
-            <a title="Nazwa"><i class="fa fa-address-card"></i> <?php if(isset($_SESSION["userId"])) echo $_SESSION["userId"]; ?> </a><br>
-            <a title="Monety"><i class="fa fa-money"></i> 123.53 </a><br>
-            <a title="Bilety"><i class="fa fa-file-text"></i> 16 </a><br>
-            <a title="Punkty"><i class="fa fa-bar-chart"></i> 2.432.534</a>
+            <a title="Nazwa"><i class="fa fa-address-card"></i> <?php if(isset($_SESSION["userName"])) echo $_SESSION["userName"]; ?> </a><br>
+            <a title="Monety"><i class="fa fa-money"></i> <?php if(isset($_SESSION["userMoney"])) echo $_SESSION["userMoney"]; ?> </a><br>
+            <a title="Bilety"><i class="fa fa-file-text"></i> <?php if(isset($_SESSION["userTicket"])) echo $_SESSION["userTicket"]; ?> </a><br>
+            <a title="Punkty"><i class="fa fa-bar-chart"></i> <?php if(isset($_SESSION["userPoints"])) echo $_SESSION["userPoints"]; ?></a>
           </div>
         </div>
       </div>
@@ -74,7 +75,7 @@ else $strona = "./pages/profile";
   </body>
 </html>
 
-<script>
+<script type="text/javascript">
 function myFunction() {
   var x = document.getElementById("myTopnav");
   if (x.className === "topnav") {
@@ -83,4 +84,7 @@ function myFunction() {
     x.className = "topnav";
   }
 }
+
+
 </script>
+

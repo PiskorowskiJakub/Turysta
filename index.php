@@ -68,4 +68,8 @@ function myFunction() {
     if(isset($_POST['wybor'])){
         if($_POST['wybor'] == 'm') {header('Location: ./main.php'); exit;}
     }
+
+    if(isset($_GET["logout"])){
+      if($_GET["logout"] == "true") LogoutUser();
+    }
 ?>

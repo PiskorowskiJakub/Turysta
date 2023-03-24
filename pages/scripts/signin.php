@@ -77,9 +77,11 @@ function LoginUser(){
             $conn = ConnectDB();
 
             if(CheckIfRegistered($conn, $email, $password)){
-                GetUserId($conn, $email); // uzyskanie SESSION["userId"]
-                //GetUserData($conn, $email); // save user data to session
-                header("Location: ./main.php"); exit;
+                $_SESSION["userId"] = GetUserId($conn, $email);
+                if(InsertUserLogin($conn, $_SESSION["userId"])){
+                    GetUserData($conn, $_SESSION["userId"]); // save user data to session
+                    header("Location: ./main.php"); exit;
+                }
             }
             else{
                 $_SESSION["errorLogin"] = "Taki uzytkownik nie istnieje ";

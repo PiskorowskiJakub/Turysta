@@ -15,5 +15,9 @@
     $sqlFindUser = "SELECT Email, Haslo FROM users WHERE Email=? ";
     $sqlGetUserId = "SELECT ID FROM users WHERE Email= ? ";
 
+    $sqlInsertUserLogin = "INSERT INTO logowania (ID, IDUzytkownika, DataZalogowania, DataWylogowania) VALUES (NULL , ?, ?, ?)"; 
+
+    $sqlGetUserProfileData = "SELECT users.Nazwa, users.Email, users.DataStworzenia, statusnazwa.Nazwa, grupanazwa.Nazwa, portfel.Monety, portfel.Bilety, portfel.Punkty, portfel.Swiat, portfel.Rozdzial FROM statuskonta INNER JOIN statusnazwa ON statusnazwa.ID = statuskonta.StatusKonta INNER JOIN grupanazwa ON grupanazwa.ID = statuskonta.Grupa INNER JOIN users ON users.ID = statuskonta.IDUzytkownika INNER JOIN portfel ON users.ID = portfel.IDUzytkownika WHERE users.ID = ?";
+
 
 ?>

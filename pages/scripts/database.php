@@ -208,7 +208,7 @@ function GetUserId($conn, $email){
     global $sqlGetUserId;
     $resultGetUserId = ExecuteQuery($conn, 's', $sqlGetUserId, 's', $email);
     while($row = $resultGetUserId->fetch_array(MYSQLI_NUM))
-      $_SESSION["userId"] = $row[0];
+      return $row[0];
 
   }catch(Exception $e){
     $erro = "error: Pobranie id uzytkownika z bazy danych: " . $e->getMessage();
@@ -216,13 +216,34 @@ function GetUserId($conn, $email){
   }
 }
 
-function GetUserData($conn, $emailForm){
-  $sqlGetUser = "SELECT `ID`, `Nazwa`, `Email` FROM `users` WHERE `Email`='$emailForm'";
-  $resultGetUser = $conn -> query($sqlGetUser);
-  while($row = $resultFindUser->fetch_array(MYSQLI_NUM)){
-    $_SESSION["userId"] = $row[0];
-    $_SESSION["userName"] = $row[1];
-    $_SESSION["userEmail"] = $row[2];
+function InsertUserLogin($conn, $userId, ){
+  $currentData = date('Y-m-d H:i:s');
+  global $sqlInsertUserLogin;
+  if($resultInsertUserLogin = ExecuteQuery($conn, 'e', $sqlInsertUserLogin, 'i', $userId, 's', $currentData, 's', $currentData))
+    return true;
+  else
+    return false;
+}
+
+function GetUserData($conn, $userId){
+  try{
+    global $sqlGetUserProfileData;
+    $resultGetUserProfileData = ExecuteQuery($conn, 's', $sqlGetUserProfileData, 'i', $userId);
+    while($row = $resultGetUserProfileData->fetch_array(MYSQLI_NUM)){
+      $_SESSION["userName"] = $row[0];
+      $_SESSION["userEmail"] = $row[1];
+      $_SESSION["userDataCreated"] = $row[2];
+      $_SESSION["userStatusAccount"] = $row[3];
+      $_SESSION["userStatusGroup"] = $row[4];
+      $_SESSION["userMoney"] = $row[5];
+      $_SESSION["userTicket"] = $row[6];
+      $_SESSION["userPoints"] = $row[7];
+      $_SESSION["userWorld"] = $row[8];
+      $_SESSION["userChapter"] = $row[9];
+    }
+  }catch(Exception $e){
+    $erro = "error: Pobranie danych uzytkownika z bazy danych: " . $e->getMessage();
+    ChceckError($erro);
   }
 }
 
@@ -244,21 +265,27 @@ function ExecuteQuery($conn, $typeSql, $sql, $type1, $parm1, $type2=null, $parm2
   if($typeSql == 's'){ // query SELECT
     $result = $stmt->get_result();
     return $result;
-  }else if($typeSql == 'e'){ // query EXECUTE (insert, drop, delete)
+  }else if($typeSql == 'e'){ // query EXECUTE (insert, drop, delete, update)
     return $stmt;
   }
 }
 
-/*
-SELECT `users`.`Nazwa`, `users`.`Email`, `users`.`DataStworzenia`, `statusnazwa`.`Nazwa`, `grupanazwa`.`Nazwa`, `portfel`.`Monety`, `portfel`.`Bilety`, `portfel`.`Punkty`, `portfel`.`Swiat`, `portfel`.`Rozdzial`, `logumiejetnosci`.`Koszt`, `logumiejetnosci`.`Poziom`, `umiejetnosci`.`Nazwa`, `umiejetnosci`.`Nazwa`, `umiejetnosci`.`MaxPoziom`, `umiejetnosci`.`WspolczynnikKosztu`
-FROM `statuskonta` 
-INNER JOIN `statusnazwa` ON `statusnazwa`.`ID` = `statuskonta`.`StatusKonta` 
-INNER JOIN `grupanazwa` ON `grupanazwa`.`ID` = `statuskonta`.`Grupa`
-INNER JOIN `users` ON `users`.`ID` = `statuskonta`.`IDUzytkownika`
-INNER JOIN `portfel` ON `users`.`ID` = `portfel`.`IDUzytkownika`
-INNER JOIN `logumiejetnosci` ON `users`.`ID` = `logumiejetnosci`.`IDUzytkownika`
-INNER JOIN `umiejetnosci` ON `logumiejetnosci`.`IDUmiejetnosci` = `umiejetnosci`.`ID`
-WHERE 1
-*/
+//----------------------------------------------------------------------
+// Logout 
+//----------------------------------------------------------------------
+
+function LogoutUser(){
+  session_unset(); // usuwamy wszystkie zmienne sesyjne
+  session_destroy(); // niszczymy sesję
+
+  // Sprawdzanie, czy sesja została usunięta
+  if (empty($_SESSION)) {
+    header("Location: ./index.php"); exit;
+  } else {
+    $erro = "error: Wylogowywanie nie powiodło się";
+    ChceckError($erro);
+  }
+  
+}
 
 ?>
