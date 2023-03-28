@@ -1,6 +1,6 @@
 <?php
-session_start();
-include('querys.php');
+  session_start();
+  include('querys.php');
 
 
 // Connecting to the database
@@ -275,6 +275,13 @@ function ExecuteQuery($conn, $typeSql, $sql, $type1, $parm1, $type2=null, $parm2
 //----------------------------------------------------------------------
 
 function LogoutUser(){
+  global $sqlLogoutUser;
+  $userId = $_SESSION["userId"];
+
+  $conn = ConnectDB();
+  $currentData = date('Y-m-d H:i:s');
+  if($resultLogoutUser = ExecuteQuery($conn, 'e', $sqlLogoutUser, 's', $currentData,'i', $userId,))
+
   session_unset(); // usuwamy wszystkie zmienne sesyjne
   session_destroy(); // niszczymy sesję
 

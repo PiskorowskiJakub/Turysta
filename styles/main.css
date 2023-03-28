@@ -57,7 +57,7 @@ body {
   background-color: #56A689;
   border-radius: 10px;
   margin: 15px 20px;
-  padding: 10px 0;
+  padding-bottom: 10px;
 }
 
 .pageLogin .screens {
@@ -230,6 +230,12 @@ body {
   color: #E4F2E7;
   padding-top: 3%;
   margin-block-start: 0;
+}
+
+.footer p {
+  text-align: center;
+  color: #E4F2E7;
+  line-height: 0.2;
 }
 
 @media only screen and (max-width: 967px) {

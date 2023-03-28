@@ -48,9 +48,9 @@ include('./scripts/database.php');
     
 
         <div class="footer">
-            <h3>© copyright Turysta-Game</h3>
-            <h4>Godzina: <?php echo date("h:i"); ?></h4>
-            <h4>Data: <?php echo date("Y-m-d"); ?></h4>
+            <h3>© copyright Jakub Piskorowski</h3>
+            <p>Godzina: <?php echo date("H:i"); ?></p>
+            <p>Data: <?php echo date("Y-m-d"); ?></p>
         </div>
     </div>
   </body>

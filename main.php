@@ -1,5 +1,13 @@
 <?php 
 session_start();
+include('pages/scripts/mainScript.php');
+
+// Check user Permission
+if(!(CheckUserPermission("Uzytkownik") || CheckUserPermission("Administrator") || CheckUserPermission("Moderator") || CheckUserPermission("Gosc") || CheckUserPermission("VIP") || CheckUserPermission("Partner"))){
+  header('Location: ./index.php'); exit;
+}
+
+// Switch pages
 if(isset($_GET["page"])) $strona = "./pages/".$_GET["page"];
 else $strona = "./pages/profile";
 ?>
@@ -14,6 +22,7 @@ else $strona = "./pages/profile";
     <!-- Styles -->
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="stylesheet" href="./styles/menu.css">
+    <link rel="stylesheet" href="./styles/content.css">
 
   </head>
   <body>
@@ -70,7 +79,10 @@ else $strona = "./pages/profile";
 
     
 
-    <div class="footer"><h3>© copyright Turysta-Game</h3></div>
+    <div class="footer"><h3>© copyright Jakub Piskorowski</h3>
+      <p>Godzina: <?php echo date("H:i"); ?></p>
+      <p>Data: <?php echo date("Y-m-d"); ?></p>
+    </div>
     </div>
   </body>
 </html>

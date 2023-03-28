@@ -1,0 +1,74 @@
+@import "_base.scss";
+
+.content{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+
+    
+    .headerTitle{
+        text-align: center;
+        color: $first-color;
+    }
+
+    .mainBoxContent{
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        background-color: $third-color;
+        border-radius: 10px;
+        margin: 10px 20px;
+        padding-bottom: 10px;
+        hr{
+            width: 35%;
+        }
+
+        .mainStats{
+            display: flex;
+            flex-direction: row;
+            margin: auto;
+            .stats{
+                text-align: left;
+            }
+        }
+
+        .imageProfile{
+            margin-left: 20px;
+            img{
+                width: 80px;
+                height: 100px;
+            }
+        }   
+    }
+}
+
+//----------------------------------------------------
+// Circle container
+//----------------------------------------------------
+.circle-container {
+    position: relative;
+    height: 30px;
+    width: 100%;
+    }
+    
+    .circle-container::before,
+    .circle-container::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    height: 10px;
+    width: 10px;
+    border: 3px solid white;
+    border-radius: 50%;
+    }
+    
+    .circle-container::before {
+    left: 10px;
+    background-color: black;
+    }
+    
+    .circle-container::after {
+    right: 10px;
+    background-color: black;
+    }

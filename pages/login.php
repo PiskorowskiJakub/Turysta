@@ -1,7 +1,8 @@
-<?php include('scripts/signin.php'); 
-?>
+<?php include('scripts/signin.php'); ?>
 
 <div class="loginBox">
+<div class="circle-container"></div>
+
     <h1>Zaloguj się </h1>
     <div class="errorInfo"><?php if(isset($_SESSION["errorLogin"])) {echo $_SESSION["errorLogin"]; unset($_SESSION["errorLogin"]); } ?></div>
 
@@ -14,6 +15,8 @@
     </form>
 </div>
 <div class="signinBox">
+<div class="circle-container"></div>
+
     <h1>Zarejestruj się </h1>
     <div class="errorInfo"><?php if(isset($_SESSION["errorCreate"])) {echo $_SESSION["errorCreate"]; unset($_SESSION["errorCreate"]); } ?></div>
 
@@ -35,6 +38,8 @@
     
     </div>
     <div class="screens">
+    <div class="circle-container"></div>
+
         <h1>Mockupy</h1>
         <div class="img">
             <a href="./img/Profil.png" target="_blank">

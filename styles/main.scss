@@ -33,7 +33,6 @@
     .top{
       width: 100%;
       .infoBox{
-        //max-width: 1000px;
         width: 100%;
         .info{
           max-width: 520px;
@@ -59,7 +58,7 @@
       background-color: $third-color;
       border-radius: 10px;
       margin: 15px 20px;
-      padding: 10px 0;
+      padding-bottom: 10px;
     }
     .screens{
       padding: 10px 10px;
@@ -245,6 +244,11 @@
       color: $first-color;
       padding-top: 3%;
       margin-block-start: 0;
+    }
+    p{
+      text-align: center;
+      color: $first-color;
+      line-height: 0.2;
     }
   }
   

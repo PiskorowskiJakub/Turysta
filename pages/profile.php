@@ -1,9 +1,41 @@
+<div class="headerTitle">
+    <h1>Profil</h1>
+</div>
 
-<h2>Profil</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum lectus metus, viverra non erat et, condimentum pulvinar nulla. Curabitur vitae nibh convallis, ultrices nisi auctor, lacinia nulla. Vestibulum id sapien rutrum, sagittis dolor ac, blandit risus. Nunc rutrum vehicula augue, vitae dignissim mauris iaculis at. Duis aliquet dictum metus sodales facilisis. Aenean molestie leo a efficitur blandit. Quisque facilisis consequat erat, et dapibus sapien faucibus in. Praesent condimentum, metus non dapibus mattis, orci ex dapibus turpis, ac eleifend lorem sem ac ex. Morbi consectetur dolor turpis, eu interdum magna pharetra dignissim. In feugiat dolor velit, id auctor neque malesuada a. Curabitur a velit non ante fringilla faucibus. Maecenas vel sapien dolor. Etiam efficitur, diam eget accumsan lacinia, ligula ligula tempus lectus, vel aliquam ligula risus quis turpis. Phasellus iaculis, tellus et bibendum laoreet, enim leo suscipit purus, ut gravida leo nunc eget lacus. In a diam a felis gravida rutrum.</p>
+<div class="mainBoxContent">
+<div class="circle-container"></div>
 
-<h2>Profil</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum lectus metus, viverra non erat et, condimentum pulvinar nulla. Curabitur vitae nibh convallis, ultrices nisi auctor, lacinia nulla. Vestibulum id sapien rutrum, sagittis dolor ac, blandit risus. Nunc rutrum vehicula augue, vitae dignissim mauris iaculis at. Duis aliquet dictum metus sodales facilisis. Aenean molestie leo a efficitur blandit. Quisque facilisis consequat erat, et dapibus sapien faucibus in. Praesent condimentum, metus non dapibus mattis, orci ex dapibus turpis, ac eleifend lorem sem ac ex. Morbi consectetur dolor turpis, eu interdum magna pharetra dignissim. In feugiat dolor velit, id auctor neque malesuada a. Curabitur a velit non ante fringilla faucibus. Maecenas vel sapien dolor. Etiam efficitur, diam eget accumsan lacinia, ligula ligula tempus lectus, vel aliquam ligula risus quis turpis. Phasellus iaculis, tellus et bibendum laoreet, enim leo suscipit purus, ut gravida leo nunc eget lacus. In a diam a felis gravida rutrum.</p>
+    <div class="mainStats">
+        <div class="stats">
+            Nazwa: <b><?php if(isset($_SESSION["userName"])) echo $_SESSION["userName"]; ?></b> </br>
+            Świat: <b><?php if(isset($_SESSION["userWorld"])) echo $_SESSION["userWorld"]; ?></b> </br>
+            Rozdział: <b><?php if(isset($_SESSION["userChapter"])) echo $_SESSION["userChapter"]; ?></b> </br>
+        </div>
+        <div class="imageProfile">
+            <img src="img/layout/Female-Avatar-3.png"/>
+        </div>
+    </div>
 
-<h2>Profil</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum lectus metus, viverra non erat et, condimentum pulvinar nulla. Curabitur vitae nibh convallis, ultrices nisi auctor, lacinia nulla. Vestibulum id sapien rutrum, sagittis dolor ac, blandit risus. Nunc rutrum vehicula augue, vitae dignissim mauris iaculis at. Duis aliquet dictum metus sodales facilisis. Aenean molestie leo a efficitur blandit. Quisque facilisis consequat erat, et dapibus sapien faucibus in. Praesent condimentum, metus non dapibus mattis, orci ex dapibus turpis, ac eleifend lorem sem ac ex. Morbi consectetur dolor turpis, eu interdum magna pharetra dignissim. In feugiat dolor velit, id auctor neque malesuada a. Curabitur a velit non ante fringilla faucibus. Maecenas vel sapien dolor. Etiam efficitur, diam eget accumsan lacinia, ligula ligula tempus lectus, vel aliquam ligula risus quis turpis. Phasellus iaculis, tellus et bibendum laoreet, enim leo suscipit purus, ut gravida leo nunc eget lacus. In a diam a felis gravida rutrum.</p>
+    <hr>
+    <div class="mainStats">
+        <div class="stats">
+            Punkty: <b><?php if(isset($_SESSION["userPoints"])) echo $_SESSION["userPoints"]; ?> </b> </br>
+            Monety: <b><?php if(isset($_SESSION["userMoney"])) echo $_SESSION["userMoney"]; ?> </b></br>
+            Bilety: <b><?php if(isset($_SESSION["userTicket"])) echo $_SESSION["userTicket"]; ?> </b></br>
+        </div>
+    </div>
+
+</div>
+
+<div class="headerTitle">
+    <h1>Ranking</h1>
+</div>
+
+<div class="mainBoxContent">
+<div class="circle-container"></div>
+
+    <div class="stats">
+        Punktów: <b>...</b> </br>
+        Monet: <b>...</b> </br>
+    </div>
+</div>

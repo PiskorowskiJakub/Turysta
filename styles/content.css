@@ -1,0 +1,70 @@
+.content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.content .headerTitle {
+  text-align: center;
+  color: #E4F2E7;
+}
+
+.content .mainBoxContent {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background-color: #56A689;
+  border-radius: 10px;
+  margin: 10px 20px;
+  padding-bottom: 10px;
+}
+
+.content .mainBoxContent hr {
+  width: 35%;
+}
+
+.content .mainBoxContent .mainStats {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+}
+
+.content .mainBoxContent .mainStats .stats {
+  text-align: left;
+}
+
+.content .mainBoxContent .imageProfile {
+  margin-left: 20px;
+}
+
+.content .mainBoxContent .imageProfile img {
+  width: 80px;
+  height: 100px;
+}
+
+.circle-container {
+  position: relative;
+  height: 30px;
+  width: 100%;
+}
+
+.circle-container::before,
+.circle-container::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  height: 10px;
+  width: 10px;
+  border: 3px solid white;
+  border-radius: 50%;
+}
+
+.circle-container::before {
+  left: 10px;
+  background-color: black;
+}
+
+.circle-container::after {
+  right: 10px;
+  background-color: black;
+}
