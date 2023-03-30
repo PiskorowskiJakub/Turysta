@@ -3,7 +3,7 @@ session_start();
 include('pages/scripts/mainScript.php');
 
 // Check user Permission
-if(!(CheckUserPermission("Uzytkownik") || CheckUserPermission("Administrator") || CheckUserPermission("Moderator") || CheckUserPermission("Gosc") || CheckUserPermission("VIP") || CheckUserPermission("Partner"))){
+if(!(CheckUserPermission("Uzytkownik") || CheckUserPermission("Administrator") || CheckUserPermission("Moderator") || CheckUserPermission("Gosc") || CheckUserPermission("VIP") || CheckUserPermission("Partner") || CheckUserStatus("Aktywne"))){
   header('Location: ./index.php'); exit;
 }
 

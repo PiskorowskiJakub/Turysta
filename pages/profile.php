@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <hr>
+    <hr class="hrProfile">
     <div class="mainStats">
         <div class="stats">
             Punkty: <b><?php if(isset($_SESSION["userPoints"])) echo $_SESSION["userPoints"]; ?> </b> </br>

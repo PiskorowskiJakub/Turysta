@@ -19,8 +19,17 @@
   padding-bottom: 10px;
 }
 
-.content .mainBoxContent hr {
+.content .mainBoxContent .hrProfile {
   width: 35%;
+}
+
+.content .mainBoxContent hr {
+  width: 80%;
+}
+
+.content .mainBoxContent .title {
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .content .mainBoxContent .mainStats {
@@ -40,6 +49,40 @@
 .content .mainBoxContent .imageProfile img {
   width: 80px;
   height: 100px;
+}
+
+.content .mainBoxContent .workContent {
+  display: flex;
+  flex-direction: row;
+  margin: 0 20px;
+}
+
+.content .mainBoxContent .workContent .workDescription {
+  text-align: justify;
+  margin-left: 30px;
+}
+
+.content .mainBoxContent .workContent .workEarning {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+}
+
+.content .mainBoxContent .imageWork img {
+  width: 150px;
+  height: 150px;
+}
+
+.timeLevelEarning {
+  width: 200px;
+  line-height: 0.6;
+  text-align: center;
+}
+
+.timeLevelEarning hr {
+  width: 100%;
+  height: 3px;
+  background-color: #BFD9C5;
 }
 
 .circle-container {
@@ -67,4 +110,80 @@
 .circle-container::after {
   right: 10px;
   background-color: black;
+}
+
+.prog {
+  padding: 3px;
+  border: 1px solid #E4F2E7;
+  background: #E4F2E7;
+  border-radius: 3px;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+.prog .progBar {
+  border-radius: 3px;
+  background: #444;
+  line-height: 20px;
+  height: 100%;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.prog.green > .progBar {
+  background-color: #56A689;
+}
+
+.prog.striped > .progBar {
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-size: 60px 60px;
+  color: #104037;
+  font-weight: bold;
+  text-align: center;
+}
+
+@-webkit-keyframes progBar {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 0;
+  }
+}
+
+@-moz-keyframes progBar {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 0;
+  }
+}
+
+@-o-keyframes progBar {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 0;
+  }
+}
+
+.prog.striped.animated > .progBar {
+  -webkit-animation: progBar 1s linear infinite;
+  -moz-animation: progBar 1s linear infinite;
+  -o-animation: progBar 1s linear infinite;
+  animation: progBar 1s linear infinite;
 }

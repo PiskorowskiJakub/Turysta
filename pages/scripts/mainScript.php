@@ -10,5 +10,13 @@ function CheckUserPermission($permission){
     else return false;
 }
 
+function CheckUserStatus($userStatus){
+    if(isset($_SESSION["userStatusAccount"]))
+        if($_SESSION["userStatusAccount"] == $userStatus)
+            return true;
+        else return false;
+    else return false;
+}
+
 
 ?>
