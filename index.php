@@ -1,4 +1,5 @@
 <?php 
+session_start();
 if(isset($_GET["page"])) $strona = "./pages/".$_GET["page"];
 else $strona = "./pages/profile";
 ?>

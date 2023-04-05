@@ -1,0 +1,7 @@
+<?php
+
+$startupMoneyWorkMarket = 240;
+
+
+
+?>

@@ -24,8 +24,10 @@ else $strona = "./pages/profile";
     <link rel="stylesheet" href="./styles/menu.css">
     <link rel="stylesheet" href="./styles/content.css">
 
+    <script type="text/javascript" src="./pages/scripts/progressBar.js"></script>
+
   </head>
-  <body>
+  <body onload="onLoadProgressBar()">
 
     <div class="page">
 
