@@ -1,4 +1,5 @@
 <?php
+// Get all work data info and save to session 
 function GetWorkMarketInfo(){
      try{
      include('startupValue.php');
@@ -20,14 +21,13 @@ function GetWorkMarketInfo(){
       }
 }
 
+// Set the end of work time and save it do database
 function SetWorkMarketData($conn, $userId, $typeOfEarning){
      include('startupValue.php');
 
      $currentData = date('Y-m-d H:i:s');
 
-     $seconds = intval($_SESSION['workMarketDuration'] / 1000); // konwersja na sekundy
-     $_SESSION["test"] = $_SESSION['workMarketDuration'];
-     $dataEndOfEarning = date('Y-m-d H:i:s', time() + 180);
+     $dataEndOfEarning = date('Y-m-d H:i:s', time() + $_SESSION['workMarketDuration']);
 
      //$dataEndOfEarning = $currentData + $workMarketDuration; 
      $profit = $startupMoneyWorkMarket * $_SESSION['workMarketEarningFactor'];
@@ -38,5 +38,12 @@ function SetWorkMarketData($conn, $userId, $typeOfEarning){
      else return false;
 }
 
+// Calculation of the remaining time
+function CheckTimeWorkMarketData(){
+     $endDate = strtotime($_SESSION['workMarketDate']);
+     $currentDate = time(); 
+     $difference = $endDate - $currentDate; 
+     $_SESSION['workMarketDuration'] = $difference;
+}
 
 ?>

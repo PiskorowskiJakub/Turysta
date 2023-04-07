@@ -25,4 +25,6 @@
     
     $sqlUpdateWorkMarketLog = "UPDATE logdzialalnosci SET DataZarobku=?, Zarobek=? WHERE IDUzytkownika=? AND IDTypuZarobku=?";
 
+    $sqlUpdateDateWorkMarketLog = "UPDATE logdzialalnosci SET DataZarobku=? WHERE IDUzytkownika=? AND IDTypuZarobku=?";
+
 ?>

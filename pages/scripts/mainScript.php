@@ -30,11 +30,47 @@ function WorkMarket(){
     $typeOfEarning = 1;
     $data = true;
     $conn = ConnectDB();
-    //SetWorkMarketData($conn, $_SESSION['userId'], $typeOfEarning);
-          
+    
+    if(strtotime($_SESSION['workMarketDate']) > time()){
+        CheckTimeWorkMarketData();  // Calculation of the remaining time
+    }
+    else{
+        // Set the end of work time and save it do database
+        SetWorkMarketData($conn, $_SESSION['userId'], $typeOfEarning); 
+    }
+        
+
     // Create input to display time
     echo '<input type="hidden" id="max_date" value="' . $_SESSION['workMarketDuration'] . '">';
 
+}
+
+// Check remaining time and display the button start or end
+function CheckWorkMarketDate(){
+    if(strtotime($_SESSION['workMarketDate']) > time()){
+        WorkMarket();
+        echo "<script> startProgress()</script>";
+        echo "<script>document.getElementById('startWorkMarket').style.display = 'none'; </script>";
+        echo "<script>document.getElementById('endWorkMarket').style.display = 'block'; </script>";
+    }
+    else
+    {
+        echo "<script>document.getElementById('startWorkMarket').style.display = 'block'; </script>";
+        echo "<script>document.getElementById('endWorkMarket').style.display = 'none'; </script>";
+    }
+}
+
+function EndWorkMarket(){
+    $typeOfEarning = 1;
+    $currentData = date('Y-m-d H:i:s');
+    $conn = ConnectDB();
+
+    if(strtotime($_SESSION['workMarketDate']) > time()){
+        global $sqlUpdateDateWorkMarketLog;
+        if($resultUpdateDateWorkMarketLog = ExecuteQuery($conn, 'e', $sqlUpdateDateWorkMarketLog, 's', $currentData, 'i', $_SESSION['userId'], 'i', $typeOfEarning))
+            return true;
+        else return false;
+    }
 }
 
 
