@@ -21,9 +21,9 @@
             </div>
             <div class="timeLevelEarning">
                 <hr>
-                Czas: <b> 8 godzin </b>
+                Czas: <b> <?php if(isset($_SESSION['maxWorkMarketDuration'])) echo round((($_SESSION['maxWorkMarketDuration'])/(60*60)),2) ?> godzin </b>
                 <hr>
-                Zarobek: <b> 247 </b>
+                Zarobek: <b id="earning"> </b>
                 <hr>
             </div>
         </div>
@@ -47,23 +47,32 @@
 
 </div>
 <?php
+if(!(isset($_SESSION['skillLvl']))) GetSkillLvl();
+
 CheckWorkMarketDate();
+CalculateProfitMarket();
+
+ 
 
 if(isset($_POST["startWorkMarket"])){
     WorkMarket();
     echo "<script> startProgress();</script>";
     echo "<script>document.getElementById('startWorkMarket').style.display = 'none'; </script>";
     echo "<script>document.getElementById('endWorkMarket').style.display = 'block'; </script>";
+    if(isset($_SESSION['profit']))
+        echo "<script>document.getElementById('earning').innerHTML = ". $_SESSION['profit']."</script>";
 }
 
+
+$_SESSION['test'] = $_SESSION['profit'];
+
 if(isset($_POST["endWorkMarket"])){
+    CalculateProfitMarket();
     if(EndWorkMarket()){
-        $_SESSION['test'] = "true1";
         CheckWorkMarketDate();
         echo "<script> startProgress();</script>";
         echo "<script> window.location.reload();</script>";
     }
-    else $_SESSION['test'] = "false1";
 }
 
 
