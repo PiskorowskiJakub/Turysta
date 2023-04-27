@@ -46,4 +46,11 @@ Panel umiejętności oraz ćwiczona umiejętność
 Panel odznak gracza
 ![Odznaki](./mockups/Odznaki.png)
 
+---
 
+# Lista zmian: 
+
+- **12.2022** - Stworzenie mockupów strony.
+- **01.2023** - Panel logowania oraz rejestracji.
+- **02.2023** - Profil gracza.
+- **04.2023** - Pełny panel pracy.
