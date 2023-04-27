@@ -1,4 +1,4 @@
-<?php GetWorkMarketInfo(); ?>
+<?php GetWorkMarketInfo(); CheckProfitAdded();?>
 
 
 <div class="headerTitle">
@@ -64,7 +64,7 @@ if(isset($_POST["startWorkMarket"])){
 }
 
 
-$_SESSION['test'] = $_SESSION['profit'];
+//$_SESSION['test'] = $_SESSION['profit'];
 
 if(isset($_POST["endWorkMarket"])){
     CalculateProfitMarket();

@@ -73,7 +73,7 @@ function InsertNewUserData($conn, $email, $invCode){
   
   $typeOfEarnings = 1;
   $currentData = date('Y-m-d H:i:s');
-  $startupProfit = 120;
+  $startupProfit = 180;
   
   // Get user ID by username
   try{
@@ -100,8 +100,8 @@ function InsertNewUserData($conn, $email, $invCode){
         if($resultInsertWallet = ExecuteQuery($conn, 'e', $sqlInsertWallet, 'i', $userId, 'd', $startupMoney, 'i', $startupTicket, 'd', $startupPoints, 'i', $startupWorld, 'i', $startupChapter))
         {
           // Insert data in table "Activity log"
-          global $sqlInsertActivityLog;
-          if($resultInsertActivityLog = ExecuteQuery($conn, 'e', $sqlInsertActivityLog, 'i', $userId, 'i', $typeOfEarnings, 's', $currentData, 'd', $startupProfit))
+          global $sqlInsertWorkMarketLog;
+          if($resultInsertWorkMarketLog = ExecuteQuery($conn, 'e', $sqlInsertWorkMarketLog, 'i', $userId, 'i', $typeOfEarnings, 's', $currentData, 'd', $startupProfit, 'i', 1))
           {
             // Insert data in table "Skills log 1"
             global $sqlInsertSkillsData1;

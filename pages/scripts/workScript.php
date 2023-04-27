@@ -32,7 +32,7 @@ function SetWorkMarketData($conn, $userId, $typeOfEarning){
 
      $dataEndOfEarning = date('Y-m-d H:i:s', time() + $_SESSION['workMarketDuration']);
      global $sqlUpdateWorkMarketLog;
-     if($resultUpdateWorkMarketLog = ExecuteQuery($conn, 'e', $sqlUpdateWorkMarketLog, 's', $dataEndOfEarning, 'd', $_SESSION['maxProfit'], 'i', $_SESSION['userId'], 'i', $typeOfEarning))
+     if($resultUpdateWorkMarketLog = ExecuteQuery($conn, 'e', $sqlUpdateWorkMarketLog, 's', $dataEndOfEarning, 'd', $_SESSION['maxProfit'], 'i', 0, 'i', $_SESSION['userId'], 'i', $typeOfEarning))
           return true;
      else return false;
 }
@@ -59,5 +59,34 @@ function GetSkillLvl(){
      if($_SESSION['skillLvl'] == 0) $_SESSION['skillLvl'] = 0.5;
 }
 
+
+// after opening the page, check if the time is up and the profit has been added to DB
+function CheckProfitAdded(){
+     $typeOfEarning = 1; // 1 - work market
+     $currentData = date('Y-m-d H:i:s');
+     $conn = ConnectDB();
+
+     // Get from DB status profit has been added
+     global $sqlGetWorkMarketInfo;
+     $resultGetWorkMarketInfo = ExecuteQuery($conn, 's', $sqlGetWorkMarketInfo, 'i', $typeOfEarning, 'i', $_SESSION['userId']);
+     while($row = $resultGetWorkMarketInfo->fetch_array(MYSQLI_NUM)){
+          $profit = $row[4];
+          $statusProfitAdded = $row[5];
+     }
+     
+     // if profit has not been added, add it
+     if($statusProfitAdded == 0){
+          if(strtotime($_SESSION['workMarketDate']) < time()){
+               $_SESSION["userMoney"] += $profit;
+               global $sqlUpdateCoinInWallet;
+               if($resultUpdateCoinInWallet = ExecuteQuery($conn, 'e', $sqlUpdateCoinInWallet, 'd', $_SESSION["userMoney"], 'i', $_SESSION['userId'])){
+                    global $sqlUpdateWorkMarketLog;
+                    if($resultUpdateWorkMarketLog = ExecuteQuery($conn, 'e', $sqlUpdateWorkMarketLog, 's', $currentData, 'd', $profit, 'i', 1, 'i', $_SESSION['userId'], 'i', $typeOfEarning))
+                         return true; 
+                    else return false;
+               }else return false;
+          }else return false; 
+     }else return false;
+}
 
 ?>

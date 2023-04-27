@@ -80,7 +80,7 @@ function EndWorkMarket(){
 
     if(strtotime($_SESSION['workMarketDate']) > time()){
         global $sqlUpdateWorkMarketLog;
-        if($resultUpdateWorkMarketLog = ExecuteQuery($conn, 'e', $sqlUpdateWorkMarketLog, 's', $currentData, 'd', $_SESSION['profit'], 'i', $_SESSION['userId'], 'i', $typeOfEarning)){
+        if($resultUpdateWorkMarketLog = ExecuteQuery($conn, 'e', $sqlUpdateWorkMarketLog, 's', $currentData, 'd', $_SESSION['profit'], 'i', 1, 'i', $_SESSION['userId'], 'i', $typeOfEarning)){
             $_SESSION["userMoney"] += $_SESSION['profit'];
             global $sqlUpdateCoinInWallet;
             if($resultUpdateCoinInWallet = ExecuteQuery($conn, 'e', $sqlUpdateCoinInWallet, 'd', $_SESSION["userMoney"], 'i', $_SESSION['userId']))
@@ -89,6 +89,7 @@ function EndWorkMarket(){
         else return false;
     }
 }
+
 
 
 
