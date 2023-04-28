@@ -211,8 +211,8 @@
       background-image: $main-mid-background;
       .content{
         padding: 5px;
-        margin-left: 30px;
-        margin-right: 30px;
+        margin: 0 30px 30px 30px;
+        border-radius: 10px;
         background-color: $fifth-color;
         color: $first-color;
       }

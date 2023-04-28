@@ -23,6 +23,8 @@ else $strona = "./pages/profile";
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="stylesheet" href="./styles/menu.css">
     <link rel="stylesheet" href="./styles/content.css">
+    <link rel="stylesheet" href="./styles/skills.css">
+
 
     <script type="text/javascript" src="./pages/scripts/progressBar.js"></script>
 
@@ -68,11 +70,11 @@ else $strona = "./pages/profile";
         <div class="topMain"><pre> </pre></div>
           
         <div class="main">
-          <div class="content">
+          
             
             <?php if(($strona)!=null) include($strona.".php"); ?>
 
-          </div>
+          
         </div>
 
         <div class="bottomMain"><pre> </pre></div>

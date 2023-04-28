@@ -269,3 +269,65 @@ body {
     min-height: 210px;
   }
 }
+
+.content .skills {
+  display: flex;
+  flex-direction: row;
+  margin: 0 30px;
+}
+
+.content .skills .skill {
+  flex-direction: column;
+  margin: 0 8px;
+  width: 100%;
+}
+
+.content .skills .skill .imageWork {
+  position: relative;
+}
+
+.content .skills .skill .text-container {
+  position: absolute;
+  margin-top: 5px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: none;
+  background-color: #1B5948;
+  opacity: 1;
+  padding: 0 10px;
+  width: 100%;
+  text-align: justify;
+}
+
+.content .skills .skill .imageWork:hover img {
+  visibility: hidden;
+}
+
+.content .skills .skill .imageWork:hover .text-container {
+  display: block;
+}
+
+.content .skills .mainBoxContent {
+  width: 100%;
+  margin: 5px 0;
+}
+
+.content .skills .mainBoxContent .badges {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+}
+
+.content .skills .mainBoxContent .badges img {
+  width: 55px;
+  height: 55px;
+}
+
+.content .skills .timeLevelEarning {
+  margin: auto;
+}
+
+.content .skills .mainButton {
+  width: 80%;
+}

@@ -1,0 +1,56 @@
+@import "_base.scss";
+@import "main.scss";
+
+.content{
+    .skills{
+        display: flex;
+        flex-direction: row;
+        margin: 0 30px;
+        .skill{
+            flex-direction: column;
+            margin: 0 8px;
+            width: 100%;
+            .imageWork{
+                position: relative;
+            }
+            .text-container {
+                position: absolute;
+                margin-top: 5px;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                display: none;
+                background-color: $fourth-color; 
+                opacity: 1;
+                padding: 0 10px;
+                width: 100%;
+                text-align: justify;
+            }
+            .imageWork:hover{
+                img{visibility: hidden;}
+            }
+            .imageWork:hover .text-container{
+                display: block;
+            }
+        }
+        .mainBoxContent{
+            width: 100%;
+            margin: 5px 0;
+            .badges{
+                display: flex;
+                flex-direction: row;
+                margin: auto;
+                img{
+                    width: 55px;
+                    height: 55px;
+                }
+            }
+        }
+        .timeLevelEarning{
+            margin: auto;
+        }
+        .mainButton{
+            width: 80%;
+        }
+    }
+}
