@@ -3,11 +3,30 @@ on: [push, pull_request]
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: turysta
+          MYSQL_USER: turysta
+          MYSQL_PASSWORD: turysta
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DB_HOST: 127.0.0.1
+      DB_NAME: turysta
+      DB_USER: turysta
+      DB_PASSWORD: turysta
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with: { php-version: '8.3', extensions: pdo_mysql }
       - run: composer install --no-interaction
+        working-directory: backend
+      - run: php bin/migrate.php
         working-directory: backend
       - run: vendor/bin/phpunit
         working-directory: backend

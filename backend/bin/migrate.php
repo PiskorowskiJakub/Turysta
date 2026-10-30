@@ -22,7 +22,12 @@ foreach ($files as $file) {
         continue;
     }
     echo "Migracja: $name\n";
-    $pdo->exec((string) file_get_contents($file));
+    $sql = preg_replace('/^\s*--.*$/m', '', (string) file_get_contents($file));
+    foreach (preg_split('/;\s*(\r?\n|$)/', (string) $sql) as $statement) {
+        if (trim($statement) !== '') {
+            $pdo->exec($statement);
+        }
+    }
     $pdo->prepare('INSERT INTO schema_migrations (name) VALUES (?)')->execute([$name]);
 }
 echo "Gotowe.\n";

@@ -12,9 +12,9 @@ COPY docker/apache.conf /etc/apache2/conf-available/turysta.conf
 RUN a2enconf turysta
 WORKDIR /var/www/html
 COPY composer.json composer.lock* ./
-RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist || true
+RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist
 COPY . .
 RUN composer dump-autoload --optimize --no-dev \
  && chmod +x docker/scheduler-entrypoint.sh \
  && chown -R www-data:www-data /var/www/html
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -fsS http://localhost/api/health || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=5s --start-interval=2s CMD curl -fsS http://localhost/api/health || exit 1
