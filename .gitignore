@@ -2,3 +2,5 @@
 node_modules/
 backups/
 backend/vendor/
+
+frontend/_to_delete/

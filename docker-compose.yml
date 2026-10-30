@@ -24,6 +24,22 @@ services:
       - traefik.http.routers.frontend.entrypoints=web
       - traefik.http.services.frontend.loadbalancer.server.port=80
 
+  frontend-dev:
+    profiles: ["hmr"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      API_PROXY_TARGET: http://backend:80
+      VITE_POLLING: "true"
+    ports:
+      - "127.0.0.1:5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
+    depends_on:
+      - backend
+
   backend:
     build: ./backend
     restart: unless-stopped

@@ -1,0 +1,54 @@
+{
+  "nav": { "home": "Strona główna", "login": "Zaloguj się", "register": "Załóż konto", "profile": "Profil", "logout": "Wyloguj" },
+  "footer": "Turysta",
+  "tagline": "Turysta – gra o podróżowaniu",
+  "loading": "Ładowanie…",
+  "wallet": { "coins": "Monety", "tickets": "Bilety", "points": "Punkty" },
+  "gender": { "f": "Kobieta", "m": "Mężczyzna", "x": "Inna / wolę nie podawać" },
+  "skills": { "fitness": "Kondycja", "orientation": "Orientacja w terenie", "trade": "Handel" },
+  "home": {
+    "title": "Witaj w Turyście",
+    "lead": "Ruszaj w drogę, szkol się, pracuj i zdobywaj odznaki. Zacznij od założenia konta.",
+    "leadAuthed": "Miło Cię widzieć! Twoja wyprawa czeka.",
+    "toProfile": "Przejdź do profilu"
+  },
+  "register": {
+    "title": "Załóż konto",
+    "name": "Nazwa postaci",
+    "email": "Adres e-mail",
+    "password": "Hasło (min. 10 znaków)",
+    "passwordConfirm": "Powtórz hasło",
+    "referral": "Kod polecający (opcjonalnie)",
+    "submit": "Utwórz konto",
+    "haveAccount": "Masz już konto?"
+  },
+  "login": {
+    "title": "Zaloguj się",
+    "submit": "Zaloguj",
+    "noAccount": "Nie masz konta?",
+    "registered": "Udało się stworzyć konto. Możesz się zalogować."
+  },
+  "tutorial": {
+    "title": "Pierwsze kroki",
+    "story": "Witaj, {{name}}! Twoja pierwsza wyprawa dopiero się zaczyna. Zanim ruszysz w drogę, powiedz nam, kim jesteś.",
+    "genderTitle": "Wybierz płeć postaci",
+    "avatarTitle": "Wybierz awatar",
+    "next": "Dalej",
+    "back": "Wstecz",
+    "finish": "Zaczynam przygodę"
+  },
+  "profile": {
+    "verifyEmail": "Potwierdź adres e-mail, klikając link, który wysłaliśmy na Twoją skrzynkę.",
+    "wallet": "Portfel",
+    "skills": "Umiejętności",
+    "level": "poziom {{level}}"
+  },
+  "notFound": { "title": "Nie znaleziono strony", "back": "Wróć na stronę główną" },
+  "errors": {
+    "network": "Nie udało się połączyć z serwerem. Spróbuj ponownie.",
+    "invalid_credentials": "Nieprawidłowy e-mail lub hasło.",
+    "rate_limited": "Za dużo prób. Spróbuj ponownie za kilkanaście minut.",
+    "banned": "To konto zostało zablokowane.",
+    "csrf_invalid": "Sesja wygasła. Odśwież stronę i spróbuj ponownie."
+  }
+}

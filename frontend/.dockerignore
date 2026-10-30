@@ -1,12 +1,12 @@
 node_modules
-build
+dist
 coverage
 .git
 .gitignore
 .env
 .env.*
+_to_delete
 npm-debug.log*
 Dockerfile*
-docker-compose*.yml
 .dockerignore
 README.md
