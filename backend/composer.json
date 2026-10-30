@@ -1,0 +1,9 @@
+{
+  "name": "turysta/backend",
+  "type": "project",
+  "require": { "php": "^8.3", "ext-pdo": "*" },
+  "require-dev": { "phpunit/phpunit": "^11.0" },
+  "autoload": { "psr-4": { "Turysta\\": "src/" } },
+  "autoload-dev": { "psr-4": { "Turysta\\Tests\\": "tests/" } },
+  "scripts": { "test": "phpunit" }
+}
