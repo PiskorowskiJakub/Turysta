@@ -1,73 +1,51 @@
-# Turysta app
+# Turysta
 
-# Getting Started with Create React App
+Aplikacja webowa gry Turysta (React 18, Create React App, React Router 6, SASS).
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Uruchomienie w Dockerze
 
-## Available Scripts
+Wymagany jest Docker z pluginem Compose. W folderze `Web/Turysta`:
 
-In the project directory, you can run:
+```bash
+# Produkcja (nginx) -> http://localhost:8080
+docker compose up --build
 
-### `npm start`
+# Development z hot reload -> http://localhost:3000
+docker compose --profile dev up --build web-dev
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Porty można zmienić w pliku `.env` (wzór: `.env.example`).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Samo budowanie obrazu produkcyjnego:
 
-### `npm test`
+```bash
+docker build -t turysta-web .
+docker run --rm -p 8080:80 turysta-web
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Uruchomienie bez Dockera
 
-### `npm run build`
+Wymagany Node.js 20 (min. 18).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm ci
+npm start       # http://localhost:3000
+npm test
+npm run build   # wynik w folderze build/
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Struktura
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+src/
+  App.js, index.js
+  pages/
+    Layout.js            routing i układ strony
+    Page*.js             podstrony (Home, Blogs, Contact, 404)
+    Component/           komponenty (Info, Profil)
+    styles/              SCSS (Layout, Responsive, _base ze zmiennymi)
+    img/layout/          grafiki układu
+```
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
+Style SCSS są importowane bezpośrednio w `Layout.js` i kompilowane przez
+Create React App - nie trzeba osobnego kroku kompilacji.

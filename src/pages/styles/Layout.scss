@@ -1,0 +1,16 @@
+@use 'base' as *;
+@use 'Responsive';
+
+body {
+    background-image: $base-background-image;
+    font-family: $font-stack;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+footer {
+    background-image: $footer-background-image;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+}

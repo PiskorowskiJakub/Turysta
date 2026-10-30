@@ -1,0 +1,64 @@
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+nav {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  float: left;
+  max-width: 230px;
+}
+
+.Page {
+  display: flex;
+  flex-direction: column;
+}
+.Page header {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: row;
+  max-width: 1100px;
+  justify-content: center;
+}
+.Page header .Info {
+  border: 1px solid black;
+  max-width: 700px;
+  margin-right: 10px;
+}
+.Page header .Profil {
+  border: 1px solid black;
+  max-width: 380px;
+}
+.Page section {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1100px;
+}
+
+footer {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: row;
+  max-height: 200px;
+}
+
+body {
+  background-image: url("../../img/layout/background-image.jpg");
+  font-family: Poppins;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  background-position: center center;
+}
+
+footer {
+  background-image: url("../../img/layout/footer.png");
+  background-position: absolute;
+  bottom: 0;
+}
+
+/*# sourceMappingURL=Layout.css.map */
