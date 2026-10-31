@@ -33,6 +33,9 @@
     "registered": "Konto założone",
     "skillLevels": "Suma poziomów umiejętności"
   },
+  "player": {
+    "backToRanking": "Wróć do rankingu"
+  },
   "ranking": {
     "title": "Ranking graczy",
     "myPlace": "Twoje miejsce: {{rank}}",
@@ -153,6 +156,7 @@
     "back": "Wróć na stronę główną"
   },
   "errors": {
+    "player_not_found": "Nie znaleziono takiego gracza.",
     "network": "Nie udało się połączyć z serwerem. Spróbuj ponownie.",
     "invalid_credentials": "Nieprawidłowy e-mail lub hasło.",
     "rate_limited": "Za dużo prób. Spróbuj ponownie za kilkanaście minut.",

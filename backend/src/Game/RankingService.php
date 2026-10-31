@@ -72,6 +72,7 @@ final class RankingService
         $rows = [];
         foreach ($stmt->fetchAll() as $row) {
             $rows[] = [
+                'id' => (int) $row['id'],
                 'rank' => (int) $row['rnk'],
                 'name' => (string) $row['name'],
                 'points' => (int) $row['points'],

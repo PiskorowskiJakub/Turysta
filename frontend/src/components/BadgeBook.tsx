@@ -14,10 +14,12 @@ interface Props {
   /** Na stronie odznak mozna wybierac wyroznione; w profilu jest tylko podglad i link do calej ksiazeczki. */
   editable?: boolean;
   as?: 'h1' | 'h2';
+  /** Link do wlasnej, pelnej ksiazeczki (w cudzym profilu go nie ma). */
+  showLink?: boolean;
 }
 
 /** Ksiazeczka odznak: podsumowanie wg stopni i wyroznione odznaki. */
-export default function BadgeBook({ data, editable = false, as: Heading = 'h2' }: Props) {
+export default function BadgeBook({ data, editable = false, as: Heading = 'h2', showLink = true }: Props) {
   const { t } = useTranslation();
   const { highest, tally, featured, setFeatured, setError, error } = data;
   const [picking, setPicking] = useState(false);
@@ -88,7 +90,7 @@ export default function BadgeBook({ data, editable = false, as: Heading = 'h2' }
             {editable && earnedGroups.length > 0 && (
               <button type="button" className="btn" onClick={startPicking}>{t('badges.pickFeatured')}</button>
             )}
-            {!editable && <Link to="/odznaki" className="btn">{t('badges.seeAll')}</Link>}
+            {!editable && showLink && <Link to="/odznaki" className="btn">{t('badges.seeAll')}</Link>}
           </div>
         </>
       )}

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import type { Avatar } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
-import PlayerAvatar from '../components/PlayerAvatar';
+import ProfileCard from '../components/ProfileCard';
 import BadgeBook from '../components/BadgeBook';
 import { useBadges } from '../hooks/useBadges';
 import Notifications from '../components/Notifications';
@@ -43,25 +43,19 @@ export default function ProfilePage() {
 
   return (
     <>
-    <section className="panel profile-card">
-      <PlayerAvatar src={avatar?.image_url} name={me.user.character_name} size={132} />
-      <div className="profile-card-main">
-        <h1>{me.user.character_name}</h1>
-        {me.progress && (
-          <p className="profile-where">
-            <span>{t('world.worldNo', { n: me.progress.world_ordinal })}: <strong>{me.progress.world_name}</strong></span>
-            <span>{t('world.chapterNo', { n: me.progress.chapter_ordinal })}: <strong>{me.progress.chapter_name}</strong></span>
-          </p>
-        )}
-        <dl className="profile-facts">
-          <div><dt>{t('profileCard.rank')}</dt><dd>{me.stats.rank}</dd></div>
-          <div><dt>{t('wallet.points')}</dt><dd><Points value={me.wallet.points} /></dd></div>
-          <div><dt>{t('profileCard.registered')}</dt><dd>{formatDate(me.stats.registered_at)}</dd></div>
-          <div><dt>{t('stats.longestStreak')}</dt><dd>{formatDays(me.stats.longest_streak)}</dd></div>
-          <div><dt>{t('profileCard.skillLevels')}</dt><dd>{skillLevels}</dd></div>
-        </dl>
-      </div>
-    </section>
+    <ProfileCard
+      data={{
+        name: me.user.character_name,
+        avatarUrl: avatar?.image_url,
+        world: me.progress ? { ordinal: me.progress.world_ordinal, name: me.progress.world_name } : null,
+        chapter: me.progress ? { ordinal: me.progress.chapter_ordinal, name: me.progress.chapter_name } : null,
+        rank: me.stats.rank,
+        points: me.wallet.points,
+        registeredAt: me.stats.registered_at,
+        longestStreak: me.stats.longest_streak,
+        skillLevels,
+      }}
+    />
 
     {badges.ready ? <BadgeBook data={badges} /> : null}
 

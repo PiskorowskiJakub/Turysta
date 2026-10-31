@@ -9,30 +9,9 @@ export interface Highest extends EarnedBadge {
   count: number;
 }
 
-/** Zdobyte odznaki gracza: dla kazdej umiejetnosci/odznaki specjalnej najwyzszy stopien, podsumowanie wg stopni i wyroznione. */
-export function useBadges() {
+/** Wspolne wyliczenia dla odznak (wlasnych i cudzych): najwyzszy stopien, podsumowanie wg stopni i nazwy odznak. */
+export function useBadgeView(skills: SkillsResponse | null, earned: EarnedBadge[] | null) {
   const { t } = useTranslation();
-  const [skills, setSkills] = useState<SkillsResponse | null>(null);
-  const [earned, setEarned] = useState<EarnedBadge[] | null>(null);
-  const [featured, setFeatured] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    try {
-      const [s, b] = await Promise.all([api<SkillsResponse>('GET', '/skills'), api<BadgesResponse>('GET', '/badges')]);
-      setSkills(s);
-      setEarned(b.badges);
-      setFeatured(b.featured);
-    } catch (e) {
-      setError(e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network'));
-    }
-  }, [t]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
-  usePolling(() => void load(), 30000);
-
   const highest = useMemo(() => {
     const map = new Map<string, Highest>();
     for (const b of earned ?? []) {
@@ -60,7 +39,36 @@ export function useBadges() {
     [skills, t],
   );
 
-  return { ready: skills !== null && earned !== null, error, setError, skills, earned, featured, setFeatured, highest, tally, meta };
+  return { highest, tally, meta };
+}
+
+/** Zdobyte odznaki gracza: dla kazdej umiejetnosci/odznaki specjalnej najwyzszy stopien, podsumowanie wg stopni i wyroznione. */
+export function useBadges() {
+  const { t } = useTranslation();
+  const [skills, setSkills] = useState<SkillsResponse | null>(null);
+  const [earned, setEarned] = useState<EarnedBadge[] | null>(null);
+  const [featured, setFeatured] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const [s, b] = await Promise.all([api<SkillsResponse>('GET', '/skills'), api<BadgesResponse>('GET', '/badges')]);
+      setSkills(s);
+      setEarned(b.badges);
+      setFeatured(b.featured);
+    } catch (e) {
+      setError(e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network'));
+    }
+  }, [t]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+  usePolling(() => void load(), 30000);
+
+  const view = useBadgeView(skills, earned);
+
+  return { ...view, ready: skills !== null && earned !== null, error, setError, skills, earned, featured, setFeatured };
 }
 
 export type BadgesData = ReturnType<typeof useBadges>;

@@ -9,6 +9,7 @@ use Turysta\Game\BadgeService;
 use Turysta\Game\ChapterService;
 use Turysta\Game\Clock;
 use Turysta\Game\JobService;
+use Turysta\Game\PlayerProfileService;
 use Turysta\Game\RankingService;
 use Turysta\Game\Settler;
 use Turysta\Game\TrainingService;
@@ -164,6 +165,14 @@ final class GameController
     {
         $uid = $this->uid($r);
         return [200, ['featured' => BadgeService::setFeatured($this->pdo, $uid, $r->body['groups'] ?? null)]];
+    }
+
+    /** Publiczny profil gracza (karta i odznaki). @param array<string,string> $params @return array{0:int,1:array<string,mixed>} */
+    public function player(Request $r, array $params = []): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        return [200, (new PlayerProfileService($this->pdo))->forPlayer($uid, (int) ($params['id'] ?? 0))];
     }
 
     /** Ranking graczy: ?page=&per_page=&q=&world= @return array{0:int,1:array<string,mixed>} */

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
 import type { RankingResponse, SkillsResponse } from '../api/types';
@@ -102,9 +103,9 @@ export default function RankingPage() {
           {data.rows.length === 0 ? (
             <tr><td colSpan={4} className="ranking-empty">{t('ranking.empty')}</td></tr>
           ) : data.rows.map((r) => (
-            <tr key={`${r.rank}-${r.name}`} className={r.me ? 'me' : undefined}>
+            <tr key={r.id} className={r.me ? 'me' : undefined}>
               <td className="num">{r.rank}</td>
-              <td>{r.name}</td>
+              <td><Link to={r.me ? '/profil' : `/gracz/${r.id}`}>{r.name}</Link></td>
               <td className="num">{r.world !== null ? `${r.world} / ${r.chapter}` : '–'}</td>
               <td className="num"><Points value={r.points} /></td>
             </tr>

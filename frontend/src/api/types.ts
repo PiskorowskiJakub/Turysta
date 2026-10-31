@@ -188,6 +188,7 @@ export interface WorldResponse {
 }
 
 export interface RankingRow {
+  id: number;
   rank: number;
   name: string;
   points: number;
@@ -214,6 +215,22 @@ export interface EarnedBadge {
 }
 
 export interface BadgesResponse {
+  badges: EarnedBadge[];
+  featured: string[];
+}
+
+/** Publiczny profil gracza; nazwy swiata i rozdzialu sa null, gdy ogladajacy jeszcze nie dotarl do tego swiata. */
+export interface PlayerProfile {
+  id: number;
+  name: string;
+  avatar_url: string | null;
+  world: { ordinal: number; name: string | null } | null;
+  chapter: { ordinal: number; name: string | null } | null;
+  rank: number;
+  points: number;
+  registered_at: string;
+  longest_streak: number;
+  skill_levels: number;
   badges: EarnedBadge[];
   featured: string[];
 }

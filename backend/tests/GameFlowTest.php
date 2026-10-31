@@ -13,6 +13,7 @@ use Turysta\Game\ActivityTracker;
 use Turysta\Game\BadgeService;
 use Turysta\Game\Clock;
 use Turysta\Game\JobService;
+use Turysta\Game\PlayerProfileService;
 use Turysta\Game\RankingService;
 use Turysta\Game\Settler;
 use Turysta\Game\StatsService;
@@ -476,5 +477,29 @@ final class GameFlowTest extends TestCase
             }
         }
         $this->assertSame(['special_streak'], BadgeService::featured($this->pdo, $this->userId));
+    }
+
+    public function testPublicPlayerProfileHidesWorldNamesFromPlayersWhoHaventReachedThem(): void
+    {
+        $service = new PlayerProfileService($this->pdo);
+
+        $own = $service->forPlayer($this->userId, $this->userId);
+        $this->assertSame($this->userId, $own['id']);
+        $this->assertNotNull($own['world']['name']);
+        $this->assertIsArray($own['badges']);
+        $this->assertArrayNotHasKey('email', $own);
+
+        // Ogladajacy bez postepu (tu: nieistniejacy gracz 0) nie widzi nazw swiata i rozdzialu.
+        $stranger = $service->forPlayer(0, $this->userId);
+        $this->assertSame($own['world']['ordinal'], $stranger['world']['ordinal']);
+        $this->assertNull($stranger['world']['name']);
+        $this->assertNull($stranger['chapter']['name']);
+
+        try {
+            $service->forPlayer($this->userId, 999999999);
+            $this->fail('Nieistniejacy gracz powinien dac 404');
+        } catch (ApiException $e) {
+            $this->assertSame('player_not_found', $e->errorCode);
+        }
     }
 }
