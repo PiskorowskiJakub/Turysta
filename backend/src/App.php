@@ -64,6 +64,7 @@ final class App
         $router->put('/v1/account/password', [$account, 'changePassword']);
 
         $router->get('/v1/home', [$home, 'show']);
+        $router->get('/v1/announcements', [$home, 'announcements']);
         $router->post('/v1/daily-reward/claim', [$home, 'claimDaily']);
 
         $router->get('/v1/admin/announcements', [$admin, 'announcements']);

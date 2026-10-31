@@ -7,7 +7,8 @@ import { useAuth } from '../auth/AuthContext';
 import { useBadges } from '../hooks/useBadges';
 import { usePolling } from '../hooks/usePolling';
 import { useServerNow } from '../hooks/useServerNow';
-import { formatDate, formatDuration } from '../format';
+import { formatDuration } from '../format';
+import AnnouncementList from './AnnouncementList';
 import BadgeBook from './BadgeBook';
 import Coins from './Coins';
 import DailyReward from './DailyReward';
@@ -43,10 +44,7 @@ export default function Dashboard() {
     void load();
     api<{ avatars: Avatar[] }>('GET', '/avatars').then((r) => setAvatars(r.avatars)).catch(() => setAvatars([]));
   }, [load]);
-  usePolling(() => {
-    void load();
-    void refresh();
-  }, 30000);
+  usePolling(() => void load(), 30000);
 
   if (!me) return null;
 
@@ -107,16 +105,7 @@ export default function Dashboard() {
 
         <section className="panel">
           <h2>{t('home.board.title')}</h2>
-          {home && home.announcements.length === 0 && <p className="muted">{t('home.board.empty')}</p>}
-          <ul className="board">
-            {home?.announcements.map((a) => (
-              <li key={a.id} className={a.pinned ? 'pinned' : ''}>
-                <h3>{a.pinned && <span title={t('home.board.pinned')} aria-label={t('home.board.pinned')}>★ </span>}{a.title}</h3>
-                <time dateTime={a.created_at}>{formatDate(a.created_at)}</time>
-                <p>{a.body}</p>
-              </li>
-            ))}
-          </ul>
+          {home && <AnnouncementList items={home.announcements} />}
         </section>
 
         <section className="panel season">
@@ -183,7 +172,7 @@ export default function Dashboard() {
             <li>
               <i className={'log-dot' + (me.notifications_unread > 0 ? ' warn' : '')} />
               <span>
-                <Link to="/profil">{t('home.log.notifications')}</Link>
+                <Link to="/start/powiadomienia">{t('home.log.notifications')}</Link>
                 <small>{me.notifications_unread > 0 ? t('home.log.unread', { n: me.notifications_unread }) : t('home.log.none')}</small>
               </span>
             </li>

@@ -107,17 +107,22 @@ Punkty za szkolenia są proporcjonalne do czasu, a nie do poziomu, więc rosną 
 
 ## Codzienna nagroda
 
-Raz dziennie (doba liczona w czasie polskim, od północy) możesz odebrać nagrodę na stronie głównej, w panelu „Codzienna wędrówka". Każdy kolejny dzień serii daje więcej:
+Raz dziennie (doba liczona w czasie polskim, od północy) możesz odebrać nagrodę na stronie głównej, w panelu „Codzienna wędrówka". Każdy kolejny dzień serii daje więcej.
 
-| Dzień serii | Dukaty | Punkty |
-|---|---|---|
-| 1 | 0,20 dk | 1 |
-| 2 | 0,30 dk | 2 |
-| 3 | 0,40 dk | 3 |
-| 4 | 0,50 dk | 4 |
-| 5 | 0,70 dk | 5 |
-| 6 | 1,00 dk | 7 |
-| 7 | 2,00 dk | 10 |
+**Punkty** są stałe:
+
+| Dzień serii | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Punkty | 1 | 2 | 3 | 4 | 5 | 7 | 10 |
+
+**Dukaty** rosną wraz z Twoim postępem. Suma z całej serii 7 dni to 30% kosztu zwykłego awansu w Twoim obecnym rozdziale (w rozdziale 1 świata liczy się koszt rozdziału 2 tego świata), ale nie mniej niż 5,10 dk. Udział dni w tej sumie jest stały, w przybliżeniu: dzień 1 to 4%, dzień 2 6%, dzień 3 8%, dzień 4 10%, dzień 5 14%, dzień 6 20% i dzień 7 39%. Wynik jest zaokrąglany do 0,10 dk.
+
+| Moment gry | Koszt awansu | Dzień 1 | Dzień 7 | Cała seria |
+|---|---:|---:|---:|---:|
+| Początek gry (do rozdziału 3 świata 1) | do 17 dk | 0,20 dk | 2,00 dk | 5,10 dk |
+| Koniec świata 1 | 230 dk | 2,70 dk | 27,10 dk | 69 dk |
+| Koniec świata 3 | 799 dk | 9,40 dk | 94,00 dk | 240 dk |
+| Koniec świata 5 | 1 400 dk | 16,50 dk | 164,70 dk | 420 dk |
 
 - Nagrodę odbierasz sam przyciskiem, raz na dobę.
 - Jeśli pominiesz dzień, seria zaczyna się od dnia 1.

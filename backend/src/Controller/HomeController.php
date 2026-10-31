@@ -36,6 +36,13 @@ final class HomeController
         ]];
     }
 
+    /** Wszystkie opublikowane ogloszenia (archiwum). @return array{0:int,1:array<string,mixed>} */
+    public function announcements(Request $r): array
+    {
+        Session::requireUser($r);
+        return [200, ['announcements' => (new AnnouncementService($this->pdo))->published(50)]];
+    }
+
     /** @return array{0:int,1:array<string,mixed>} */
     public function claimDaily(Request $r): array
     {

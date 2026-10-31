@@ -39,9 +39,10 @@ final class DailyRewardService
             }
         }
 
+        $reference = $this->referenceCost($userId);
         $days = [];
-        foreach (Economy::DAILY_REWARDS as $day => [$cents, $points]) {
-            $days[] = ['day' => $day, 'coins_cents' => $cents, 'points' => $points];
+        foreach (Economy::DAILY_REWARDS as $day => [, $points]) {
+            $days[] = ['day' => $day, 'coins_cents' => Economy::dailyCoins($day, $reference), 'points' => $points];
         }
 
         return [
@@ -51,6 +52,22 @@ final class DailyRewardService
             'next_day' => $claimedToday ? null : $done + 1,
             'can_claim' => !$claimedToday,
         ];
+    }
+
+    /**
+     * Koszt zwyklego awansu w biezacym rozdziale gracza (skala jego postepu). W rozdziale 1 swiata (start gry albo wejscie do
+     * nowego swiata, ktore kosztuje 20 x wiecej) bierzemy koszt rozdzialu 2 tego swiata.
+     */
+    private function referenceCost(int $userId): int
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT c2.cost_cents FROM player_progress p
+             JOIN chapters c ON c.id = p.chapter_id
+             JOIN chapters c2 ON c2.world_id = c.world_id AND c2.ordinal = GREATEST(c.ordinal, 2)
+             WHERE p.user_id = ?'
+        );
+        $stmt->execute([$userId]);
+        return (int) $stmt->fetchColumn();
     }
 
     /** @return array<string,mixed> stan po odebraniu + przyznana nagroda */
@@ -68,7 +85,8 @@ final class DailyRewardService
             }
 
             $day = (int) $state['next_day'];
-            [$cents, $points] = Economy::DAILY_REWARDS[$day];
+            $points = Economy::DAILY_REWARDS[$day][1];
+            $cents = Economy::dailyCoins($day, $this->referenceCost($userId));
             $today = Clock::gameDay($now);
 
             Wallet::apply($this->pdo, $userId, 'coins', $cents, 'daily_reward', 'daily_reward', $day, "daily:coins:$today");

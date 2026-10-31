@@ -76,7 +76,7 @@ final class HomeFlowTest extends TestCase
         $res = $this->daily->claim($this->userId);
         $this->assertSame(1, $res['reward']['day']);
         [$coins1, $points1] = $this->wallet();
-        $this->assertSame(Economy::DAILY_REWARDS[1][0], $coins1 - $coins0);
+        $this->assertSame(Economy::dailyCoins(1, 200), $coins1 - $coins0);
         $this->assertSame(Economy::DAILY_REWARDS[1][1], $points1 - $points0);
         $this->assertTrue($res['daily']['claimed_today']);
         $this->assertSame(1, $res['daily']['claimed_through']);
@@ -114,6 +114,26 @@ final class HomeFlowTest extends TestCase
         $this->setLast(5, 2);
         $this->assertSame(0, $this->daily->state($this->userId)['claimed_through']);
         $this->assertSame(1, $this->daily->claim($this->userId)['reward']['day']);
+    }
+
+    public function testCoinRewardGrowsWithPlayerProgress(): void
+    {
+        $startDay1 = $this->daily->state($this->userId)['days'][0]['coins_cents'];
+
+        $row = $this->pdo->query(
+            'SELECT c.id, c.cost_cents FROM chapters c JOIN worlds w ON w.id = c.world_id ORDER BY w.ordinal DESC, c.ordinal DESC LIMIT 1'
+        )->fetch();
+        $this->pdo->prepare('UPDATE player_progress SET chapter_id = ? WHERE user_id = ?')->execute([$row['id'], $this->userId]);
+
+        $days = $this->daily->state($this->userId)['days'];
+        $this->assertGreaterThan($startDay1, $days[0]['coins_cents']);
+        $this->assertSame(Economy::dailyCoins(7, (int) $row['cost_cents']), $days[6]['coins_cents']);
+
+        [$coins0] = $this->wallet();
+        $res = $this->daily->claim($this->userId);
+        [$coins1] = $this->wallet();
+        $this->assertSame($res['reward']['coins_cents'], $coins1 - $coins0);
+        $this->assertSame($days[0]['coins_cents'], $res['reward']['coins_cents']);
     }
 
     public function testRewardsAreStrictlyIncreasingOverSevenDays(): void

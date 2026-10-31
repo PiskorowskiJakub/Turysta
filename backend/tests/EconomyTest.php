@@ -68,4 +68,28 @@ final class EconomyTest extends TestCase
         $this->assertSame(250, Economy::chapterPoints(5, 10));
         $this->assertSame(1000, Economy::chapterPoints(2, 1));
     }
+
+    public function testDailyCoinsHaveFloorAtStartAndGrowWithProgress(): void
+    {
+        // Poczatek gry (koszt awansu 2 dk): wartosci bazowe.
+        foreach (Economy::DAILY_REWARDS as $day => [$cents]) {
+            $this->assertSame($cents, Economy::dailyCoins($day, 200));
+        }
+        // Rozdzial za ok. 230 dk i za ok. 1400 dk: nagroda rosnie, a dzien 7 jest najwiekszy.
+        $mid = Economy::dailyCoins(7, 23000);
+        $late = Economy::dailyCoins(7, 140000);
+        $this->assertGreaterThan(Economy::dailyCoins(7, 200), $mid);
+        $this->assertGreaterThan($mid, $late);
+        $this->assertSame(16470, $late);
+        // Suma tygodnia to ok. 30% kosztu awansu i kazdy kolejny dzien jest wiekszy.
+        $week = 0;
+        $prev = 0;
+        for ($d = 1; $d <= 7; $d++) {
+            $c = Economy::dailyCoins($d, 140000);
+            $this->assertGreaterThan($prev, $c);
+            $prev = $c;
+            $week += $c;
+        }
+        $this->assertEqualsWithDelta(42000, $week, 100);
+    }
 }

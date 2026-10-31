@@ -109,6 +109,11 @@
     "title": "Witaj w Turyście",
     "lead": "Ruszaj w drogę, szkol się, pracuj i zdobywaj odznaki. Zacznij od założenia konta.",
     "leadAuthed": "Miło Cię widzieć! Twoja wyprawa czeka.",
+    "tabs": {
+      "overview": "Przegląd",
+      "notifications": "Powiadomienia",
+      "announcements": "Ogłoszenia"
+    },
     "welcome": "Witaj z powrotem, {{name}}!",
     "board": {
       "title": "Tablica ogłoszeń",
@@ -125,7 +130,7 @@
       "day": "Dzień {{n}}",
       "claim": "Odbierz nagrodę",
       "claimed": "Dzisiejsza nagroda odebrana. Wróć jutro!",
-      "rule": "Przerwa w serii zaczyna ją od nowa. Po 7. dniu seria zaczyna się od dnia 1."
+      "rule": "Przerwa w serii zaczyna ją od nowa. Po 7. dniu seria zaczyna się od dnia 1. Dukaty rosną wraz z Twoim postępem w grze."
     },
     "invite": {
       "title": "Zaproś znajomych",
@@ -358,6 +363,7 @@
   "notifications": {
     "title": "Powiadomienia",
     "markRead": "Oznacz jako przeczytane",
+    "empty": "Nie masz jeszcze żadnych powiadomień.",
     "training_finished": "Ukończono szkolenie: {{skill}} (poziom {{level}}).",
     "job_finished": "Praca „{{job}}” zakończona. Wypłata: {{amount}} dk",
     "chapter_finished": "Awansowałeś na stopień: {{chapter}}."

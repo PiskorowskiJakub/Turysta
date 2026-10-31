@@ -106,7 +106,7 @@ export default function Layout() {
       <div className="shell">
         <nav className="menu" aria-label={t('nav.menu')}>
           <ul>
-            <MenuLink to="/" end icon="home" label={t('nav.home')} />
+            <MenuLink to={authed ? '/start' : '/'} end={!authed} icon="home" label={t('nav.home')} />
             {authed ? (
               <>
                 <MenuLink to="/profil" icon="profile" label={t('nav.profile')} />

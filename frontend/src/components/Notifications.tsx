@@ -2,11 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import type { NotificationItem } from '../api/types';
-import { formatCoins } from '../format';
+import { useAuth } from '../auth/AuthContext';
+import { formatCoins, formatDate } from '../format';
 
+/** Widok powiadomien na stronie glownej: ostatnie zdarzenia z gry i oznaczanie ich jako przeczytane. */
 export default function Notifications() {
   const { t } = useTranslation();
-  const [items, setItems] = useState<NotificationItem[]>([]);
+  const { refresh } = useAuth();
+  const [items, setItems] = useState<NotificationItem[] | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -24,6 +27,7 @@ export default function Notifications() {
   const markRead = async () => {
     await api('POST', '/notifications/read');
     await load();
+    await refresh();
   };
 
   const text = (n: NotificationItem): string => {
@@ -38,24 +42,29 @@ export default function Notifications() {
     });
   };
 
-  if (items.length === 0) return null;
+  if (items === null) return <p className="muted">{t('loading')}</p>;
   const unread = items.some((n) => !n.read);
 
   return (
-    <>
+    <section className="panel">
       <h2>{t('notifications.title')}</h2>
-      <ul className="notifications">
-        {items.slice(0, 10).map((n) => (
-          <li key={n.id} className={n.read ? 'read' : 'unread'}>
-            {text(n)}
-          </li>
-        ))}
-      </ul>
       {unread && (
-        <button type="button" className="button secondary small" onClick={() => void markRead()}>
+        <button type="button" className="button secondary small notifications-mark" onClick={() => void markRead()}>
           {t('notifications.markRead')}
         </button>
       )}
-    </>
+      {items.length === 0 ? (
+        <p className="muted">{t('notifications.empty')}</p>
+      ) : (
+        <ul className="notifications">
+          {items.map((n) => (
+            <li key={n.id} className={n.read ? 'read' : 'unread'}>
+              <span>{text(n)}</span>
+              <time dateTime={n.created_at}>{formatDate(n.created_at)}</time>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

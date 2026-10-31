@@ -12,6 +12,7 @@ import JobsPage from './pages/JobsPage';
 import BadgesPage from './pages/BadgesPage';
 import RankingPage from './pages/RankingPage';
 import PlayerPage from './pages/PlayerPage';
+import HomeShell from './components/HomeShell';
 import AdminPage from './pages/AdminPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="logowanie" element={<LoginPage />} />
         <Route path="rejestracja" element={<RegisterPage />} />
         <Route element={<RequireAuth />}>
+          <Route path="start/*" element={<HomeShell />} />
           <Route path="samouczek" element={<TutorialPage />} />
           <Route path="profil" element={<ProfilePage />} />
           <Route path="profil/edycja" element={<EditProfilePage />} />

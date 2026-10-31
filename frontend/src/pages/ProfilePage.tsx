@@ -7,7 +7,6 @@ import { useAuth } from '../auth/AuthContext';
 import ProfileCard from '../components/ProfileCard';
 import BadgeBook from '../components/BadgeBook';
 import { useBadges } from '../hooks/useBadges';
-import Notifications from '../components/Notifications';
 import { Icon, Sprout } from '../components/icons';
 import Coins from '../components/Coins';
 import { formatDays } from '../format';
@@ -128,7 +127,6 @@ export default function ProfilePage() {
         </section>
       </div>
 
-      <Notifications />
     </div>
     </>
   );

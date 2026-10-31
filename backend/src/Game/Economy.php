@@ -69,6 +69,21 @@ final class Economy
         7 => [200, 10],
     ];
 
+    /**
+     * Dukaty z codziennej nagrody rosna z postepem gracza: tygodniowa suma to 30% kosztu zwyklego awansu w jego biezacym rozdziale
+     * (dla dalszych swiatow dziesiatki, a potem setki dukatow), ale nigdy mniej niz suma z DAILY_REWARDS (poczatek gry).
+     * Dzien serii dostaje swoj udzial z DAILY_REWARDS (dzien 7 ok. 39% tygodnia). Wynik zaokraglamy do 0,10 dk.
+     */
+    public const DAILY_COINS_SHARE_PERMILLE = 300;
+
+    public static function dailyCoins(int $day, int $referenceCostCents): int
+    {
+        $total = array_sum(array_map(static fn(array $r): int => $r[0], self::DAILY_REWARDS));
+        $weekly = max($total, intdiv(max(0, $referenceCostCents) * self::DAILY_COINS_SHARE_PERMILLE, 1000));
+        $coins = intdiv($weekly * self::DAILY_REWARDS[$day][0], $total);
+        return intdiv($coins + 5, 10) * 10;
+    }
+
     /** Punkty za ukonczone szkolenie umiejetnosci: proporcjonalne do jego czasu, minimum 1. */
     public static function trainingPoints(int $durationSeconds): int
     {
