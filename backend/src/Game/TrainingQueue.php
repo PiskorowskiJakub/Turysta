@@ -9,8 +9,8 @@ use PDO;
 
 final class TrainingQueue
 {
-    /** 1 aktywne + 2 oczekujace. */
-    public const MAX_SLOTS = 3;
+    /** 1 aktywne + 3 oczekujace. */
+    public const MAX_SLOTS = 4;
     public const ACTIVE_REFUND_PERCENT = 50;
 
     /** Uruchamia pierwsze oczekujace szkolenie gracza od podanej chwili. */

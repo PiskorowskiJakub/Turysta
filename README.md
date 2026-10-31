@@ -29,7 +29,7 @@ TLS (Let's Encrypt) dojdzie przy wdrozeniu na VPS.
 
 Cele:
 
-1. Przez pierwszy miesiąc gracz ma codziennie co rozwijać (dużo krótkich szkoleń) i dość dukatów, żeby kolejka (1 aktywne + 2 oczekujące) nie stała pusta.
+1. Przez pierwszy miesiąc gracz ma codziennie co rozwijać (dużo krótkich szkoleń) i dość dukatów, żeby kolejka (1 aktywne + 3 oczekujące) nie stała pusta.
 2. Ukończenie wszystkich 49 awansów (5 światów) ma zająć **ok. roku** graczowi, który przez 2 miesiące gra aktywnie, a potem jak zwykły gracz.
 3. Awans wymaga także rozwoju umiejętności danego świata, a przejście do nowego świata to **wydarzenie** (długie i drogie).
 4. W nowym świecie umiejętności mają trudność **proporcjonalną do etapu gry**: dają powiew świeżości, ale doświadczony gracz nie zaczyna od sekund.
@@ -94,7 +94,7 @@ Uruchomienie: `python scripts/simulate_economy.py --profile mieszany --days 365 
 | zwykły | dzień 53 | dzień 112 | dzień 190 | dzień 289 | dzień 385 |
 | okazjonalny | dzień 144 | dzień 250 | dzień 368 | dzień 498 | dzień 619 |
 
-Tempo jest ograniczone czasem kolejki (3 miejsca), więc różnica między aktywnym a zwykłym graczem jest niewielka; okazjonalny (1 wejście dziennie) potrzebuje blisko dwóch lat.
+Tempo jest ograniczone czasem kolejki (4 miejsca), więc różnica między aktywnym a zwykłym graczem jest niewielka; okazjonalny (1 wejście dziennie) potrzebuje blisko dwóch lat.
 
 ### Pierwsze 30 dni: aktywny
 

@@ -31,7 +31,13 @@
     "title": "Książeczka odznak",
     "intro": "Za rozwój umiejętności zdobywasz odznaki: brązową, srebrną i złotą. Wpisują się do Twojej książeczki automatycznie.",
     "total": "Zdobyte odznaki: {{got}} z {{total}}",
-    "sectionCount": "Zdobyte: {{got}} z {{total}}",
+    "none": "Jeszcze nie masz tu żadnej odznaki.",
+    "count": "Zdobyte: {{got}} z {{total}}",
+    "special": "Odznaki specjalne",
+    "specialInfo": "Nagrody za wyjątkowe osiągnięcia, które nie wynikają z poziomu umiejętności.",
+    "seasonal": "Odznaki sezonowe",
+    "seasonalInfo": "Odznaki za wydarzenia: cykliczne, jak świąteczne, które wracają co roku, oraz jednorazowe, których nie da się zdobyć po zakończeniu eventu.",
+    "soon": "Wkrótce.",
     "worldLocked": "Ten świat jeszcze przed Tobą. Odznaki z jego umiejętności zdobędziesz po dotarciu do niego."
   },
   "skills": {

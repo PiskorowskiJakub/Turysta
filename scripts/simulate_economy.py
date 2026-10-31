@@ -15,7 +15,7 @@ T0, G = 5, 1.16           # czas 1. poziomu (s) i wzrost czasu (H = G: koszt jes
 BONUS_ON = True
 FLAT = 50                 # po tym poziomie wzrost wielomianowy
 START_CENTS = 200
-SLOTS = 3
+SLOTS = 4
 JOBS = {  # kod: (czas s, wyplata grosze, przerwa s, proporcjonalna)
     'market': (8 * 3600, 24700, 3600, True),
     'hostel': (12 * 3600, 42000, 7200, False),

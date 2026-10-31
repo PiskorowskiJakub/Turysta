@@ -78,37 +78,39 @@ final class GameFlowTest extends TestCase
         $this->pdo->commit();
     }
 
-    public function testQueueHasThreeSlotsAndRefundsQueuedInFull(): void
+    public function testQueueHasFourSlotsAndRefundsQueuedInFull(): void
     {
         $this->fund(1000000);
+        $this->training->add($this->userId, $this->skillId());
         $this->training->add($this->userId, $this->skillId());
         $this->training->add($this->userId, $this->skillId());
         $state = $this->training->add($this->userId, $this->skillId());
 
         $this->assertNotNull($state['active']);
-        $this->assertCount(2, $state['queue']);
-        $this->assertSame([2, 3], array_map(fn($q) => $q['target_level'], $state['queue']));
+        $this->assertCount(3, $state['queue']);
+        $this->assertSame([2, 3, 4], array_map(fn($q) => $q['target_level'], $state['queue']));
 
         try {
             $this->training->add($this->userId, $this->skillId('trade'));
-            $this->fail('Czwarte szkolenie powinno byc odrzucone');
+            $this->fail('Piate szkolenie powinno byc odrzucone');
         } catch (ApiException $e) {
             $this->assertSame('queue_full', $e->errorCode);
         }
 
-        // Usuniecie srodkowego poziomu: pelny zwrot, a kolejny poziom przesuwa sie w dol
+        // Usuniecie pierwszego oczekujacego poziomu: pelny zwrot, a kolejne poziomy przesuwaja sie w dol
         // (nizszy koszt i czas, roznica wraca do portfela).
         $before = $this->coins();
-        $middle = $state['queue'][0];
-        $last = $state['queue'][1];
-        $after = $this->training->remove($this->userId, $middle['id']);
+        $first = $state['queue'][0];
+        $last = $state['queue'][2];
+        $after = $this->training->remove($this->userId, $first['id']);
         $this->assertSame($before + $last['cost_cents'], $this->coins());
-        $this->assertCount(1, $after['queue']);
-        $this->assertSame(2, $after['queue'][0]['target_level']);
-        $this->assertSame($middle['cost_cents'], $after['queue'][0]['cost_cents']);
+        $this->assertCount(2, $after['queue']);
+        $this->assertSame([2, 3], array_map(fn($q) => $q['target_level'], $after['queue']));
+        $this->assertSame($first['cost_cents'], $after['queue'][0]['cost_cents']);
 
+        // Usuniecie ostatniego poziomu: nic sie nie przesuwa, wraca jego pelny koszt.
         $before = $this->coins();
-        $rest = $after['queue'][0];
+        $rest = $after['queue'][1];
         $this->training->remove($this->userId, $rest['id']);
         $this->assertSame($before + $rest['cost_cents'], $this->coins());
     }

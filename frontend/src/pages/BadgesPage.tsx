@@ -31,38 +31,53 @@ export default function BadgesPage() {
   const total = skills.skills.reduce((sum, s) => sum + tiersFor(s.max_level).length, 0);
   const got = skills.skills.reduce((sum, s) => sum + earned(s), 0);
 
-  const badgeCard = (s: SkillInfo) => (
-    <article key={s.id} className="tile badge-card">
-      <div className="icon-tile"><SkillIcon code={s.code} /></div>
-      <div className="badge-info">
-        <h3>{skillName(s)}</h3>
-        <span className="badge-level">{t('training.level')}: <strong>{s.level}{s.max_level !== null ? ` / ${s.max_level}` : ''}</strong></span>
-      </div>
-      <div className="tier-row">
-        {tiersFor(s.max_level).map((tier) => {
-          const reached = s.level >= tier.min;
+  // Pokazujemy tylko zdobyte odznaki; umiejetnosc bez zadnej odznaki jest ukryta.
+  const badgeChip = (s: SkillInfo) => (
+    <div key={s.id} className="badge-chip">
+      <span className="badge-chip-tiers">
+        {tiersFor(s.max_level).filter((tier) => s.level >= tier.min).map((tier) => {
           const tip = `${t(`training.tier.${tier.name}`)}: ${t('training.tierAt', { level: tier.min })}`;
           return (
-            <span key={tier.name} tabIndex={0} className={`tier tier-${tier.name}` + (reached ? ' reached' : '')} data-tip={tip} aria-label={tip}>
-              {reached ? <SkillIcon code={s.code} /> : <Icon name="medal" />}
+            <span key={tier.name} tabIndex={0} className={`tier tier-${tier.name} reached`} data-tip={tip} aria-label={tip}>
+              <SkillIcon code={s.code} />
             </span>
           );
         })}
-      </div>
-    </article>
+      </span>
+      <span className="badge-chip-name">{skillName(s)}</span>
+    </div>
   );
 
-  const section = (title: string, list: SkillInfo[], locked = false) => (
-    <section key={title} className={'panel trail-blue' + (locked ? ' badge-locked' : '')}>
-      <h2>{title}{locked && <Icon name="lock" />}</h2>
-      {locked ? (
-        <p className="page-message">{t('badges.worldLocked')}</p>
-      ) : (
-        <>
-          <p className="page-message">{t('badges.sectionCount', { got: list.reduce((n, s) => n + earned(s), 0), total: list.reduce((n, s) => n + tiersFor(s.max_level).length, 0) })}</p>
-          <div className="badge-grid">{list.map(badgeCard)}</div>
-        </>
-      )}
+  const section = (title: string, list: SkillInfo[], locked = false) => {
+    const shown = list.filter((s) => earned(s) > 0);
+    const count = list.reduce((n, s) => n + earned(s), 0);
+    const max = list.reduce((n, s) => n + tiersFor(s.max_level).length, 0);
+    return (
+      <section key={title} className={'panel trail-blue' + (locked ? ' badge-locked' : '')}>
+        <h2>
+          {title}
+          {locked ? <Icon name="lock" /> : <span className="badge-count">{t('badges.count', { got: count, total: max })}</span>}
+        </h2>
+        {locked ? (
+          <p className="page-message">{t('badges.worldLocked')}</p>
+        ) : shown.length === 0 ? (
+          <p className="page-message">{t('badges.none')}</p>
+        ) : (
+          <div className="badge-list">{shown.map(badgeChip)}</div>
+        )}
+      </section>
+    );
+  };
+
+  // Kategorie, ktore dopiero dojda: odznaki specjalne i sezonowe (eventy cykliczne oraz jednorazowe).
+  const futureSection = (title: string, info: string) => (
+    <section key={title} className="panel trail-blue">
+      <h2>
+        {title}
+        <span className="badge-count">{t('badges.count', { got: 0, total: 0 })}</span>
+      </h2>
+      <p className="page-message">{info}</p>
+      <p className="page-message badge-soon">{t('badges.soon')}</p>
     </section>
   );
 
@@ -73,6 +88,8 @@ export default function BadgesPage() {
         <p className="page-message">{t('badges.intro')}</p>
         <p className="badge-total">{t('badges.total', { got, total })}</p>
       </section>
+      {futureSection(t('badges.special'), t('badges.specialInfo'))}
+      {futureSection(t('badges.seasonal'), t('badges.seasonalInfo'))}
       {section(t('training.basic'), skills.skills.filter((s) => s.world_ordinal === null))}
       {skills.worlds.map((w) =>
         section(
