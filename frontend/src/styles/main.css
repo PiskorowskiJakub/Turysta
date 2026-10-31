@@ -307,14 +307,16 @@ h1, h2, h3 { font-weight: 600; }
 .tabs-sub .tab { padding: 5px 14px; font-size: 13px; border-radius: 8px 8px 0 0; }
 
 /* ---------- Swiat i stopnie awansu ---------- */
-.world-name { margin: -6px 0 16px; padding-bottom: 10px; text-align: center; font-weight: 600; font-size: 1.5rem; letter-spacing: 0.05em; border-bottom: 1.5px solid var(--line); display: flex; flex-direction: column; line-height: 1.2; }
+.world-panel > h2 { margin-bottom: 8px; }
+.world-name { margin: 0 0 14px; padding-bottom: 10px; text-align: center; border-bottom: 1.5px solid var(--line); display: flex; flex-direction: column; line-height: 1.25; }
 .world-name small { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--orange); font-weight: 600; }
-.world-body { display: grid; grid-template-columns: minmax(0, 1fr) 190px 230px; gap: 20px; align-items: stretch; }
+.world-title { font-weight: 600; font-size: 1.5rem; letter-spacing: 0.04em; }
+.world-body { display: grid; grid-template-columns: minmax(0, 1fr) 230px 190px; gap: 20px; align-items: stretch; }
 .world-main { container-type: inline-size; }
 /* Kielki w dwoch symetrycznych rzedach po 5; gdy zabraknie miejsca - zawijanie wg szerokosci */
 .stages { list-style: none; margin: 0 0 14px; padding: 0 0 14px; display: grid; grid-template-columns: repeat(5, 40px); justify-content: center; gap: 10px 14px; border-bottom: 1.5px solid var(--line); }
 @container (max-width: 250px) { .stages { grid-template-columns: repeat(auto-fit, 40px); } }
-.chapter-line { font-size: 0.95rem; letter-spacing: 0; font-weight: 400; color: var(--khaki); margin-top: 2px; }
+.chapter-line { font-size: 0.9rem; color: var(--khaki); }
 .stage { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: #0e1612; color: #46544b; border: 2px solid #2a352e; }
 .stage svg { width: 62%; height: 62%; }
 .stage-done { color: var(--moss); border-color: var(--moss); }

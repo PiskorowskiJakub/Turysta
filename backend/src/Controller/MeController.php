@@ -93,8 +93,8 @@ final class MeController
         );
 
         $stmt = $this->pdo->prepare(
-            'SELECT p.world_id, p.chapter_id, w.ordinal AS world_ordinal, w.name AS world_name, c.ordinal AS chapter_ordinal, c.name AS chapter_name
-             FROM player_progress p JOIN worlds w ON w.id = p.world_id JOIN chapters c ON c.id = p.chapter_id
+            'SELECT c.world_id, p.chapter_id, w.ordinal AS world_ordinal, w.name AS world_name, c.ordinal AS chapter_ordinal, c.name AS chapter_name
+             FROM player_progress p JOIN chapters c ON c.id = p.chapter_id JOIN worlds w ON w.id = c.world_id
              WHERE p.user_id = ?'
         );
         $stmt->execute([$uid]);

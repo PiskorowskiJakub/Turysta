@@ -57,14 +57,12 @@ export default function WorldPanel({ world, coins, queueFull, busy, onAdvance }:
   }
 
   return (
-    <section className="panel trail-green">
+    <section className="panel trail-green world-panel">
       <h2>{t('world.title')}</h2>
       <p className="world-name">
         <small>{t('world.worldNo', { n: world.world.ordinal })}</small>
-        {world.world.name}
-        <span className="chapter-line">
-          {t('world.chapterNo', { n: world.current.ordinal })}: {world.current.name}
-        </span>
+        <span className="world-title">{world.world.name}</span>
+        <span className="chapter-line">{t('world.chapterNo', { n: world.current.ordinal })}: {world.current.name}</span>
       </p>
 
       <div className="world-body">
@@ -78,8 +76,6 @@ export default function WorldPanel({ world, coins, queueFull, busy, onAdvance }:
           </ol>
           <p className="world-story">{world.current.story_text}</p>
         </div>
-
-        <WorldArt ordinal={world.world.ordinal} />
 
         <aside className="world-next">
           {next ? (
@@ -105,6 +101,8 @@ export default function WorldPanel({ world, coins, queueFull, busy, onAdvance }:
             <p className="next-name">{t('world.last')}</p>
           )}
         </aside>
+
+        <WorldArt ordinal={world.world.ordinal} />
       </div>
     </section>
   );

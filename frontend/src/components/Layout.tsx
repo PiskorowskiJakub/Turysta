@@ -5,6 +5,7 @@ import { api } from '../api/client';
 import type { Avatar } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import { formatCoins } from '../format';
+import AvatarImage from './AvatarImage';
 import { Icon, type IconName } from './icons';
 
 function MenuLink({ to, icon, label, end }: { to: string; icon: IconName; label: string; end?: boolean }) {
@@ -73,7 +74,7 @@ export default function Layout() {
             <div className="plaque">
               <div className="plaque-who">
                 <span className="av">
-                  {avatar ? <img src={avatar.image_url} alt="" /> : me.user.character_name.slice(0, 1).toUpperCase()}
+                  <AvatarImage src={avatar?.image_url} name={me.user.character_name} />
                 </span>
                 <span className="who-wrap">
                   <span className="who">{me.user.character_name}</span>
