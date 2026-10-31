@@ -9,6 +9,7 @@ import ProgressBar from '../components/ProgressBar';
 import Tabs, { type TabItem } from '../components/Tabs';
 import WorldPanel from '../components/WorldPanel';
 import Coins from '../components/Coins';
+import InfoHint from '../components/InfoHint';
 import { tiersFor } from '../badges';
 import { formatCoins, formatCoinsFull, formatDuration, formatEndTime } from '../format';
 import { usePolling } from '../hooks/usePolling';
@@ -236,6 +237,7 @@ export default function TrainingPage() {
       {error && <p className="panel form-error" role="alert">{error}</p>}
 
       <section className="panel trail-blue">
+        <InfoHint text={t('training.queueInfo', { max: training.max_slots })} label={t('badges.moreInfo')} />
         <h2>{t('training.practiced', { used: slotsUsed, max: training.max_slots })}</h2>
         {slotsUsed === 0 ? (
           <p className="page-message">{t('training.empty')}</p>
@@ -251,18 +253,21 @@ export default function TrainingPage() {
         world && <WorldPanel world={world} coins={coins} queueFull={full} busy={busy} onAdvance={onAdvance} />
       ) : tab === 'swiaty' && worldTab !== null ? (
         <section className="panel trail-blue">
+          {worldTab <= skills.current_world && (
+            <InfoHint text={t('training.worldSkillsInfo', { max: skills.skills.find((s) => s.world_ordinal === worldTab)?.max_level ?? 0 })} label={t('badges.moreInfo')} />
+          )}
           <h2>{worldTab > skills.current_world ? t('training.worldLockedTitle', { n: worldTab }) : t('training.worldSkills', { n: worldTab, name: skills.worlds.find((w) => w.ordinal === worldTab)?.name ?? '' })}</h2>
           {worldTab > skills.current_world ? (
             <p className="page-message">{t('training.worldLockedMessage', { n: worldTab })}</p>
           ) : (
             <>
-              <p className="page-message">{t('training.worldSkillsInfo', { max: skills.skills.find((s) => s.world_ordinal === worldTab)?.max_level ?? 0 })}</p>
               <div className="skill-grid">{skills.skills.filter((s) => s.world_ordinal === worldTab).map(skillCard)}</div>
             </>
           )}
         </section>
       ) : (
         <section className="panel trail-blue">
+          <InfoHint text={t('training.basicInfo')} label={t('badges.moreInfo')} />
           <h2>{t('training.basic')}</h2>
           <div className="skill-grid">{skills.skills.filter((s) => s.world_ordinal === null).map(skillCard)}</div>
         </section>

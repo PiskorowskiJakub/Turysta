@@ -6,7 +6,7 @@ import type { Avatar } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import Coins from './Coins';
 import Points from './Points';
-import AvatarImage from './AvatarImage';
+import PlayerAvatar from './PlayerAvatar';
 import { Icon, type IconName } from './icons';
 
 function MenuLink({ to, icon, label, end }: { to: string; icon: IconName; label: string; end?: boolean }) {
@@ -74,9 +74,7 @@ export default function Layout() {
           {authed && (
             <div className="plaque">
               <div className="plaque-who">
-                <span className="av">
-                  <AvatarImage src={avatar?.image_url} name={me.user.character_name} />
-                </span>
+                <PlayerAvatar src={avatar?.image_url} name={me.user.character_name} size={48} />
                 <span className="who-wrap">
                   <span className="who">{me.user.character_name}</span>
                   {me.progress && (

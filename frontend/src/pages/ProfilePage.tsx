@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import type { Avatar } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
-import AvatarImage from '../components/AvatarImage';
+import PlayerAvatar from '../components/PlayerAvatar';
 import BadgeBook from '../components/BadgeBook';
 import { useBadges } from '../hooks/useBadges';
 import Notifications from '../components/Notifications';
@@ -29,18 +29,12 @@ export default function ProfilePage() {
   if (!me.user.tutorial_done) return <Navigate to="/samouczek" replace />;
 
   const avatar = avatars.find((a) => a.id === me.user.avatar_id);
-  // Ramka awatara: na razie jedna, w przyszlosci wybierana przez gracza.
-  const frame = 'default';
   const skillLevels = me.skills.reduce((sum, s) => sum + s.level, 0);
 
   return (
     <>
     <section className="panel profile-card">
-      <div className={`avatar-frame frame-${frame}`}>
-        <span className="avatar-frame-inner">
-          <AvatarImage src={avatar?.image_url} name={me.user.character_name} />
-        </span>
-      </div>
+      <PlayerAvatar src={avatar?.image_url} name={me.user.character_name} size={132} />
       <div className="profile-card-main">
         <h1>{me.user.character_name}</h1>
         {me.progress && (
