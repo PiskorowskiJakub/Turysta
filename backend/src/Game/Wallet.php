@@ -41,4 +41,26 @@ final class Wallet
 
         return $new;
     }
+
+    /**
+     * Wplyw monet ze zrodla zarobku (praca, a w przyszlosci m.in. sprzedaz, nagrody): saldo + ksiega + licznik w user_earnings.
+     * Zwroty i premie startowe nie sa zarobkiem - te ida przez apply().
+     * $source: np. "job:market"; nowe zrodla dopisuja sie same i wchodza do sumy w statystykach.
+     */
+    public static function earn(
+        PDO $pdo,
+        int $userId,
+        string $source,
+        int $cents,
+        string $reason,
+        ?string $refType = null,
+        ?int $refId = null
+    ): int {
+        $new = self::apply($pdo, $userId, 'coins', $cents, $reason, $refType, $refId);
+        $pdo->prepare(
+            'INSERT INTO user_earnings (user_id, source, total_cents) VALUES (?, ?, ?)
+             ON DUPLICATE KEY UPDATE total_cents = total_cents + VALUES(total_cents)'
+        )->execute([$userId, $source, $cents]);
+        return $new;
+    }
 }

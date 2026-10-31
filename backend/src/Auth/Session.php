@@ -87,6 +87,7 @@ final class Session
             self::destroy();
             throw new ApiException(401, 'unauthorized', 'Musisz się zalogować.');
         }
+        \Turysta\Game\ActivityTracker::touch(Database::pdo(), (int) $user['id']);
         return $user;
     }
 }

@@ -22,8 +22,22 @@ export interface Me {
     chapter_ordinal: number;
     chapter_name: string;
   } | null;
+  stats: PlayerStats;
   active: { training: unknown; job: unknown };
   notifications_unread: number;
+}
+
+export interface PlayerStats {
+  registered_at: string;
+  account_days: number;
+  active_days: number;
+  current_streak: number;
+  longest_streak: number;
+  earnings: {
+    total_cents: number;
+    jobs: { code: string; name: string; cents: number }[];
+    other_cents: number;
+  };
 }
 
 export interface Avatar {

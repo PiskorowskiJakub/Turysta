@@ -112,7 +112,7 @@ final class JobService
             $now = Clock::now($this->pdo);
 
             $stmt = $this->pdo->prepare(
-                "SELECT r.*, d.reward_cents, d.cancel_policy FROM job_runs r
+                "SELECT r.*, d.code AS job_code, d.reward_cents, d.cancel_policy FROM job_runs r
                  JOIN job_definitions d ON d.id = r.job_id
                  WHERE r.user_id = ? AND r.status = 'active' FOR UPDATE"
             );
@@ -134,7 +134,7 @@ final class JobService
             $this->pdo->prepare("UPDATE job_runs SET status = 'cancelled', finished_at = ?, payout_cents = ? WHERE id = ?")
                 ->execute([Clock::fmt($now), $payout, $run['id']]);
             if ($payout > 0) {
-                Wallet::apply($this->pdo, $userId, 'coins', $payout, 'job_payout', 'job_run', (int) $run['id']);
+                Wallet::earn($this->pdo, $userId, 'job:' . $run['job_code'], $payout, 'job_payout', 'job_run', (int) $run['id']);
                 $points = Economy::jobPoints($payout);
                 if ($points > 0) {
                     Wallet::apply($this->pdo, $userId, 'points', $points, 'job_points', 'job_run', (int) $run['id']);

@@ -28,3 +28,15 @@ export function formatEndTime(endMs: number, nowMs: number): string {
   if (dayDiff === 1) return `jutro ${hm}`;
   return `${end.getDate()} ${MONTHS[end.getMonth()]} ${hm}`;
 }
+
+/** "1 dzień", "5 dni". */
+export function formatDays(n: number): string {
+  return `${n} ${n === 1 ? 'dzień' : 'dni'}`;
+}
+
+/** Data w formacie dd.mm.rrrr w czasie lokalnym. */
+export function formatDate(iso: string): string {
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
+}

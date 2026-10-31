@@ -9,8 +9,10 @@ use Throwable;
 use Turysta\Auth\AuthService;
 use Turysta\Auth\RateLimiter;
 use Turysta\Database;
+use Turysta\Game\ActivityTracker;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
+use Turysta\Game\StatsService;
 use Turysta\Game\TrainingService;
 use Turysta\Game\Wallet;
 use Turysta\Http\ApiException;
@@ -221,6 +223,62 @@ final class GameFlowTest extends TestCase
         $this->settler->settleUser($this->userId);
 
         $this->assertSame(39520, $this->coins());
+    }
+
+    public function testEarningsAreRecordedPerJobAndInTotal(): void
+    {
+        // Przerwany targ: polowa wyplaty.
+        $this->jobs->start($this->userId, $this->jobId('market'));
+        $this->pdo->exec(
+            "UPDATE job_runs SET started_at = UTC_TIMESTAMP() - INTERVAL 4 HOUR, ends_at = UTC_TIMESTAMP() + INTERVAL 4 HOUR
+             WHERE user_id = {$this->userId} AND status = 'active'"
+        );
+        $half = $this->jobs->stop($this->userId, false)['payout_cents'];
+
+        // Ukonczony hostel (rozliczony przez Settler).
+        $this->jobs->start($this->userId, $this->jobId('hostel'));
+        $this->pdo->exec(
+            "UPDATE job_runs SET started_at = UTC_TIMESTAMP() - INTERVAL 13 HOUR, ends_at = UTC_TIMESTAMP() - INTERVAL 1 HOUR
+             WHERE user_id = {$this->userId} AND status = 'active'"
+        );
+        $this->settler->settleUser($this->userId);
+
+        $stats = (new StatsService($this->pdo))->forUser($this->userId);
+        $byCode = array_column($stats['earnings']['jobs'], 'cents', 'code');
+        $this->assertSame($half, $byCode['market']);
+        $this->assertSame(42000, $byCode['hostel']);
+        $this->assertSame(0, $byCode['expedition']);
+        $this->assertSame($half + 42000, $stats['earnings']['total_cents']);
+        $this->assertSame(0, $stats['earnings']['other_cents']);
+
+        // Przyszle zrodlo zarobku trafia do sumy i do "inne".
+        $this->pdo->beginTransaction();
+        Wallet::earn($this->pdo, $this->userId, 'shop_sale', 500, 'test_sale');
+        $this->pdo->commit();
+        $stats = (new StatsService($this->pdo))->forUser($this->userId);
+        $this->assertSame(500, $stats['earnings']['other_cents']);
+        $this->assertSame($half + 42000 + 500, $stats['earnings']['total_cents']);
+    }
+
+    public function testActivityDaysAndStreaks(): void
+    {
+        $stats = new StatsService($this->pdo);
+        ActivityTracker::touch($this->pdo, $this->userId, '2026-01-10');
+        ActivityTracker::touch($this->pdo, $this->userId, '2026-01-10'); // ta sama doba: bez zmian
+        ActivityTracker::touch($this->pdo, $this->userId, '2026-01-11');
+        ActivityTracker::touch($this->pdo, $this->userId, '2026-01-12');
+        $s = $stats->forUser($this->userId);
+        $this->assertSame(3, $s['active_days']);
+        $this->assertSame(3, $s['current_streak']);
+        $this->assertSame(3, $s['longest_streak']);
+
+        // Przerwa: seria wraca do 1, rekord zostaje.
+        ActivityTracker::touch($this->pdo, $this->userId, '2026-01-15');
+        $s = $stats->forUser($this->userId);
+        $this->assertSame(4, $s['active_days']);
+        $this->assertSame(1, $s['current_streak']);
+        $this->assertSame(3, $s['longest_streak']);
+        $this->assertSame(0, $s['account_days']);
     }
 
     public function testLongJobNeedsConfirmationAndPaysNothing(): void

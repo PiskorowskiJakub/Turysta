@@ -81,7 +81,7 @@ final class Settler
     private function settleJob(int $userId, DateTimeImmutable $now): void
     {
         $stmt = $this->pdo->prepare(
-            "SELECT r.*, d.name AS job_name, d.reward_cents FROM job_runs r
+            "SELECT r.*, d.code AS job_code, d.name AS job_name, d.reward_cents FROM job_runs r
              JOIN job_definitions d ON d.id = r.job_id
              WHERE r.user_id = ? AND r.status = 'active' AND r.ends_at <= ? LIMIT 1 FOR UPDATE"
         );
@@ -94,7 +94,7 @@ final class Settler
         $payout = (int) ($run['reward_snapshot_cents'] ?? $run['reward_cents']);
         $this->pdo->prepare("UPDATE job_runs SET status = 'done', finished_at = ends_at, payout_cents = ? WHERE id = ?")
             ->execute([$payout, $run['id']]);
-        Wallet::apply($this->pdo, $userId, 'coins', $payout, 'job_payout', 'job_run', (int) $run['id']);
+        Wallet::earn($this->pdo, $userId, 'job:' . $run['job_code'], $payout, 'job_payout', 'job_run', (int) $run['id']);
         $points = Economy::jobPoints($payout);
         if ($points > 0) {
             Wallet::apply($this->pdo, $userId, 'points', $points, 'job_points', 'job_run', (int) $run['id']);

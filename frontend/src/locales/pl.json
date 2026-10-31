@@ -65,6 +65,18 @@
     "back": "Wstecz",
     "finish": "Zaczynam przygodę"
   },
+  "stats": {
+    "title": "Statystyki",
+    "registered": "Konto założone",
+    "accountAge": "Wiek konta",
+    "today": "dziś",
+    "activeDays": "Dni aktywności",
+    "streak": "Obecna seria dni",
+    "longestStreak": "Najdłuższa seria",
+    "earnings": "Zarobione monety",
+    "other": "Inne źródła",
+    "total": "Razem"
+  },
   "profile": {
     "verifyEmail": "Potwierdź adres e-mail, klikając link, który wysłaliśmy na Twoją skrzynkę.",
     "wallet": "Portfel",

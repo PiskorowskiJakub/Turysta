@@ -15,6 +15,15 @@ final class Clock
         return new DateTimeImmutable((string) $pdo->query('SELECT UTC_TIMESTAMP()')->fetchColumn(), new DateTimeZone('UTC'));
     }
 
+    /** Strefa, wedlug ktorej liczymy "dzien" gracza (aktywnosc, serie). */
+    public const GAME_TZ = 'Europe/Warsaw';
+
+    /** Data kalendarzowa (Y-m-d) chwili UTC w strefie gry. */
+    public static function gameDay(DateTimeImmutable $utc): string
+    {
+        return $utc->setTimezone(new DateTimeZone(self::GAME_TZ))->format('Y-m-d');
+    }
+
     public static function fmt(DateTimeImmutable $d): string
     {
         return $d->format('Y-m-d H:i:s');

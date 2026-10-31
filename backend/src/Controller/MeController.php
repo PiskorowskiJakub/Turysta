@@ -7,6 +7,7 @@ use PDO;
 use Turysta\Auth\Session;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
+use Turysta\Game\StatsService;
 use Turysta\Game\TrainingService;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
@@ -129,6 +130,7 @@ final class MeController
                 'chapter_ordinal' => (int) $progress['chapter_ordinal'],
                 'chapter_name' => $progress['chapter_name'],
             ] : null,
+            'stats' => (new StatsService($this->pdo))->forUser($uid),
             'active' => ['training' => $this->training->state($uid)['active'], 'job' => $this->jobs->active($uid)],
             'notifications_unread' => (int) $stmt->fetchColumn(),
         ];
