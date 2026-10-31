@@ -28,6 +28,11 @@
     "m": "Mężczyzna",
     "x": "Inna / wolę nie podawać"
   },
+  "profileCard": {
+    "rank": "Miejsce w rankingu",
+    "registered": "Konto założone",
+    "skillLevels": "Suma poziomów umiejętności"
+  },
   "ranking": {
     "title": "Ranking graczy",
     "myPlace": "Twoje miejsce: {{rank}}",
@@ -71,6 +76,7 @@
     "pickInfo": "Wybierz do {{max}} odznak spośród zdobytych. Wybrano: {{n}}.",
     "save": "Zapisz",
     "cancel": "Anuluj",
+    "seeAll": "Zobacz wszystkie odznaki",
     "moreInfo": "Dowiedz się więcej",
     "tierDays": "{{n}} dni",
     "special_streak": "Seria dni",

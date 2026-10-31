@@ -33,6 +33,7 @@ export interface PlayerStats {
   active_days: number;
   current_streak: number;
   longest_streak: number;
+  rank: number;
   earnings: {
     total_cents: number;
     jobs: { code: string; name: string; cents: number }[];

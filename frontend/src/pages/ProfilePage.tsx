@@ -1,6 +1,12 @@
+import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { api } from '../api/client';
+import type { Avatar } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
+import AvatarImage from '../components/AvatarImage';
+import BadgeBook from '../components/BadgeBook';
+import { useBadges } from '../hooks/useBadges';
 import Notifications from '../components/Notifications';
 import { Sprout } from '../components/icons';
 import Coins from '../components/Coins';
@@ -10,13 +16,52 @@ import { formatDate, formatDays } from '../format';
 export default function ProfilePage() {
   const { t } = useTranslation();
   const { me } = useAuth();
+  const badges = useBadges();
+  const [avatars, setAvatars] = useState<Avatar[]>([]);
+
+  useEffect(() => {
+    api<{ avatars: Avatar[] }>('GET', '/avatars')
+      .then((r) => setAvatars(r.avatars))
+      .catch(() => setAvatars([]));
+  }, []);
 
   if (!me) return null;
   if (!me.user.tutorial_done) return <Navigate to="/samouczek" replace />;
 
+  const avatar = avatars.find((a) => a.id === me.user.avatar_id);
+  // Ramka awatara: na razie jedna, w przyszlosci wybierana przez gracza.
+  const frame = 'default';
+  const skillLevels = me.skills.reduce((sum, s) => sum + s.level, 0);
+
   return (
+    <>
+    <section className="panel profile-card">
+      <div className={`avatar-frame frame-${frame}`}>
+        <span className="avatar-frame-inner">
+          <AvatarImage src={avatar?.image_url} name={me.user.character_name} />
+        </span>
+      </div>
+      <div className="profile-card-main">
+        <h1>{me.user.character_name}</h1>
+        {me.progress && (
+          <p className="profile-where">
+            <span>{t('world.worldNo', { n: me.progress.world_ordinal })}: <strong>{me.progress.world_name}</strong></span>
+            <span>{t('world.chapterNo', { n: me.progress.chapter_ordinal })}: <strong>{me.progress.chapter_name}</strong></span>
+          </p>
+        )}
+        <dl className="profile-facts">
+          <div><dt>{t('profileCard.rank')}</dt><dd>{me.stats.rank}</dd></div>
+          <div><dt>{t('wallet.points')}</dt><dd><Points value={me.wallet.points} /></dd></div>
+          <div><dt>{t('profileCard.registered')}</dt><dd>{formatDate(me.stats.registered_at)}</dd></div>
+          <div><dt>{t('stats.longestStreak')}</dt><dd>{formatDays(me.stats.longest_streak)}</dd></div>
+          <div><dt>{t('profileCard.skillLevels')}</dt><dd>{skillLevels}</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    {badges.ready ? <BadgeBook data={badges} /> : null}
+
     <div className="card">
-      <h1>{me.user.character_name}</h1>
       {!me.user.email_verified && <p className="form-notice">{t('profile.verifyEmail')}</p>}
 
       {me.progress && (
@@ -36,16 +81,13 @@ export default function ProfilePage() {
       <ul className="stats">
         <li><span>{t('wallet.coins')}</span><strong><Coins cents={me.wallet.coins_cents} /></strong></li>
         <li><span>{t('wallet.tickets')}</span><strong>{me.wallet.tickets}</strong></li>
-        <li><span>{t('wallet.points')}</span><strong><Points value={me.wallet.points} /></strong></li>
       </ul>
 
       <h2>{t('stats.title')}</h2>
       <ul className="stats">
-        <li><span>{t('stats.registered')}</span><strong>{formatDate(me.stats.registered_at)}</strong></li>
         <li><span>{t('stats.accountAge')}</span><strong>{me.stats.account_days === 0 ? t('stats.today') : formatDays(me.stats.account_days)}</strong></li>
         <li><span>{t('stats.activeDays')}</span><strong>{formatDays(me.stats.active_days)}</strong></li>
         <li><span>{t('stats.streak')}</span><strong>{formatDays(me.stats.current_streak)}</strong></li>
-        <li><span>{t('stats.longestStreak')}</span><strong>{formatDays(me.stats.longest_streak)}</strong></li>
       </ul>
 
       <h2>{t('stats.earnings')}</h2>
@@ -74,5 +116,6 @@ export default function ProfilePage() {
 
       <Notifications />
     </div>
+    </>
   );
 }

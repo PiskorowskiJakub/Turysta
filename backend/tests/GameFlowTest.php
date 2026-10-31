@@ -255,6 +255,7 @@ final class GameFlowTest extends TestCase
         $this->assertSame(0, $byCode['expedition']);
         $this->assertSame($half + 42000, $stats['earnings']['total_cents']);
         $this->assertSame(0, $stats['earnings']['other_cents']);
+        $this->assertGreaterThanOrEqual(1, $stats['rank']);
 
         // Przyszle zrodlo zarobku trafia do sumy i do "inne".
         $this->pdo->beginTransaction();

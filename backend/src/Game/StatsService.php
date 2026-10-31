@@ -50,6 +50,7 @@ final class StatsService
             'active_days' => (int) $s['active_days'],
             'current_streak' => (int) $s['current_streak'],
             'longest_streak' => (int) $s['longest_streak'],
+            'rank' => (new RankingService($this->pdo))->rankOf($userId),
             'earnings' => [
                 'total_cents' => $total,
                 'jobs' => $jobs,

@@ -15,6 +15,17 @@ final class RankingService
     {
     }
 
+    /** Miejsce gracza w rankingu (remis = to samo miejsce, wszyscy aktywni gracze). */
+    public function rankOf(int $userId): int
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT 1 + COUNT(*) FROM wallets w JOIN users u ON u.id = w.user_id
+             WHERE u.status = 'active' AND w.points > (SELECT points FROM wallets WHERE user_id = ?)"
+        );
+        $stmt->execute([$userId]);
+        return (int) $stmt->fetchColumn();
+    }
+
     /**
      * @return array<string,mixed>
      */
