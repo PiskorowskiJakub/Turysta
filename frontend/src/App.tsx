@@ -8,6 +8,7 @@ import TutorialPage from './pages/TutorialPage';
 import ProfilePage from './pages/ProfilePage';
 import TrainingPage from './pages/TrainingPage';
 import JobsPage from './pages/JobsPage';
+import BadgesPage from './pages/BadgesPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="umiejetnosci/*" element={<TrainingPage />} />
           <Route path="szkolenia" element={<Navigate to="/umiejetnosci" replace />} />
           <Route path="praca" element={<JobsPage />} />
+          <Route path="odznaki" element={<BadgesPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>

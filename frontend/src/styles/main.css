@@ -228,6 +228,18 @@ h1, h2, h3 { font-weight: 600; }
 }
 .tier:hover::after, .tier:focus-visible::after { opacity: 1; }
 
+/* ---------- Ksiazeczka odznak ---------- */
+.badge-total { margin: 6px 0 0; font-weight: 600; color: var(--orange); }
+.badge-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.badge-card { margin: 0 !important; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.badge-card .icon-tile { width: 56px; height: 56px; }
+.badge-info { display: flex; flex-direction: column; gap: 2px; }
+.badge-level { font-size: 13px; }
+.badge-locked h2 { display: flex; align-items: center; gap: 8px; opacity: 0.7; }
+.badge-locked h2 svg { width: 18px; height: 18px; }
+@media (max-width: 900px) { .badge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .badge-grid { grid-template-columns: minmax(0, 1fr); } }
+
 /* ---------- Praca ---------- */
 .job-card { display: grid; grid-template-columns: minmax(0, 1fr) 88px; grid-template-areas: 'title img' 'desc img' 'stats stats' 'bar bar'; gap: 6px 16px; border-left-color: var(--trail, var(--orange)); padding: 12px 16px; }
 .job-card h3 { grid-area: title; align-self: end; font-size: 1.05rem; }

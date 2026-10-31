@@ -10,7 +10,8 @@
     "menu": "Menu",
     "squad": "Oddział",
     "soon": "wkrótce",
-    "skills": "Umiejętności"
+    "skills": "Umiejętności",
+    "badges": "Odznaki"
   },
   "footer": "Copyright © 2026 Jakub Piskorowski",
   "tagline": "Turysta – gra o podróżowaniu",
@@ -25,6 +26,13 @@
     "f": "Kobieta",
     "m": "Mężczyzna",
     "x": "Inna / wolę nie podawać"
+  },
+  "badges": {
+    "title": "Książeczka odznak",
+    "intro": "Za rozwój umiejętności zdobywasz odznaki: brązową, srebrną i złotą. Wpisują się do Twojej książeczki automatycznie.",
+    "total": "Zdobyte odznaki: {{got}} z {{total}}",
+    "sectionCount": "Zdobyte: {{got}} z {{total}}",
+    "worldLocked": "Ten świat jeszcze przed Tobą. Odznaki z jego umiejętności zdobędziesz po dotarciu do niego."
   },
   "skills": {
     "fitness": "Kondycja",

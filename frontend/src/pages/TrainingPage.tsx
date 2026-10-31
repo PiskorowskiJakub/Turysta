@@ -9,30 +9,10 @@ import ProgressBar from '../components/ProgressBar';
 import Tabs, { type TabItem } from '../components/Tabs';
 import WorldPanel from '../components/WorldPanel';
 import Coins from '../components/Coins';
+import { tiersFor } from '../badges';
 import { formatCoins, formatCoinsFull, formatDuration, formatEndTime } from '../format';
 import { usePolling } from '../hooks/usePolling';
 import { useServerNow } from '../hooks/useServerNow';
-
-// Odznaki umiejetnosci bez konca: na start 3 z wysokimi progami. Slot 4 i 5 sa zarezerwowane
-// (kolor w CSS jest gotowy) - wlaczamy je, wpisujac 'min' (null = jeszcze nieaktywna). Maksymalnie 5.
-const TIERS: { name: string; min: number | null }[] = [
-  { name: 'bronze', min: 50 },
-  { name: 'silver', min: 100 },
-  { name: 'gold', min: 200 },
-  { name: 'diamond', min: null },
-  { name: 'ruby', min: null },
-];
-const ACTIVE_TIERS = TIERS.filter((t): t is { name: string; min: number } => t.min !== null);
-
-// Umiejetnosci z limitem poziomow (swiaty): 3 odznaki - brazowa, srebrna i zlota - na 1/3, 2/3 i 100% limitu.
-function tiersFor(maxLevel: number | null): { name: string; min: number }[] {
-  if (maxLevel === null) return ACTIVE_TIERS;
-  return [
-    { name: 'bronze', min: Math.ceil(maxLevel / 3) },
-    { name: 'silver', min: Math.ceil((maxLevel * 2) / 3) },
-    { name: 'gold', min: maxLevel },
-  ];
-}
 
 export default function TrainingPage() {
   const { t } = useTranslation();

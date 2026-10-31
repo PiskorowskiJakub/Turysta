@@ -6,6 +6,7 @@ Dokumentacja zasad gry. Szczegóły ekonomii i symulacji znajdziesz w [głównym
 
 - [Światy](#światy)
 - [Tabela awansów](#tabela-awansów-wymagania-czas-i-koszt)
+- [Dlaczego wymagania umiejętności bazowych są nierówne](#dlaczego-wymagania-umiejętności-bazowych-są-nierówne)
 
 ## Światy
 
@@ -73,3 +74,17 @@ Wiersz oznacza **rozdział docelowy** (awans do niego). „Umiejętności świat
 | 5. Dżungla | 8. Serce dżungli | 176 / 167 / 140 | Dżungla: 6 × 24 | 2,1 d | 1 338 dk |
 | 5. Dżungla | 9. Liany i mgła | 178 / 169 / 142 | Dżungla: 6 × 27 | 2,1 d | 1 369 dk |
 | 5. Dżungla | 10. Zaginione miasto | 180 / 171 / 144 | Dżungla: 6 × 30 | 2,2 d | 1 400 dk |
+
+## Dlaczego wymagania umiejętności bazowych są nierówne
+
+Do awansu potrzebne są trzy umiejętności bazowe i ich wymagane poziomy celowo się różnią (np. przy ostatnim awansie 180 / 171 / 144).
+
+Wzór: dla awansu numer `g` (1–49) wymagana Kondycja to `f(g) = 3 + (180 − 3) · (g / 49)^0,55`. Orientacja to `3 + 0,95 · (f − 3)`, a Handel `3 + 0,8 · (f − 3)`.
+
+Powody:
+
+- **Czas treningu.** Wszystkie trzy umiejętności mają tę samą krzywą kosztu i czasu, więc niższy wymagany poziom oznacza krótszy trening. Handel jest najtańszy, Kondycja najdroższa. Awans nie wymaga równego, jednakowo długiego rozwijania trzech umiejętności.
+- **Handel zwiększa dochód.** Podnosi wypłaty z prac (maksymalnie około +120%). Gdyby jego wymaganie było tak wysokie jak Kondycji, gra wymuszałaby bardzo wysoki poziom umiejętności, która sama napędza ekonomię i zwiększa nadwyżkę dukatów.
+- **Orientacja jest blisko Kondycji.** Współczynnik 0,95 daje niewielką różnicę, żeby wymagania nie były trzema identycznymi liczbami.
+
+Współczynniki 0,95 i 0,8 są parametrami kalibracji tempa gry (symulator `scripts/simulate_economy.py`). Ich zmiana wymaga ponownego przeliczenia symulacji i nowej migracji z wymaganiami awansów.
