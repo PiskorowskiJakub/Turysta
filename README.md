@@ -68,6 +68,10 @@ Każdy świat ma **6 własnych umiejętności** (razem 30), dobranych do klimatu
 
 Zestaw jest wymagany do awansów (stopniowo) i do przejścia dalej, więc to część głównej ścieżki, a nie dodatek.
 
+### Tabela awansów
+
+Pełna tabela wymagań, czasu i kosztu awansów jest w [docs/README.md](docs/README.md#tabela-awansów-wymagania-czas-i-koszt).
+
 ### Profile graczy w symulacji
 
 | Profil | Logowania (godziny) | Założenia |
