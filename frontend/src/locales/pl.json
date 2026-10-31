@@ -133,10 +133,13 @@
       "rule": "Przerwa w serii zaczyna ją od nowa. Po 7. dniu seria zaczyna się od dnia 1. Dukaty rosną wraz z Twoim postępem w grze."
     },
     "invite": {
-      "title": "Zaproś znajomych",
-      "lead": "Wyślij znajomym swój link. Kiedy założą konto przez ten link, dołączą do Twojej ekipy.",
+      "title": "Twój link polecający",
+      "lead": "Podaj ten link znajomym, aby mogli założyć konto w grze. Dzięki niemu zliczamy, ile osób zaprosiłeś. Za zaproszenia będą odznaki i nagrody.",
       "copy": "Kopiuj",
-      "copied": "Skopiowano"
+      "copied": "Skopiowano",
+      "registered": "Założyło konto",
+      "verified": "Aktywowało konto e-mailem",
+      "active": "Z tego ze stażem {{n}}+ dni aktywności"
     },
     "log": {
       "title": "Dziennik wyprawy",

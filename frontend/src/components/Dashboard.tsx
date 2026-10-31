@@ -140,6 +140,13 @@ export default function Dashboard() {
               <input readOnly value={inviteLink} aria-label={t('home.invite.title')} onFocus={(e) => e.currentTarget.select()} />
               <button type="button" className="button small" onClick={() => void copy()}>{copied ? t('home.invite.copied') : t('home.invite.copy')}</button>
             </div>
+            {home.referrals && (
+              <dl className="admin-tiles invite-stats">
+                <div className="admin-tile"><dt>{t('home.invite.registered')}</dt><dd>{home.referrals.registered}</dd></div>
+                <div className="admin-tile"><dt>{t('home.invite.verified')}</dt><dd>{home.referrals.verified}</dd></div>
+                <div className="admin-tile"><dt>{t('home.invite.active', { n: home.referrals.active_days_required })}</dt><dd>{home.referrals.active}</dd></div>
+              </dl>
+            )}
           </section>
         )}
       </div>

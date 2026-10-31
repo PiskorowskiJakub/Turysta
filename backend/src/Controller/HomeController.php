@@ -8,9 +8,10 @@ use Turysta\Auth\Session;
 use Turysta\Game\AnnouncementService;
 use Turysta\Game\DailyRewardService;
 use Turysta\Game\RankingService;
+use Turysta\Game\ReferralService;
 use Turysta\Http\Request;
 
-/** Dane strony glownej ("Plecak"): ogloszenia, codzienna nagroda, czolowka rankingu, kod zaproszenia. */
+/** Dane strony glownej ("Plecak"): ogloszenia, codzienna nagroda, czolowka rankingu, link polecajacy i liczniki zaproszen. */
 final class HomeController
 {
     public const TOP = 5;
@@ -33,6 +34,7 @@ final class HomeController
             'daily' => (new DailyRewardService($this->pdo))->state($uid),
             'top' => (new RankingService($this->pdo))->top(self::TOP, $uid),
             'referral_code' => $code === false ? null : (string) $code,
+            'referrals' => (new ReferralService($this->pdo))->stats($uid),
         ]];
     }
 

@@ -276,6 +276,14 @@ export interface HomeResponse {
   daily: DailyRewardState;
   top: TopRow[];
   referral_code: string | null;
+  referrals: ReferralStats;
+}
+
+export interface ReferralStats {
+  registered: number;
+  verified: number;
+  active: number;
+  active_days_required: number;
 }
 
 export interface ClaimResponse {
