@@ -10,6 +10,8 @@ use Turysta\Mailer;
 
 final class AuthService
 {
+    private const STARTING_COINS_CENTS = 200;
+
     private const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
     public function __construct(
@@ -75,6 +77,8 @@ final class AuthService
             $userId = (int) $this->pdo->lastInsertId();
 
             $this->pdo->prepare('INSERT INTO wallets (user_id) VALUES (?)')->execute([$userId]);
+            // Startowe 2 monety wystarcza na pierwsze kilkadziesiat poziomow, zanim gracz wezmie prace.
+            \Turysta\Game\Wallet::apply($this->pdo, $userId, 'coins', self::STARTING_COINS_CENTS, 'starting_bonus', 'user', $userId);
             $this->pdo->prepare(
                 'INSERT INTO user_skills (user_id, skill_id, level) SELECT ?, id, 0 FROM skill_definitions'
             )->execute([$userId]);

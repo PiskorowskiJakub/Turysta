@@ -11,22 +11,24 @@ final class EconomyTest extends TestCase
     /** @return array<string,mixed> */
     private function skill(): array
     {
-        return ['base_cost_cents' => 619, 'cost_growth' => '1.1800', 'base_seconds' => 1908, 'time_growth' => '1.1200'];
+        return ['base_cost_cents' => 3, 'cost_growth' => '1.1600', 'base_seconds' => 5, 'time_growth' => '1.1600'];
     }
 
     public function testFirstLevelUsesBaseValues(): void
     {
-        $this->assertSame(619, Economy::cost($this->skill(), 1));
-        $this->assertSame(1908, Economy::seconds($this->skill(), 1));
+        $this->assertSame(3, Economy::cost($this->skill(), 1));
+        $this->assertSame(5, Economy::seconds($this->skill(), 1));
     }
 
     public function testExponentialGrowthUpToLevel50(): void
     {
-        $this->assertSame((int) floor(619 * 1.18), Economy::cost($this->skill(), 2));
-        $this->assertSame((int) round(1908 * 1.12), Economy::seconds($this->skill(), 2));
-        // ok. 20 600 monet i 5,7 doby na poziomie 50
-        $this->assertEqualsWithDelta(2060200, Economy::cost($this->skill(), 50), 5000);
-        $this->assertEqualsWithDelta(5.7 * 86400, Economy::seconds($this->skill(), 50), 0.05 * 86400);
+        $this->assertSame((int) floor(3 * 1.16), Economy::cost($this->skill(), 2));
+        $this->assertSame((int) round(5 * 1.16), Economy::seconds($this->skill(), 2));
+        // Poczatek: sekundy i grosze, pozniej minuty, na poziomie 50 okolo 2 h i 43 monety.
+        $this->assertLessThan(10, Economy::seconds($this->skill(), 2));
+        $this->assertLessThan(300, Economy::seconds($this->skill(), 20));
+        $this->assertEqualsWithDelta(4320, Economy::cost($this->skill(), 50), 50);
+        $this->assertEqualsWithDelta(7201, Economy::seconds($this->skill(), 50), 50);
     }
 
     public function testCurveIsFlattenedAfterLevel50(): void
