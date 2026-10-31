@@ -51,8 +51,10 @@ final class TrainingService
     public function state(int $userId): array
     {
         $stmt = $this->pdo->prepare(
-            "SELECT q.*, s.code AS skill_code, s.name AS skill_name FROM training_queue q
-             JOIN skill_definitions s ON s.id = q.skill_id
+            "SELECT q.*, s.code AS skill_code, s.name AS skill_name, c.name AS chapter_name, c.ordinal AS chapter_ordinal
+             FROM training_queue q
+             LEFT JOIN skill_definitions s ON s.id = q.skill_id
+             LEFT JOIN chapters c ON c.id = q.chapter_id
              WHERE q.user_id = ? AND q.status IN ('active','queued')
              ORDER BY (q.status = 'active') DESC, q.position, q.id"
         );
@@ -67,7 +69,13 @@ final class TrainingService
                 : (int) $r['cost_cents'];
             $item = [
                 'id' => (int) $r['id'],
-                'skill' => ['id' => (int) $r['skill_id'], 'code' => $r['skill_code'], 'name' => $r['skill_name']],
+                'kind' => $r['chapter_id'] !== null ? 'chapter' : 'skill',
+                'skill' => $r['skill_id'] !== null
+                    ? ['id' => (int) $r['skill_id'], 'code' => $r['skill_code'], 'name' => $r['skill_name']]
+                    : null,
+                'chapter' => $r['chapter_id'] !== null
+                    ? ['id' => (int) $r['chapter_id'], 'name' => $r['chapter_name'], 'ordinal' => (int) $r['chapter_ordinal']]
+                    : null,
                 'target_level' => (int) $r['target_level'],
                 'cost_cents' => (int) $r['cost_cents'],
                 'duration_seconds' => (int) $r['duration_seconds'],
@@ -153,6 +161,60 @@ final class TrainingService
         return $this->state($userId);
     }
 
+    /** Awans na kolejny stopien trafia do tej samej kolejki co szkolenia umiejetnosci. @return array<string,mixed> */
+    public function addChapter(int $userId): array
+    {
+        $this->settler->settleUser($userId);
+        $chapters = new ChapterService($this->pdo);
+        $this->pdo->beginTransaction();
+        try {
+            $this->lockUser($userId);
+            $now = Clock::now($this->pdo);
+
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM training_queue WHERE user_id = ? AND status IN ('active','queued')");
+            $stmt->execute([$userId]);
+            if ((int) $stmt->fetchColumn() >= TrainingQueue::MAX_SLOTS) {
+                throw new ApiException(409, 'queue_full', 'Kolejka szkoleń jest pełna.');
+            }
+            if ($chapters->inQueue($userId)) {
+                throw new ApiException(409, 'chapter_in_queue', 'Awans na kolejny stopień jest już w kolejce.');
+            }
+            $next = $chapters->next($userId);
+            if (!$next) {
+                throw new ApiException(409, 'max_chapter', 'Osiągnięto ostatni dostępny stopień.');
+            }
+            foreach ($chapters->requirements($userId, (int) $next['id']) as $req) {
+                if (!$req['met']) {
+                    throw new ApiException(422, 'requirements_not_met', 'Nie spełniasz wymagań do awansu.');
+                }
+            }
+
+            $cost = (int) $next['cost_cents'];
+            $seconds = max(1, (int) $next['duration_seconds']);
+
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM training_queue WHERE user_id = ? AND status = 'active'");
+            $stmt->execute([$userId]);
+            if ((int) $stmt->fetchColumn() > 0) {
+                $stmt = $this->pdo->prepare("SELECT COALESCE(MAX(position), 0) + 1 FROM training_queue WHERE user_id = ? AND status = 'queued'");
+                $stmt->execute([$userId]);
+                $this->insert($userId, null, (int) $next['ordinal'], $cost, $seconds, 'queued', (int) $stmt->fetchColumn(), null, null, (int) $next['id']);
+            } else {
+                $ends = $now->add(new DateInterval('PT' . $seconds . 'S'));
+                $this->insert($userId, null, (int) $next['ordinal'], $cost, $seconds, 'active', 0, Clock::fmt($now), Clock::fmt($ends), (int) $next['id']);
+            }
+            $id = (int) $this->pdo->lastInsertId();
+
+            if ($cost > 0) {
+                Wallet::apply($this->pdo, $userId, 'coins', -$cost, 'chapter_cost', 'training', $id);
+            }
+            $this->pdo->commit();
+        } catch (Throwable $e) {
+            $this->rollback();
+            throw $e;
+        }
+        return $this->state($userId);
+    }
+
     /** @return array<string,mixed> */
     public function remove(int $userId, int $trainingId): array
     {
@@ -181,7 +243,9 @@ final class TrainingService
             if ($refund > 0) {
                 Wallet::apply($this->pdo, $userId, 'coins', $refund, 'training_refund', 'training', $trainingId);
             }
-            $this->shiftLaterLevels($userId, $row);
+            if ($row['skill_id'] !== null) {
+                $this->shiftLaterLevels($userId, $row);
+            }
             if ($wasActive) {
                 TrainingQueue::startNext($this->pdo, $userId, $now);
             }
@@ -223,12 +287,12 @@ final class TrainingService
         }
     }
 
-    private function insert(int $userId, int $skillId, int $target, int $cost, int $seconds, string $status, int $position, ?string $start, ?string $end): void
+    private function insert(int $userId, ?int $skillId, int $target, int $cost, int $seconds, string $status, int $position, ?string $start, ?string $end, ?int $chapterId = null): void
     {
         $this->pdo->prepare(
-            'INSERT INTO training_queue (user_id, skill_id, target_level, cost_cents, duration_seconds, status, position, started_at, ends_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        )->execute([$userId, $skillId, $target, $cost, $seconds, $status, $position, $start, $end]);
+            'INSERT INTO training_queue (user_id, skill_id, chapter_id, target_level, cost_cents, duration_seconds, status, position, started_at, ends_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        )->execute([$userId, $skillId, $chapterId, $target, $cost, $seconds, $status, $position, $start, $end]);
     }
 
     private function lockUser(int $userId): void

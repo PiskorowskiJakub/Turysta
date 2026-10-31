@@ -5,6 +5,7 @@ namespace Turysta\Controller;
 
 use PDO;
 use Turysta\Auth\Session;
+use Turysta\Game\ChapterService;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
 use Turysta\Game\TrainingService;
@@ -40,6 +41,20 @@ final class GameController
         $uid = $this->uid($r);
         $this->settler->settleUser($uid);
         return [200, $this->training->skills($uid)];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function world(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        return [200, (new ChapterService($this->pdo))->overview($uid)];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function advance(Request $r): array
+    {
+        return [201, $this->training->addChapter($this->uid($r))];
     }
 
     /** @return array{0:int,1:array<string,mixed>} */

@@ -206,14 +206,27 @@ h1, h2, h3 { font-weight: 600; }
 .skill-col { display: flex; flex-direction: column; gap: 10px; }
 .skill-card { border-left: 0; border-top: 6px solid var(--trail, var(--moss)); display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; margin: 0 !important; }
 .skill-card > div:not(.icon-tile) { width: 100%; }
-.tier-row { display: flex; justify-content: center; gap: 10px; padding: 8px; border-radius: 12px; background: var(--bg2); }
-.tier { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #0e1612; color: #4b574f; border: 2px solid #2a352e; }
-.tier svg { width: 60%; height: 60%; }
-.tier.reached { border-color: currentColor; box-shadow: 0 0 12px -2px currentColor; }
-.tier-bronze.reached { color: #cd8a4a; }
-.tier-silver.reached { color: #cfd6dc; }
-.tier-gold.reached { color: #f0c23f; }
-.tier-diamond.reached { color: #6fd8ee; }
+.tier-row { display: flex; justify-content: center; gap: 12px; padding: 8px; border-radius: 12px; background: var(--bg2); }
+.tier { position: relative; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: #0e1612; color: #4b574f; border: 2px solid #2a352e; cursor: help; }
+.tier svg, .tier img { width: 58%; height: 58%; }
+/* Zdobyta odznaka: wypelniona kolorem stopnia, z ikona danej umiejetnosci */
+.tier.reached { background: radial-gradient(circle at 30% 25%, #fff6 0, transparent 45%), currentColor; border-color: currentColor; box-shadow: 0 0 14px -1px currentColor; }
+.tier.reached svg { color: #1a1208; stroke-width: 2.4; }
+/* Kolory stopni (4 i 5 zarezerwowane na przyszlosc) */
+.tier-bronze { --tier: #cd8a4a; }
+.tier-silver { --tier: #cfd6dc; }
+.tier-gold { --tier: #f0c23f; }
+.tier-diamond { --tier: #6fd8ee; }
+.tier-ruby { --tier: #e0577a; }
+.tier.reached { color: var(--tier); }
+.tier:not(.reached):hover, .tier:not(.reached):focus-visible { border-color: var(--tier); }
+/* Podpowiedz po najechaniu */
+.tier::after {
+  content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  white-space: nowrap; padding: 5px 10px; border-radius: 8px; background: #0a110d; color: var(--cream);
+  border: 1.5px solid var(--line); font-size: 12px; pointer-events: none; opacity: 0; z-index: 5; transition: opacity 0.12s;
+}
+.tier:hover::after, .tier:focus-visible::after { opacity: 1; }
 
 /* ---------- Praca ---------- */
 .job-card { display: grid; grid-template-columns: minmax(0, 1fr) 88px; grid-template-areas: 'title img' 'desc img' 'stats stats' 'bar bar'; gap: 6px 16px; border-left-color: var(--trail, var(--orange)); padding: 12px 16px; }
@@ -274,7 +287,7 @@ h1, h2, h3 { font-weight: 600; }
   .job-card { grid-template-columns: 1fr 90px; }
   .job-img .icon-tile { width: 80px; height: 80px; }
   .job-stats { grid-template-columns: 1fr; }
-  .plaque .who, .plaque-stats small { display: none; }
+  .plaque .who-wrap, .plaque-stats small { display: none; }
   .plaque { gap: 10px; padding: 6px 10px 6px 8px; }
   .plaque-who { padding-right: 10px; }
   .plaque-stats { gap: 10px; }
@@ -292,3 +305,42 @@ h1, h2, h3 { font-weight: 600; }
 .tabs-sub { margin: -6px 0 16px 18px; }
 .tabs-sub .tabs { border-bottom-width: 1.5px; }
 .tabs-sub .tab { padding: 5px 14px; font-size: 13px; border-radius: 8px 8px 0 0; }
+
+/* ---------- Swiat i stopnie awansu ---------- */
+.world-name { margin: -6px 0 16px; padding-bottom: 10px; text-align: center; font-weight: 600; font-size: 1.5rem; letter-spacing: 0.05em; border-bottom: 1.5px solid var(--line); display: flex; flex-direction: column; line-height: 1.2; }
+.world-name small { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--orange); font-weight: 600; }
+.world-body { display: grid; grid-template-columns: minmax(0, 1fr) 190px 230px; gap: 20px; align-items: stretch; }
+.world-main { container-type: inline-size; }
+/* Kielki w dwoch symetrycznych rzedach po 5; gdy zabraknie miejsca - zawijanie wg szerokosci */
+.stages { list-style: none; margin: 0 0 14px; padding: 0 0 14px; display: grid; grid-template-columns: repeat(5, 40px); justify-content: center; gap: 10px 14px; border-bottom: 1.5px solid var(--line); }
+@container (max-width: 250px) { .stages { grid-template-columns: repeat(auto-fit, 40px); } }
+.chapter-line { font-size: 0.95rem; letter-spacing: 0; font-weight: 400; color: var(--khaki); margin-top: 2px; }
+.stage { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: #0e1612; color: #46544b; border: 2px solid #2a352e; }
+.stage svg { width: 62%; height: 62%; }
+.stage-done { color: var(--moss); border-color: var(--moss); }
+.stage-current { color: #17210f; background: var(--moss); border-color: var(--moss); box-shadow: 0 0 14px -1px var(--moss); }
+.stage-next, .stage-in_queue { color: var(--orange); border-color: var(--orange); border-style: dashed; }
+.stage-in_queue { background: rgba(240, 138, 60, 0.18); }
+.world-chapter { margin: 0 0 6px; font-size: 1.05rem; }
+.world-story { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--muted); }
+.world-art { width: 100%; height: 100%; min-height: 170px; border-radius: 12px; border: 3px solid var(--khaki); box-shadow: 0 0 0 3px var(--tile); display: block; }
+.world-next { text-align: center; display: flex; flex-direction: column; gap: 6px; }
+.world-next h3 { margin: 0; font-size: 1rem; padding-bottom: 4px; border-bottom: 1.5px solid var(--line); }
+.next-name { margin: 2px 0; font-weight: 600; color: #fff; }
+.reqs { list-style: none; margin: 4px 0; padding: 0; display: flex; justify-content: center; gap: 14px; }
+.reqs li { display: flex; flex-direction: column; align-items: center; gap: 1px; font-size: 15px; }
+.reqs svg { width: 28px; height: 28px; }
+.reqs .met { color: var(--moss); }
+.reqs .unmet { color: var(--error); }
+.reqs small { font-size: 10.5px; opacity: 0.9; }
+.world-reason { font-size: 11.5px; color: var(--muted); }
+@media (max-width: 900px) { .world-body { grid-template-columns: 1fr; } .world-art { min-height: 150px; max-height: 190px; } }
+
+/* Postep w swiecie: profil i plakietka */
+.plaque .who-wrap { display: flex; flex-direction: column; line-height: 1.2; }
+.plaque .where { font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+.progress-card { display: flex; align-items: center; gap: 14px; background: var(--tile); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; }
+.progress-card .stage { flex: none; width: 46px; height: 46px; }
+.progress-card b { display: block; font-size: 1.05rem; }
+.progress-card span { font-size: 13px; color: var(--muted); }
+@media (max-width: 900px) { .plaque .who-wrap { display: none; } }

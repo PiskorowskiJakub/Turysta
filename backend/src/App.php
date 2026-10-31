@@ -54,6 +54,8 @@ final class App
 
         $router->get('/v1/facts/today', [$game, 'todayFact']);
         $router->get('/v1/skills', [$game, 'skills']);
+        $router->get('/v1/world', [$game, 'world']);
+        $router->post('/v1/world/advance', [$game, 'advance']);
         $router->get('/v1/training', [$game, 'training']);
         $router->post('/v1/training', [$game, 'addTraining']);
         $router->delete('/v1/training/{id}', [$game, 'removeTraining']);

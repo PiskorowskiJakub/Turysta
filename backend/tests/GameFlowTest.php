@@ -111,6 +111,32 @@ final class GameFlowTest extends TestCase
         $this->assertSame($before + $rest['cost_cents'], $this->coins());
     }
 
+    public function testChapterAdvanceNeedsRequirementsAndSharesQueue(): void
+    {
+        $this->fund(10000000);
+        try {
+            $this->training->addChapter($this->userId);
+            $this->fail('Awans bez wymaganych poziomow powinien byc odrzucony');
+        } catch (ApiException $e) {
+            $this->assertSame('requirements_not_met', $e->errorCode);
+        }
+
+        $this->pdo->exec("UPDATE user_skills SET level = 50 WHERE user_id = {$this->userId}");
+        $state = $this->training->addChapter($this->userId);
+        $this->assertSame('chapter', $state['active']['kind']);
+
+        $state = $this->training->add($this->userId, $this->skillId());
+        $this->assertCount(1, $state['queue']);
+        $this->assertSame('skill', $state['queue'][0]['kind']);
+
+        try {
+            $this->training->addChapter($this->userId);
+            $this->fail('Drugi awans naraz powinien byc odrzucony');
+        } catch (ApiException $e) {
+            $this->assertSame('chapter_in_queue', $e->errorCode);
+        }
+    }
+
     public function testCancellingActiveRefundsHalfAndStartsNext(): void
     {
         $this->fund(1000000);

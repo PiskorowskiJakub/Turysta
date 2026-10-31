@@ -35,8 +35,9 @@ final class Settler
     {
         while (true) {
             $stmt = $this->pdo->prepare(
-                "SELECT q.*, s.name AS skill_name FROM training_queue q
-                 JOIN skill_definitions s ON s.id = q.skill_id
+                "SELECT q.*, s.name AS skill_name, c.name AS chapter_name FROM training_queue q
+                 LEFT JOIN skill_definitions s ON s.id = q.skill_id
+                 LEFT JOIN chapters c ON c.id = q.chapter_id
                  WHERE q.user_id = ? AND q.status = 'active' AND q.ends_at <= ? LIMIT 1 FOR UPDATE"
             );
             $stmt->execute([$userId, Clock::fmt($now)]);
@@ -47,21 +48,30 @@ final class Settler
 
             $this->pdo->prepare("UPDATE training_queue SET status = 'done', finished_at = ends_at WHERE id = ?")
                 ->execute([$row['id']]);
-            $this->pdo->prepare('UPDATE user_skills SET level = level + 1 WHERE user_id = ? AND skill_id = ?')
-                ->execute([$userId, $row['skill_id']]);
-            Wallet::apply(
-                $this->pdo,
-                $userId,
-                'points',
-                Economy::trainingPoints((int) $row['target_level']),
-                'training_points',
-                'training',
-                (int) $row['id']
-            );
-            Notifier::add($this->pdo, $userId, 'training_finished', [
-                'skill' => $row['skill_name'],
-                'level' => (int) $row['target_level'],
-            ]);
+            if ($row['chapter_id'] !== null) {
+                $chapters = new ChapterService($this->pdo);
+                $this->pdo->prepare(
+                    'UPDATE player_progress SET chapter_id = ?, world_id = (SELECT world_id FROM chapters WHERE id = ?) WHERE user_id = ?'
+                )->execute([$row['chapter_id'], $row['chapter_id'], $userId]);
+                Wallet::apply($this->pdo, $userId, 'points', $chapters->points((int) $row['chapter_id']), 'chapter_points', 'training', (int) $row['id']);
+                Notifier::add($this->pdo, $userId, 'chapter_finished', ['chapter' => $row['chapter_name']]);
+            } else {
+                $this->pdo->prepare('UPDATE user_skills SET level = level + 1 WHERE user_id = ? AND skill_id = ?')
+                    ->execute([$userId, $row['skill_id']]);
+                Wallet::apply(
+                    $this->pdo,
+                    $userId,
+                    'points',
+                    Economy::trainingPoints((int) $row['target_level']),
+                    'training_points',
+                    'training',
+                    (int) $row['id']
+                );
+                Notifier::add($this->pdo, $userId, 'training_finished', [
+                    'skill' => $row['skill_name'],
+                    'level' => (int) $row['target_level'],
+                ]);
+            }
 
             // Nastepne startuje dokladnie w chwili konca poprzedniego, nawet gdy rozliczamy pozniej.
             TrainingQueue::startNext($this->pdo, $userId, Clock::parse((string) $row['ends_at']));

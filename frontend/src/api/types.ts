@@ -14,7 +14,14 @@ export interface Me {
   };
   wallet: { coins_cents: number; tickets: number; points: number };
   skills: { code: string; name: string; level: number }[];
-  progress: { world_id: number; chapter_id: number } | null;
+  progress: {
+    world_id: number;
+    chapter_id: number;
+    world_ordinal: number;
+    world_name: string;
+    chapter_ordinal: number;
+    chapter_name: string;
+  } | null;
   active: { training: unknown; job: unknown };
   notifications_unread: number;
 }
@@ -59,7 +66,9 @@ export interface SkillsResponse {
 
 export interface TrainingItem {
   id: number;
-  skill: { id: number; code: string; name: string };
+  kind: 'skill' | 'chapter';
+  skill: { id: number; code: string; name: string } | null;
+  chapter: { id: number; name: string; ordinal: number } | null;
   target_level: number;
   cost_cents: number;
   duration_seconds: number;
@@ -111,4 +120,39 @@ export interface NotificationItem {
   payload: Record<string, string | number>;
   created_at: string;
   read: boolean;
+}
+
+export interface WorldChapter {
+  id: number;
+  ordinal: number;
+  name: string;
+  status: 'done' | 'current' | 'next' | 'in_queue' | 'locked';
+}
+
+export interface ChapterRequirement {
+  skill_id: number;
+  code: string;
+  name: string;
+  required: number;
+  level: number;
+  met: boolean;
+}
+
+export interface WorldResponse {
+  server_time: string;
+  world: { id: number; ordinal: number; name: string } | null;
+  chapters: WorldChapter[];
+  current: { id: number; ordinal: number; name: string; story_text: string | null } | null;
+  next: {
+    id: number;
+    ordinal: number;
+    name: string;
+    world_name: string;
+    new_world: boolean;
+    duration_seconds: number;
+    cost_cents: number;
+    requirements: ChapterRequirement[];
+    requirements_met: boolean;
+    in_queue: boolean;
+  } | null;
 }

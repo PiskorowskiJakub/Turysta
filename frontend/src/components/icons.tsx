@@ -1,7 +1,7 @@
 export type IconName =
   | 'home' | 'profile' | 'skills' | 'job' | 'logout' | 'login' | 'register'
   | 'coins' | 'ticket' | 'points' | 'fitness' | 'orientation' | 'trade'
-  | 'medal' | 'market' | 'hostel' | 'expedition';
+  | 'sprout' | 'rank' | 'medal' | 'market' | 'hostel' | 'expedition';
 
 const PATHS: Record<IconName, string> = {
   home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
@@ -17,6 +17,8 @@ const PATHS: Record<IconName, string> = {
   fitness: 'M3 20l6-11 4 6 3-4 5 9zM16 4v5l4-1.5z',
   orientation: 'M12 3a9 9 0 1 0 0.01 0M15.5 8.5l-2 5-5 2 2-5z',
   trade: 'M12 3v18M5 21h14M5 7h14M7 7l-3 7a3.5 3.5 0 0 0 6 0zM17 7l-3 7a3.5 3.5 0 0 0 6 0z',
+  sprout: 'M12 21v-9M12 13C12 9 9 7 5 7c0 4 3 6 7 6M12 15c0-3 2-5 6-5 0 3-2 5-6 5',
+  rank: 'M5 21V4M5 4h12l-2 4 2 4H5',
   medal: 'M8 3h8l-2 6h-4zM12 9a6 6 0 1 0 0.01 0M12 13l1 2 2 .3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1L9 15.3l2-.3z',
   market: 'M3 9l2-5h14l2 5M3 9h18M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M5 12v8h14v-8M9 20v-5h6v5',
   hostel: 'M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6M16 6V4h2v4',
@@ -27,6 +29,45 @@ export function Icon({ name }: { name: IconName }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d={PATHS[name]} />
+    </svg>
+  );
+}
+
+/**
+ * Roslinka z 10 stopniami rozwoju: ziarno -> kielek -> lodyga z lisciami -> pak -> kwiat.
+ * Stopien odpowiada numerowi rozdzialu w swiecie (1-10).
+ */
+export function Sprout({ stage }: { stage: number }) {
+  const s = Math.max(1, Math.min(10, Math.round(stage)));
+  const base = 21;
+  const h = s === 1 ? 0 : 2.5 + (s - 1) * 1.9; // wysokosc lodygi
+  const top = base - h;
+  const pairs = s <= 2 ? 0 : Math.min(4, Math.floor((s - 1) / 2));
+  const leaves = [];
+  for (let i = 0; i < pairs; i += 1) {
+    const y = base - h * (0.3 + i * 0.22);
+    const size = 3.2 + i * 0.5;
+    leaves.push(
+      <path key={`l${i}`} d={`M12 ${y} q${-size - 1} ${-0.5} ${-size - 1.5} ${-size} q${size} 0 ${size + 1.5} ${size}z`} fill="currentColor" fillOpacity="0.85" />,
+      <path key={`r${i}`} d={`M12 ${y - 1} q${size + 1} ${-0.5} ${size + 1.5} ${-size} q${-size} 0 ${-size - 1.5} ${size}z`} fill="currentColor" fillOpacity="0.85" />,
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 21h14" />
+      {s === 1 && <circle cx="12" cy="19" r="1.6" fill="currentColor" />}
+      {s >= 2 && <path d={`M12 ${base}V${top}`} />}
+      {s === 2 && <path d={`M12 ${top} q-3 0 -3.5 -3 q3 0 3.5 3z`} fill="currentColor" />}
+      {leaves}
+      {s >= 3 && s <= 8 && <path d={`M12 ${top} q-2.6 -1 -2.6 -3.8 q2.8 0.2 2.6 3.8z`} fill="currentColor" />}
+      {s === 9 && <ellipse cx="12" cy={top - 2} rx="2" ry="2.8" fill="currentColor" />}
+      {s === 10 && (
+        <g fill="currentColor">
+          <circle cx="12" cy={top - 3} r="1.6" />
+          <circle cx="9.6" cy={top - 1.2} r="1.6" /><circle cx="14.4" cy={top - 1.2} r="1.6" />
+          <circle cx="10.4" cy={top - 4.6} r="1.6" /><circle cx="13.6" cy={top - 4.6} r="1.6" />
+        </g>
+      )}
     </svg>
   );
 }

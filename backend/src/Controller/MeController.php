@@ -92,7 +92,11 @@ final class MeController
             $stmt->fetchAll()
         );
 
-        $stmt = $this->pdo->prepare('SELECT world_id, chapter_id FROM player_progress WHERE user_id = ?');
+        $stmt = $this->pdo->prepare(
+            'SELECT p.world_id, p.chapter_id, w.ordinal AS world_ordinal, w.name AS world_name, c.ordinal AS chapter_ordinal, c.name AS chapter_name
+             FROM player_progress p JOIN worlds w ON w.id = p.world_id JOIN chapters c ON c.id = p.chapter_id
+             WHERE p.user_id = ?'
+        );
         $stmt->execute([$uid]);
         $progress = $stmt->fetch() ?: null;
 
@@ -117,7 +121,14 @@ final class MeController
                 'points' => (int) $wallet['points'],
             ],
             'skills' => $skills,
-            'progress' => $progress ? ['world_id' => (int) $progress['world_id'], 'chapter_id' => (int) $progress['chapter_id']] : null,
+            'progress' => $progress ? [
+                'world_id' => (int) $progress['world_id'],
+                'chapter_id' => (int) $progress['chapter_id'],
+                'world_ordinal' => (int) $progress['world_ordinal'],
+                'world_name' => $progress['world_name'],
+                'chapter_ordinal' => (int) $progress['chapter_ordinal'],
+                'chapter_name' => $progress['chapter_name'],
+            ] : null,
             'active' => ['training' => $this->training->state($uid)['active'], 'job' => $this->jobs->active($uid)],
             'notifications_unread' => (int) $stmt->fetchColumn(),
         ];

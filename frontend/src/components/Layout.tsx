@@ -75,7 +75,14 @@ export default function Layout() {
                 <span className="av">
                   {avatar ? <img src={avatar.image_url} alt="" /> : me.user.character_name.slice(0, 1).toUpperCase()}
                 </span>
-                <span className="who">{me.user.character_name}</span>
+                <span className="who-wrap">
+                  <span className="who">{me.user.character_name}</span>
+                  {me.progress && (
+                    <span className="where">
+                      {t('world.worldNo', { n: me.progress.world_ordinal })} · {t('world.chapterNo', { n: me.progress.chapter_ordinal })}
+                    </span>
+                  )}
+                </span>
               </div>
               <ul className="plaque-stats">
                 <li title={t('wallet.coins')}>

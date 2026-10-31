@@ -84,7 +84,10 @@
     "job_cooldown": "Musisz odpocząć przed kolejną pracą.",
     "no_active_job": "Nie masz aktywnej pracy.",
     "not_found": "Nie znaleziono.",
-    "job_cancel_forfeit": "Jeśli przerwiesz tę pracę, nie dostaniesz nic."
+    "job_cancel_forfeit": "Jeśli przerwiesz tę pracę, nie dostaniesz nic.",
+    "chapter_in_queue": "Awans na kolejny stopień jest już w kolejce.",
+    "requirements_not_met": "Nie spełniasz wymagań do awansu.",
+    "max_chapter": "Osiągnięto ostatni dostępny stopień."
   },
   "training": {
     "title": "Szkolenia",
@@ -107,8 +110,16 @@
     "queued": "W kolejce",
     "practiced": "Ćwiczone umiejętności ({{used}}/{{max}})",
     "basic": "Umiejętności podstawowe",
-    "tierAt": "Odznaka od poziomu {{level}}",
-    "endsAt": "Koniec"
+    "tierAt": "wymagany poziom {{level}}",
+    "endsAt": "Koniec",
+    "tier": {
+      "bronze": "Odznaka brązowa",
+      "silver": "Odznaka srebrna",
+      "gold": "Odznaka złota",
+      "diamond": "Odznaka diamentowa",
+      "ruby": "Odznaka rubinowa"
+    },
+    "rank": "Stopień"
   },
   "jobs": {
     "title": "Praca",
@@ -144,7 +155,21 @@
     "title": "Powiadomienia",
     "markRead": "Oznacz jako przeczytane",
     "training_finished": "Ukończono szkolenie: {{skill}} (poziom {{level}}).",
-    "job_finished": "Praca „{{job}}” zakończona. Wypłata: {{amount}} mon."
+    "job_finished": "Praca „{{job}}” zakończona. Wypłata: {{amount}} mon.",
+    "chapter_finished": "Awansowałeś na stopień: {{chapter}}."
   },
-  "fact": "Ciekawostka"
+  "fact": "Ciekawostka",
+  "world": {
+    "title": "Świat",
+    "stages": "Rozdziały świata",
+    "newChapter": "Nowy rozdział:",
+    "newWorld": "Nowy świat: {{name}}",
+    "advance": "Monet: {{cost}}",
+    "inQueue": "Awans jest już w kolejce.",
+    "needSkills": "Brakuje poziomów umiejętności.",
+    "last": "Osiągnięto ostatni dostępny stopień. Kolejne światy już wkrótce.",
+    "worldNo": "Świat {{n}}",
+    "chapterNo": "Rozdział {{n}}",
+    "progress": "Postęp w świecie"
+  }
 }

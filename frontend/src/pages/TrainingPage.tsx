@@ -1,25 +1,33 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
-import type { SkillInfo, SkillsResponse, TrainingItem, TrainingState } from '../api/types';
+import type { SkillInfo, SkillsResponse, TrainingItem, TrainingState, WorldResponse } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import { Icon, type IconName } from '../components/icons';
 import ProgressBar from '../components/ProgressBar';
 import Tabs, { type TabItem } from '../components/Tabs';
+import WorldPanel from '../components/WorldPanel';
 import { formatCoins, formatDuration, formatEndTime } from '../format';
 import { usePolling } from '../hooks/usePolling';
 import { useServerNow } from '../hooks/useServerNow';
 
-// Progi poziomow dla kolejnych odznak (do potwierdzenia projektowo).
-const TIERS = [
-  { min: 10, name: 'bronze' },
-  { min: 25, name: 'silver' },
-  { min: 50, name: 'gold' },
-  { min: 100, name: 'diamond' },
+// Odznaki umiejetnosci bez konca: na start 3 z wysokimi progami. Slot 4 i 5 sa zarezerwowane
+// (kolor w CSS jest gotowy) - wlaczamy je, wpisujac 'min' (null = jeszcze nieaktywna). Maksymalnie 5.
+const TIERS: { name: string; min: number | null }[] = [
+  { name: 'bronze', min: 50 },
+  { name: 'silver', min: 100 },
+  { name: 'gold', min: 200 },
+  { name: 'diamond', min: null },
+  { name: 'ruby', min: null },
 ];
+const ACTIVE_TIERS = TIERS.filter((t): t is { name: string; min: number } => t.min !== null);
 
 // Kolejne kategorie dodajemy tutaj; podzakladki przez pole children.
-const SKILL_TABS: TabItem[] = [{ path: 'podstawowe', label: 'Podstawowe' }];
+const SKILL_TABS: TabItem[] = [
+  { path: 'podstawowe', label: 'Podstawowe' },
+  { path: 'swiat', label: 'Świat' },
+];
 
 const SKILL_ICONS: Record<string, IconName> = { fitness: 'fitness', orientation: 'orientation', trade: 'trade' };
 
@@ -32,6 +40,9 @@ export default function TrainingPage() {
   const { me, refresh } = useAuth();
   const [skills, setSkills] = useState<SkillsResponse | null>(null);
   const [training, setTraining] = useState<TrainingState | null>(null);
+  const [world, setWorld] = useState<WorldResponse | null>(null);
+  const { pathname } = useLocation();
+  const tab = pathname.endsWith('/swiat') ? 'swiat' : 'podstawowe';
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const settledFor = useRef<string | null>(null);
@@ -46,12 +57,14 @@ export default function TrainingPage() {
 
   const load = useCallback(async () => {
     try {
-      const [s, q] = await Promise.all([
+      const [s, q, w] = await Promise.all([
         api<SkillsResponse>('GET', '/skills'),
         api<TrainingState>('GET', '/training'),
+        api<WorldResponse>('GET', '/world'),
       ]);
       setSkills(s);
       setTraining(q);
+      setWorld(w);
       void refresh();
     } catch (e) {
       setError(message(e));
@@ -62,6 +75,11 @@ export default function TrainingPage() {
     void load();
   }, [load]);
   usePolling(() => void load(), 20000);
+
+  // Po wejsciu w zakladke Swiat odswiezamy dane od razu.
+  useEffect(() => {
+    if (tab === 'swiat') void load();
+  }, [tab, load]);
 
   // Gdy odliczanie dojdzie do zera, dociagamy stan (serwer rozlicza przy odczycie).
   const active = training?.active ?? null;
@@ -78,6 +96,7 @@ export default function TrainingPage() {
     try {
       setTraining(await fn());
       setSkills(await api<SkillsResponse>('GET', '/skills'));
+      setWorld(await api<WorldResponse>('GET', '/world'));
       void refresh();
     } catch (e) {
       setError(message(e));
@@ -85,6 +104,8 @@ export default function TrainingPage() {
       setBusy(false);
     }
   };
+
+  const onAdvance = () => run(() => api<TrainingState>('POST', '/world/advance'));
 
   const onAdd = (skillId: number) => run(() => api<TrainingState>('POST', '/training', { skill_id: skillId }));
 
@@ -119,14 +140,14 @@ export default function TrainingPage() {
     const progress = isActive && end > start ? (now - start) / (end - start) : 0;
     return (
       <article key={item.id} className="tile train-card">
-        <h3>{skillName(item.skill.code, item.skill.name)}</h3>
+        <h3>{item.chapter ? item.chapter.name : item.skill ? skillName(item.skill.code, item.skill.name) : ''}</h3>
         <div className="train-meta">
           <span>{t('training.cost')}: <strong>{formatCoins(item.cost_cents)} {t('wallet.coinsShort')}</strong></span>
           <span>{isActive ? t('training.remaining') : t('training.duration')}: <strong>{formatDuration(remaining)}</strong></span>
-          <span>{t('training.level')}: <strong>{item.target_level}</strong></span>
+          <span>{item.chapter ? t('training.rank') : t('training.level')}: <strong>{item.target_level}</strong></span>
           <span>{t('training.endsAt')}: <strong>{formatEndTime(endTimes.get(item.id) ?? now, now)}</strong></span>
         </div>
-        <div className="icon-tile"><SkillIcon code={item.skill.code} /></div>
+        <div className="icon-tile">{item.skill ? <SkillIcon code={item.skill.code} /> : <Icon name="rank" />}</div>
         {isActive ? <ProgressBar value={progress} /> : <span className="queued-note">{t('training.queued')}</span>}
         {item.cancellable && (
           <button type="button" className="btn" disabled={busy} onClick={() => onRemove(item, isActive)}>
@@ -170,11 +191,21 @@ export default function TrainingPage() {
           </button>
         </article>
         <div className="tier-row">
-          {TIERS.map((tier) => (
-            <span key={tier.min} className={`tier tier-${tier.name}` + (s.level >= tier.min ? ' reached' : '')} title={t('training.tierAt', { level: tier.min })}>
-              <Icon name="medal" />
-            </span>
-          ))}
+          {ACTIVE_TIERS.map((tier) => {
+            const reached = s.level >= tier.min;
+            const tip = `${t(`training.tier.${tier.name}`)}: ${t('training.tierAt', { level: tier.min })}`;
+            return (
+              <span
+                key={tier.name}
+                tabIndex={0}
+                className={`tier tier-${tier.name}` + (reached ? ' reached' : '')}
+                data-tip={tip}
+                aria-label={tip}
+              >
+                {reached ? <SkillIcon code={s.code} /> : <Icon name="medal" />}
+              </span>
+            );
+          })}
         </div>
       </div>
     );
@@ -197,10 +228,14 @@ export default function TrainingPage() {
         )}
       </section>
 
-      <section className="panel trail-blue">
-        <h2>{t('training.basic')}</h2>
-        <div className="skill-grid">{skills.skills.map(skillCard)}</div>
-      </section>
+      {tab === 'swiat' ? (
+        world && <WorldPanel world={world} coins={coins} queueFull={full} busy={busy} onAdvance={onAdvance} />
+      ) : (
+        <section className="panel trail-blue">
+          <h2>{t('training.basic')}</h2>
+          <div className="skill-grid">{skills.skills.map(skillCard)}</div>
+        </section>
+      )}
     </>
   );
 }
