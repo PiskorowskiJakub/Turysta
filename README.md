@@ -16,6 +16,7 @@ docker compose up -d
 docker compose exec backend php bin/migrate.php
 ```
 
+- Administrator (dostęp do panelu `/admin`, m.in. tablica ogłoszeń): `docker compose exec backend php bin/set_role.php adres@email.pl admin` (odebranie roli: `... adres@email.pl player`)
 - Gra: http://localhost (Traefik)
 - Health: http://localhost/api/health
 - phpMyAdmin: http://127.0.0.1:8081

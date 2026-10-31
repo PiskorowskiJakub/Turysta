@@ -9,8 +9,10 @@ use Turysta\Auth\AuthService;
 use Turysta\Auth\RateLimiter;
 use Turysta\Auth\Session;
 use Turysta\Controller\AccountController;
+use Turysta\Controller\AdminController;
 use Turysta\Controller\AuthController;
 use Turysta\Controller\GameController;
+use Turysta\Controller\HomeController;
 use Turysta\Controller\MeController;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
@@ -30,6 +32,8 @@ final class App
         $jobs = new JobService($pdo, $settler);
         $account = new AccountController(new AccountService($pdo, new Mailer(), new RateLimiter($pdo)), new MeController($pdo, $settler, $training, $jobs));
         $me = new MeController($pdo, $settler, $training, $jobs);
+        $home = new HomeController($pdo);
+        $admin = new AdminController($pdo);
         $game = new GameController($pdo, $settler, $training, $jobs);
 
         $router = new Router();
@@ -58,6 +62,14 @@ final class App
         $router->patch('/v1/account/profile', [$account, 'updateProfile']);
         $router->put('/v1/account/email', [$account, 'changeEmail']);
         $router->put('/v1/account/password', [$account, 'changePassword']);
+
+        $router->get('/v1/home', [$home, 'show']);
+        $router->post('/v1/daily-reward/claim', [$home, 'claimDaily']);
+
+        $router->get('/v1/admin/announcements', [$admin, 'announcements']);
+        $router->post('/v1/admin/announcements', [$admin, 'createAnnouncement']);
+        $router->put('/v1/admin/announcements/{id}', [$admin, 'updateAnnouncement']);
+        $router->delete('/v1/admin/announcements/{id}', [$admin, 'deleteAnnouncement']);
 
         $router->get('/v1/facts/today', [$game, 'todayFact']);
         $router->get('/v1/skills', [$game, 'skills']);

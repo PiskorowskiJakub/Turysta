@@ -8,6 +8,7 @@ Dokumentacja zasad gry. Szczegóły ekonomii i symulacji znajdziesz w [głównym
 - [Tabela awansów](#tabela-awansów-wymagania-czas-i-koszt)
 - [Dlaczego wymagania umiejętności bazowych są nierówne](#dlaczego-wymagania-umiejętności-bazowych-są-nierówne)
 - [Punkty (ranking i prestiż)](#punkty-ranking-i-prestiż)
+- [Codzienna nagroda](#codzienna-nagroda)
 - [Odznaki](#odznaki)
 
 ## Światy
@@ -103,6 +104,24 @@ Punkty to miara postępu gracza do rankingu i rang, nie waluta (nie da się nimi
 | Praca | 1 punkt za każde pełne 50 dk wypłaty |
 
 Punkty za szkolenia są proporcjonalne do czasu, a nie do poziomu, więc rosną mniej więcej liniowo z czasem gry: dłuższe szkolenia dają więcej, a aktywny i zwykły gracz zdobywają podobnie dużo, bo tempo ogranicza kolejka. Awanse i wejścia do światów są największymi pojedynczymi nagrodami.
+
+## Codzienna nagroda
+
+Raz dziennie (doba liczona w czasie polskim, od północy) możesz odebrać nagrodę na stronie głównej, w panelu „Codzienna wędrówka". Każdy kolejny dzień serii daje więcej:
+
+| Dzień serii | Dukaty | Punkty |
+|---|---|---|
+| 1 | 0,20 dk | 1 |
+| 2 | 0,30 dk | 2 |
+| 3 | 0,40 dk | 3 |
+| 4 | 0,50 dk | 4 |
+| 5 | 0,70 dk | 5 |
+| 6 | 1,00 dk | 7 |
+| 7 | 2,00 dk | 10 |
+
+- Nagrodę odbierasz sam przyciskiem, raz na dobę.
+- Jeśli pominiesz dzień, seria zaczyna się od dnia 1.
+- Po dniu 7 następnego dnia seria zaczyna się od dnia 1.
 
 ## Odznaki
 

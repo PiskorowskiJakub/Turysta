@@ -22,7 +22,7 @@ export default function RegisterPage() {
   const [general, setGeneral] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  if (status === 'authed') return <Navigate to="/profil" replace />;
+  if (status === 'authed') return <Navigate to="/" replace />;
 
   const set = (name: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [name]: e.target.value }));

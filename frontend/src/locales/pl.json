@@ -12,7 +12,8 @@
     "soon": "wkrótce",
     "skills": "Umiejętności",
     "badges": "Odznaki",
-    "ranking": "Ranking"
+    "ranking": "Ranking",
+    "admin": "Panel admina"
   },
   "footer": "Copyright © 2026 Jakub Piskorowski",
   "tagline": "Turysta – gra o podróżowaniu",
@@ -21,7 +22,8 @@
     "coins": "Dukaty",
     "tickets": "Bilety",
     "points": "Punkty",
-    "coinsShort": "dk"
+    "coinsShort": "dk",
+    "pointsShort": "pkt"
   },
   "gender": {
     "f": "Kobieta",
@@ -107,7 +109,73 @@
     "title": "Witaj w Turyście",
     "lead": "Ruszaj w drogę, szkol się, pracuj i zdobywaj odznaki. Zacznij od założenia konta.",
     "leadAuthed": "Miło Cię widzieć! Twoja wyprawa czeka.",
-    "toProfile": "Przejdź do profilu"
+    "welcome": "Witaj z powrotem, {{name}}!",
+    "board": {
+      "title": "Tablica ogłoszeń",
+      "empty": "Na szlaku cisza. Nowe ogłoszenia pojawią się tutaj.",
+      "pinned": "Przypięte"
+    },
+    "season": {
+      "title": "Wydarzenia sezonowe",
+      "soon": "Wkrótce: świąteczne i jednorazowe wydarzenia z unikalnymi odznakami."
+    },
+    "daily": {
+      "title": "Codzienna wędrówka",
+      "lead": "Odbieraj nagrodę każdego dnia. Im dłuższa seria, tym lepsza nagroda.",
+      "day": "Dzień {{n}}",
+      "claim": "Odbierz nagrodę",
+      "claimed": "Dzisiejsza nagroda odebrana. Wróć jutro!",
+      "rule": "Przerwa w serii zaczyna ją od nowa. Po 7. dniu seria zaczyna się od dnia 1."
+    },
+    "invite": {
+      "title": "Zaproś znajomych",
+      "lead": "Wyślij znajomym swój link. Kiedy założą konto przez ten link, dołączą do Twojej ekipy.",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano"
+    },
+    "log": {
+      "title": "Dziennik wyprawy",
+      "training": "Szkolenie",
+      "job": "Praca",
+      "daily": "Codzienna nagroda",
+      "notifications": "Powiadomienia",
+      "none": "Brak",
+      "free": "Wolny, wybierz pracę",
+      "dailyReady": "Do odebrania",
+      "dailyDone": "Odebrana",
+      "unread": "Nowe: {{n}}"
+    },
+    "search": {
+      "title": "Szukaj gracza",
+      "placeholder": "Nazwa gracza",
+      "go": "Szukaj"
+    },
+    "top": {
+      "title": "Czołówka rankingu",
+      "all": "Cały ranking"
+    }
+  },
+  "admin": {
+    "title": "Panel administratora",
+    "newAnnouncement": "Nowe ogłoszenie",
+    "editAnnouncement": "Edycja ogłoszenia",
+    "fieldTitle": "Tytuł",
+    "fieldBody": "Treść",
+    "published": "Opublikowane",
+    "pinned": "Przypięte na górze",
+    "add": "Dodaj ogłoszenie",
+    "save": "Zapisz zmiany",
+    "cancel": "Anuluj",
+    "created": "Ogłoszenie dodane.",
+    "saved": "Zmiany zapisane.",
+    "deleted": "Ogłoszenie usunięte.",
+    "list": "Wszystkie ogłoszenia",
+    "empty": "Nie ma jeszcze żadnych ogłoszeń.",
+    "statusPublished": "opublikowane",
+    "statusDraft": "szkic",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "confirmDelete": "Na pewno usuń"
   },
   "register": {
     "title": "Załóż konto",
@@ -187,6 +255,8 @@
     "back": "Wróć na stronę główną"
   },
   "errors": {
+    "forbidden": "Brak uprawnień do tej strony.",
+    "already_claimed": "Dzisiejszą nagrodę już odebrano.",
     "gender_cooldown": "Płeć możesz zmienić raz na 30 dni.",
     "tutorial_done": "Samouczek został już ukończony.",
     "player_not_found": "Nie znaleziono takiego gracza.",

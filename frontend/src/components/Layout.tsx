@@ -114,6 +114,7 @@ export default function Layout() {
                 <MenuLink to="/praca" icon="job" label={t('nav.jobs')} />
                 <MenuLink to="/odznaki" icon="medal" label={t('nav.badges')} />
                 <MenuLink to="/ranking" icon="points" label={t('nav.ranking')} />
+                {me?.user.role === 'admin' && <MenuLink to="/admin" icon="admin" label={t('nav.admin')} />}
                 <li>
                   <span className="menu-item disabled" aria-disabled="true" title={t('nav.soon')}>
                     <Icon name="team" />

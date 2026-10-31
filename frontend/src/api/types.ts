@@ -237,3 +237,48 @@ export interface PlayerProfile {
   badges: EarnedBadge[];
   featured: string[];
 }
+
+export interface Announcement {
+  id: number;
+  title: string;
+  body: string;
+  published: boolean;
+  pinned: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DailyRewardDay {
+  day: number;
+  coins_cents: number;
+  points: number;
+}
+
+export interface DailyRewardState {
+  days: DailyRewardDay[];
+  /** Ile dni biezacego cyklu jest juz odebranych (0-7). */
+  claimed_through: number;
+  claimed_today: boolean;
+  next_day: number | null;
+  can_claim: boolean;
+}
+
+export interface TopRow {
+  id: number;
+  rank: number;
+  name: string;
+  points: number;
+  me: boolean;
+}
+
+export interface HomeResponse {
+  announcements: Announcement[];
+  daily: DailyRewardState;
+  top: TopRow[];
+  referral_code: string | null;
+}
+
+export interface ClaimResponse {
+  daily: DailyRewardState;
+  reward: DailyRewardDay;
+}

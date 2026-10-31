@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
 import type { RankingResponse, SkillsResponse } from '../api/types';
@@ -11,8 +11,10 @@ export default function RankingPage() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(50);
-  const [search, setSearch] = useState('');
-  const [query, setQuery] = useState('');
+  const [params] = useSearchParams();
+  const initialSearch = (params.get('q') ?? '').slice(0, 40);
+  const [search, setSearch] = useState(initialSearch);
+  const [query, setQuery] = useState(initialSearch.trim());
   const [world, setWorld] = useState(0);
   const [worlds, setWorlds] = useState<number[]>([]);
 
@@ -32,10 +34,10 @@ export default function RankingPage() {
 
   useEffect(() => {
     let cancelled = false;
-    const params = new URLSearchParams({ page: String(page), per_page: String(perPage) });
-    if (query) params.set('q', query);
-    if (world > 0) params.set('world', String(world));
-    api<RankingResponse>('GET', `/ranking?${params.toString()}`)
+    const qs = new URLSearchParams({ page: String(page), per_page: String(perPage) });
+    if (query) qs.set('q', query);
+    if (world > 0) qs.set('world', String(world));
+    api<RankingResponse>('GET', `/ranking?${qs.toString()}`)
       .then((r) => {
         if (cancelled) return;
         setData(r);

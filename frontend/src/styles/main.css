@@ -483,3 +483,62 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .req-world.unmet { border-left-color: var(--orange); }
 .req-world.unmet svg, .req-world.unmet .req-count { color: var(--orange); }
 .world-event { margin: 6px 0; padding: 6px 10px; border-left: 3px solid var(--orange); background: var(--tile); border-radius: 6px; font-size: 12px; color: var(--cream); }
+
+/* ---------- Strona glowna ("Plecak") ---------- */
+.home-grid { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 16px; align-items: start; }
+.home-main, .home-side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.home-main > .panel, .home-side > .panel { margin: 0; }
+.home-welcome h1 { margin: 0 0 6px; }
+.home-welcome p { margin: 0; }
+.board { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.board li { padding: 10px 12px; border-radius: 10px; background: rgba(0, 0, 0, 0.14); border: 1.5px dashed var(--line); }
+.board li.pinned { border-color: var(--orange); }
+.board h3 { margin: 0; font-size: 16px; }
+.board time { display: block; margin: 2px 0 6px; font-size: 12px; color: var(--muted); }
+.board p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.season { opacity: .85; }
+.daily-days { list-style: none; margin: 12px 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.daily-day { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px; border-radius: 10px; text-align: center; background: rgba(0, 0, 0, 0.18); border: 2px solid var(--line); }
+.daily-day-no { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.daily-day-icon svg { width: 26px; height: 26px; color: var(--muted); }
+.daily-day-reward { display: flex; flex-direction: column; font-size: 13px; font-weight: 600; line-height: 1.2; }
+.daily-day-reward small { font-size: 11px; font-weight: 400; color: var(--muted); }
+.daily-day.done { border-color: var(--moss); }
+.daily-day.done .daily-day-icon svg { color: var(--moss); }
+.daily-day.today { border-color: var(--orange); background: rgba(240, 138, 60, 0.14); }
+.daily-day.today .daily-day-icon svg { color: var(--orange); }
+.daily-day.future { opacity: .75; }
+.daily-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.daily-actions p { margin: 0; }
+.invite-row, .search-row { display: flex; gap: 8px; }
+.invite-row input, .search-row input { flex: 1; min-width: 0; }
+.log-list { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.log-list li { display: flex; gap: 10px; align-items: flex-start; }
+.log-list li > span { display: flex; flex-direction: column; min-width: 0; }
+.log-list small { color: var(--muted); overflow-wrap: anywhere; }
+.log-dot { flex: none; width: 12px; height: 12px; margin-top: 5px; border-radius: 50%; background: #566358; box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.25); }
+.log-dot.on { background: var(--moss); }
+.log-dot.warn { background: var(--orange); }
+.log-wallet { list-style: none; margin: 0; padding: 8px 0 0; display: flex; gap: 16px; border-top: 1.5px solid var(--line); }
+.log-wallet li { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.log-wallet svg { width: 18px; height: 18px; color: var(--orange); }
+.top-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.top-list li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 6px; align-items: baseline; padding: 3px 6px; border-radius: 8px; }
+.top-list li.me { background: rgba(240, 138, 60, 0.14); }
+.top-list li.gap { margin-top: 6px; }
+.top-list a { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.top-more { margin: 8px 0 0; font-size: 14px; }
+.admin-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.admin-list li { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; padding: 8px 10px; border-radius: 10px; background: rgba(0, 0, 0, 0.14); }
+.admin-list-main { display: flex; flex-direction: column; min-width: 0; }
+.admin-list-main small { color: var(--muted); }
+.check-row { display: flex; gap: 18px; flex-wrap: wrap; }
+.check-row label { display: flex; align-items: center; gap: 6px; }
+.invite-row input, .search-row input, .field textarea { padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg2); color: var(--cream); font: inherit; }
+.field textarea { width: 100%; resize: vertical; }
+.invite-row input:focus, .search-row input:focus, .field textarea:focus { outline: 0; border-color: var(--orange); }
+.field textarea[aria-invalid='true'] { border-color: var(--error); }
+@media (max-width: 900px) {
+  .home-grid { grid-template-columns: minmax(0, 1fr); }
+  .daily-days { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}

@@ -55,6 +55,20 @@ final class Economy
     public const POINTS_WORLD_TRANSITION = 1000;   // wejscie do nowego swiata
     public const POINTS_JOB_CENTS = 5000;          // 1 punkt za kazde pelne 50 dukatow z pracy
 
+    /**
+     * Codzienna nagroda za odebranie: dni serii 1-7, kazdy kolejny wart wiecej; po 7. dniu seria zaczyna sie od 1.
+     * Kolejnosc: [dukaty w setnych, punkty].
+     */
+    public const DAILY_REWARDS = [
+        1 => [20, 1],
+        2 => [30, 2],
+        3 => [40, 3],
+        4 => [50, 4],
+        5 => [70, 5],
+        6 => [100, 7],
+        7 => [200, 10],
+    ];
+
     /** Punkty za ukonczone szkolenie umiejetnosci: proporcjonalne do jego czasu, minimum 1. */
     public static function trainingPoints(int $durationSeconds): int
     {

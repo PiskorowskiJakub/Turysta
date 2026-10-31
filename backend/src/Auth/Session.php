@@ -72,6 +72,16 @@ final class Session
         ]);
     }
 
+    /** @return array<string,mixed> wiersz uzytkownika z rola administratora */
+    public static function requireAdmin(Request $request): array
+    {
+        $user = self::requireUser($request);
+        if ($user['role'] !== 'admin') {
+            throw new ApiException(403, 'forbidden', 'Brak uprawnień administratora.');
+        }
+        return $user;
+    }
+
     /** @return array<string,mixed> wiersz uzytkownika */
     public static function requireUser(Request $request): array
     {

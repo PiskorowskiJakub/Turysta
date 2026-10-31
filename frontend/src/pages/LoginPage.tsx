@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  if (status === 'authed') return <Navigate to="/profil" replace />;
+  if (status === 'authed') return <Navigate to="/" replace />;
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ export default function LoginPage() {
     setError(null);
     try {
       const user = await login(email, password);
-      navigate(user.tutorial_done ? '/profil' : '/samouczek', { replace: true });
+      navigate(user.tutorial_done ? '/' : '/samouczek', { replace: true });
     } catch (err) {
       setError(err instanceof ApiError ? t(`errors.${err.code}`, { defaultValue: err.message }) : t('errors.network'));
     } finally {

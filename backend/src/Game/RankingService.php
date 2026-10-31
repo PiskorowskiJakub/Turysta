@@ -27,6 +27,35 @@ final class RankingService
     }
 
     /**
+     * Czolowka rankingu (miejsca z remisami jak w page()).
+     *
+     * @return list<array<string,mixed>>
+     */
+    public function top(int $n, int $viewerId): array
+    {
+        $n = max(1, min(20, $n));
+        $stmt = $this->pdo->query(
+            "SELECT u.id, u.character_name AS name, w.points,
+                    RANK() OVER (ORDER BY w.points DESC) AS rnk,
+                    ROW_NUMBER() OVER (ORDER BY w.points DESC, u.id) AS pos
+             FROM users u JOIN wallets w ON w.user_id = u.id
+             WHERE u.status = 'active'
+             ORDER BY pos LIMIT $n"
+        );
+        $rows = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $rows[] = [
+                'id' => (int) $row['id'],
+                'rank' => (int) $row['rnk'],
+                'name' => (string) $row['name'],
+                'points' => (int) $row['points'],
+                'me' => (int) $row['id'] === $viewerId,
+            ];
+        }
+        return $rows;
+    }
+
+    /**
      * @return array<string,mixed>
      */
     public function page(int $userId, int $page, int $perPage, string $search, int $world): array

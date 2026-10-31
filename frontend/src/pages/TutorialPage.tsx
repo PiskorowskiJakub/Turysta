@@ -25,7 +25,7 @@ export default function TutorialPage() {
       .catch(() => setError(t('errors.network')));
   }, [t]);
 
-  if (me?.user.tutorial_done) return <Navigate to="/profil" replace />;
+  if (me?.user.tutorial_done) return <Navigate to="/" replace />;
 
   const onFinish = async () => {
     if (!gender || avatarId === null) return;
@@ -33,7 +33,7 @@ export default function TutorialPage() {
     setError(null);
     try {
       await saveProfile(gender, avatarId);
-      navigate('/profil', { replace: true });
+      navigate('/', { replace: true });
     } catch (err) {
       setError(err instanceof ApiError ? t(`errors.${err.code}`, { defaultValue: err.message }) : t('errors.network'));
     } finally {
