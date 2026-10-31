@@ -11,7 +11,8 @@ Monorepo:
 
 ```
 cp .env.example .env   # uzupelnij hasla
-docker compose --profile dev up --build -d
+docker compose build
+docker compose up -d
 docker compose exec backend php bin/migrate.php
 ```
 
