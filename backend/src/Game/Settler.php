@@ -58,6 +58,7 @@ final class Settler
             } else {
                 $this->pdo->prepare('UPDATE user_skills SET level = level + 1 WHERE user_id = ? AND skill_id = ?')
                     ->execute([$userId, $row['skill_id']]);
+                BadgeService::sync($this->pdo, $userId, Clock::parse((string) $row['ends_at']));
                 Wallet::apply(
                     $this->pdo,
                     $userId,

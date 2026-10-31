@@ -5,7 +5,9 @@ namespace Turysta\Controller;
 
 use PDO;
 use Turysta\Auth\Session;
+use Turysta\Game\BadgeService;
 use Turysta\Game\ChapterService;
+use Turysta\Game\Clock;
 use Turysta\Game\JobService;
 use Turysta\Game\RankingService;
 use Turysta\Game\Settler;
@@ -146,6 +148,15 @@ final class GameController
         $this->pdo->prepare('UPDATE notifications SET read_at = UTC_TIMESTAMP() WHERE user_id = ? AND read_at IS NULL')
             ->execute([$uid]);
         return [200, ['message' => 'Oznaczono jako przeczytane.']];
+    }
+
+    /** Zdobyte odznaki z data zdobycia. @return array{0:int,1:array<string,mixed>} */
+    public function badges(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        BadgeService::sync($this->pdo, $uid, Clock::now($this->pdo));
+        return [200, ['badges' => BadgeService::earned($this->pdo, $uid)]];
     }
 
     /** Ranking graczy: ?page=&per_page=&q=&world= @return array{0:int,1:array<string,mixed>} */

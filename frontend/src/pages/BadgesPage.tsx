@@ -1,21 +1,27 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
-import type { SkillInfo, SkillsResponse } from '../api/types';
-import { SPECIAL_BADGES, tiersFor } from '../badges';
-import { useAuth } from '../auth/AuthContext';
+import type { BadgesResponse, EarnedBadge, SkillInfo, SkillsResponse } from '../api/types';
+import { SPECIAL_BADGES, TIER_ORDER, tiersFor } from '../badges';
 import { Icon, SkillIcon } from '../components/icons';
+import { formatDate } from '../format';
 import { usePolling } from '../hooks/usePolling';
+
+interface Highest extends EarnedBadge {
+  count: number;
+}
 
 export default function BadgesPage() {
   const { t } = useTranslation();
-  const { me } = useAuth();
   const [skills, setSkills] = useState<SkillsResponse | null>(null);
+  const [earned, setEarned] = useState<EarnedBadge[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
-      setSkills(await api<SkillsResponse>('GET', '/skills'));
+      const [s, b] = await Promise.all([api<SkillsResponse>('GET', '/skills'), api<BadgesResponse>('GET', '/badges')]);
+      setSkills(s);
+      setEarned(b.badges);
     } catch (e) {
       setError(e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network'));
     }
@@ -26,91 +32,65 @@ export default function BadgesPage() {
   }, [load]);
   usePolling(() => void load(), 30000);
 
-  if (!skills) return <p className="panel page-message">{error ?? t('loading')}</p>;
+  if (!skills || !earned) return <p className="panel page-message">{error ?? t('loading')}</p>;
+
+  // Dla kazdej umiejetnosci / odznaki specjalnej pokazujemy tylko najwyzszy zdobyty stopien.
+  const highest = new Map<string, Highest>();
+  for (const b of earned) {
+    const cur = highest.get(b.group);
+    const count = (cur?.count ?? 0) + 1;
+    if (!cur || TIER_ORDER.indexOf(b.tier) > TIER_ORDER.indexOf(cur.tier)) highest.set(b.group, { ...b, count });
+    else cur.count = count;
+  }
 
   const skillName = (s: SkillInfo) => t(`skills.${s.code}`, { defaultValue: s.name });
-  const earned = (s: SkillInfo) => tiersFor(s.max_level).filter((tier) => s.level >= tier.min).length;
-  const stats = me?.stats ?? { active_days: 0, longest_streak: 0 };
-  const specialEarned = (b: (typeof SPECIAL_BADGES)[number]) => b.tiers.filter((tier) => b.value(stats) >= tier.min).length;
-  const specialGot = SPECIAL_BADGES.reduce((n, b) => n + specialEarned(b), 0);
+  const earnedCount = (groups: string[]) => groups.reduce((n, g) => n + (highest.get(g)?.count ?? 0), 0);
+  const specialGroups = SPECIAL_BADGES.map((b) => b.code);
   const specialTotal = SPECIAL_BADGES.reduce((n, b) => n + b.tiers.length, 0);
-  const total = skills.skills.reduce((sum, s) => sum + tiersFor(s.max_level).length, 0) + specialTotal;
-  const got = skills.skills.reduce((sum, s) => sum + earned(s), 0) + specialGot;
+  const total = skills.skills.reduce((n, s) => n + tiersFor(s.max_level).length, 0) + specialTotal;
+  const got = earnedCount(skills.skills.map((s) => s.code)) + earnedCount(specialGroups);
 
-  // Pokazujemy tylko zdobyte odznaki; umiejetnosc bez zadnej odznaki jest ukryta.
-  const badgeChip = (s: SkillInfo) => (
-    <div key={s.id} className="badge-chip">
-      <span className="badge-chip-tiers">
-        {tiersFor(s.max_level).filter((tier) => s.level >= tier.min).map((tier) => {
-          const tip = `${t(`training.tier.${tier.name}`)}: ${t('training.tierAt', { level: tier.min })}`;
-          return (
-            <span key={tier.name} tabIndex={0} className={`tier tier-${tier.name} reached`} data-tip={tip} aria-label={tip}>
-              <SkillIcon code={s.code} />
-            </span>
-          );
-        })}
-      </span>
-      <span className="badge-chip-name">{skillName(s)}</span>
-    </div>
+  const square = (group: string, name: string, unit: 'level' | 'days') => {
+    const h = highest.get(group);
+    if (!h) return null;
+    const need = unit === 'days' ? t('badges.tierDays', { n: h.min }) : t('training.tierAt', { level: h.min });
+    const tip = `${t(`training.tier.${h.tier}`)}: ${need}`;
+    return (
+      <div key={group} className="badge-sq" tabIndex={0} data-tip={tip} aria-label={`${name}. ${tip}`}>
+        <div className={`badge-sq-icon tier-${h.tier}`}><SkillIcon code={group} /></div>
+        <span className="badge-sq-name">{name}</span>
+        <span className="badge-sq-date">{formatDate(h.earned_at)}</span>
+      </div>
+    );
+  };
+
+  const header = (title: string, count: number, max: number, locked = false) => (
+    <h2>
+      {title}
+      {locked ? <Icon name="lock" /> : <span className="badge-count">{t('badges.count', { got: count, total: max })}</span>}
+    </h2>
   );
 
-  const section = (title: string, list: SkillInfo[], locked = false) => {
-    const shown = list.filter((s) => earned(s) > 0);
-    const count = list.reduce((n, s) => n + earned(s), 0);
+  const skillSection = (title: string, list: SkillInfo[], locked = false) => {
+    const shown = list.filter((s) => highest.has(s.code));
     const max = list.reduce((n, s) => n + tiersFor(s.max_level).length, 0);
     return (
       <section key={title} className={'panel trail-blue' + (locked ? ' badge-locked' : '')}>
-        <h2>
-          {title}
-          {locked ? <Icon name="lock" /> : <span className="badge-count">{t('badges.count', { got: count, total: max })}</span>}
-        </h2>
+        {header(title, earnedCount(list.map((s) => s.code)), max, locked)}
         {locked ? (
           <p className="page-message">{t('badges.worldLocked')}</p>
         ) : shown.length === 0 ? (
           <p className="page-message">{t('badges.none')}</p>
         ) : (
-          <div className="badge-list">{shown.map(badgeChip)}</div>
+          <div className="badge-squares">{shown.map((s) => square(s.code, skillName(s), 'level'))}</div>
         )}
       </section>
     );
   };
 
-  // Odznaki specjalne: te, ktore juz sa w grze (seria dni, dni aktywnosci). Niezdobyte sa ukryte.
-  const specialSection = () => {
-    const shown = SPECIAL_BADGES.filter((b) => specialEarned(b) > 0);
-    return (
-      <section key="special" className="panel trail-blue">
-        <h2>
-          {t('badges.special')}
-          <span className="badge-count">{t('badges.count', { got: specialGot, total: specialTotal })}</span>
-        </h2>
-        <p className="page-message">{t('badges.specialInfo')}</p>
-        {shown.length === 0 ? (
-          <p className="page-message">{t('badges.none')}</p>
-        ) : (
-          <div className="badge-list">
-            {shown.map((b) => (
-              <div key={b.code} className="badge-chip">
-                <span className="badge-chip-tiers">
-                  {b.tiers.filter((tier) => b.value(stats) >= tier.min).map((tier) => {
-                    const tip = `${t(`training.tier.${tier.name}`)}: ${t('badges.tierDays', { n: tier.min })}`;
-                    return (
-                      <span key={tier.name} tabIndex={0} className={`tier tier-${tier.name} reached`} data-tip={tip} aria-label={tip}>
-                        <SkillIcon code={b.code} />
-                      </span>
-                    );
-                  })}
-                </span>
-                <span className="badge-chip-name">{t(`badges.${b.code}`)}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-    );
-  };
+  const specialShown = SPECIAL_BADGES.filter((b) => highest.has(b.code));
 
-  // Kategorie, ktore dopiero dojda: odznaki specjalne i sezonowe (eventy cykliczne oraz jednorazowe).
+  // Kategorie, ktore dopiero dojda: odznaki sezonowe (eventy cykliczne oraz jednorazowe).
   const futureSection = (title: string, info: string) => (
     <section key={title} className="panel trail-blue">
       <h2>
@@ -129,11 +109,19 @@ export default function BadgesPage() {
         <p className="page-message">{t('badges.intro')}</p>
         <p className="badge-total">{t('badges.total', { got, total })}</p>
       </section>
-      {specialSection()}
+      <section className="panel trail-blue">
+        {header(t('badges.special'), earnedCount(specialGroups), specialTotal)}
+        <p className="page-message">{t('badges.specialInfo')}</p>
+        {specialShown.length === 0 ? (
+          <p className="page-message">{t('badges.none')}</p>
+        ) : (
+          <div className="badge-squares">{specialShown.map((b) => square(b.code, t(`badges.${b.code}`), 'days'))}</div>
+        )}
+      </section>
       {futureSection(t('badges.seasonal'), t('badges.seasonalInfo'))}
-      {section(t('training.basic'), skills.skills.filter((s) => s.world_ordinal === null))}
+      {skillSection(t('training.basic'), skills.skills.filter((s) => s.world_ordinal === null))}
       {skills.worlds.map((w) =>
-        section(
+        skillSection(
           t('training.worldSkills', { n: w.ordinal, name: w.name }),
           skills.skills.filter((s) => s.world_ordinal === w.ordinal),
           w.ordinal > skills.current_world,

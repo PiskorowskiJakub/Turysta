@@ -30,6 +30,7 @@ final class ActivityTracker
                     last_active_day = ?
                  WHERE user_id = ? AND (last_active_day IS NULL OR last_active_day < ?)'
             )->execute([$day, $day, $userId, $day]);
+            BadgeService::sync($pdo, $userId, Clock::now($pdo));
         } catch (Throwable $e) {
             error_log('ActivityTracker: ' . $e->getMessage());
         }

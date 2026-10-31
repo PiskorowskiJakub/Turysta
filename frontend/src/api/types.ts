@@ -204,3 +204,14 @@ export interface RankingResponse {
   rows: RankingRow[];
   me: { rank: number; points: number; page: number } | null;
 }
+
+export interface EarnedBadge {
+  group: string;
+  tier: string;
+  min: number;
+  earned_at: string;
+}
+
+export interface BadgesResponse {
+  badges: EarnedBadge[];
+}

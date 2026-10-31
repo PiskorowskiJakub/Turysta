@@ -10,6 +10,8 @@ use Turysta\Auth\AuthService;
 use Turysta\Auth\RateLimiter;
 use Turysta\Database;
 use Turysta\Game\ActivityTracker;
+use Turysta\Game\BadgeService;
+use Turysta\Game\Clock;
 use Turysta\Game\JobService;
 use Turysta\Game\RankingService;
 use Turysta\Game\Settler;
@@ -423,5 +425,32 @@ final class GameFlowTest extends TestCase
         // Znaki specjalne LIKE sa traktowane doslownie.
         $this->assertSame(0, $ranking->page($this->userId, 1, 50, '%%%', 0)['total']);
         $this->assertSame(0, $ranking->page($this->userId, 1, 50, 'zzzz-nie-ma-takiego-gracza', 0)['total']);
+    }
+
+    public function testBadgesAreAwardedOncePerTierWithEarnDate(): void
+    {
+        $this->pdo->exec("UPDATE user_skills SET level = 100 WHERE user_id = {$this->userId} AND skill_id = {$this->skillId()}");
+        $this->pdo->exec("INSERT IGNORE INTO user_stats (user_id) VALUES ({$this->userId})");
+        $this->pdo->exec("UPDATE user_stats SET longest_streak = 60, active_days = 100 WHERE user_id = {$this->userId}");
+
+        $at = Clock::parse('2026-03-05 10:00:00');
+        BadgeService::sync($this->pdo, $this->userId, $at);
+        // Powtorne wywolanie niczego nie zmienia ani nie przesuwa daty.
+        BadgeService::sync($this->pdo, $this->userId, Clock::parse('2026-09-09 10:00:00'));
+
+        $byKey = [];
+        foreach (BadgeService::earned($this->pdo, $this->userId) as $b) {
+            $byKey[$b['group'] . '.' . $b['tier']] = $b;
+        }
+        $this->assertArrayHasKey('special_streak.diamond', $byKey);
+        $this->assertArrayNotHasKey('special_streak.ruby', $byKey);
+        $this->assertArrayHasKey('special_activity.silver', $byKey);
+        $this->assertArrayNotHasKey('special_activity.gold', $byKey);
+        $this->assertSame(60, $byKey['special_streak.diamond']['min']);
+        $this->assertStringStartsWith('2026-03-05T10:00:00', $byKey['special_streak.diamond']['earned_at']);
+
+        $skill = (string) $this->pdo->query("SELECT code FROM skill_definitions WHERE id = {$this->skillId()}")->fetchColumn();
+        $this->assertArrayHasKey($skill . '.silver', $byKey);
+        $this->assertArrayNotHasKey($skill . '.gold', $byKey);
     }
 }
