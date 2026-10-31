@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCoins, formatDuration } from './format';
+import { formatCoins, formatDuration, formatEndTime } from './format';
 
 describe('formatCoins', () => {
   it('formatuje setne czesci jako monety z przecinkiem', () => {
@@ -18,5 +18,14 @@ describe('formatDuration', () => {
     expect(formatDuration(86401)).toBe('1 d 0:00:01');
     expect(formatDuration(90061)).toBe('1 d 1:01:01');
     expect(formatDuration(-5)).toBe('0:00:00');
+  });
+});
+
+describe('formatEndTime', () => {
+  const now = new Date(2026, 9, 31, 12, 0).getTime();
+  it('pokazuje dzis, jutro i date', () => {
+    expect(formatEndTime(new Date(2026, 9, 31, 14, 32).getTime(), now)).toBe('dziś 14:32');
+    expect(formatEndTime(new Date(2026, 10, 1, 3, 5).getTime(), now)).toBe('jutro 03:05');
+    expect(formatEndTime(new Date(2026, 10, 3, 9, 0).getTime(), now)).toBe('3 lis 09:00');
   });
 });

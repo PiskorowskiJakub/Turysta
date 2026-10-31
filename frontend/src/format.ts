@@ -15,3 +15,16 @@ export function formatDuration(totalSeconds: number): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${d > 0 ? `${d} d ` : ''}${h}:${pad(m)}:${pad(sec)}`;
 }
+
+const MONTHS = ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paz', 'lis', 'gru'];
+
+/** Godzina zakonczenia w czasie lokalnym: "dziś 14:32", "jutro 03:10" albo "2 lis 14:32". */
+export function formatEndTime(endMs: number, nowMs: number): string {
+  const end = new Date(endMs);
+  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const dayDiff = Math.round((startOfDay(end) - startOfDay(new Date(nowMs))) / 86400000);
+  const hm = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
+  if (dayDiff === 0) return `dziś ${hm}`;
+  if (dayDiff === 1) return `jutro ${hm}`;
+  return `${end.getDate()} ${MONTHS[end.getMonth()]} ${hm}`;
+}

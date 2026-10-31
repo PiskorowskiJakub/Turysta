@@ -6,7 +6,7 @@ import { useAuth } from '../auth/AuthContext';
 import { Icon, type IconName } from '../components/icons';
 import ProgressBar from '../components/ProgressBar';
 import Tabs, { type TabItem } from '../components/Tabs';
-import { formatCoins, formatDuration } from '../format';
+import { formatCoins, formatDuration, formatEndTime } from '../format';
 import { usePolling } from '../hooks/usePolling';
 import { useServerNow } from '../hooks/useServerNow';
 
@@ -100,6 +100,18 @@ export default function TrainingPage() {
   const coins = me?.wallet.coins_cents ?? 0;
   const skillName = (code: string, name: string) => t(`skills.${code}`, { defaultValue: name });
 
+  // Przewidywane zakonczenie: aktywne konczy sie o ends_at, kolejne startuja jedno po drugim.
+  const endTimes = new Map<number, number>();
+  let cursor = now;
+  if (training.active) {
+    cursor = training.active.ends_at ? Date.parse(training.active.ends_at) : now;
+    endTimes.set(training.active.id, cursor);
+  }
+  for (const q of training.queue) {
+    cursor += q.duration_seconds * 1000;
+    endTimes.set(q.id, cursor);
+  }
+
   const trainCard = (item: TrainingItem, isActive: boolean) => {
     const end = item.ends_at ? Date.parse(item.ends_at) : 0;
     const start = item.started_at ? Date.parse(item.started_at) : 0;
@@ -112,6 +124,7 @@ export default function TrainingPage() {
           <span>{t('training.cost')}: <strong>{formatCoins(item.cost_cents)} {t('wallet.coinsShort')}</strong></span>
           <span>{isActive ? t('training.remaining') : t('training.duration')}: <strong>{formatDuration(remaining)}</strong></span>
           <span>{t('training.level')}: <strong>{item.target_level}</strong></span>
+          <span>{t('training.endsAt')}: <strong>{formatEndTime(endTimes.get(item.id) ?? now, now)}</strong></span>
         </div>
         <div className="icon-tile"><SkillIcon code={item.skill.code} /></div>
         {isActive ? <ProgressBar value={progress} /> : <span className="queued-note">{t('training.queued')}</span>}
