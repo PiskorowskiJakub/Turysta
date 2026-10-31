@@ -8,7 +8,8 @@ import { Icon, type IconName } from '../components/icons';
 import ProgressBar from '../components/ProgressBar';
 import Tabs, { type TabItem } from '../components/Tabs';
 import WorldPanel from '../components/WorldPanel';
-import { formatCoins, formatDuration, formatEndTime } from '../format';
+import Coins from '../components/Coins';
+import { formatCoins, formatCoinsFull, formatDuration, formatEndTime } from '../format';
 import { usePolling } from '../hooks/usePolling';
 import { useServerNow } from '../hooks/useServerNow';
 
@@ -142,7 +143,7 @@ export default function TrainingPage() {
       <article key={item.id} className="tile train-card">
         <h3>{item.chapter ? item.chapter.name : item.skill ? skillName(item.skill.code, item.skill.name) : ''}</h3>
         <div className="train-meta">
-          <span>{t('training.cost')}: <strong>{formatCoins(item.cost_cents)} {t('wallet.coinsShort')}</strong></span>
+          <span>{t('training.cost')}: <strong><Coins cents={item.cost_cents} /> {t('wallet.coinsShort')}</strong></span>
           <span>{isActive ? t('training.remaining') : t('training.duration')}: <strong>{formatDuration(remaining)}</strong></span>
           <span>{item.chapter ? t('training.rank') : t('training.level')}: <strong>{item.target_level}</strong></span>
           <span>{t('training.endsAt')}: <strong>{formatEndTime(endTimes.get(item.id) ?? now, now)}</strong></span>
@@ -187,7 +188,11 @@ export default function TrainingPage() {
             type="button"
             className="btn"
             disabled={busy || full || cantAfford || s.next_level === null}
-            title={full ? t('training.queueFull') : cantAfford ? t('training.noFunds') : undefined}
+            title={
+              s.next_level === null
+                ? undefined
+                : `${full ? t('training.queueFull') : cantAfford ? t('training.noFunds') : t('training.cost')}: ${formatCoinsFull(cost)} ${t('wallet.coinsShort')}`
+            }
             onClick={() => void onAdd(s.id)}
           >
             {label}

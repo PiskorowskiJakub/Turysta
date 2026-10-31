@@ -4,6 +4,7 @@ import { api, ApiError } from '../api/client';
 import type { JobInfo, JobsResponse } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import ProgressBar from '../components/ProgressBar';
+import Coins from '../components/Coins';
 import { formatCoins, formatDuration } from '../format';
 import { usePolling } from '../hooks/usePolling';
 import { useServerNow } from '../hooks/useServerNow';
@@ -88,7 +89,7 @@ export default function JobsPage() {
     const jobIcon: IconName = JOB_ICONS[j.code] ?? 'job';
     let timeLabel = formatDuration(j.duration_seconds);
     const reward = isActive && active ? active.job.reward_cents : j.reward_cents;
-    let earnLabel = formatCoins(reward);
+    let earnCents = reward;
     let progress = 0;
     let noStop = false;
 
@@ -98,9 +99,9 @@ export default function JobsPage() {
       progress = end > start ? Math.min(1, Math.max(0, (now - start) / (end - start))) : 1;
       timeLabel = formatDuration(Math.max(0, (end - now) / 1000));
       noStop = active.earned_cents === null;
-      earnLabel = noStop
-        ? formatCoins(reward)
-        : formatCoins(Math.floor((reward * Math.max(0, Math.min(end - start, now - start))) / Math.max(1, end - start)));
+      earnCents = noStop
+        ? reward
+        : Math.floor((reward * Math.max(0, Math.min(end - start, now - start))) / Math.max(1, end - start));
     }
 
     return (
@@ -114,7 +115,7 @@ export default function JobsPage() {
         <div className="job-stats">
           <div className="lines">
             <div className="line">{isActive ? t('jobs.timeLeft') : t('jobs.time')}: <strong>{timeLabel}</strong></div>
-            <div className="line">{isActive && !noStop ? t('jobs.earnedShort') : t('jobs.reward')}: <strong>{earnLabel}</strong></div>
+            <div className="line">{isActive && !noStop ? t('jobs.earnedShort') : t('jobs.reward')}: <strong><Coins cents={earnCents} /></strong></div>
           </div>
           {isActive ? (
             <button type="button" className="btn" disabled={busy} onClick={onStop}>

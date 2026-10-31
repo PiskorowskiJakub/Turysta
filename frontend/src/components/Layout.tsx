@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import type { Avatar } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
-import { formatCoins } from '../format';
+import Coins from './Coins';
 import AvatarImage from './AvatarImage';
 import { Icon, type IconName } from './icons';
 
@@ -88,7 +88,7 @@ export default function Layout() {
               <ul className="plaque-stats">
                 <li title={t('wallet.coins')}>
                   <Icon name="coins" />
-                  <span><b>{formatCoins(me.wallet.coins_cents)}</b><small>{t('wallet.coins')}</small></span>
+                  <span><b><Coins cents={me.wallet.coins_cents} /></b><small>{t('wallet.coins')}</small></span>
                 </li>
                 <li className="tickets" title={t('wallet.tickets')}>
                   <Icon name="ticket" />

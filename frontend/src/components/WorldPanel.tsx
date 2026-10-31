@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { WorldResponse } from '../api/types';
-import { formatCoins, formatDuration } from '../format';
+import { formatCoins, formatCoinsFull, formatDuration } from '../format';
 import { Icon, Sprout, type IconName } from './icons';
 
 const SKILL_ICONS: Record<string, IconName> = { fitness: 'fitness', orientation: 'orientation', trade: 'trade' };
@@ -93,7 +93,7 @@ export default function WorldPanel({ world, coins, queueFull, busy, onAdvance }:
                 ))}
               </ul>
               <button type="button" className="btn" disabled={busy || !!reason} title={reason} onClick={onAdvance}>
-                {t('world.advance', { cost: formatCoins(next.cost_cents) })}
+                <span title={formatCoinsFull(next.cost_cents)}>{t('world.advance', { cost: formatCoins(next.cost_cents) })}</span>
               </button>
               {reason && <small className="world-reason">{reason}</small>}
             </>

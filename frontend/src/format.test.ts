@@ -1,11 +1,33 @@
 import { describe, expect, it } from 'vitest';
-import { formatCoins, formatDuration, formatEndTime } from './format';
+import { formatCoins, formatCoinsFull, formatDuration, formatEndTime } from './format';
 
 describe('formatCoins', () => {
-  it('formatuje setne czesci jako monety z przecinkiem', () => {
-    expect(formatCoins(12353)).toBe('123,53');
+  const n = '\u00a0';
+  it('do 100 dk pokazuje dwa miejsca po przecinku', () => {
     expect(formatCoins(0)).toBe('0,00');
-    expect(formatCoins(24700)).toBe('247,00');
+    expect(formatCoins(3)).toBe('0,03');
+    expect(formatCoins(12353)).toBe('123');
+    expect(formatCoins(9999)).toBe('99,99');
+  });
+  it('od 100 dk pokazuje calosci (w dol) ze spacjami', () => {
+    expect(formatCoins(10000)).toBe('100');
+    expect(formatCoins(24799)).toBe('247');
+    expect(formatCoins(123400)).toBe(`1${n}234`);
+    expect(formatCoins(9999999)).toBe(`99${n}999`);
+  });
+  it('od 100 tys. dk skraca do tys., mln, mld', () => {
+    expect(formatCoins(12345600)).toBe(`123,4${n}tys.`);
+    expect(formatCoins(10000000)).toBe(`100${n}tys.`);
+    expect(formatCoins(123456789)).toBe(`1,2${n}mln`);
+    expect(formatCoins(350000000000)).toBe(`3,5${n}mld`);
+  });
+});
+
+describe('formatCoinsFull', () => {
+  it('pokazuje pelna wartosc ze separatorami', () => {
+    const n = '\u00a0';
+    expect(formatCoinsFull(3)).toBe('0,03');
+    expect(formatCoinsFull(123456789)).toBe(`1${n}234${n}567,89`);
   });
 });
 
