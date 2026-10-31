@@ -34,7 +34,7 @@ if (!$confirmed) {
 
 $pdo->beginTransaction();
 try {
-    foreach (['training_queue', 'job_runs', 'chapter_log', 'notifications', 'user_earnings', 'user_items', 'user_badges', 'ledger_entries', 'user_stats'] as $table) {
+    foreach (['training_queue', 'job_runs', 'chapter_log', 'notifications', 'user_earnings', 'user_items', 'user_badges', 'user_featured_badges', 'ledger_entries', 'user_stats'] as $table) {
         $pdo->prepare("DELETE FROM $table WHERE user_id = ?")->execute([$uid]);
     }
     $pdo->prepare('UPDATE user_skills SET level = 0 WHERE user_id = ?')->execute([$uid]);

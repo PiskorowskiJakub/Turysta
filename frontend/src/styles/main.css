@@ -245,15 +245,34 @@ h1, h2, h3 { font-weight: 600; }
 .ranking-pager { display: flex; flex-wrap: nowrap; white-space: nowrap; overflow-x: auto; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 13px; }
 .ranking-pager .btn { padding: 4px 12px; }
 
+/* ---------- Znak zapytania z wyjasnieniem ---------- */
+.info-hint { position: absolute; top: 12px; right: 14px; z-index: 6; }
+.info-hint-btn { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 2px solid var(--line); background: var(--bg2); color: var(--muted); cursor: help; }
+.info-hint-btn svg { width: 16px; height: 16px; }
+.info-hint-btn:hover, .info-hint-btn:focus-visible { color: var(--orange); border-color: var(--orange); outline: 0; }
+.info-hint-text {
+  position: absolute; top: calc(100% + 6px); right: 0; width: min(280px, 70vw); padding: 8px 12px; border-radius: 10px;
+  background: #0a110d; color: var(--cream); border: 1.5px solid var(--line); font-size: 13px; line-height: 1.4;
+  opacity: 0; pointer-events: none; transition: opacity 0.12s;
+}
+.info-hint:hover .info-hint-text, .info-hint-btn:focus-visible + .info-hint-text, .info-hint-text.open { opacity: 1; }
+
 /* ---------- Ksiazeczka odznak ---------- */
 .badge-total { margin: 6px 0 0; font-weight: 600; color: var(--orange); }
 .badge-squares { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 12px; }
 .badge-sq { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; cursor: help; outline: 0; }
 .badge-sq-icon {
-  width: 100%; max-width: 88px; aspect-ratio: 1; border-radius: 12px; display: grid; place-items: center;
+  position: relative; width: 100%; max-width: 88px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
   background: radial-gradient(circle at 30% 25%, #fff6 0, transparent 45%), var(--tier); box-shadow: 0 0 14px -2px var(--tier);
 }
 .badge-sq-icon svg { width: 56%; height: 56%; color: #1a1208; stroke-width: 2.4; }
+.badge-sub { margin: 16px 0 6px; font-size: 1rem; color: var(--orange); }
+.badge-actions { display: flex; gap: 8px; margin-top: 12px; }
+button.badge-sq { background: none; border: 2px solid transparent; border-radius: 14px; padding: 6px 4px; color: inherit; font: inherit; }
+button.badge-sq:hover, button.badge-sq:focus-visible { border-color: var(--line); }
+button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); }
+.badge-sq-check { position: absolute; right: -2px; top: -2px; width: 24px; height: 24px; border-radius: 50%; background: var(--orange); display: grid; place-items: center; }
+.badge-sq-check svg { width: 14px !important; height: 14px !important; color: #1a1208; stroke-width: 3.2; }
 .badge-sq-name { font-size: 13px; font-weight: 600; line-height: 1.25; }
 .badge-sq-date { font-size: 12px; color: var(--muted); }
 .badge-sq::after {

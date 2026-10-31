@@ -4,8 +4,11 @@ import { api, ApiError } from '../api/client';
 import type { BadgesResponse, EarnedBadge, SkillInfo, SkillsResponse } from '../api/types';
 import { SPECIAL_BADGES, TIER_ORDER, tiersFor } from '../badges';
 import { Icon, SkillIcon } from '../components/icons';
+import InfoHint from '../components/InfoHint';
 import { formatDate } from '../format';
 import { usePolling } from '../hooks/usePolling';
+
+const MAX_FEATURED = 5;
 
 interface Highest extends EarnedBadge {
   count: number;
@@ -15,6 +18,10 @@ export default function BadgesPage() {
   const { t } = useTranslation();
   const [skills, setSkills] = useState<SkillsResponse | null>(null);
   const [earned, setEarned] = useState<EarnedBadge[] | null>(null);
+  const [featured, setFeatured] = useState<string[]>([]);
+  const [picking, setPicking] = useState(false);
+  const [selection, setSelection] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -22,6 +29,7 @@ export default function BadgesPage() {
       const [s, b] = await Promise.all([api<SkillsResponse>('GET', '/skills'), api<BadgesResponse>('GET', '/badges')]);
       setSkills(s);
       setEarned(b.badges);
+      setFeatured(b.featured);
     } catch (e) {
       setError(e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network'));
     }
@@ -50,18 +58,55 @@ export default function BadgesPage() {
   const total = skills.skills.reduce((n, s) => n + tiersFor(s.max_level).length, 0) + specialTotal;
   const got = earnedCount(skills.skills.map((s) => s.code)) + earnedCount(specialGroups);
 
-  const square = (group: string, name: string, unit: 'level' | 'days') => {
+  const meta = (group: string): { name: string; unit: 'level' | 'days' } => {
+    const sk = skills.skills.find((x) => x.code === group);
+    return sk ? { name: skillName(sk), unit: 'level' } : { name: t(`badges.${group}`), unit: 'days' };
+  };
+
+  const circle = (group: string, onClick?: () => void, selected = false) => {
     const h = highest.get(group);
     if (!h) return null;
+    const { name, unit } = meta(group);
     const need = unit === 'days' ? t('badges.tierDays', { n: h.min }) : t('training.tierAt', { level: h.min });
     const tip = `${t(`training.tier.${h.tier}`)}: ${need}`;
-    return (
-      <div key={group} className="badge-sq" tabIndex={0} data-tip={tip} aria-label={`${name}. ${tip}`}>
-        <div className={`badge-sq-icon tier-${h.tier}`}><SkillIcon code={group} /></div>
+    const body = (
+      <>
+        <div className={`badge-sq-icon tier-${h.tier}`}>
+          <SkillIcon code={group} />
+          {selected && <span className="badge-sq-check"><Icon name="check" /></span>}
+        </div>
         <span className="badge-sq-name">{name}</span>
         <span className="badge-sq-date">{formatDate(h.earned_at)}</span>
-      </div>
+      </>
     );
+    return onClick ? (
+      <button key={group} type="button" className={'badge-sq selectable' + (selected ? ' selected' : '')} data-tip={tip} aria-pressed={selected} aria-label={`${name}. ${tip}`} onClick={onClick}>
+        {body}
+      </button>
+    ) : (
+      <div key={group} className="badge-sq" tabIndex={0} data-tip={tip} aria-label={`${name}. ${tip}`}>{body}</div>
+    );
+  };
+
+  const earnedGroups = [...highest.keys()];
+  const startPicking = () => {
+    setSelection(featured.filter((g) => highest.has(g)));
+    setPicking(true);
+  };
+  const toggle = (g: string) =>
+    setSelection((cur) => (cur.includes(g) ? cur.filter((x) => x !== g) : cur.length >= MAX_FEATURED ? cur : [...cur, g]));
+  const saveFeatured = async () => {
+    setSaving(true);
+    try {
+      const r = await api<{ featured: string[] }>('PUT', '/badges/featured', { groups: selection });
+      setFeatured(r.featured);
+      setPicking(false);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network'));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const header = (title: string, count: number, max: number, locked = false) => (
@@ -82,7 +127,7 @@ export default function BadgesPage() {
         ) : shown.length === 0 ? (
           <p className="page-message">{t('badges.none')}</p>
         ) : (
-          <div className="badge-squares">{shown.map((s) => square(s.code, skillName(s), 'level'))}</div>
+          <div className="badge-squares">{shown.map((s) => circle(s.code))}</div>
         )}
       </section>
     );
@@ -93,11 +138,8 @@ export default function BadgesPage() {
   // Kategorie, ktore dopiero dojda: odznaki sezonowe (eventy cykliczne oraz jednorazowe).
   const futureSection = (title: string, info: string) => (
     <section key={title} className="panel trail-blue">
-      <h2>
-        {title}
-        <span className="badge-count">{t('badges.count', { got: 0, total: 0 })}</span>
-      </h2>
-      <p className="page-message">{info}</p>
+      <InfoHint text={info} label={t('badges.moreInfo')} />
+      <h2>{title}</h2>
       <p className="page-message badge-soon">{t('badges.soon')}</p>
     </section>
   );
@@ -108,14 +150,40 @@ export default function BadgesPage() {
         <h1>{t('badges.title')}</h1>
         <p className="page-message">{t('badges.intro')}</p>
         <p className="badge-total">{t('badges.total', { got, total })}</p>
+
+        <h3 className="badge-sub">{t('badges.featured')}</h3>
+        {picking ? (
+          <>
+            <p className="page-message">{t('badges.pickInfo', { n: selection.length, max: MAX_FEATURED })}</p>
+            <div className="badge-squares">{earnedGroups.map((g) => circle(g, () => toggle(g), selection.includes(g)))}</div>
+            <div className="badge-actions">
+              <button type="button" className="btn" disabled={saving} onClick={() => void saveFeatured()}>{t('badges.save')}</button>
+              <button type="button" className="btn" disabled={saving} onClick={() => setPicking(false)}>{t('badges.cancel')}</button>
+            </div>
+          </>
+        ) : (
+          <>
+            {featured.filter((g) => highest.has(g)).length === 0 ? (
+              <p className="page-message">{t('badges.featuredNone')}</p>
+            ) : (
+              <div className="badge-squares">{featured.filter((g) => highest.has(g)).map((g) => circle(g))}</div>
+            )}
+            {earnedGroups.length > 0 && (
+              <div className="badge-actions">
+                <button type="button" className="btn" onClick={startPicking}>{t('badges.pickFeatured')}</button>
+              </div>
+            )}
+          </>
+        )}
+        {error && <p className="form-error">{error}</p>}
       </section>
       <section className="panel trail-blue">
-        {header(t('badges.special'), earnedCount(specialGroups), specialTotal)}
-        <p className="page-message">{t('badges.specialInfo')}</p>
+        <InfoHint text={t('badges.specialInfo')} label={t('badges.moreInfo')} />
+        <h2>{t('badges.special')}</h2>
         {specialShown.length === 0 ? (
           <p className="page-message">{t('badges.none')}</p>
         ) : (
-          <div className="badge-squares">{specialShown.map((b) => square(b.code, t(`badges.${b.code}`), 'days'))}</div>
+          <div className="badge-squares">{specialShown.map((b) => circle(b.code))}</div>
         )}
       </section>
       {futureSection(t('badges.seasonal'), t('badges.seasonalInfo'))}

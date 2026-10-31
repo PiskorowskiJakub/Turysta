@@ -156,7 +156,14 @@ final class GameController
         $uid = $this->uid($r);
         $this->settler->settleUser($uid);
         BadgeService::sync($this->pdo, $uid, Clock::now($this->pdo));
-        return [200, ['badges' => BadgeService::earned($this->pdo, $uid)]];
+        return [200, ['badges' => BadgeService::earned($this->pdo, $uid), 'featured' => BadgeService::featured($this->pdo, $uid)]];
+    }
+
+    /** Wybor wyroznionych odznak (do 5): {"groups": ["fitness", "special_streak"]}. @return array{0:int,1:array<string,mixed>} */
+    public function setFeaturedBadges(Request $r): array
+    {
+        $uid = $this->uid($r);
+        return [200, ['featured' => BadgeService::setFeatured($this->pdo, $uid, $r->body['groups'] ?? null)]];
     }
 
     /** Ranking graczy: ?page=&per_page=&q=&world= @return array{0:int,1:array<string,mixed>} */

@@ -453,4 +453,27 @@ final class GameFlowTest extends TestCase
         $this->assertArrayHasKey($skill . '.silver', $byKey);
         $this->assertArrayNotHasKey($skill . '.gold', $byKey);
     }
+
+    public function testFeaturedBadgesOnlyFromEarnedMaxFiveUnique(): void
+    {
+        $this->pdo->exec("INSERT IGNORE INTO user_stats (user_id) VALUES ({$this->userId})");
+        $this->pdo->exec("UPDATE user_stats SET longest_streak = 14, active_days = 30 WHERE user_id = {$this->userId}");
+        BadgeService::sync($this->pdo, $this->userId, Clock::parse('2026-03-05 10:00:00'));
+
+        $this->assertSame(['special_activity', 'special_streak'], BadgeService::setFeatured($this->pdo, $this->userId, ['special_activity', 'special_streak']));
+        $this->assertSame(['special_activity', 'special_streak'], BadgeService::featured($this->pdo, $this->userId));
+        // Ponowny zapis zastepuje poprzedni wybor, kolejnosc jest zachowana.
+        BadgeService::setFeatured($this->pdo, $this->userId, ['special_streak']);
+        $this->assertSame(['special_streak'], BadgeService::featured($this->pdo, $this->userId));
+
+        foreach ([['fitness'], ['special_streak', 'special_streak'], ['a', 'b', 'c', 'd', 'e', 'f'], 'special_streak'] as $bad) {
+            try {
+                BadgeService::setFeatured($this->pdo, $this->userId, $bad);
+                $this->fail('Nieprawidlowy wybor powinien byc odrzucony');
+            } catch (ApiException $e) {
+                $this->assertSame('validation_failed', $e->errorCode);
+            }
+        }
+        $this->assertSame(['special_streak'], BadgeService::featured($this->pdo, $this->userId));
+    }
 }

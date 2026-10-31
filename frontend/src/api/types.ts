@@ -214,4 +214,5 @@ export interface EarnedBadge {
 
 export interface BadgesResponse {
   badges: EarnedBadge[];
+  featured: string[];
 }

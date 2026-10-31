@@ -106,7 +106,7 @@ Punkty za szkolenia są proporcjonalne do czasu, a nie do poziomu, więc rosną 
 
 ## Odznaki
 
-Odznaki trafiają do „Książeczki odznak”. Zdobyte zostają na stałe, a niezdobyte są w książeczce ukryte. Kolory stopni: brąz, srebro, złoto, diament, rubin. Przy każdej umiejętności lub odznace specjalnej książeczka pokazuje tylko najwyższy zdobyty stopień, a pod nim nazwę i datę zdobycia (dzień, miesiąc, rok).
+Odznaki trafiają do „Książeczki odznak”. Zdobyte zostają na stałe, a niezdobyte są w książeczce ukryte. Kolory stopni: brąz, srebro, złoto, diament, rubin. Przy każdej umiejętności lub odznace specjalnej książeczka pokazuje tylko najwyższy zdobyty stopień, a pod nim nazwę i datę zdobycia (dzień, miesiąc, rok). Na górze książeczki gracz może wyróżnić do 5 zdobytych odznak.
 
 ### Odznaki za umiejętności
 

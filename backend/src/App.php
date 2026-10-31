@@ -64,6 +64,7 @@ final class App
         $router->post('/v1/jobs/active/stop', [$game, 'stopJob']);
         $router->post('/v1/jobs/{id}/start', [$game, 'startJob']);
         $router->get('/v1/badges', [$game, 'badges']);
+        $router->put('/v1/badges/featured', [$game, 'setFeaturedBadges']);
         $router->get('/v1/ranking', [$game, 'ranking']);
         $router->get('/v1/notifications', [$game, 'notifications']);
         $router->post('/v1/notifications/read', [$game, 'readNotifications']);
