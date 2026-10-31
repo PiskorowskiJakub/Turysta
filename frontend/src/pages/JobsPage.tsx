@@ -87,7 +87,8 @@ export default function JobsPage() {
     const isActive = active?.job.id === j.id;
     const jobIcon: IconName = JOB_ICONS[j.code] ?? 'job';
     let timeLabel = formatDuration(j.duration_seconds);
-    let earnLabel = formatCoins(j.reward_cents);
+    const reward = isActive && active ? active.job.reward_cents : j.reward_cents;
+    let earnLabel = formatCoins(reward);
     let progress = 0;
     let noStop = false;
 
@@ -98,8 +99,8 @@ export default function JobsPage() {
       timeLabel = formatDuration(Math.max(0, (end - now) / 1000));
       noStop = active.earned_cents === null;
       earnLabel = noStop
-        ? formatCoins(j.reward_cents)
-        : formatCoins(Math.floor((j.reward_cents * Math.max(0, Math.min(end - start, now - start))) / Math.max(1, end - start)));
+        ? formatCoins(reward)
+        : formatCoins(Math.floor((reward * Math.max(0, Math.min(end - start, now - start))) / Math.max(1, end - start)));
     }
 
     return (
@@ -135,6 +136,11 @@ export default function JobsPage() {
       <h1>{t('jobs.title')}</h1>
       {error && <p className="form-error" role="alert">{error}</p>}
       {info && <p className="form-success" role="status">{info}</p>}
+      {data.trade.level > 0 && (
+        <p className="form-notice">
+          {t('jobs.tradeBonus', { level: data.trade.level, percent: (data.trade.bonus_permille / 10).toLocaleString('pl-PL') })}
+        </p>
+      )}
       {onBreak && <p className="form-notice">{t('jobs.cooldown', { time: formatDuration(cooldownLeft) })}</p>}
       {active && active.earned_cents === null && (
         <p className="form-notice">{t('jobs.noStop', { amount: formatCoins(active.job.reward_cents) })}</p>

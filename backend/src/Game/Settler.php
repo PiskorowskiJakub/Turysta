@@ -91,7 +91,7 @@ final class Settler
             return;
         }
 
-        $payout = (int) $run['reward_cents'];
+        $payout = (int) ($run['reward_snapshot_cents'] ?? $run['reward_cents']);
         $this->pdo->prepare("UPDATE job_runs SET status = 'done', finished_at = ends_at, payout_cents = ? WHERE id = ?")
             ->execute([$payout, $run['id']]);
         Wallet::apply($this->pdo, $userId, 'coins', $payout, 'job_payout', 'job_run', (int) $run['id']);

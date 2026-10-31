@@ -20,13 +20,15 @@ final class JobService
     {
         $now = Clock::now($this->pdo);
         $jobs = [];
+        $tradeLevel = $this->tradeLevel($userId);
         foreach ($this->pdo->query('SELECT * FROM job_definitions ORDER BY duration_seconds')->fetchAll() as $j) {
-            $jobs[] = $this->jobView($j);
+            $jobs[] = $this->jobView($j, Economy::boostedReward((int) $j['reward_cents'], $tradeLevel));
         }
         $avail = $this->availableAt($userId, $now);
         return [
             'server_time' => gmdate('c'),
             'jobs' => $jobs,
+            'trade' => ['level' => $tradeLevel, 'bonus_permille' => Economy::tradeBonusPermille($tradeLevel)],
             'available_at' => $avail ? Clock::iso(Clock::fmt($avail)) : null,
             'active' => $this->active($userId),
         ];
@@ -48,7 +50,7 @@ final class JobService
         $now = Clock::now($this->pdo);
         return [
             'id' => (int) $r['id'],
-            'job' => $this->jobView(['id' => $r['job_id']] + $r),
+            'job' => $this->jobView(['id' => $r['job_id']] + $r, $this->rewardOf($r)),
             'started_at' => Clock::iso($r['started_at']),
             'ends_at' => Clock::iso($r['ends_at']),
             'earned_cents' => $r['cancel_policy'] === 'proportional' ? $this->earned($r, $now) : null,
@@ -83,8 +85,9 @@ final class JobService
             }
 
             $ends = $now->add(new DateInterval('PT' . (int) $job['duration_seconds'] . 'S'));
-            $this->pdo->prepare('INSERT INTO job_runs (user_id, job_id, started_at, ends_at) VALUES (?, ?, ?, ?)')
-                ->execute([$userId, $jobId, Clock::fmt($now), Clock::fmt($ends)]);
+            $reward = Economy::boostedReward((int) $job['reward_cents'], $this->tradeLevel($userId));
+            $this->pdo->prepare('INSERT INTO job_runs (user_id, job_id, started_at, ends_at, reward_snapshot_cents) VALUES (?, ?, ?, ?, ?)')
+                ->execute([$userId, $jobId, Clock::fmt($now), Clock::fmt($ends), $reward]);
             $this->pdo->commit();
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
@@ -154,7 +157,23 @@ final class JobService
         $end = Clock::parse((string) $run['ends_at'])->getTimestamp();
         $duration = max(1, $end - $start);
         $elapsed = max(0, min($duration, $now->getTimestamp() - $start));
-        return intdiv((int) $run['reward_cents'] * $elapsed, $duration);
+        return intdiv($this->rewardOf($run) * $elapsed, $duration);
+    }
+
+    /** @param array<string,mixed> $run wiersz job_runs (opcjonalnie z reward_cents definicji) */
+    private function rewardOf(array $run): int
+    {
+        return (int) ($run['reward_snapshot_cents'] ?? $run['reward_cents']);
+    }
+
+    private function tradeLevel(int $userId): int
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT us.level FROM user_skills us JOIN skill_definitions s ON s.id = us.skill_id
+             WHERE us.user_id = ? AND s.code = 'trade'"
+        );
+        $stmt->execute([$userId]);
+        return (int) ($stmt->fetchColumn() ?: 0);
     }
 
     private function availableAt(int $userId, DateTimeImmutable $now): ?DateTimeImmutable
@@ -179,7 +198,7 @@ final class JobService
      * @param array<string,mixed> $j
      * @return array<string,mixed>
      */
-    private function jobView(array $j): array
+    private function jobView(array $j, ?int $reward = null): array
     {
         return [
             'id' => (int) $j['id'],
@@ -187,7 +206,8 @@ final class JobService
             'name' => $j['name'],
             'description' => $j['description'],
             'duration_seconds' => (int) $j['duration_seconds'],
-            'reward_cents' => (int) $j['reward_cents'],
+            'reward_cents' => $reward ?? (int) $j['reward_cents'],
+            'base_reward_cents' => (int) $j['reward_cents'],
             'cooldown_seconds' => (int) $j['cooldown_seconds'],
             'cancel_policy' => $j['cancel_policy'],
         ];

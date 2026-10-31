@@ -94,6 +94,7 @@ export interface JobInfo {
   description: string | null;
   duration_seconds: number;
   reward_cents: number;
+  base_reward_cents: number;
   cooldown_seconds: number;
   cancel_policy: CancelPolicy;
 }
@@ -109,6 +110,7 @@ export interface ActiveJob {
 export interface JobsResponse {
   server_time: string;
   jobs: JobInfo[];
+  trade: { level: number; bonus_permille: number };
   available_at: string | null;
   active: ActiveJob | null;
   payout_cents?: number;

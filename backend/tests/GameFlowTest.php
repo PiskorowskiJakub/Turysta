@@ -201,6 +201,28 @@ final class GameFlowTest extends TestCase
         $this->assertNotNull($again['active']);
     }
 
+    public function testTradeLevelRaisesJobRewardAndIsFrozenAtStart(): void
+    {
+        $this->pdo->prepare('INSERT INTO user_skills (user_id, skill_id, level) VALUES (?, ?, 120)
+                             ON DUPLICATE KEY UPDATE level = 120')
+            ->execute([$this->userId, $this->skillId('trade')]);
+
+        $list = $this->jobs->list($this->userId);
+        $this->assertSame(600, $list['trade']['bonus_permille']);
+
+        $this->jobs->start($this->userId, $this->jobId('market'));
+        // Zmiana poziomu po starcie nie wplywa na wyplate trwajacej pracy.
+        $this->pdo->exec("UPDATE user_skills SET level = 200 WHERE user_id = {$this->userId}");
+        $this->pdo->exec(
+            "UPDATE job_runs SET started_at = UTC_TIMESTAMP() - INTERVAL 9 HOUR, ends_at = UTC_TIMESTAMP() - INTERVAL 1 HOUR
+             WHERE user_id = {$this->userId} AND status = 'active'"
+        );
+
+        $this->settler->settleUser($this->userId);
+
+        $this->assertSame(39520, $this->coins());
+    }
+
     public function testLongJobNeedsConfirmationAndPaysNothing(): void
     {
         $this->jobs->start($this->userId, $this->jobId('hostel'));

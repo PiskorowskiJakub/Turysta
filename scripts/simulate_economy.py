@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""Symulacja ekonomii Turysty: 30 dni gry gracza z kilkoma sesjami dziennie.
+"""Symulacja ekonomii Turysty: gra od 1 do 365 dni, gracz z kilkoma sesjami dziennie.
 
-Uruchomienie:  python scripts/simulate_economy.py [--days 30] [--profile aktywny|zwykly|okazjonalny]
+Uruchomienie:  python scripts/simulate_economy.py [--days 30] [--profile aktywny|zwykly|okazjonalny] [--bez-bonusu]
 Model odwzorowuje reguly gry: kolejka 1+2 wspolna dla szkolen i awansow, prace (rynek 8 h
 z wyplata proporcjonalna i bez przerwy po przerwaniu, schronisko 12 h, wyprawa 24 h, bez wyplaty
-po przerwaniu), bonus startowy, wspolne wzory z backend/src/Game/Economy.php.
+po przerwaniu), bonus Handlu do wyplat (Economy::tradeBonusPermille), bonus startowy, wspolne wzory z backend/src/Game/Economy.php.
 """
 import argparse
 
 # ---- parametry ekonomii (musza zgadzac sie z migracja 011 i Economy.php) ----
 K0, H = 3, 1.16           # koszt 1. poziomu (grosze) i wzrost kosztu
 T0, G = 5, 1.16           # czas 1. poziomu (s) i wzrost czasu (H = G: koszt jest proporcjonalny do czasu)
+BONUS_ON = True
 FLAT = 50                 # po tym poziomie wzrost wielomianowy
 START_CENTS = 200
 SLOTS = 3
@@ -19,6 +20,14 @@ JOBS = {  # kod: (czas s, wyplata grosze, przerwa s, proporcjonalna)
     'hostel': (12 * 3600, 42000, 7200, False),
     'expedition': (24 * 3600, 90000, 14400, False),
 }
+BONUS_MAX, BONUS_HALF = 1.2, 120   # bonus handlu: +BONUS_MAX * L / (L + BONUS_HALF)  (asymptota +120%)
+
+
+def trade_bonus(level):
+    """Mnoznik wyplat za prace zalezny od poziomu Handlu (zgodny z Economy::tradeMultiplier)."""
+    return 1 + BONUS_MAX * level / (level + BONUS_HALF)
+
+
 PROFILES = {  # godziny sesji w ciagu doby
     'aktywny': [8, 11, 14, 17, 20, 22.5],
     'zwykly': [8.5, 13, 20.5],
@@ -64,7 +73,7 @@ def simulate(days, profile):
     chap_q = False
     queue = []         # (typ, idx, sekundy, koszt)
     active = None      # [typ, idx, koniec]
-    job = None         # [kod, start, koniec]
+    job = None         # [kod, start, koniec, wyplata]
     cd_until = 0.0
     rows = []
     stat = dict(started=0, done=0, active_s=0.0, earned=0, spent=0, empty=0, durs=[], broke=0)
@@ -98,8 +107,8 @@ def simulate(days, profile):
                     q = queue.pop(0)
                     active = [q[0], q[1], t + q[2]]
             else:
-                code, st, en = job
-                coins += JOBS[code][1]; stat['earned'] += JOBS[code][1]
+                code, st, en, rew = job
+                coins += rew; stat['earned'] += rew
                 cd_until = en + JOBS[code][2]
                 job = None
 
@@ -130,12 +139,12 @@ def simulate(days, profile):
     def job_step(next_gap):
         nonlocal job, coins
         if job and JOBS[job[0]][3]:                       # rynek: wyplata proporcjonalna, brak przerwy
-            code, st, en = job
-            pay = int(JOBS[code][1] * (t - st) / (en - st))
+            code, st, en, rew = job
+            pay = int(rew * (t - st) / (en - st))
             coins += pay; stat['earned'] += pay; job = None
         if job is None and t >= cd_until:
             code = 'expedition' if next_gap >= 24 * 3600 - 1 else 'hostel' if next_gap >= 12 * 3600 - 1 else 'market'
-            job = [code, t, t + JOBS[code][0]]
+            job = [code, t, t + JOBS[code][0], int(JOBS[code][1] * (trade_bonus(lv[2]) if BONUS_ON else 1))]
 
     for day in range(days):
         stat.update(started=0, done=0, active_s=0.0, earned=0, spent=0, empty=0, durs=[], broke=0)
@@ -155,6 +164,7 @@ def simulate(days, profile):
 
 
 def markdown(rows, days_shown):
+    # wyplata za prace jest zapisywana przy starcie; kolumna 'Zarobek' to wyplaty rozliczone w danym dniu
     head = ('| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |\n'
             '|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n')
     out = head
@@ -169,9 +179,13 @@ def main():
     ap.add_argument('--days', type=int, default=30)
     ap.add_argument('--profile', default='zwykly', choices=PROFILES)
     ap.add_argument('--markdown', action='store_true', help='wypisz tabelę w formacie Markdown (wybrane dni)')
+    ap.add_argument('--bez-bonusu', action='store_true', help='wylacz bonus Handlu (porownanie)')
     a = ap.parse_args()
+    global BONUS_ON
+    BONUS_ON = not a.bez_bonusu
     if a.markdown:
-        print(markdown(simulate(a.days, a.profile), {1, 2, 3, 5, 7, 10, 14, 18, 21, 25, 30}))
+        shown = {1, 2, 3, 5, 7, 10, 14, 18, 21, 25, 30} if a.days <= 30 else {1, 7, 14, 30, 60, 90, 120, 180, 270, 365}
+        print(markdown(simulate(a.days, a.profile), shown))
         return
     print(f'Profil: {a.profile}, sesje o godz. {PROFILES[a.profile]}')
     print('dzien | poziomy | awans | start. | ukonczone | czas trening. | sr. czas | zarobek | wydatki | saldo | puste kolejki')

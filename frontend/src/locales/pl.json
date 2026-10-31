@@ -137,6 +137,7 @@
     "stopForfeit": "Zakończ (bez wypłaty)",
     "noStop": "Tej pracy nie opłaca się przerywać: wypłata {{amount}} mon. dopiero po jej zakończeniu. Przerwanie oznacza brak wynagrodzenia.",
     "confirmForfeit": "Jeśli przerwiesz tę pracę, nie dostaniesz nic. Czy na pewno przerwać?",
+    "tradeBonus": "Bonus Handlu (poziom {{level}}): wypłaty większe o {{percent}}%.",
     "stopped": "Praca przerwana. Wypłata: {{amount}} mon.",
     "cooldown": "Musisz odpocząć. Kolejna praca za {{time}}.",
     "policyProportional": "można przerwać w każdej chwili (wypłata proporcjonalna)",

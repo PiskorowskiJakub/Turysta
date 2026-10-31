@@ -32,6 +32,23 @@ final class Economy
         return max(1, (int) round($t50 * (($level / self::FLAT_FROM) ** 2)));
     }
 
+    /** Maksymalny bonus Handlu w promilach (asymptota +120%) i poziom, przy ktorym daje polowe tego bonusu. */
+    public const TRADE_BONUS_MAX_PERMILLE = 1200;
+    public const TRADE_BONUS_HALF_LEVEL = 120;
+
+    /** Bonus do wyplat w promilach: 1200 * L / (L + 120). Poziom 30 = +24%, 100 = +54,5%, 200 = +75%. */
+    public static function tradeBonusPermille(int $tradeLevel): int
+    {
+        $l = max(0, $tradeLevel);
+        return intdiv(self::TRADE_BONUS_MAX_PERMILLE * $l, $l + self::TRADE_BONUS_HALF_LEVEL);
+    }
+
+    /** Wyplata za prace po uwzglednieniu poziomu Handlu. */
+    public static function boostedReward(int $baseCents, int $tradeLevel): int
+    {
+        return intdiv($baseCents * (1000 + self::tradeBonusPermille($tradeLevel)), 1000);
+    }
+
     public static function trainingPoints(int $targetLevel): int
     {
         return 10 * $targetLevel;

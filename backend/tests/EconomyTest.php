@@ -40,6 +40,18 @@ final class EconomyTest extends TestCase
         $this->assertGreaterThan($c50, Economy::cost($this->skill(), 51));
     }
 
+    public function testTradeBonusGrowsSlowlyAndHasCeiling(): void
+    {
+        $this->assertSame(0, Economy::tradeBonusPermille(0));
+        $this->assertSame(240, Economy::tradeBonusPermille(30));
+        $this->assertSame(600, Economy::tradeBonusPermille(120));
+        $this->assertSame(24700, Economy::boostedReward(24700, 0));
+        $this->assertSame(39520, Economy::boostedReward(24700, 120));
+        // Nawet absurdalny poziom nie przekroczy 2,2x (brak hiperinflacji).
+        $this->assertLessThan(2200, 1000 + Economy::tradeBonusPermille(100000));
+        $this->assertLessThan(90000 * 2.2 + 1, Economy::boostedReward(90000, 100000));
+    }
+
     public function testPoints(): void
     {
         $this->assertSame(30, Economy::trainingPoints(3));
