@@ -4,9 +4,11 @@ declare(strict_types=1);
 namespace Turysta;
 
 use Throwable;
+use Turysta\Auth\AccountService;
 use Turysta\Auth\AuthService;
 use Turysta\Auth\RateLimiter;
 use Turysta\Auth\Session;
+use Turysta\Controller\AccountController;
 use Turysta\Controller\AuthController;
 use Turysta\Controller\GameController;
 use Turysta\Controller\MeController;
@@ -26,6 +28,7 @@ final class App
         $settler = new Settler($pdo);
         $training = new TrainingService($pdo, $settler);
         $jobs = new JobService($pdo, $settler);
+        $account = new AccountController(new AccountService($pdo, new Mailer(), new RateLimiter($pdo)), new MeController($pdo, $settler, $training, $jobs));
         $me = new MeController($pdo, $settler, $training, $jobs);
         $game = new GameController($pdo, $settler, $training, $jobs);
 
@@ -51,6 +54,10 @@ final class App
         $router->get('/v1/avatars', [$me, 'avatars']);
         $router->get('/v1/me', [$me, 'show']);
         $router->patch('/v1/me', [$me, 'update']);
+
+        $router->patch('/v1/account/profile', [$account, 'updateProfile']);
+        $router->put('/v1/account/email', [$account, 'changeEmail']);
+        $router->put('/v1/account/password', [$account, 'changePassword']);
 
         $router->get('/v1/facts/today', [$game, 'todayFact']);
         $router->get('/v1/skills', [$game, 'skills']);

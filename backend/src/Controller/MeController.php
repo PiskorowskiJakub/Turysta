@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace Turysta\Controller;
 
 use PDO;
+use Turysta\Auth\AccountService;
 use Turysta\Auth\Session;
+use Turysta\Game\Clock;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
 use Turysta\Game\StatsService;
@@ -34,6 +36,10 @@ final class MeController
     public function update(Request $r): array
     {
         $user = Session::requireUser($r);
+        if ($user['tutorial_done_at'] !== null) {
+            // Po samouczku plec i awatar zmienia sie przez /v1/account/profile (z limitem zmiany plci).
+            throw new ApiException(409, 'tutorial_done', 'Samouczek został już ukończony.');
+        }
         $errors = [];
 
         $gender = $r->body['gender'] ?? null;
@@ -69,6 +75,16 @@ final class MeController
     {
         $rows = $this->pdo->query('SELECT id, name, gender, image_url FROM avatars ORDER BY id')->fetchAll();
         return [200, ['avatars' => $rows]];
+    }
+
+    /** @param array<string,mixed> $user */
+    private function genderChangeAt(array $user): ?string
+    {
+        $next = AccountService::genderChangeAvailableAt($user['gender_changed_at'] ?? null);
+        if ($next === null || Clock::parse($next) <= Clock::now($this->pdo)) {
+            return null;
+        }
+        return Clock::iso($next);
     }
 
     /**
@@ -113,6 +129,7 @@ final class MeController
                 'character_name' => $user['character_name'],
                 'avatar_id' => $user['avatar_id'] !== null ? (int) $user['avatar_id'] : null,
                 'gender' => $user['gender'],
+                'gender_change_available_at' => $this->genderChangeAt($user),
                 'role' => $user['role'],
                 'email_verified' => $user['email_verified_at'] !== null,
                 'tutorial_done' => $user['tutorial_done_at'] !== null,

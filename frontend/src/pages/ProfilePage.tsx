@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import type { Avatar } from '../api/types';
@@ -43,8 +43,11 @@ export default function ProfilePage() {
   return (
     <>
     <ProfileCard
+      hint={t('profileCard.publicInfo')}
       data={{
         name: me.user.character_name,
+        gender: me.user.gender,
+        avatarName: avatar?.name,
         avatarUrl: avatar?.image_url,
         world: me.progress ? { ordinal: me.progress.world_ordinal, name: me.progress.world_name } : null,
         chapter: me.progress ? { ordinal: me.progress.chapter_ordinal, name: me.progress.chapter_name } : null,
@@ -55,6 +58,8 @@ export default function ProfilePage() {
         skillLevels,
       }}
     />
+
+    <p className="profile-edit-link"><Link className="button secondary" to="/profil/edycja">{t('profile.edit')}</Link></p>
 
     {badges.ready ? <BadgeBook data={badges} /> : null}
 

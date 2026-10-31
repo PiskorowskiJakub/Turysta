@@ -67,6 +67,8 @@ export default function PlayerPage() {
       <ProfileCard
         data={{
           name: player.name,
+          gender: player.gender,
+          avatarName: player.avatar_name,
           avatarUrl: player.avatar_url,
           world: player.world,
           chapter: player.chapter,

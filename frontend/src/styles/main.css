@@ -246,7 +246,12 @@ h1, h2, h3 { font-weight: 600; }
 
 /* ---------- Karta gracza ---------- */
 .profile-card { display: flex; align-items: center; gap: 24px; }
+.profile-edit-link { margin: 0 0 16px; text-align: right; }
+.edit-section { position: relative; }
+.edit-section .form-notice, .edit-section .muted { margin-top: 0; }
+.field-hint { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
 .profile-card h1 { margin: 0 0 10px; }
+.profile-label { margin: 0 0 2px; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .profile-card-main { min-width: 0; flex: 1; }
 /* Ramka awatara; domyslna jest neutralna (zlota kojarzy sie z 1. miejscem). Kolejne ramki (frame-*) wybierze gracz. */
 .avatar-frame {

@@ -17,7 +17,7 @@ final class PlayerProfileService
     public function forPlayer(int $viewerId, int $playerId): array
     {
         $stmt = $this->pdo->prepare(
-            "SELECT u.id, u.character_name, u.created_at, a.image_url
+            "SELECT u.id, u.character_name, u.gender, u.created_at, a.image_url, a.name AS avatar_name
              FROM users u LEFT JOIN avatars a ON a.id = u.avatar_id
              WHERE u.id = ? AND u.status = 'active'"
         );
@@ -59,6 +59,8 @@ final class PlayerProfileService
         return [
             'id' => (int) $user['id'],
             'name' => (string) $user['character_name'],
+            'gender' => $user['gender'] !== null ? (string) $user['gender'] : null,
+            'avatar_name' => $user['avatar_name'] !== null ? (string) $user['avatar_name'] : null,
             'avatar_url' => $user['image_url'] !== null ? (string) $user['image_url'] : null,
             'world' => $progress ? ['ordinal' => (int) $progress['wo'], 'name' => $namesVisible ? (string) $progress['wn'] : null] : null,
             'chapter' => $progress ? ['ordinal' => (int) $progress['co'], 'name' => $namesVisible ? (string) $progress['cn'] : null] : null,

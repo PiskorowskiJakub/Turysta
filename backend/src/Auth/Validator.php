@@ -33,4 +33,27 @@ final class Validator
 
         return $errors;
     }
+
+    /** @return array<string,string> */
+    public static function email(string $email): array
+    {
+        if (strlen($email) > 190 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return ['email' => 'Podaj poprawny adres e-mail.'];
+        }
+        return [];
+    }
+
+    /** @return array<string,string> */
+    public static function newPassword(string $password, string $confirm): array
+    {
+        $errors = [];
+        if (mb_strlen($password) < 10) {
+            $errors['password'] = 'Hasło musi mieć co najmniej 10 znaków.';
+        } elseif (strlen($password) > 128) {
+            $errors['password'] = 'Hasło może mieć najwyżej 128 znaków.';
+        } elseif ($password !== $confirm) {
+            $errors['password_confirm'] = 'Hasła muszą być takie same.';
+        }
+        return $errors;
+    }
 }

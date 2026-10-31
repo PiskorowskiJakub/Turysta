@@ -29,6 +29,10 @@
     "x": "Inna / wolę nie podawać"
   },
   "profileCard": {
+    "characterName": "Nazwa postaci",
+    "publicInfo": "Dane z tej karty (nazwa postaci, płeć, awatar, miejsce w rankingu, punkty, data założenia konta, najdłuższa seria i suma poziomów) są widoczne w Twoim publicznym profilu użytkownika. Inni gracze zobaczą je po kliknięciu Twojej nazwy w rankingu.",
+    "gender": "Płeć",
+    "avatar": "Awatar",
     "rank": "Miejsce w rankingu",
     "registered": "Konto założone",
     "skillLevels": "Suma poziomów umiejętności"
@@ -143,6 +147,7 @@
     "total": "Razem"
   },
   "profile": {
+    "edit": "Edytuj swój profil",
     "verifyEmail": "Potwierdź adres e-mail, klikając link, który wysłaliśmy na Twoją skrzynkę.",
     "wallet": "Portfel",
     "resources": "Zasoby",
@@ -151,11 +156,39 @@
     "skills": "Umiejętności",
     "level": "poziom {{level}}"
   },
+  "editProfile": {
+    "title": "Edycja profilu",
+    "back": "Wróć do profilu",
+    "characterSection": "Postać",
+    "characterName": "Nazwa postaci",
+    "nameLocked": "Nazwy postaci nie można zmienić.",
+    "gender": "Płeć",
+    "genderLocked": "Płeć możesz zmienić raz na 30 dni. Następna zmiana będzie możliwa {{date}}.",
+    "genderRule": "Płeć możesz zmienić raz na 30 dni. Zmiana awatara na inny z tej samej płci jest bez ograniczeń.",
+    "avatar": "Awatar",
+    "saveCharacter": "Zapisz postać",
+    "savedCharacter": "Zapisano zmiany postaci.",
+    "emailSection": "Adres e-mail",
+    "currentEmail": "Obecny adres: {{email}}",
+    "newEmail": "Nowy adres e-mail",
+    "currentPassword": "Obecne hasło",
+    "emailInfo": "Po zmianie wyślemy link potwierdzający na nowy adres.",
+    "saveEmail": "Zmień adres e-mail",
+    "savedEmail": "Adres e-mail zmieniony. Potwierdź go, klikając link wysłany na nową skrzynkę.",
+    "passwordSection": "Hasło",
+    "newPassword": "Nowe hasło",
+    "newPasswordConfirm": "Powtórz nowe hasło",
+    "passwordInfo": "Po zmianie hasła pozostałe urządzenia zostaną wylogowane.",
+    "savePassword": "Zmień hasło",
+    "savedPassword": "Hasło zostało zmienione. Pozostałe sesje zostały wylogowane."
+  },
   "notFound": {
     "title": "Nie znaleziono strony",
     "back": "Wróć na stronę główną"
   },
   "errors": {
+    "gender_cooldown": "Płeć możesz zmienić raz na 30 dni.",
+    "tutorial_done": "Samouczek został już ukończony.",
     "player_not_found": "Nie znaleziono takiego gracza.",
     "network": "Nie udało się połączyć z serwerem. Spróbuj ponownie.",
     "invalid_credentials": "Nieprawidłowy e-mail lub hasło.",

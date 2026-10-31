@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import TutorialPage from './pages/TutorialPage';
 import ProfilePage from './pages/ProfilePage';
+import EditProfilePage from './pages/EditProfilePage';
 import TrainingPage from './pages/TrainingPage';
 import JobsPage from './pages/JobsPage';
 import BadgesPage from './pages/BadgesPage';
@@ -23,6 +24,7 @@ export default function App() {
         <Route element={<RequireAuth />}>
           <Route path="samouczek" element={<TutorialPage />} />
           <Route path="profil" element={<ProfilePage />} />
+          <Route path="profil/edycja" element={<EditProfilePage />} />
           <Route path="umiejetnosci" element={<Navigate to="/umiejetnosci/podstawowe" replace />} />
           <Route path="umiejetnosci/swiat" element={<Navigate to="/umiejetnosci/awans" replace />} />
           <Route path="umiejetnosci/*" element={<TrainingPage />} />

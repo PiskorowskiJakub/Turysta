@@ -5,6 +5,7 @@ namespace Turysta\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Throwable;
+use Turysta\Auth\AccountService;
 use Turysta\Auth\AuthService;
 use Turysta\Auth\RateLimiter;
 use Turysta\Database;
@@ -78,5 +79,104 @@ final class AuthFlowTest extends TestCase
 
         $this->expectException(ApiException::class);
         $this->auth->login($d['email'], 'zle-haslo-zle-haslo', '10.0.5.' . random_int(1, 250));
+    }
+
+    /** @return array{0:AccountService,1:array<string,mixed>,2:array<string,string>} */
+    private function accountFixture(): array
+    {
+        $pdo = Database::pdo();
+        $d = $this->data();
+        $created = $this->auth->register($d, '10.0.6.' . random_int(1, 250));
+        $mailer = new class extends Mailer {
+            public function send(string $to, string $subject, string $text): bool
+            {
+                return true;
+            }
+        };
+        $pdo->prepare("UPDATE users SET gender = 'm', avatar_id = (SELECT id FROM avatars WHERE gender = 'm' LIMIT 1), tutorial_done_at = UTC_TIMESTAMP() WHERE id = ?")
+            ->execute([$created['id']]);
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$created['id']]);
+        return [new AccountService($pdo, $mailer, new RateLimiter($pdo)), $stmt->fetch(), $d];
+    }
+
+    private function userRow(int $id): array
+    {
+        $stmt = Database::pdo()->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
+    public function testGenderCanBeChangedOnlyOncePer30Days(): void
+    {
+        [$account, $user] = $this->accountFixture();
+        $pdo = Database::pdo();
+        $female = (int) $pdo->query("SELECT id FROM avatars WHERE gender = 'f' LIMIT 1")->fetchColumn();
+        $male2 = (int) $pdo->query("SELECT id FROM avatars WHERE gender = 'm' LIMIT 1")->fetchColumn();
+
+        // Awatar tej samej plci mozna zmieniac bez ograniczen i nie uruchamia blokady plci.
+        $account->updateProfile($user, 'm', $male2);
+        $this->assertNull($this->userRow((int) $user['id'])['gender_changed_at']);
+
+        // Pierwsza zmiana plci przechodzi, kolejna jest zablokowana na 30 dni.
+        $account->updateProfile($user, 'f', $female);
+        $after = $this->userRow((int) $user['id']);
+        $this->assertSame('f', $after['gender']);
+        $this->assertNotNull($after['gender_changed_at']);
+
+        try {
+            $account->updateProfile($after, 'm', $male2);
+            $this->fail('Druga zmiana plci powinna byc zablokowana.');
+        } catch (ApiException $e) {
+            $this->assertSame('gender_cooldown', $e->errorCode);
+        }
+
+        // Po 30 dniach zmiana znowu jest mozliwa.
+        $pdo->prepare('UPDATE users SET gender_changed_at = UTC_TIMESTAMP() - INTERVAL 31 DAY WHERE id = ?')->execute([$user['id']]);
+        $account->updateProfile($this->userRow((int) $user['id']), 'm', $male2);
+        $this->assertSame('m', $this->userRow((int) $user['id'])['gender']);
+    }
+
+    public function testAvatarMustMatchGender(): void
+    {
+        [$account, $user] = $this->accountFixture();
+        $female = (int) Database::pdo()->query("SELECT id FROM avatars WHERE gender = 'f' LIMIT 1")->fetchColumn();
+
+        $this->expectException(ApiException::class);
+        $account->updateProfile($user, 'm', $female);
+    }
+
+    public function testChangeEmailRequiresPasswordAndResetsVerification(): void
+    {
+        [$account, $user, $d] = $this->accountFixture();
+        $ip = '10.0.7.' . random_int(1, 250);
+        $new = "nowy{$this->suffix}@example.com";
+
+        try {
+            $account->changeEmail($user, 'zle-haslo-zle-haslo', $new, $ip);
+            $this->fail('Zle haslo powinno zablokowac zmiane.');
+        } catch (ApiException $e) {
+            $this->assertArrayHasKey('current_password', $e->fields);
+        }
+
+        $account->changeEmail($user, $d['password'], strtoupper($new), $ip);
+        $row = $this->userRow((int) $user['id']);
+        $this->assertSame($new, $row['email']);
+        $this->assertNull($row['email_verified_at']);
+    }
+
+    public function testChangePasswordWorksAndEndsOtherSessions(): void
+    {
+        [$account, $user, $d] = $this->accountFixture();
+        $pdo = Database::pdo();
+        $ip = '10.0.8.' . random_int(1, 250);
+        $pdo->prepare("INSERT INTO sessions (id, user_id, data) VALUES (?, ?, '')")->execute(['keep' . $this->suffix, $user['id']]);
+        $pdo->prepare("INSERT INTO sessions (id, user_id, data) VALUES (?, ?, '')")->execute(['drop' . $this->suffix, $user['id']]);
+
+        $account->changePassword($user, $d['password'], 'zupelnie-nowe-haslo', 'zupelnie-nowe-haslo', $ip, 'keep' . $this->suffix);
+
+        $this->auth->login($d['email'], 'zupelnie-nowe-haslo', '10.0.9.' . random_int(1, 250));
+        $this->assertSame(1, (int) $pdo->query("SELECT COUNT(*) FROM sessions WHERE id = 'keep{$this->suffix}'")->fetchColumn());
+        $this->assertSame(0, (int) $pdo->query("SELECT COUNT(*) FROM sessions WHERE id = 'drop{$this->suffix}'")->fetchColumn());
     }
 }

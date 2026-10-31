@@ -12,6 +12,9 @@ interface AuthState {
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
   saveProfile: (gender: Gender, avatarId: number) => Promise<void>;
+  updateAccountProfile: (gender: Gender, avatarId: number) => Promise<void>;
+  changeEmail: (email: string, currentPassword: string) => Promise<void>;
+  changePassword: (currentPassword: string, password: string, passwordConfirm: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -65,9 +68,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setMe(data);
   }, []);
 
+  const updateAccountProfile = useCallback(async (gender: Gender, avatarId: number) => {
+    setMe(await api<Me>('PATCH', '/account/profile', { gender, avatar_id: avatarId }));
+  }, []);
+
+  const changeEmail = useCallback(async (email: string, currentPassword: string) => {
+    setMe(await api<Me>('PUT', '/account/email', { email, current_password: currentPassword }));
+  }, []);
+
+  const changePassword = useCallback(async (currentPassword: string, password: string, passwordConfirm: string) => {
+    await api('PUT', '/account/password', { current_password: currentPassword, password, password_confirm: passwordConfirm });
+  }, []);
+
   const value = useMemo<AuthState>(
-    () => ({ status, me, login, register, logout, refresh, saveProfile }),
-    [status, me, login, register, logout, refresh, saveProfile],
+    () => ({ status, me, login, register, logout, refresh, saveProfile, updateAccountProfile, changeEmail, changePassword }),
+    [status, me, login, register, logout, refresh, saveProfile, updateAccountProfile, changeEmail, changePassword],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

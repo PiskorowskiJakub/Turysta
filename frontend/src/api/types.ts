@@ -8,6 +8,7 @@ export interface Me {
     character_name: string;
     avatar_id: number | null;
     gender: Gender | null;
+    gender_change_available_at: string | null;
     role: string;
     email_verified: boolean;
     tutorial_done: boolean;
@@ -223,6 +224,8 @@ export interface BadgesResponse {
 export interface PlayerProfile {
   id: number;
   name: string;
+  gender: Gender | null;
+  avatar_name: string | null;
   avatar_url: string | null;
   world: { ordinal: number; name: string | null } | null;
   chapter: { ordinal: number; name: string | null } | null;
