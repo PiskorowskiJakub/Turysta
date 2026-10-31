@@ -126,14 +126,14 @@ h1, h2, h3 { font-weight: 600; }
 }
 .panel > h1::before, .panel > h2::before, .card > h1::before, .card > h2::before {
   content: ''; width: 12px; height: 26px; flex: none; border-radius: 3px;
-  background: linear-gradient(var(--cream) 0 33%, var(--red) 33% 66%, var(--cream) 66%);
+  background: linear-gradient(var(--cream) 0 33%, var(--trail, var(--red)) 33% 66%, var(--cream) 66%);
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25);
 }
 .card > h2 { font-size: 1.05rem; margin-top: 18px; }
 
 .tile {
   position: relative; background: var(--tile); border-radius: 12px;
-  padding: 16px 18px; border-left: 6px solid var(--moss);
+  padding: 16px 18px; border-left: 6px solid var(--trail, var(--moss));
 }
 .tile + .tile { margin-top: 14px; }
 .tile h3 { margin: 0; font-size: 1.1rem; }
@@ -179,7 +179,7 @@ h1, h2, h3 { font-weight: 600; }
 .icon-tile svg { width: 48%; height: 48%; }
 
 /* ---------- Szkolenia ---------- */
-.train-card { display: grid; grid-template-columns: 1fr 84px; grid-template-areas: 'head icon' 'meta icon' 'bar bar' 'act act'; gap: 10px 16px; border-left-color: var(--orange); }
+.train-card { display: grid; grid-template-columns: 1fr 84px; grid-template-areas: 'head icon' 'meta icon' 'bar bar' 'act act'; gap: 10px 16px; border-left-color: var(--trail, var(--orange)); }
 .train-card h3 { grid-area: head; align-self: end; }
 .train-meta { grid-area: meta; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); }
 .train-card .icon-tile { grid-area: icon; width: 72px; height: 72px; justify-self: end; }
@@ -201,7 +201,7 @@ h1, h2, h3 { font-weight: 600; }
 .tier-diamond.reached { color: #6fd8ee; }
 
 /* ---------- Praca ---------- */
-.job-card { display: grid; grid-template-columns: minmax(0, 1fr) 130px; grid-template-areas: 'title img' 'desc img' 'stats stats' 'bar bar'; gap: 10px 20px; border-left-color: var(--orange); padding: 18px 20px; }
+.job-card { display: grid; grid-template-columns: minmax(0, 1fr) 130px; grid-template-areas: 'title img' 'desc img' 'stats stats' 'bar bar'; gap: 10px 20px; border-left-color: var(--trail, var(--orange)); padding: 18px 20px; }
 .job-card h3 { grid-area: title; align-self: end; font-size: 1.2rem; }
 .job-desc { grid-area: desc; font-size: 14px; line-height: 1.5; color: var(--muted); }
 .job-desc p { margin: 0 0 6px; }
@@ -221,6 +221,12 @@ h1, h2, h3 { font-weight: 600; }
 .form-success { color: var(--moss); font-weight: 600; }
 .form-notice { background: rgba(240, 138, 60, 0.12); border: 1.5px dashed var(--orange); padding: 8px 12px; border-radius: 10px; margin: 0 0 12px; font-size: 14px; }
 .muted { color: var(--muted); }
+
+/* Kolor szlaku zalezny od dzialu (znaczek przy tytule i pasek przy kafelkach) */
+.trail-red { --trail: #d8473a; }
+.trail-blue { --trail: #3f8ee0; }
+.trail-green { --trail: #4fae5b; }
+.trail-yellow { --trail: #e8c32f; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .narrow { max-width: 460px; margin: 0 auto; }
 .page-message { text-align: center; }
