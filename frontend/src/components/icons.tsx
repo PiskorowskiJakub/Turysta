@@ -38,6 +38,8 @@ export function Icon({ name }: { name: IconName }) {
 
 /** Ikony umiejetnosci swiatow (klucz = kod umiejetnosci). */
 const WORLD_SKILL_PATHS: Record<string, string> = {
+  special_streak: 'M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-1.5.7-2.5 1.5-3.5.2 1 .8 1.6 1.5 1.8C11 7.5 11.5 5 12 3zM8 21h8',
+  special_activity: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M9 15l2 2 4-4',
   w1_packing: 'M9 7V5a3 3 0 0 1 6 0v2M6 10a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v10a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zM9 15h6v4H9z',
   w1_campfire: 'M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-1.5.7-2.5 1.5-3.5.2 1 .8 1.6 1.5 1.8C11 7.5 11.5 5 12 3zM4 21l16-4M20 21L4 17',
   w1_trail_signs: 'M12 3v18M8 21h8M6 6h10l2 2-2 2H6zM18 13H8l-2 2 2 2h10z',

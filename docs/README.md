@@ -8,6 +8,7 @@ Dokumentacja zasad gry. Szczegóły ekonomii i symulacji znajdziesz w [głównym
 - [Tabela awansów](#tabela-awansów-wymagania-czas-i-koszt)
 - [Dlaczego wymagania umiejętności bazowych są nierówne](#dlaczego-wymagania-umiejętności-bazowych-są-nierówne)
 - [Punkty (ranking i prestiż)](#punkty-ranking-i-prestiż)
+- [Odznaki](#odznaki)
 
 ## Światy
 
@@ -102,3 +103,27 @@ Punkty to miara postępu gracza do rankingu i rang, nie waluta (nie da się nimi
 | Praca | 1 punkt za każde pełne 50 dk wypłaty |
 
 Punkty za szkolenia są proporcjonalne do czasu, a nie do poziomu, więc rosną mniej więcej liniowo z czasem gry: dłuższe szkolenia dają więcej, a aktywny i zwykły gracz zdobywają podobnie dużo, bo tempo ogranicza kolejka. Awanse i wejścia do światów są największymi pojedynczymi nagrodami.
+
+## Odznaki
+
+Odznaki trafiają do „Książeczki odznak”. Zdobyte zostają na stałe, a niezdobyte są w książeczce ukryte. Kolory stopni: brąz, srebro, złoto, diament, rubin.
+
+### Odznaki za umiejętności
+
+| Umiejętności | Brąz | Srebro | Złoto |
+|---|---:|---:|---:|
+| Podstawowe (bez limitu poziomów) | poziom 50 | poziom 100 | poziom 200 |
+| Umiejętności światów (limit 33) | poziom 11 | poziom 22 | poziom 33 |
+
+### Odznaki specjalne
+
+| Odznaka | Brąz | Srebro | Złoto | Diament | Rubin |
+|---|---:|---:|---:|---:|---:|
+| Seria dni (najdłuższa seria kolejnych dni aktywności) | 7 dni | 14 dni | 30 dni | 60 dni | 90 dni |
+| Dni aktywności (suma wszystkich dni z aktywnością) | 30 dni | 100 dni | 365 dni | – | – |
+
+Seria liczy się według najdłuższej serii w historii konta, więc przerwanie serii nie odbiera zdobytej odznaki. Dzień aktywności to dzień (czasu polskiego), w którym gracz wszedł do gry.
+
+### Odznaki sezonowe
+
+Odznaki za wydarzenia: cykliczne (np. świąteczne, wracają co roku) i jednorazowe. Wkrótce.

@@ -26,3 +26,33 @@ export function tiersFor(maxLevel: number | null): BadgeTier[] {
     { name: 'gold', min: maxLevel },
   ];
 }
+
+/** Odznaki specjalne zalezne od statystyk gracza. Odznaka zostaje na stale (seria liczy sie wg najdluzszej serii). */
+export interface SpecialBadge {
+  code: string;
+  tiers: BadgeTier[];
+  value: (stats: { active_days: number; longest_streak: number }) => number;
+}
+
+export const SPECIAL_BADGES: SpecialBadge[] = [
+  {
+    code: 'special_streak',
+    tiers: [
+      { name: 'bronze', min: 7 },
+      { name: 'silver', min: 14 },
+      { name: 'gold', min: 30 },
+      { name: 'diamond', min: 60 },
+      { name: 'ruby', min: 90 },
+    ],
+    value: (s) => s.longest_streak,
+  },
+  {
+    code: 'special_activity',
+    tiers: [
+      { name: 'bronze', min: 30 },
+      { name: 'silver', min: 100 },
+      { name: 'gold', min: 365 },
+    ],
+    value: (s) => s.active_days,
+  },
+];
