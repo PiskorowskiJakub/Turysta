@@ -369,3 +369,10 @@ h1, h2, h3 { font-weight: 600; }
 .menu-item.disabled { opacity: 0.55; cursor: not-allowed; }
 .menu-item.disabled:hover { background: var(--panel); transform: none; }
 .menu-item .soon { margin-left: auto; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+
+.req-world { display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 13px; }
+.req-world svg { width: 18px; height: 18px; flex: none; }
+.req-world.met { color: var(--moss); }
+.req-world.unmet { color: var(--orange); }
+.req-world b { margin-left: 6px; }
+.world-event { margin: 6px 0; padding: 6px 10px; border-left: 3px solid var(--orange); background: var(--tile); border-radius: 6px; font-size: 12px; color: var(--cream); }

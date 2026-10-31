@@ -206,10 +206,8 @@ final class TrainingService
             if (!$next) {
                 throw new ApiException(409, 'max_chapter', 'Osiągnięto ostatni dostępny stopień.');
             }
-            foreach ($chapters->requirements($userId, (int) $next['id']) as $req) {
-                if (!$req['met']) {
-                    throw new ApiException(422, 'requirements_not_met', 'Nie spełniasz wymagań do awansu.');
-                }
+            if (!$chapters->requirementsMet($userId, $next)) {
+                throw new ApiException(422, 'requirements_not_met', 'Nie spełniasz wymagań do awansu.');
             }
 
             $cost = (int) $next['cost_cents'];

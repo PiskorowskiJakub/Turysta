@@ -200,6 +200,9 @@
     "last": "Osiągnięto ostatni dostępny stopień. Kolejne światy już wkrótce.",
     "worldNo": "Świat {{n}}",
     "chapterNo": "Rozdział {{n}}",
-    "progress": "Postęp w świecie"
+    "progress": "Postęp w świecie",
+    "skillsEach": "Umiejętności świata „{{name}}”: każda na poziomie {{level}}",
+    "skillsAll": "Wszystkie umiejętności świata „{{name}}” na maksymalnym poziomie ({{level}})",
+    "eventNote": "To wielkie wydarzenie: awans do nowego świata trwa znacznie dłużej i kosztuje znacznie więcej niż zwykły rozdział."
   }
 }

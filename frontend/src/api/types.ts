@@ -172,6 +172,15 @@ export interface WorldResponse {
     duration_seconds: number;
     cost_cents: number;
     requirements: ChapterRequirement[];
+    world_requirement: {
+      world_ordinal: number;
+      world_name: string;
+      required: number;
+      done: number;
+      total: number;
+      complete: boolean;
+      met: boolean;
+    } | null;
     requirements_met: boolean;
     in_queue: boolean;
   } | null;

@@ -92,6 +92,19 @@ export default function WorldPanel({ world, coins, queueFull, busy, onAdvance }:
                   </li>
                 ))}
               </ul>
+              {next.world_requirement && (
+                <p className={'req-world ' + (next.world_requirement.met ? 'met' : 'unmet')}>
+                  <Icon name="medal" />
+                  <span>
+                    {t(next.world_requirement.complete ? 'world.skillsAll' : 'world.skillsEach', {
+                      name: next.world_requirement.world_name,
+                      level: next.world_requirement.required,
+                    })}
+                    <b>{next.world_requirement.done}/{next.world_requirement.total}</b>
+                  </span>
+                </p>
+              )}
+              {next.new_world && <p className="world-event">{t('world.eventNote')}</p>}
               <button type="button" className="btn" disabled={busy || !!reason} title={reason} onClick={onAdvance}>
                 <span title={formatCoinsFull(next.cost_cents)}>{t('world.advance', { cost: formatCoins(next.cost_cents) })}</span>
               </button>

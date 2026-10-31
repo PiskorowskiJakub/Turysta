@@ -68,6 +68,67 @@ final class ChapterService
         return $out;
     }
 
+    /**
+     * Wymaganie umiejetnosci swiata: awans w obrebie swiata wymaga stopniowego rozwoju jego 10 umiejetnosci
+     * (rozdzial n: ceil(max * (n-1) / 10) na kazdej), a przejscie do nowego swiata - wszystkich na maksimum.
+     *
+     * @param array<string,mixed> $target rozdzial docelowy (wiersz chapters + w_ordinal)
+     * @return array<string,mixed>|null null gdy swiat nie ma umiejetnosci
+     */
+    public function worldRequirement(int $userId, array $target): ?array
+    {
+        $ordinal = (int) $target['ordinal'];
+        $transition = $ordinal === 1 && (int) $target['w_ordinal'] > 1;
+        $worldOrdinal = $transition ? (int) $target['w_ordinal'] - 1 : (int) $target['w_ordinal'];
+
+        $stmt = $this->pdo->prepare(
+            'SELECT s.max_level, COALESCE(us.level, 0) AS level
+             FROM skill_definitions s
+             LEFT JOIN user_skills us ON us.skill_id = s.id AND us.user_id = ?
+             WHERE s.world_ordinal = ?'
+        );
+        $stmt->execute([$userId, $worldOrdinal]);
+        $rows = $stmt->fetchAll();
+        if (!$rows) {
+            return null;
+        }
+
+        $required = 0;
+        $done = 0;
+        foreach ($rows as $r) {
+            $max = (int) ($r['max_level'] ?? 0);
+            $need = $transition ? $max : min($max, (int) ceil($max * ($ordinal - 1) / 10));
+            $required = max($required, $need);
+            if ((int) $r['level'] >= $need) {
+                $done++;
+            }
+        }
+        $stmt = $this->pdo->prepare('SELECT name FROM worlds WHERE ordinal = ?');
+        $stmt->execute([$worldOrdinal]);
+
+        return [
+            'world_ordinal' => $worldOrdinal,
+            'world_name' => (string) $stmt->fetchColumn(),
+            'required' => $required,
+            'done' => $done,
+            'total' => count($rows),
+            'complete' => $transition,
+            'met' => $done === count($rows),
+        ];
+    }
+
+    /** Czy gracz spelnia wszystkie wymagania awansu (poziomy podstawowe i umiejetnosci swiata). @param array<string,mixed> $target */
+    public function requirementsMet(int $userId, array $target): bool
+    {
+        foreach ($this->requirements($userId, (int) $target['id']) as $req) {
+            if (!$req['met']) {
+                return false;
+            }
+        }
+        $world = $this->worldRequirement($userId, $target);
+        return $world === null || $world['met'];
+    }
+
     public function inQueue(int $userId): bool
     {
         $stmt = $this->pdo->prepare(
@@ -105,6 +166,7 @@ final class ChapterService
         $nextView = null;
         if ($next) {
             $reqs = $this->requirements($userId, (int) $next['id']);
+            $worldReq = $this->worldRequirement($userId, $next);
             $nextView = [
                 'id' => (int) $next['id'],
                 'ordinal' => (int) $next['ordinal'],
@@ -114,7 +176,8 @@ final class ChapterService
                 'duration_seconds' => (int) $next['duration_seconds'],
                 'cost_cents' => (int) $next['cost_cents'],
                 'requirements' => $reqs,
-                'requirements_met' => !in_array(false, array_column($reqs, 'met'), true),
+                'world_requirement' => $worldReq,
+                'requirements_met' => !in_array(false, array_column($reqs, 'met'), true) && ($worldReq === null || $worldReq['met']),
                 'in_queue' => $queued,
             ];
         }

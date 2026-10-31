@@ -309,6 +309,57 @@ final class GameFlowTest extends TestCase
         $this->assertFalse(array_column($this->training->skills($this->userId)['skills'], null, 'code')['w2_mushrooms']['locked']);
     }
 
+    public function testPromotionNeedsWorldSkillsGraduallyAndAllForNewWorld(): void
+    {
+        $this->fund(100000000);
+        $this->pdo->exec("UPDATE user_skills us JOIN skill_definitions s ON s.id = us.skill_id SET us.level = 300 WHERE us.user_id = {$this->userId} AND s.world_ordinal IS NULL");
+        $chapters = new \Turysta\Game\ChapterService($this->pdo);
+
+        // Pierwszy awans: 2 poziomy kazdej z 10 umiejetnosci swiata 1 (ceil(20 * 1 / 10)).
+        $next = $chapters->next($this->userId);
+        $req = $chapters->worldRequirement($this->userId, $next);
+        $this->assertSame(2, $req['required']);
+        $this->assertFalse($req['met']);
+        try {
+            $this->training->addChapter($this->userId);
+            $this->fail('Bez umiejetnosci swiata awans powinien byc odrzucony');
+        } catch (ApiException $e) {
+            $this->assertSame('requirements_not_met', $e->errorCode);
+        }
+        $this->pdo->exec(
+            "UPDATE user_skills us JOIN skill_definitions s ON s.id = us.skill_id SET us.level = 2
+             WHERE us.user_id = {$this->userId} AND s.world_ordinal = 1"
+        );
+        $this->assertSame('chapter', $this->training->addChapter($this->userId)['active']['kind']);
+
+        // Przejscie z rozdzialu 10 do nowego swiata: wszystkie umiejetnosci swiata 1 na maksimum, a awans jest wydarzeniem.
+        $this->pdo->exec("DELETE FROM training_queue WHERE user_id = {$this->userId}");
+        $this->pdo->prepare(
+            "UPDATE player_progress SET chapter_id = (SELECT c.id FROM chapters c JOIN worlds w ON w.id = c.world_id
+             WHERE w.ordinal = 1 AND c.ordinal = 10) WHERE user_id = ?"
+        )->execute([$this->userId]);
+        $this->pdo->exec(
+            "UPDATE user_skills us JOIN skill_definitions s ON s.id = us.skill_id SET us.level = s.max_level - 1
+             WHERE us.user_id = {$this->userId} AND s.world_ordinal = 1"
+        );
+        $next = $chapters->next($this->userId);
+        $req = $chapters->worldRequirement($this->userId, $next);
+        $this->assertTrue($req['complete']);
+        $this->assertFalse($req['met']);
+        $this->assertSame(0, $req['done']);
+
+        $this->pdo->exec(
+            "UPDATE user_skills us JOIN skill_definitions s ON s.id = us.skill_id SET us.level = s.max_level
+             WHERE us.user_id = {$this->userId} AND s.world_ordinal = 1"
+        );
+        $this->assertTrue($chapters->worldRequirement($this->userId, $next)['met']);
+        $normal = (int) $this->pdo->query(
+            "SELECT c.cost_cents FROM chapters c JOIN worlds w ON w.id = c.world_id WHERE w.ordinal = 1 AND c.ordinal = 10"
+        )->fetchColumn();
+        $this->assertGreaterThan(5 * $normal, (int) $next['cost_cents']);
+        $this->assertSame('chapter', $this->training->addChapter($this->userId)['active']['kind']);
+    }
+
     public function testLongJobNeedsConfirmationAndPaysNothing(): void
     {
         $this->jobs->start($this->userId, $this->jobId('hostel'));

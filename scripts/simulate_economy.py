@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Symulacja ekonomii Turysty (v4): gra od 1 do 365+ dni, gracz z kilkoma sesjami dziennie.
+"""Symulacja ekonomii Turysty (v5): gra od 1 do 365+ dni, gracz z kilkoma sesjami dziennie.
 
 Uruchomienie:  python scripts/simulate_economy.py [--days 30] [--profile aktywny|zwykly|okazjonalny|mieszany] [--bez-bonusu] [--sql]
---sql wypisuje migracje 015 (wymagania i koszty awansow oraz parametry umiejetnosci swiatow) wyliczona z tego modelu.
+--sql wypisuje migracje 016 (wymagania i koszty awansow oraz parametry umiejetnosci swiatow) wyliczona z tego modelu.
 Model odwzorowuje reguly gry: kolejka 1+2 wspolna dla szkolen i awansow, prace (rynek 8 h
 z wyplata proporcjonalna i bez przerwy po przerwaniu, schronisko 12 h, wyprawa 24 h, bez wyplaty
 po przerwaniu), bonus Handlu do wyplat (Economy::tradeBonusPermille), bonus startowy, wspolne wzory z backend/src/Game/Economy.php.
@@ -29,8 +29,10 @@ def trade_bonus(level):
     return 1 + BONUS_MAX * level / (level + BONUS_HALF)
 
 
+TRANSITION_COST, TRANSITION_TIME = 20, 6   # awans do nowego swiata: x20 koszt, x6 czas
 WORLD_SHARE_EVERY = 4   # co N-ty element kolejki to umiejetnosc swiata (0 = gracz ich nie szkoli)
-WORLD_LEVELS = 30
+WORLD_LEVELS = 20
+WORLD_END = 0.25        # czas ostatniego poziomu umiejetnosci swiata = 25% czasu szkolenia podstawowej na koncu swiata
 WORLD_FRESH = 0.15      # poziom 1 umiejetnosci swiata = 15% czasu szkolenia podstawowej na poziomie wejscia do swiata
 WORLD_START_LEVEL = [1, 41, 80, 118, 157]  # nadpisywane po ustawieniu REQ_SLOPE (patrz world_params)
 
@@ -41,7 +43,7 @@ def world_params(w):
     f_out = req(10 * w)[0] if w < 5 else req(49)[0]
     t0 = max(5, round(WORLD_FRESH * secs(f_in)))
     k0 = max(3, round(0.6 * t0))
-    g = min(1.25, max(1.03, (secs(f_out) / t0) ** (1 / (WORLD_LEVELS - 1))))
+    g = min(1.30, max(1.03, (max(t0 * 1.5, WORLD_END * secs(f_out)) / t0) ** (1 / (WORLD_LEVELS - 1))))
     return k0, g, t0, g
 
 
@@ -68,7 +70,7 @@ MAX_CHAPTERS = 49  # 5 swiatow po 10 rozdzialow, pierwszy jest startowy
 REQ_SLOPE = 2.0   # przyrost wymaganego poziomu Kondycji na jeden awans (Orientacja 0.95x, Handel 0.8x)
 
 
-REQ_F, REQ_P = 212, 0.55   # wymagany poziom Kondycji na ostatnim awansie (49) i wykladnik krzywej
+REQ_F, REQ_P = 180, 0.55   # wymagany poziom Kondycji na ostatnim awansie (49) i wykladnik krzywej
 
 
 def req(g):
@@ -82,7 +84,19 @@ REQ_F_BASE = 3
 def chapter(g):
     """Wymagania, koszt i czas awansu numer g (g=1 to pierwszy awans)."""
     f, o, t = req(g)
-    return (f, o, t), max(50, round(2.5 * cost(f))), max(30, 2 * secs(f))
+    c, d = max(50, round(2.5 * cost(f))), max(30, 2 * secs(f))
+    if g % 10 == 0 and g < 50:      # przejscie do nowego swiata: wydarzenie
+        c, d = c * TRANSITION_COST, d * TRANSITION_TIME
+    return (f, o, t), c, d
+
+
+def world_req(g):
+    """Wymaganie umiejetnosci swiata dla awansu g: (indeks swiata od 0, wymagany poziom kazdej z 10 umiejetnosci)."""
+    wt = 1 + g // 10
+    ct = g - 10 * (wt - 1) + 1
+    if ct == 1:
+        return wt - 2, WORLD_LEVELS
+    return wt - 1, -(-WORLD_LEVELS * (ct - 1) // 10)
 
 
 def fmt(s):
@@ -113,8 +127,14 @@ def simulate(days, profile):
     stat = dict(started=0, done=0, active_s=0.0, earned=0, spent=0, empty=0, durs=[], broke=0)
     t = 0.0
 
+    wlv = [[0] * 10 for _ in range(5)]
+
     def need(i):
         return req(min(chap + 1, MAX_CHAPTERS))[i]
+
+    def world_ok():
+        w, lvl = world_req(min(chap + 1, MAX_CHAPTERS))
+        return all(wlv[w][i] >= lvl for i in range(10))
 
     def advance(to):
         """Przesuwa czas do `to`, rozliczajac konczace sie szkolenia i prace."""
@@ -134,6 +154,7 @@ def simulate(days, profile):
             if kind == 'train':
                 typ, idx, _ = active
                 if typ == 'skill': lv[idx] += 1
+                elif typ == 'wskill': wlv[idx[0]][idx[1]] += 1
                 elif typ == 'chapter':
                     chap += 1; chap_q = False
                     milestones.setdefault(chap, int(t // 86400) + 1)
@@ -155,43 +176,42 @@ def simulate(days, profile):
         else:
             queue.append(q)
 
+    def wcost(w, n):
+        k0, h, t0_, g_ = wp[w]
+        return int(k0 * h ** (n - 1)), round(t0_ * g_ ** (n - 1))
+
     def fill():
         nonlocal coins, chap_q
         while (1 if active else 0) + len(queue) < SLOTS:
-            if not chap_q and chap < MAX_CHAPTERS and all(lv[i] >= need(i) for i in range(3)):
+            g = min(chap + 1, MAX_CHAPTERS)
+            if not chap_q and chap < MAX_CHAPTERS and all(lv[i] >= need(i) for i in range(3)) and world_ok():
                 (_, c, d) = chapter(chap + 1)
                 if coins >= c:
                     coins -= c; stat['spent'] += c; chap_q = True; stat['started'] += 1; stat['durs'].append(d)
-                    counter[0] += 1
                     push(('chapter', 0, d, c)); continue
-            if WORLD_SHARE_EVERY and counter[0] % WORLD_SHARE_EVERY == WORLD_SHARE_EVERY - 1:
-                cur_world = min(5, 1 + chap // 10)
-                best = None
-                for w in range(cur_world):
-                    k0, h, t0_, g_ = wp[w]
-                    for i in range(10):
-                        n = wplanned[w][i] + 1
-                        if n <= WORLD_LEVELS:
-                            c_ = int(k0 * h ** (n - 1))
-                            if best is None or c_ < best[0]:
-                                best = (c_, w, i, round(t0_ * g_ ** (n - 1)))
-                if best is not None:
-                    c_, w, i, d_ = best
-                    if coins < c_:
-                        stat['broke'] += 1
-                        break
-                    coins -= c_; stat['spent'] += c_; wplanned[w][i] += 1; stat['started'] += 1; stat['durs'].append(d_)
-                    counter[0] += 1
-                    push(('wskill', 0, d_, c_)); continue
-            s = min(range(3), key=lambda i: (planned[i] - need(i) if planned[i] < need(i) else 1000 + planned[i]))
-            n = planned[s] + 1
-            c = cost(n)
-            if coins < c:
+            # kandydaci: (czas, koszt, typ, indeks, czy wymagany)
+            ww, wl = world_req(g)
+            cands = []
+            for i in range(3):
+                n = planned[i] + 1
+                cands.append((secs(n), cost(n), 'skill', i, planned[i] < need(i)))
+            cur_world = min(5, 1 + chap // 10)
+            for w in range(cur_world):
+                for i in range(10):
+                    n = wplanned[w][i] + 1
+                    if n <= WORLD_LEVELS:
+                        d_, c_ = wcost(w, n)[1], wcost(w, n)[0]
+                        cands.append((d_, c_, 'wskill', (w, i), w == ww and wplanned[w][i] < wl))
+            required = [c for c in cands if c[4]]
+            pool = required if required else cands
+            d_, c_, typ, idx, _ = min(pool, key=lambda c: (c[0], c[1]))
+            if coins < c_:
                 stat['broke'] += 1
                 break
-            coins -= c; stat['spent'] += c; planned[s] += 1; stat['started'] += 1; stat['durs'].append(secs(n))
-            counter[0] += 1
-            push(('skill', s, secs(n), c))
+            coins -= c_; stat['spent'] += c_; stat['started'] += 1; stat['durs'].append(d_)
+            if typ == 'skill': planned[idx] += 1
+            else: wplanned[idx[0]][idx[1]] += 1
+            push((typ, idx, d_, c_))
 
     def job_step(next_gap):
         nonlocal job, coins
@@ -239,9 +259,11 @@ def milestones_text(rows_days, ms):
 
 
 def migration_sql():
-    out = ['-- Ekonomia v4: wolniejsze tempo (ok. roku na 5 swiatow), koszt po poziomie 50 rosnie jak czas (kwadrat),',
-           '-- umiejetnosci swiatow startuja od ulamka czasu podstawowych na poziomie wejscia do swiata.',
+    out = ['-- Ekonomia v5: umiejetnosci swiata wymagane do awansow (stopniowo, a do nowego swiata wszystkie),',
+           '-- awans do nowego swiata jako wydarzenie (x20 koszt, x6 czas); umiejetnosci swiatow: max 20 poziomow, start od ulamka czasu podstawowych na poziomie wejscia do swiata.',
            '-- Wygenerowane przez: python scripts/simulate_economy.py --sql', '']
+    out.append(f'UPDATE skill_definitions SET max_level = {WORLD_LEVELS} WHERE world_ordinal IS NOT NULL;')
+    out.append('')
     for w in range(1, 6):
         k0, h, t0, g = world_params(w)
         out.append(f'UPDATE skill_definitions SET base_cost_cents = {k0}, cost_growth = {h:.4f}, base_seconds = {t0}, time_growth = {g:.4f} WHERE world_ordinal = {w};')
