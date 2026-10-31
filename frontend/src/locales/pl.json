@@ -45,8 +45,8 @@
     "empty": "Nie znaleziono żadnego gracza.",
     "prev": "Poprzednia",
     "next": "Następna",
-    "first": "Pierwsza strona",
-    "last": "Ostatnia strona",
+    "first": "Pierwsza",
+    "last": "Ostatnia",
     "pageOf": "Strona {{page}} z {{pages}}",
     "total": "graczy: {{n}}"
   },

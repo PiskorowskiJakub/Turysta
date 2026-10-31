@@ -242,7 +242,7 @@ h1, h2, h3 { font-weight: 600; }
 .ranking-table tbody tr:nth-child(even) { background: var(--bg2); }
 .ranking-table tr.me { background: #f0c23f26; font-weight: 600; }
 .ranking-empty { text-align: center !important; padding: 16px 0 !important; opacity: 0.75; }
-.ranking-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 13px; }
+.ranking-pager { display: flex; flex-wrap: nowrap; white-space: nowrap; overflow-x: auto; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 13px; }
 .ranking-pager .btn { padding: 4px 12px; }
 
 /* ---------- Ksiazeczka odznak ---------- */

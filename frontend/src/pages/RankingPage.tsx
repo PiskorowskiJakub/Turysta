@@ -113,11 +113,11 @@ export default function RankingPage() {
       </table>
 
       <div className="ranking-pager">
-        <button type="button" className="btn" disabled={page <= 1} onClick={() => setPage(1)} aria-label={t('ranking.first')}>«</button>
+        <button type="button" className="btn" disabled={page <= 1} onClick={() => setPage(1)}>{t('ranking.first')}</button>
         <button type="button" className="btn" disabled={page <= 1} onClick={() => setPage(page - 1)}>{t('ranking.prev')}</button>
         <span>{t('ranking.pageOf', { page: data.page, pages: data.pages })} · {t('ranking.total', { n: data.total })}</span>
         <button type="button" className="btn" disabled={page >= data.pages} onClick={() => setPage(page + 1)}>{t('ranking.next')}</button>
-        <button type="button" className="btn" disabled={page >= data.pages} onClick={() => setPage(data.pages)} aria-label={t('ranking.last')}>»</button>
+        <button type="button" className="btn" disabled={page >= data.pages} onClick={() => setPage(data.pages)}>{t('ranking.last')}</button>
       </div>
     </section>
   );
