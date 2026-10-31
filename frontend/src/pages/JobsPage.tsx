@@ -131,7 +131,7 @@ export default function JobsPage() {
   };
 
   return (
-    <section className="panel">
+    <section className="panel trail-red">
       <h1>{t('jobs.title')}</h1>
       {error && <p className="form-error" role="alert">{error}</p>}
       {info && <p className="form-success" role="status">{info}</p>}

@@ -70,16 +70,27 @@ export default function Layout() {
             <span>{fact ?? t('tagline')}</span>
           </div>
           {authed && (
-            <div className="hud">
-              <span className="chip" title={t('wallet.coins')}><Icon name="coins" />{formatCoins(me.wallet.coins_cents)}</span>
-              <span className="chip tickets" title={t('wallet.tickets')}><Icon name="ticket" />{me.wallet.tickets}</span>
-              <span className="chip points" title={t('wallet.points')}><Icon name="points" />{me.wallet.points.toLocaleString('pl-PL')}</span>
-              <span className="chip avatar-pill">
+            <div className="plaque">
+              <div className="plaque-who">
                 <span className="av">
                   {avatar ? <img src={avatar.image_url} alt="" /> : me.user.character_name.slice(0, 1).toUpperCase()}
                 </span>
                 <span className="who">{me.user.character_name}</span>
-              </span>
+              </div>
+              <ul className="plaque-stats">
+                <li title={t('wallet.coins')}>
+                  <Icon name="coins" />
+                  <span><b>{formatCoins(me.wallet.coins_cents)}</b><small>{t('wallet.coins')}</small></span>
+                </li>
+                <li className="tickets" title={t('wallet.tickets')}>
+                  <Icon name="ticket" />
+                  <span><b>{me.wallet.tickets}</b><small>{t('wallet.tickets')}</small></span>
+                </li>
+                <li className="points" title={t('wallet.points')}>
+                  <Icon name="points" />
+                  <span><b>{me.wallet.points.toLocaleString('pl-PL')}</b><small>{t('wallet.points')}</small></span>
+                </li>
+              </ul>
             </div>
           )}
         </div>

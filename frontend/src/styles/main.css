@@ -64,24 +64,30 @@ h1, h2, h3 { font-weight: 600; }
 .fact b { flex: none; color: var(--orange); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
 .fact span { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
-.hud { display: flex; align-items: center; gap: 8px; flex: none; }
-.chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 5px 12px 5px 8px; border-radius: 999px;
-  background: var(--panel); border: 1.5px solid var(--line);
-  font-size: 14px; font-weight: 600;
+/* Plakietka gracza: awatar, nazwa i zasoby w jednej karcie */
+.plaque {
+  position: relative; flex: none; display: flex; align-items: center; gap: 14px;
+  padding: 8px 16px 8px 10px; border-radius: 14px;
+  background: linear-gradient(180deg, var(--panel-hi), var(--panel));
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
 }
-.chip svg { width: 18px; height: 18px; color: var(--orange); }
-.chip.tickets svg { color: var(--red); }
-.chip.points svg { color: var(--moss); }
-.avatar-pill { display: flex; align-items: center; gap: 8px; padding-left: 6px; }
-.avatar-pill .av {
-  width: 38px; height: 38px; border-radius: 50%; overflow: hidden;
-  background: var(--tile); border: 2px solid var(--orange);
+.plaque::before { content: ''; position: absolute; inset: 4px; border-radius: 10px; border: 1.5px dashed var(--line); pointer-events: none; }
+.plaque-who { display: flex; align-items: center; gap: 10px; padding-right: 14px; border-right: 1.5px solid var(--line); }
+.plaque .av {
+  width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex: none;
+  background: var(--tile); border: 3px solid var(--orange); box-shadow: 0 0 0 2px var(--panel), 0 0 0 3.5px var(--line);
   display: grid; place-items: center; font-weight: 600;
 }
-.avatar-pill .av img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.avatar-pill .who { font-size: 13px; font-weight: 600; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plaque .av img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.plaque .who { font-size: 14px; font-weight: 600; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plaque-stats { list-style: none; margin: 0; padding: 0; display: flex; gap: 16px; }
+.plaque-stats li { display: flex; align-items: center; gap: 7px; }
+.plaque-stats svg { width: 20px; height: 20px; color: var(--orange); }
+.plaque-stats .tickets svg { color: var(--red); }
+.plaque-stats .points svg { color: var(--moss); }
+.plaque-stats span { display: flex; flex-direction: column; line-height: 1.15; }
+.plaque-stats b { font-size: 14px; font-weight: 600; }
+.plaque-stats small { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 
 /* ---------- Uklad ---------- */
 .shell {
@@ -160,14 +166,17 @@ h1, h2, h3 { font-weight: 600; }
 .button.small { padding: 5px 12px; font-size: 13px; }
 
 /* ---------- Pasek postepu jak szlak ---------- */
-.bar { position: relative; height: 26px; border-radius: 13px; background: #101a15; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5); overflow: hidden; }
-.bar-fill {
-  height: 100%; min-width: 26px; border-radius: 13px; transition: width 1s linear;
-  background: repeating-linear-gradient(-45deg, var(--orange) 0 12px, #f6a35f 12px 24px);
-  display: flex; align-items: center; justify-content: flex-end; padding-right: 10px;
-  color: #2a1604; font-size: 12px; font-weight: 600;
+.bar { position: relative; height: 46px; margin: 4px 8px 0; }
+.bar::before { content: ''; position: absolute; left: 0; right: 0; top: 33px; border-top: 4px dotted rgba(214, 196, 140, 0.55); }
+.bar-fill { position: absolute; left: 0; top: 31px; height: 8px; border-radius: 4px; background: var(--trail, var(--orange)); box-shadow: 0 0 10px -1px var(--trail, var(--orange)); transition: width 1s linear; }
+.bar-stop { position: absolute; top: 35px; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--panel); border: 3px solid rgba(214, 196, 140, 0.6); }
+.bar-stop.done { background: var(--trail, var(--orange)); border-color: var(--trail, var(--orange)); }
+.bar-pin {
+  position: absolute; top: 0; transform: translateX(-50%); min-width: 44px; text-align: center;
+  padding: 2px 9px; border-radius: 999px; background: var(--trail, var(--orange)); color: #fff;
+  font-size: 12px; font-weight: 600; transition: left 1s linear; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
-.bar-fill span { white-space: nowrap; }
+.bar-pin::after { content: ''; position: absolute; left: 50%; bottom: -6px; margin-left: -6px; border: 6px solid transparent; border-bottom: 0; border-top-color: var(--trail, var(--orange)); }
 
 /* ---------- Odznaki / ikony ---------- */
 .icon-tile {
@@ -258,7 +267,10 @@ h1, h2, h3 { font-weight: 600; }
   .job-card { grid-template-columns: 1fr 90px; }
   .job-img .icon-tile { width: 80px; height: 80px; }
   .job-stats { grid-template-columns: 1fr; }
-  .avatar-pill .who { display: none; }
+  .plaque .who, .plaque-stats small { display: none; }
+  .plaque { gap: 10px; padding: 6px 10px 6px 8px; }
+  .plaque-who { padding-right: 10px; }
+  .plaque-stats { gap: 10px; }
 }
 
 /* ---------- Zakladki nad trescia ---------- */

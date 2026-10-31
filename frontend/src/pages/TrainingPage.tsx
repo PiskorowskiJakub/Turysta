@@ -173,7 +173,7 @@ export default function TrainingPage() {
       <Tabs base="/umiejetnosci" items={SKILL_TABS} />
       {error && <p className="panel form-error" role="alert">{error}</p>}
 
-      <section className="panel">
+      <section className="panel trail-blue">
         <h2>{t('training.practiced', { used: slotsUsed, max: training.max_slots })}</h2>
         {slotsUsed === 0 ? (
           <p className="page-message">{t('training.empty')}</p>
@@ -185,7 +185,7 @@ export default function TrainingPage() {
         )}
       </section>
 
-      <section className="panel">
+      <section className="panel trail-blue">
         <h2>{t('training.basic')}</h2>
         <div className="skill-grid">{skills.skills.map(skillCard)}</div>
       </section>
