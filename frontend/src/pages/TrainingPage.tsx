@@ -262,7 +262,7 @@ export default function TrainingPage() {
             <p className="page-message">{t('training.worldLockedMessage', { n: worldTab })}</p>
           ) : (
             <>
-              <p className="page-message">{t('training.worldSkillsInfo', { max: 30 })}</p>
+              <p className="page-message">{t('training.worldSkillsInfo', { max: skills.skills.find((s) => s.world_ordinal === worldTab)?.max_level ?? 0 })}</p>
               <div className="skill-grid">{skills.skills.filter((s) => s.world_ordinal === worldTab).map(skillCard)}</div>
             </>
           )}

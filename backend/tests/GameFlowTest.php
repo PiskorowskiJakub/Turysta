@@ -315,10 +315,11 @@ final class GameFlowTest extends TestCase
         $this->pdo->exec("UPDATE user_skills us JOIN skill_definitions s ON s.id = us.skill_id SET us.level = 300 WHERE us.user_id = {$this->userId} AND s.world_ordinal IS NULL");
         $chapters = new \Turysta\Game\ChapterService($this->pdo);
 
-        // Pierwszy awans: 2 poziomy kazdej z 10 umiejetnosci swiata 1 (ceil(20 * 1 / 10)).
+        // Pierwszy awans: 4 poziomy kazdej umiejetnosci swiata 1 (ceil(33 * 1 / 10)).
         $next = $chapters->next($this->userId);
         $req = $chapters->worldRequirement($this->userId, $next);
-        $this->assertSame(2, $req['required']);
+        $this->assertSame(4, $req['required']);
+        $this->assertSame(6, $req['total']);
         $this->assertFalse($req['met']);
         try {
             $this->training->addChapter($this->userId);
@@ -327,7 +328,7 @@ final class GameFlowTest extends TestCase
             $this->assertSame('requirements_not_met', $e->errorCode);
         }
         $this->pdo->exec(
-            "UPDATE user_skills us JOIN skill_definitions s ON s.id = us.skill_id SET us.level = 2
+            "UPDATE user_skills us JOIN skill_definitions s ON s.id = us.skill_id SET us.level = 4
              WHERE us.user_id = {$this->userId} AND s.world_ordinal = 1"
         );
         $this->assertSame('chapter', $this->training->addChapter($this->userId)['active']['kind']);
@@ -347,6 +348,7 @@ final class GameFlowTest extends TestCase
         $this->assertTrue($req['complete']);
         $this->assertFalse($req['met']);
         $this->assertSame(0, $req['done']);
+        $this->assertSame(6, $req['total']);
 
         $this->pdo->exec(
             "UPDATE user_skills us JOIN skill_definitions s ON s.id = us.skill_id SET us.level = s.max_level

@@ -69,8 +69,8 @@ final class ChapterService
     }
 
     /**
-     * Wymaganie umiejetnosci swiata: awans w obrebie swiata wymaga stopniowego rozwoju jego 10 umiejetnosci
-     * (rozdzial n: ceil(max * (n-1) / 10) na kazdej), a przejscie do nowego swiata - wszystkich na maksimum.
+     * Wymaganie umiejetnosci swiata: awans w obrebie swiata wymaga stopniowego rozwoju jego umiejetnosci
+     * (rozdzial n: ceil(max_level * (n-1) / 10) na kazdej), a przejscie do nowego swiata - wszystkich na maksimum.
      *
      * @param array<string,mixed> $target rozdzial docelowy (wiersz chapters + w_ordinal)
      * @return array<string,mixed>|null null gdy swiat nie ma umiejetnosci

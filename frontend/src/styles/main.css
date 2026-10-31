@@ -370,9 +370,13 @@ h1, h2, h3 { font-weight: 600; }
 .menu-item.disabled:hover { background: var(--panel); transform: none; }
 .menu-item .soon { margin-left: auto; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 
-.req-world { display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 13px; }
-.req-world svg { width: 18px; height: 18px; flex: none; }
-.req-world.met { color: var(--moss); }
-.req-world.unmet { color: var(--orange); }
-.req-world b { margin-left: 6px; }
+.req-world { display: flex; align-items: center; gap: 10px; margin: 8px 0; padding: 8px 10px; background: var(--tile); border-radius: 8px; border-left: 3px solid var(--line); }
+.req-world svg { width: 20px; height: 20px; flex: none; }
+.req-world-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 12px; line-height: 1.25; color: var(--muted); }
+.req-world-text strong { font-size: 13px; font-weight: 600; color: var(--cream); }
+.req-count { margin-left: auto; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--bg2); white-space: nowrap; }
+.req-world.met { border-left-color: var(--moss); }
+.req-world.met svg, .req-world.met .req-count { color: var(--moss); }
+.req-world.unmet { border-left-color: var(--orange); }
+.req-world.unmet svg, .req-world.unmet .req-count { color: var(--orange); }
 .world-event { margin: 6px 0; padding: 6px 10px; border-left: 3px solid var(--orange); background: var(--tile); border-radius: 6px; font-size: 12px; color: var(--cream); }

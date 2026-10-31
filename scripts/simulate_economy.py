@@ -2,7 +2,7 @@
 """Symulacja ekonomii Turysty (v5): gra od 1 do 365+ dni, gracz z kilkoma sesjami dziennie.
 
 Uruchomienie:  python scripts/simulate_economy.py [--days 30] [--profile aktywny|zwykly|okazjonalny|mieszany] [--bez-bonusu] [--sql]
---sql wypisuje migracje 016 (wymagania i koszty awansow oraz parametry umiejetnosci swiatow) wyliczona z tego modelu.
+--sql wypisuje migracje 017 (wymagania i koszty awansow oraz parametry umiejetnosci swiatow) wyliczona z tego modelu.
 Model odwzorowuje reguly gry: kolejka 1+2 wspolna dla szkolen i awansow, prace (rynek 8 h
 z wyplata proporcjonalna i bez przerwy po przerwaniu, schronisko 12 h, wyprawa 24 h, bez wyplaty
 po przerwaniu), bonus Handlu do wyplat (Economy::tradeBonusPermille), bonus startowy, wspolne wzory z backend/src/Game/Economy.php.
@@ -31,19 +31,38 @@ def trade_bonus(level):
 
 TRANSITION_COST, TRANSITION_TIME = 20, 6   # awans do nowego swiata: x20 koszt, x6 czas
 WORLD_SHARE_EVERY = 4   # co N-ty element kolejki to umiejetnosc swiata (0 = gracz ich nie szkoli)
-WORLD_LEVELS = 20
+WORLD_SKILLS = 6        # umiejetnosci na swiat
+WORLD_LEVELS = 33       # maksymalny poziom umiejetnosci swiata
+ORIG_SKILLS, ORIG_LEVELS = 10, 20   # model v5 (10 x 20 poziomow) - lacznie tyle samo pracy
 WORLD_END = 0.25        # czas ostatniego poziomu umiejetnosci swiata = 25% czasu szkolenia podstawowej na koncu swiata
 WORLD_FRESH = 0.15      # poziom 1 umiejetnosci swiata = 15% czasu szkolenia podstawowej na poziomie wejscia do swiata
 WORLD_START_LEVEL = [1, 41, 80, 118, 157]  # nadpisywane po ustawieniu REQ_SLOPE (patrz world_params)
 
 
+def _geo(t0, g, levels):
+    return sum(t0 * g ** (n - 1) for n in range(1, levels + 1))
+
+
 def world_params(w):
-    """(k0, h, t0, g) umiejetnosci swiata w (1..5)."""
+    """(k0, h, t0, g) umiejetnosci swiata w (1..5).
+
+    Wzrost g dobrany tak, aby caly zestaw (WORLD_SKILLS x WORLD_LEVELS) wymagal tyle samo czasu (i kosztu), co model v5
+    (ORIG_SKILLS x ORIG_LEVELS, ostatni poziom = WORLD_END czasu podstawowej na koncu swiata).
+    """
     f_in = 1 if w == 1 else req(10 * (w - 1))[0]
     f_out = req(10 * w)[0] if w < 5 else req(49)[0]
     t0 = max(5, round(WORLD_FRESH * secs(f_in)))
     k0 = max(3, round(0.6 * t0))
-    g = min(1.30, max(1.03, (max(t0 * 1.5, WORLD_END * secs(f_out)) / t0) ** (1 / (WORLD_LEVELS - 1))))
+    g_orig = min(1.30, max(1.03, (max(t0 * 1.5, WORLD_END * secs(f_out)) / t0) ** (1 / (ORIG_LEVELS - 1))))
+    target = ORIG_SKILLS * _geo(t0, g_orig, ORIG_LEVELS)
+    lo, hi = 1.0001, 1.5
+    for _ in range(80):
+        mid = (lo + hi) / 2
+        if WORLD_SKILLS * _geo(t0, mid, WORLD_LEVELS) < target:
+            lo = mid
+        else:
+            hi = mid
+    g = round((lo + hi) / 2, 4)
     return k0, g, t0, g
 
 
@@ -91,7 +110,7 @@ def chapter(g):
 
 
 def world_req(g):
-    """Wymaganie umiejetnosci swiata dla awansu g: (indeks swiata od 0, wymagany poziom kazdej z 10 umiejetnosci)."""
+    """Wymaganie umiejetnosci swiata dla awansu g: (indeks swiata od 0, wymagany poziom kazdej z umiejetnosci swiata)."""
     wt = 1 + g // 10
     ct = g - 10 * (wt - 1) + 1
     if ct == 1:
@@ -110,7 +129,7 @@ def fmt(s):
 def simulate(days, profile):
     mixed = profile == 'mieszany'
     sessions = PROFILES['aktywny' if mixed else profile]
-    wplanned = [[0] * 10 for _ in range(5)]
+    wplanned = [[0] * WORLD_SKILLS for _ in range(5)]
     wp = [world_params(w) for w in range(1, 6)]
     counter = [0]
     milestones = {}
@@ -127,14 +146,14 @@ def simulate(days, profile):
     stat = dict(started=0, done=0, active_s=0.0, earned=0, spent=0, empty=0, durs=[], broke=0)
     t = 0.0
 
-    wlv = [[0] * 10 for _ in range(5)]
+    wlv = [[0] * WORLD_SKILLS for _ in range(5)]
 
     def need(i):
         return req(min(chap + 1, MAX_CHAPTERS))[i]
 
     def world_ok():
         w, lvl = world_req(min(chap + 1, MAX_CHAPTERS))
-        return all(wlv[w][i] >= lvl for i in range(10))
+        return all(wlv[w][i] >= lvl for i in range(WORLD_SKILLS))
 
     def advance(to):
         """Przesuwa czas do `to`, rozliczajac konczace sie szkolenia i prace."""
@@ -197,7 +216,7 @@ def simulate(days, profile):
                 cands.append((secs(n), cost(n), 'skill', i, planned[i] < need(i)))
             cur_world = min(5, 1 + chap // 10)
             for w in range(cur_world):
-                for i in range(10):
+                for i in range(WORLD_SKILLS):
                     n = wplanned[w][i] + 1
                     if n <= WORLD_LEVELS:
                         d_, c_ = wcost(w, n)[1], wcost(w, n)[0]
@@ -258,18 +277,32 @@ def milestones_text(rows_days, ms):
     return ', '.join(f'swiat {w} od dnia {ms.get(10 * (w - 1))}' for w in range(2, 6)) + f', ukonczenie awansow w dniu {ms.get(49)}'
 
 
-def migration_sql():
-    out = ['-- Ekonomia v5: umiejetnosci swiata wymagane do awansow (stopniowo, a do nowego swiata wszystkie),',
-           '-- awans do nowego swiata jako wydarzenie (x20 koszt, x6 czas); umiejetnosci swiatow: max 20 poziomow, start od ulamka czasu podstawowych na poziomie wejscia do swiata.',
-           '-- Wygenerowane przez: python scripts/simulate_economy.py --sql', '']
-    out.append(f'UPDATE skill_definitions SET max_level = {WORLD_LEVELS} WHERE world_ordinal IS NOT NULL;')
-    out.append('')
-    for w in range(1, 6):
-        k0, h, t0, g = world_params(w)
-        out.append(f'UPDATE skill_definitions SET base_cost_cents = {k0}, cost_growth = {h:.4f}, base_seconds = {t0}, time_growth = {g:.4f} WHERE world_ordinal = {w};')
-        out.append('')
+REMOVED_WORLD_SKILLS = [  # zestaw 10 -> 6: usuwane umiejetnosci swiatow
+    'w1_boots', 'w1_weather', 'w1_photo', 'w1_etiquette',
+    'w2_woodcutting', 'w2_stream_crossing', 'w2_insects', 'w2_silence',
+    'w3_skiing', 'w3_ice_reading', 'w3_snow_melting', 'w3_frostbite',
+    'w4_oasis', 'w4_dunes', 'w4_cold_nights', 'w4_dried_food',
+    'w5_rope_bridge', 'w5_rainwater', 'w5_jungle_listening', 'w5_local_speech',
+]
+
+
+def migration_sql(chapters=False):
+    """Domyslnie migracja 017 (umiejetnosci swiatow); z chapters=True migracja awansow (jak 016)."""
+    out = []
+    if not chapters:
+        names = ', '.join(f"'{c}'" for c in REMOVED_WORLD_SKILLS)
+        out += [f'-- Umiejetnosci swiatow: {WORLD_SKILLS} na swiat po {WORLD_LEVELS} poziomow (lacznie tyle samo pracy i kosztu co 10 x 20 w migracji 016).',
+                '-- Wygenerowane przez: python scripts/simulate_economy.py --sql', '',
+                f'DELETE FROM training_queue WHERE skill_id IN (SELECT id FROM skill_definitions WHERE code IN ({names}));', '',
+                f'DELETE FROM user_skills WHERE skill_id IN (SELECT id FROM skill_definitions WHERE code IN ({names}));', '',
+                f'DELETE FROM skill_definitions WHERE code IN ({names});', '',
+                f'UPDATE skill_definitions SET max_level = {WORLD_LEVELS} WHERE world_ordinal IS NOT NULL;', '']
+        for w in range(1, 6):
+            k0, h, t0, g = world_params(w)
+            out += [f'UPDATE skill_definitions SET base_cost_cents = {k0}, cost_growth = {h:.4f}, base_seconds = {t0}, time_growth = {g:.4f} WHERE world_ordinal = {w};', '']
+        return '\n'.join(out)
+    out += ['-- Awanse: wymagania i koszty (wygenerowane przez: python scripts/simulate_economy.py --sql-chapters)', '']
     for gi in range(1, MAX_CHAPTERS + 1):
-        w, c = 1 + gi // 10, gi % 10 + 1 if gi < 10 else gi % 10 + 1
         w = 1 + gi // 10
         c = gi - 10 * (w - 1) + 1
         (f, o, t), cst, dur = chapter(gi)
@@ -286,13 +319,14 @@ def main():
     ap.add_argument('--days', type=int, default=30)
     ap.add_argument('--profile', default='zwykly', choices=list(PROFILES))
     ap.add_argument('--markdown', action='store_true', help='wypisz tabelę w formacie Markdown (wybrane dni)')
-    ap.add_argument('--sql', action='store_true', help='wypisz migracje 015 wyliczona z modelu')
+    ap.add_argument('--sql', action='store_true', help='wypisz migracje 017 (umiejetnosci swiatow) wyliczona z modelu')
+    ap.add_argument('--sql-chapters', action='store_true', help='wypisz UPDATE-y awansow (wymagania, koszty)')
     ap.add_argument('--bez-bonusu', action='store_true', help='wylacz bonus Handlu (porownanie)')
     a = ap.parse_args()
     global BONUS_ON
     BONUS_ON = not a.bez_bonusu
-    if a.sql:
-        print(migration_sql())
+    if a.sql or a.sql_chapters:
+        print(migration_sql(chapters=a.sql_chapters))
         return
     if a.markdown:
         shown = {1, 2, 3, 5, 7, 10, 14, 18, 21, 25, 30} if a.days <= 30 else {1, 7, 14, 30, 60, 90, 120, 180, 270, 365}

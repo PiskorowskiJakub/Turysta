@@ -39,7 +39,7 @@ Cele:
 
 - Koszt poziomu `n`: `floor(3 * 1,16^(n-1))` groszy, czas `round(5 * 1,16^(n-1))` sekund. Koszt rośnie tak samo szybko jak czas (ok. 0,6 grosza na sekundę), więc pieniądze nie są ścianką. Od poziomu 50 koszt i czas rosną **kwadratowo**: `(n/50)^2`.
 - **Wymagania awansu `g` (1..49), podstawowe umiejętności:** Kondycja `3 + 177 * (g/49)^0,55` (Orientacja 0,95 ×, Handel 0,8 × tej wartości), czyli ok. 24 na pierwszym awansie i 180 na ostatnim.
-- **Wymagania awansu, umiejętności świata:** w obrębie świata rozdział `n` wymaga **każdej z 10 umiejętności świata** na poziomie `ceil(20 * (n-1) / 10)` (rozdział 2: poziom 2, rozdział 10: poziom 18). **Przejście do nowego świata wymaga wszystkich 10 umiejętności obecnego świata na maksymalnym poziomie (20).** Wymaganie jest liczone przez serwer (`ChapterService::worldRequirement`) i widoczne w zakładce Awans.
+- **Wymagania awansu, umiejętności świata:** w obrębie świata rozdział `n` wymaga **każdej z 6 umiejętności świata** na poziomie `ceil(33 * (n-1) / 10)` (rozdział 2: poziom 4, rozdział 10: poziom 30). **Przejście do nowego świata wymaga wszystkich 6 umiejętności obecnego świata na maksymalnym poziomie (33).** Wymaganie jest liczone przez serwer (`ChapterService::worldRequirement`) i widoczne w zakładce Awans.
 - **Koszt i czas zwykłego awansu:** `max(50, 2,5 * koszt(f))` oraz `max(30, 2 * czas(f))`, gdzie `f` to wymagany poziom Kondycji.
 - **Awans do nowego świata (wydarzenie):** **20× koszt i 6× czas** zwykłego awansu.
 
@@ -52,19 +52,19 @@ Cele:
 
 - Start: 2 dk premii. Bazowe wypłaty prac: targ 8 h (247 dk), hostel 12 h (420 dk), wyprawa 24 h (900 dk), z bonusem Handlu (niżej).
 
-### Umiejętności światów (migracje `014`, `016`)
+### Umiejętności światów (migracje `014`, `017`)
 
-Każdy świat ma **10 własnych umiejętności** (razem 50), dobranych do klimatu świata, np. Las: Rozpoznawanie grzybów, Tropienie zwierząt, Budowa szałasu; Tundra: Ubiór warstwowy, Rakiety śnieżne, Zaprzęg psi; Pustynia: Gospodarka wodą, Jazda na wielbłądzie, Nawigacja po gwiazdach; Dżungla: Torowanie drogi maczetą, Wspinaczka po lianach, Spływ kajakiem. Zakładki światów, do których gracz jeszcze nie dotarł, są zablokowane (`skill_locked`). Maksymalnie **20 poziomów**.
+Każdy świat ma **6 własnych umiejętności** (razem 30), dobranych do klimatu świata, np. Las: Rozpoznawanie grzybów, Tropienie zwierząt, Budowa szałasu; Tundra: Ubiór warstwowy, Rakiety śnieżne, Zaprzęg psi; Pustynia: Gospodarka wodą, Jazda na wielbłądzie, Nawigacja po gwiazdach; Dżungla: Torowanie drogi maczetą, Wspinaczka po lianach, Spływ kajakiem. Zakładki światów, do których gracz jeszcze nie dotarł, są zablokowane (`skill_locked`). Maksymalnie **33 poziomy** (6 × 33 ≈ 10 × 20 z poprzedniej wersji, więc łączny czas i koszt zestawu się nie zmieniły).
 
-**Trudność zależy od etapu gry.** Poziom 1 trwa 15% czasu szkolenia podstawowej umiejętności na poziomie, na którym gracz wchodzi do świata, a ostatni poziom (20) ok. 25% czasu podstawowej na końcu świata. Koszt jest proporcjonalny do czasu. Nowy gracz w świecie 1 zaczyna od sekund; doświadczony wchodzi w świat 5 z godzinami zamiast sekund.
+**Trudność zależy od etapu gry.** Poziom 1 trwa 15% czasu szkolenia podstawowej umiejętności na poziomie, na którym gracz wchodzi do świata, a wzrost na poziom dobrany tak, że cały zestaw wymaga tyle pracy, ile zestaw 10 × 20 poziomów (ostatni poziom ok. 25% czasu podstawowej na końcu świata). Koszt jest proporcjonalny do czasu. Nowy gracz w świecie 1 zaczyna od sekund; doświadczony wchodzi w świat 5 z godzinami zamiast sekund.
 
-| Świat | Poziom 1 | Poziom 20 | Czas całego zestawu 10 umiejętności | Koszt zestawu |
+| Świat | Poziom 1 | Poziom 33 | Czas całego zestawu 6 umiejętności | Koszt zestawu |
 |---|---|---|---|---|
-| 1. Nowy Początek | 5 s | 12 min | 8.8 h | 188 dk |
-| 2. Las | 42 min | 2.5 h | 11.8 d | 6 135 dk |
-| 3. Tundra | 1.5 h | 3.8 h | 20.6 d | 10 680 dk |
-| 4. Pustynia | 2.3 h | 5.2 h | 29.6 d | 15 334 dk |
-| 5. Dżungla | 3.1 h | 6.5 h | 38.4 d | 19 882 dk |
+| 1. Nowy Początek | 5 s | 12 min | 8.7 h | 188 dk |
+| 2. Las | 42 min | 2.5 h | 11.8 d | 6 139 dk |
+| 3. Tundra | 1.5 h | 3.9 h | 20.6 d | 10 689 dk |
+| 4. Pustynia | 2.3 h | 5.3 h | 29.6 d | 15 346 dk |
+| 5. Dżungla | 3.1 h | 6.6 h | 38.3 d | 19 874 dk |
 
 Zestaw jest wymagany do awansów (stopniowo) i do przejścia dalej, więc to część głównej ścieżki, a nie dodatek.
 
@@ -79,16 +79,16 @@ Zestaw jest wymagany do awansów (stopniowo) i do przejścia dalej, więc to cz�
 
 Gracz zawsze uzupełnia kolejkę: najpierw tym, czego wymaga następny awans (najkrótsze szkolenie), a gdy wymagania są spełnione, najkrótszymi dostępnymi szkoleniami (podstawowe i odblokowane światy). Przy każdej wizycie rozpoczyna dostępną pracę.
 
-Uruchomienie: `python scripts/simulate_economy.py --profile mieszany --days 365 --markdown` (profile: `aktywny`, `zwykly`, `okazjonalny`, `mieszany`; `--bez-bonusu` wyłącza bonus Handlu; `--sql` wypisuje migrację 016). Kolumna „Zarobek” to wypłaty rozliczone danego dnia (dni bez zakończonej pracy pokazują 0).
+Uruchomienie: `python scripts/simulate_economy.py --profile mieszany --days 365 --markdown` (profile: `aktywny`, `zwykly`, `okazjonalny`, `mieszany`; `--bez-bonusu` wyłącza bonus Handlu; `--sql` wypisuje migrację 017, `--sql-chapters` UPDATE-y awansów). Kolumna „Zarobek” to wypłaty rozliczone danego dnia (dni bez zakończonej pracy pokazują 0).
 
 ### Tempo: kiedy gracz wchodzi do kolejnych światów
 
 | Profil | Świat 2 | Świat 3 | Świat 4 | Świat 5 | Koniec (awans 49) |
 |---|---:|---:|---:|---:|---:|
-| mieszany (cel) | dzień 33 | dzień 86 | dzień 163 | dzień 263 | dzień 360 |
-| aktywny cały rok | dzień 33 | dzień 84 | dzień 158 | dzień 254 | dzień 349 |
-| zwykły | dzień 54 | dzień 113 | dzień 190 | dzień 290 | dzień 387 |
-| okazjonalny | dzień 144 | dzień 251 | dzień 369 | dzień 498 | dzień 618 |
+| mieszany (cel) | dzień 33 | dzień 85 | dzień 162 | dzień 261 | dzień 357 |
+| aktywny cały rok | dzień 33 | dzień 84 | dzień 157 | dzień 254 | dzień 348 |
+| zwykły | dzień 53 | dzień 112 | dzień 190 | dzień 289 | dzień 385 |
+| okazjonalny | dzień 144 | dzień 250 | dzień 368 | dzień 498 | dzień 619 |
 
 Tempo jest ograniczone czasem kolejki (3 miejsca), więc różnica między aktywnym a zwykłym graczem jest niewielka; okazjonalny (1 wejście dziennie) potrzebuje blisko dwóch lat.
 
@@ -96,33 +96,33 @@ Tempo jest ograniczone czasem kolejki (3 miejsca), więc różnica między aktyw
 
 | Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 2–2 | 0 | 18 | 0% | 5 s | 451 | 1 | 453 |
-| 2 | 5–6 | 0 | 18 | 0% | 7 s | 707 | 1 | 1159 |
-| 3 | 11–12 | 0 | 18 | 0% | 16 s | 733 | 2 | 1890 |
-| 5 | 19–24 | 1 | 18 | 2% | 1 min | 801 | 10 | 3446 |
-| 7 | 26–30 | 1 | 18 | 4% | 3 min | 823 | 23 | 5054 |
-| 10 | 32–41 | 3 | 18 | 21% | 16 min | 870 | 114 | 7446 |
-| 14 | 42–50 | 4 | 14 | 50% | 1.1 h | 902 | 333 | 10307 |
-| 18 | 47–59 | 6 | 13 | 70% | 52 min | 929 | 276 | 12867 |
-| 21 | 51–64 | 7 | 9 | 62% | 1.1 h | 943 | 256 | 14697 |
-| 25 | 56–68 | 8 | 14 | 34% | 1.1 h | 954 | 319 | 17208 |
-| 30 | 61–77 | 9 | 6 | 99% | 12.8 h | 976 | 5557 | 14877 |
+| 1 | 2–2 | 0 | 18 | 0% | 5 s | 452 | 1 | 453 |
+| 2 | 4–4 | 0 | 18 | 0% | 7 s | 712 | 1 | 1165 |
+| 3 | 10–10 | 0 | 18 | 0% | 13 s | 729 | 1 | 1893 |
+| 5 | 19–24 | 0 | 18 | 2% | 1 min | 797 | 9 | 3441 |
+| 7 | 26–29 | 1 | 18 | 4% | 2 min | 819 | 19 | 5046 |
+| 10 | 32–41 | 3 | 18 | 21% | 16 min | 870 | 114 | 7434 |
+| 14 | 42–50 | 4 | 15 | 48% | 1.0 h | 901 | 333 | 10289 |
+| 18 | 47–59 | 6 | 15 | 62% | 35 min | 929 | 220 | 12848 |
+| 21 | 51–64 | 7 | 9 | 74% | 1.1 h | 943 | 257 | 14673 |
+| 25 | 57–68 | 8 | 12 | 45% | 1.5 h | 955 | 391 | 17110 |
+| 30 | 62–77 | 9 | 6 | 100% | 12.6 h | 976 | 5530 | 14794 |
 
 ### Pierwsze 30 dni: zwykły
 
 | Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 1 | 1–1 | 0 | 9 | 0% | 5 s | 373 | 0 | 375 |
-| 2 | 2–2 | 0 | 9 | 0% | 5 s | 658 | 0 | 1032 |
-| 3 | 2–3 | 0 | 9 | 0% | 6 s | 660 | 0 | 1692 |
-| 5 | 8–9 | 0 | 9 | 0% | 12 s | 681 | 1 | 3039 |
-| 7 | 14–15 | 0 | 9 | 0% | 31 s | 716 | 2 | 4450 |
-| 10 | 19–24 | 1 | 9 | 1% | 1 min | 758 | 6 | 6675 |
-| 14 | 26–30 | 1 | 9 | 3% | 4 min | 785 | 15 | 9717 |
-| 18 | 32–34 | 2 | 9 | 5% | 7 min | 795 | 24 | 12833 |
-| 21 | 32–41 | 3 | 9 | 0% | 27 s | 816 | 1 | 15166 |
-| 25 | 38–48 | 4 | 9 | 13% | 20 min | 840 | 82 | 18133 |
-| 30 | 42–53 | 5 | 9 | 1% | 1 min | 854 | 4 | 21773 |
+| 2 | 2–2 | 0 | 9 | 0% | 6 s | 660 | 0 | 1034 |
+| 3 | 3–3 | 0 | 9 | 0% | 7 s | 667 | 0 | 1701 |
+| 5 | 7–7 | 0 | 9 | 0% | 10 s | 679 | 1 | 3052 |
+| 7 | 13–13 | 0 | 9 | 0% | 26 s | 710 | 1 | 4452 |
+| 10 | 19–24 | 0 | 9 | 1% | 1 min | 755 | 6 | 6665 |
+| 14 | 26–29 | 1 | 9 | 2% | 3 min | 781 | 13 | 9701 |
+| 18 | 32–34 | 2 | 9 | 5% | 7 min | 795 | 24 | 12813 |
+| 21 | 32–41 | 3 | 9 | 0% | 28 s | 816 | 1 | 15146 |
+| 25 | 38–48 | 4 | 9 | 24% | 38 min | 840 | 142 | 18104 |
+| 30 | 42–53 | 5 | 9 | 1% | 1 min | 854 | 5 | 21738 |
 
 ### Pierwsze 30 dni: okazjonalny
 
@@ -131,27 +131,27 @@ Tempo jest ograniczone czasem kolejki (3 miejsca), więc różnica między aktyw
 | 1 | 1–1 | 0 | 3 | 0% | 5 s | 0 | 0 | 2 |
 | 2 | 1–1 | 0 | 3 | 0% | 5 s | 900 | 0 | 902 |
 | 3 | 1–1 | 0 | 3 | 0% | 5 s | 0 | 0 | 902 |
-| 5 | 1–2 | 0 | 3 | 0% | 5 s | 0 | 0 | 1810 |
-| 7 | 2–2 | 0 | 3 | 0% | 6 s | 0 | 0 | 2719 |
-| 10 | 3–4 | 0 | 3 | 0% | 7 s | 918 | 0 | 4554 |
-| 14 | 7–8 | 0 | 3 | 0% | 12 s | 943 | 0 | 6423 |
-| 18 | 11–12 | 0 | 3 | 0% | 23 s | 975 | 0 | 8357 |
-| 21 | 14–15 | 0 | 3 | 0% | 36 s | 0 | 1 | 9346 |
-| 25 | 18–19 | 0 | 3 | 0% | 1 min | 0 | 1 | 11368 |
-| 30 | 19–24 | 1 | 3 | 0% | 1 min | 1048 | 2 | 14488 |
+| 5 | 2–2 | 0 | 3 | 0% | 6 s | 0 | 0 | 1810 |
+| 7 | 3–3 | 0 | 3 | 0% | 7 s | 0 | 0 | 2728 |
+| 10 | 4–4 | 0 | 3 | 0% | 8 s | 926 | 0 | 4572 |
+| 14 | 6–6 | 0 | 3 | 0% | 11 s | 935 | 0 | 6441 |
+| 18 | 10–10 | 0 | 3 | 0% | 19 s | 968 | 0 | 8359 |
+| 21 | 13–13 | 0 | 3 | 0% | 30 s | 0 | 1 | 9340 |
+| 25 | 17–17 | 0 | 3 | 0% | 54 s | 0 | 1 | 11348 |
+| 30 | 19–24 | 0 | 3 | 0% | 2 min | 1048 | 2 | 14455 |
 
 ### Cały rok: profil mieszany (60 dni aktywny, potem zwykły)
 
 | Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 30 | 61–77 | 9 | 6 | 99% | 12.8 h | 976 | 5557 | 14877 |
-| 60 | 81–99 | 16 | 3 | 100% | 7.9 h | 1030 | 512 | 31476 |
-| 90 | 93–113 | 20 | 2 | 100% | 6.0 h | 993 | 260 | 38888 |
-| 120 | 101–125 | 25 | 5 | 82% | 6.6 h | 1007 | 715 | 54585 |
-| 180 | 114–143 | 32 | 7 | 77% | 2.8 h | 1032 | 418 | 73662 |
-| 240 | 127–157 | 38 | 1 | 100% | 5.0 h | 1054 | 107 | 104958 |
-| 300 | 135–170 | 43 | 3 | 100% | 18.2 h | 1065 | 1432 | 119879 |
-| 365 | 145–180 | 49 | 1 | 100% | 17.5 h | 1078 | 378 | 154913 |
+| 30 | 62–77 | 9 | 6 | 100% | 12.6 h | 976 | 5530 | 14794 |
+| 60 | 81–99 | 16 | 4 | 100% | 7.5 h | 1028 | 651 | 31427 |
+| 90 | 93–113 | 20 | 2 | 100% | 1.7 h | 993 | 72 | 38706 |
+| 120 | 102–125 | 25 | 3 | 100% | 12.1 h | 1008 | 785 | 53740 |
+| 180 | 114–143 | 32 | 7 | 84% | 5.1 h | 1032 | 774 | 72758 |
+| 240 | 127–159 | 38 | 3 | 100% | 16.8 h | 1054 | 1309 | 103390 |
+| 300 | 135–170 | 43 | 0 | 100% | 0 s | 1065 | 0 | 119507 |
+| 365 | 149–180 | 49 | 2 | 100% | 18.4 h | 1082 | 793 | 153453 |
 
 - Szkolenia trwają kilka sekund w pierwszych dniach, minuty około dnia 7, godziny od dnia ~14. W dniu 30 w „Wydatkach” widać wydarzenie: awans do świata 2 kosztuje ok. 5 tys. dk.
 - Przychód roczny ok. 373 tys. dk (ok. 1,0 tys. dk dziennie). Saldo rośnie do ok. 155-175 tys. dk, mimo że każde przejście do nowego świata pochłania 5-22 tys. dk. To zapas na przyszłe wydatki (sklep, wyposażenie). Nigdzie nie ma kwot w milionach, a w żadnym profilu kolejka nie stoi z braku dukatów.
@@ -170,6 +170,6 @@ Wypłata jest zapisywana przy starcie pracy (`job_runs.reward_snapshot_cents`), 
 
 - Pierwszy miesiąc: kilkanaście krótkich szkoleń dziennie u aktywnego gracza do ok. dnia 10, brak niedoborów dukatów w żadnym profilu.
 - Rok na 5 światów jest ograniczony czasem kolejki, nie dukatami (kwadratowy koszt po poziomie 50).
-- Każdy świat to nowy zestaw 10 umiejętności o trudności dostosowanej do etapu gry, wymagany do dalszych awansów.
+- Każdy świat to nowy zestaw 6 umiejętności o trudności dostosowanej do etapu gry, wymagany do dalszych awansów.
 - Awans do nowego świata to wydarzenie: 2,4 do 10,4 dnia i 5-22 tys. dk.
 - Do ustalenia później: efekty umiejętności światów, ujścia dla nadwyżki dukatów, dodatkowe miejsca w kolejce za rangi (poprawiłyby tempo okazjonalnych graczy).

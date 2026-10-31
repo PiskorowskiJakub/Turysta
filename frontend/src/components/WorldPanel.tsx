@@ -93,16 +93,18 @@ export default function WorldPanel({ world, coins, queueFull, busy, onAdvance }:
                 ))}
               </ul>
               {next.world_requirement && (
-                <p className={'req-world ' + (next.world_requirement.met ? 'met' : 'unmet')}>
+                <div className={'req-world ' + (next.world_requirement.met ? 'met' : 'unmet')}>
                   <Icon name="medal" />
-                  <span>
-                    {t(next.world_requirement.complete ? 'world.skillsAll' : 'world.skillsEach', {
-                      name: next.world_requirement.world_name,
-                      level: next.world_requirement.required,
-                    })}
-                    <b>{next.world_requirement.done}/{next.world_requirement.total}</b>
+                  <div className="req-world-text">
+                    <strong>{t('world.skillsTitle', { name: next.world_requirement.world_name })}</strong>
+                    <span>
+                      {t(next.world_requirement.complete ? 'world.skillsAll' : 'world.skillsEach', { level: next.world_requirement.required })}
+                    </span>
+                  </div>
+                  <span className="req-count" title={t('world.skillsDone', { done: next.world_requirement.done, total: next.world_requirement.total })}>
+                    {next.world_requirement.done}/{next.world_requirement.total}
                   </span>
-                </p>
+                </div>
               )}
               {next.new_world && <p className="world-event">{t('world.eventNote')}</p>}
               <button type="button" className="btn" disabled={busy || !!reason} title={reason} onClick={onAdvance}>

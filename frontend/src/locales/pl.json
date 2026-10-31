@@ -201,8 +201,10 @@
     "worldNo": "Świat {{n}}",
     "chapterNo": "Rozdział {{n}}",
     "progress": "Postęp w świecie",
-    "skillsEach": "Umiejętności świata „{{name}}”: każda na poziomie {{level}}",
-    "skillsAll": "Wszystkie umiejętności świata „{{name}}” na maksymalnym poziomie ({{level}})",
+    "skillsTitle": "Umiejętności świata „{{name}}”",
+    "skillsEach": "Każda na poziomie {{level}}",
+    "skillsAll": "Wszystkie na maksymalnym poziomie ({{level}})",
+    "skillsDone": "Spełniło wymaganie: {{done}} z {{total}}",
     "eventNote": "To wielkie wydarzenie: awans do nowego świata trwa znacznie dłużej i kosztuje znacznie więcej niż zwykły rozdział."
   }
 }
