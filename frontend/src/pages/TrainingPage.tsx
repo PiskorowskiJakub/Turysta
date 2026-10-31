@@ -180,8 +180,8 @@ export default function TrainingPage() {
     const label = s.next_level === null
       ? t('training.maxed')
       : `${formatCoins(cost)} ${t('wallet.coinsShort')}`;
-    // Poziom, na ktory ulepszymy umiejetnosc nastepnym szkoleniem: zmienia sie od razu po dodaniu do kolejki (i wraca po anulowaniu), tak jak cena.
-    const targetLevel = s.next_level ?? s.level + s.in_queue;
+    // Poziom liczy tez szkolenia z kolejki: rosnie od razu po dodaniu do kolejki i wraca po jej anulowaniu (tak jak cena).
+    const shownLevel = s.level + s.in_queue;
     return (
       <div key={s.id} className="skill-col">
         <article className="tile skill-card" tabIndex={0}>
@@ -195,7 +195,7 @@ export default function TrainingPage() {
               {t('training.time')}: <strong>{s.next_duration_seconds !== null ? formatDuration(s.next_duration_seconds) : '–'}</strong>
             </div>
             <div className="line">
-              {t('training.level')}: <strong>{s.level}{targetLevel !== s.level ? ` → ${targetLevel}` : ''} / {s.max_level ?? '∞'}</strong>
+              {t('training.level')}: <strong>{shownLevel} / {s.max_level ?? '∞'}</strong>
             </div>
           </div>
           <button

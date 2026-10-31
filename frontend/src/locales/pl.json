@@ -142,6 +142,9 @@
   "profile": {
     "verifyEmail": "Potwierdź adres e-mail, klikając link, który wysłaliśmy na Twoją skrzynkę.",
     "wallet": "Portfel",
+    "resources": "Zasoby",
+    "activity": "Aktywność",
+    "basicSkills": "Podstawowe",
     "skills": "Umiejętności",
     "level": "poziom {{level}}"
   },

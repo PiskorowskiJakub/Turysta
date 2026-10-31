@@ -8,7 +8,7 @@ import PlayerAvatar from '../components/PlayerAvatar';
 import BadgeBook from '../components/BadgeBook';
 import { useBadges } from '../hooks/useBadges';
 import Notifications from '../components/Notifications';
-import { Sprout } from '../components/icons';
+import { Icon, Sprout } from '../components/icons';
 import Coins from '../components/Coins';
 import Points from '../components/Points';
 import { formatDate, formatDays } from '../format';
@@ -30,6 +30,16 @@ export default function ProfilePage() {
 
   const avatar = avatars.find((a) => a.id === me.user.avatar_id);
   const skillLevels = me.skills.reduce((sum, s) => sum + s.level, 0);
+  // Umiejetnosci pogrupowane: podstawowe, potem swiaty (kod w{n}_...); pokazujemy tylko te, ktore gracz juz rozwija.
+  const groupMap = new Map<number | null, typeof me.skills>();
+  for (const sk of me.skills) {
+    const m = /^w(\d+)_/.exec(sk.code);
+    const world = m ? Number(m[1]) : null;
+    groupMap.set(world, [...(groupMap.get(world) ?? []), sk]);
+  }
+  const skillGroups = [...groupMap.entries()]
+    .sort(([a], [b]) => (a ?? 0) - (b ?? 0))
+    .map(([world, items]) => ({ key: world ?? 0, world, items }));
 
   return (
     <>
@@ -58,55 +68,67 @@ export default function ProfilePage() {
     <div className="card">
       {!me.user.email_verified && <p className="form-notice">{t('profile.verifyEmail')}</p>}
 
-      {me.progress && (
-        <>
-          <h2>{t('world.progress')}</h2>
-          <div className="progress-card">
-            <span className="stage stage-current"><Sprout stage={me.progress.chapter_ordinal} /></span>
-            <div>
-              <b>{t('world.worldNo', { n: me.progress.world_ordinal })}: {me.progress.world_name}</b>
-              <span>{t('world.chapterNo', { n: me.progress.chapter_ordinal })}: {me.progress.chapter_name}</span>
-            </div>
-          </div>
-        </>
-      )}
-
-      <h2>{t('profile.wallet')}</h2>
-      <ul className="stats">
-        <li><span>{t('wallet.coins')}</span><strong><Coins cents={me.wallet.coins_cents} /></strong></li>
-        <li><span>{t('wallet.tickets')}</span><strong>{me.wallet.tickets}</strong></li>
-      </ul>
-
-      <h2>{t('stats.title')}</h2>
-      <ul className="stats">
-        <li><span>{t('stats.accountAge')}</span><strong>{me.stats.account_days === 0 ? t('stats.today') : formatDays(me.stats.account_days)}</strong></li>
-        <li><span>{t('stats.activeDays')}</span><strong>{formatDays(me.stats.active_days)}</strong></li>
-        <li><span>{t('stats.streak')}</span><strong>{formatDays(me.stats.current_streak)}</strong></li>
-      </ul>
-
-      <h2>{t('stats.earnings')}</h2>
-      <ul className="stats">
-        {me.stats.earnings.jobs.map((j) => (
-          <li key={j.code}>
-            <span>{t(`jobs.names.${j.code}`, { defaultValue: j.name })}</span>
-            <strong><Coins cents={j.cents} /> {t('wallet.coinsShort')}</strong>
-          </li>
-        ))}
-        {me.stats.earnings.other_cents > 0 && (
-          <li><span>{t('stats.other')}</span><strong><Coins cents={me.stats.earnings.other_cents} /> {t('wallet.coinsShort')}</strong></li>
+      <div className="stat-grid">
+        {me.progress && (
+          <section className="stat-group">
+            <h3><span className="stat-ico"><Sprout stage={me.progress.chapter_ordinal} /></span>{t('world.progress')}</h3>
+            <ul className="stats">
+              <li><span>{t('world.worldNo', { n: me.progress.world_ordinal })}</span><strong>{me.progress.world_name}</strong></li>
+              <li><span>{t('world.chapterNo', { n: me.progress.chapter_ordinal })}</span><strong>{me.progress.chapter_name}</strong></li>
+            </ul>
+          </section>
         )}
-        <li className="stats-total"><span>{t('stats.total')}</span><strong><Coins cents={me.stats.earnings.total_cents} /> {t('wallet.coinsShort')}</strong></li>
-      </ul>
 
-      <h2>{t('profile.skills')}</h2>
-      <ul className="stats">
-        {me.skills.map((s) => (
-          <li key={s.code}>
-            <span>{t(`skills.${s.code}`, { defaultValue: s.name })}</span>
-            <strong>{t('profile.level', { level: s.level })}</strong>
-          </li>
-        ))}
-      </ul>
+        <section className="stat-group">
+          <h3><span className="stat-ico"><Icon name="coins" /></span>{t('profile.resources')}</h3>
+          <ul className="stats">
+            <li><span>{t('wallet.coins')}</span><strong><Coins cents={me.wallet.coins_cents} /> {t('wallet.coinsShort')}</strong></li>
+            <li><span>{t('wallet.tickets')}</span><strong>{me.wallet.tickets}</strong></li>
+          </ul>
+        </section>
+
+        <section className="stat-group">
+          <h3><span className="stat-ico"><Icon name="points" /></span>{t('profile.activity')}</h3>
+          <ul className="stats">
+            <li><span>{t('stats.accountAge')}</span><strong>{me.stats.account_days === 0 ? t('stats.today') : formatDays(me.stats.account_days)}</strong></li>
+            <li><span>{t('stats.activeDays')}</span><strong>{formatDays(me.stats.active_days)}</strong></li>
+            <li><span>{t('stats.streak')}</span><strong>{formatDays(me.stats.current_streak)}</strong></li>
+          </ul>
+        </section>
+
+        <section className="stat-group">
+          <h3><span className="stat-ico"><Icon name="job" /></span>{t('stats.earnings')}</h3>
+          <ul className="stats">
+            {me.stats.earnings.jobs.map((j) => (
+              <li key={j.code}>
+                <span>{t(`jobs.names.${j.code}`, { defaultValue: j.name })}</span>
+                <strong><Coins cents={j.cents} /> {t('wallet.coinsShort')}</strong>
+              </li>
+            ))}
+            {me.stats.earnings.other_cents > 0 && (
+              <li><span>{t('stats.other')}</span><strong><Coins cents={me.stats.earnings.other_cents} /> {t('wallet.coinsShort')}</strong></li>
+            )}
+            <li className="stats-total"><span>{t('stats.total')}</span><strong><Coins cents={me.stats.earnings.total_cents} /> {t('wallet.coinsShort')}</strong></li>
+          </ul>
+        </section>
+
+        <section className="stat-group stat-wide">
+          <h3><span className="stat-ico"><Icon name="skills" /></span>{t('profile.skills')}</h3>
+          {skillGroups.map((g) => (
+            <div key={g.key} className="skill-level-group">
+              <h4>{g.world === null ? t('profile.basicSkills') : t('world.worldNo', { n: g.world })}</h4>
+              <ul className="stats stats-cols">
+                {g.items.map((sk) => (
+                  <li key={sk.code}>
+                    <span>{t(`skills.${sk.code}`, { defaultValue: sk.name })}</span>
+                    <strong>{sk.level}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+      </div>
 
       <Notifications />
     </div>

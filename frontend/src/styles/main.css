@@ -262,6 +262,20 @@ h1, h2, h3 { font-weight: 600; }
 .profile-facts dd { margin: 0; font-size: 1.1rem; font-weight: 600; color: #fff; }
 @media (max-width: 640px) { .profile-card { flex-direction: column; text-align: center; } .profile-facts { text-align: left; } }
 
+/* ---------- Statystyki w profilu (kategorie) ---------- */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.stat-group { background: var(--bg2); border-radius: 12px; padding: 12px 14px 14px; }
+.stat-group h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 1rem; color: var(--orange); }
+.stat-group .stat-ico { display: inline-grid; place-items: center; width: 22px; height: 22px; }
+.stat-group .stat-ico svg { width: 20px; height: 20px; }
+.stat-group .stats { margin: 0; }
+.stat-group .stats li { background: var(--tile); gap: 12px; }
+.stat-group .stats li strong { text-align: right; }
+.stat-wide { grid-column: 1 / -1; }
+.skill-level-group + .skill-level-group { margin-top: 12px; }
+.skill-level-group h4 { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.stats.stats-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 6px 12px; }
+
 /* ---------- Znak zapytania z wyjasnieniem ---------- */
 .info-hint { position: absolute; top: 12px; right: 14px; z-index: 6; }
 .info-hint-btn { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 2px solid var(--line); background: var(--bg2); color: var(--muted); cursor: help; }
