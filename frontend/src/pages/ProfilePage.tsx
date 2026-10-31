@@ -10,8 +10,7 @@ import { useBadges } from '../hooks/useBadges';
 import Notifications from '../components/Notifications';
 import { Icon, Sprout } from '../components/icons';
 import Coins from '../components/Coins';
-import Points from '../components/Points';
-import { formatDate, formatDays } from '../format';
+import { formatDays } from '../format';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
