@@ -17,6 +17,7 @@ docker compose exec backend php bin/migrate.php
 ```
 
 - Administrator (dostęp do panelu `/admin`: przegląd statystyk, zarządzanie graczami, ogłoszenia, ciekawostki, logi): `docker compose exec backend php bin/set_role.php adres@email.pl admin` (odebranie roli: `... adres@email.pl player`)
+- Sprzątanie kont po testach integracyjnych (`@example.com`; podgląd, a z `--yes` usunięcie): `docker compose exec backend php bin/cleanup_test_users.php [--yes]`
 - Gra: http://localhost (Traefik)
 - Health: http://localhost/api/health
 - phpMyAdmin: http://127.0.0.1:8081
