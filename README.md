@@ -27,16 +27,16 @@ TLS (Let's Encrypt) dojdzie przy wdrozeniu na VPS.
 
 ## Ekonomia i symulacja pierwszych 30 dni
 
-Cel: przez pierwszy miesiac gracz ma codziennie co rozwijac i wystarczajaco duzo monet, zeby kolejka (1 aktywne + 2 oczekujace szkolenia) nigdy nie stala pusta z braku pieniedzy.
+Cel: przez pierwszy miesiac gracz ma codziennie co rozwijac i wystarczajaco duzo dukatów, zeby kolejka (1 aktywne + 2 oczekujace szkolenia) nigdy nie stala pusta z braku pieniedzy.
 
 ### Parametry (migracja `011_economy_v3.sql`)
 
 - Koszt poziomu: `floor(3 * 1,16^(n-1))` groszy, czas: `round(5 * 1,16^(n-1))` sekund. Koszt rosnie tak samo szybko jak czas (stosunek ~0,6 grosza na sekunde), wiec pieniadze nigdy nie "uciekaja" przed czasem.
 - Powyzej poziomu 50 krzywa splaszcza sie: koszt `* (n/50)^3`, czas `* (n/50)^2`.
-- Poziom 50 to ok. 43 monety i ok. 2 h. Pierwsze poziomy trwaja kilka sekund, minuty pojawiaja sie okolo dnia 7-10, godziny okolo dnia 10-18 (zaleznie od aktywnosci).
+- Poziom 50 to ok. 43 dukaty i ok. 2 h. Pierwsze poziomy trwaja kilka sekund, minuty pojawiaja sie okolo dnia 7-10, godziny okolo dnia 10-18 (zaleznie od aktywnosci).
 - Awans (rozdzial): wymagania `req(g) = (3+round(2g), 3+round(1,9g), 2+round(1,6g))` poziomow Kondycji/Orientacji/Handlu, koszt `max(50, round(2,5 * koszt(f)))`, czas `max(30, 2 * czas(f))`.
-- Start: 200 groszy (2 monety) premii na koncie.
-- Prace (bazowe wyplaty): targ 8 h (247 monet), hostel 12 h (420 monet, cooldown 2 h), wyprawa 24 h (900 monet, cooldown 4 h).
+- Start: 200 groszy (2 dukaty) premii na koncie.
+- Prace (bazowe wyplaty): targ 8 h (247 dukatów), hostel 12 h (420 dukatów, cooldown 2 h), wyprawa 24 h (900 dukatów, cooldown 4 h).
 - **Bonus Handlu** (migracja `012_trade_bonus.sql`): poziom Handlu zwieksza wyplaty ze wszystkich trzech prac, patrz nizej.
 
 ### Profile graczy w symulacji
@@ -49,11 +49,11 @@ Cel: przez pierwszy miesiac gracz ma codziennie co rozwijac i wystarczajaco duzo
 
 Symulacja zaklada ze gracz zawsze uzupelnia kolejke do 3 pozycji (najtansze/najkrotsze wg sensownej kolejnosci), przy kazdej wizycie rozpoczyna dostepna prace i inwestuje w awans, gdy ma wymagane poziomy.
 
-Uruchomienie: `python scripts/simulate_economy.py --profile aktywny --days 30 --markdown` (profile: `aktywny`, `zwykly`, `okazjonalny`; `--days 365` pokazuje caly rok; `--bez-bonusu` wylacza bonus Handlu do porownan). Kolumna "Czas pracy kolejki" to procent doby, w ktorym kolejka cos trenuje; kwoty w monetach.
+Uruchomienie: `python scripts/simulate_economy.py --profile aktywny --days 30 --markdown` (profile: `aktywny`, `zwykly`, `okazjonalny`; `--days 365` pokazuje caly rok; `--bez-bonusu` wylacza bonus Handlu do porownan). Kolumna "Czas pracy kolejki" to procent doby, w ktorym kolejka cos trenuje; kwoty w dukatówach.
 
 ### Wyniki 30 dni (z bonusem Handlu): aktywny
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 1 | 5–6 | 1 | 18 | 0% | 8 s | 453 | 1 | 453 |
 | 2 | 11–11 | 3 | 18 | 0% | 17 s | 735 | 2 | 1186 |
@@ -69,7 +69,7 @@ Uruchomienie: `python scripts/simulate_economy.py --profile aktywny --days 30 --
 
 ### Wyniki 30 dni: zwykły
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 1 | 2–4 | 0 | 9 | 0% | 6 s | 370 | 0 | 372 |
 | 2 | 5–6 | 1 | 9 | 0% | 11 s | 662 | 1 | 1034 |
@@ -85,7 +85,7 @@ Uruchomienie: `python scripts/simulate_economy.py --profile aktywny --days 30 --
 
 ### Wyniki 30 dni: okazjonalny
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 1 | 0–2 | 0 | 3 | 0% | 5 s | 0 | 0 | 2 |
 | 2 | 1–3 | 0 | 3 | 0% | 6 s | 900 | 0 | 902 |
@@ -111,17 +111,17 @@ Poziom umiejętności **Handel** zwiększa wypłatę ze wszystkich trzech prac (
 
 - Pierwsze poziomy dają odczuwalny przyrost (każdy poziom ~+1% do poziomu 30), potem zysk z poziomu maleje. Dzięki temu nie ma hiperinflacji, a wydatki na szkolenia (rosnące szybciej niż bonus) nadal wymagają pracy.
 - Wypłata jest zapisywana przy starcie pracy (`job_runs.reward_snapshot_cents`), więc późniejszy awans Handlu nie zmienia trwającej pracy. Wypłata proporcjonalna (targ) liczona jest od zapisanej kwoty.
-- Premia dotyczy tylko monet z prac; punkty za pracę liczone są od faktycznej wypłaty.
+- Premia dotyczy tylko dukatów z prac; punkty za pracę liczone są od faktycznej wypłaty.
 
 ### Symulacja roku (365 dni, z bonusem Handlu)
 
-Przychód roczny: aktywny ok. 418 tys. monet, zwykły ok. 388 tys., okazjonalny ok. 254 tys. (bez bonusu: 253 / 238 / 164 tys.). Największe saldo w całym roku: aktywny ok. 12 tys. monet, zwykły ok. 18 tys., okazjonalny ok. 38 tys. Dzienne wypłaty ustabilizowane na 1,0-1,5 tys. monet, czyli **nigdzie nie ma kwot w milionach**.
+Przychód roczny: aktywny ok. 418 tys. dukatów, zwykły ok. 388 tys., okazjonalny ok. 254 tys. (bez bonusu: 253 / 238 / 164 tys.). Największe saldo w całym roku: aktywny ok. 12 tys. dukatów, zwykły ok. 18 tys., okazjonalny ok. 38 tys. Dzienne wypłaty ustabilizowane na 1,0-1,5 tys. dukatów, czyli **nigdzie nie ma kwot w milionach**.
 
-Pierwszy dzień z brakiem monet w kolejce: aktywny 112 (bez bonusu: 45), zwykły 126 (66), okazjonalny 179 (143). W pierwszych 30 dniach (i 60) bonus nie powoduje żadnych niedoborów.
+Pierwszy dzień z brakiem dukatów w kolejce: aktywny 112 (bez bonusu: 45), zwykły 126 (66), okazjonalny 179 (143). W pierwszych 30 dniach (i 60) bonus nie powoduje żadnych niedoborów.
 
 Aktywny, dalsze dni:
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 60 | 108–108 | 49 | 2 | 100% | 9.5 h | 1088 | 895 | 11635 |
 | 90 | 129–129 | 49 | 2 | 100% | 13.5 h | 1126 | 1519 | 6997 |
@@ -132,7 +132,7 @@ Aktywny, dalsze dni:
 
 Zwykły, dalsze dni:
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 60 | 97–101 | 49 | 2 | 100% | 7.7 h | 999 | 651 | 17274 |
 | 90 | 122–123 | 49 | 2 | 100% | 12.2 h | 1045 | 1302 | 12534 |
@@ -143,7 +143,7 @@ Zwykły, dalsze dni:
 
 Okazjonalny, dalsze dni:
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 60 | 49–53 | 25 | 3 | 27% | 2.9 h | 1213 | 218 | 30421 |
 | 90 | 75–79 | 38 | 3 | 79% | 5.0 h | 1308 | 512 | 38280 |
@@ -154,10 +154,10 @@ Okazjonalny, dalsze dni:
 
 ### Wnioski
 
-- **Pierwsze 30 dni:** w żadnym profilu kolejka nie stoi z braku monet; saldo cały czas rośnie.
+- **Pierwsze 30 dni:** w żadnym profilu kolejka nie stoi z braku dukatów; saldo cały czas rośnie.
 - **Aktywny** ma co rozwijać codziennie: dni 1-7 to kilkanaście szybkich szkoleń dziennie, od ok. dnia 10 szkolenia trwają godziny i kolejka pracuje niemal cały czas. Do dnia 30 osiąga ok. 80 poziomów i 40. rozdział.
 - **Zwykły** (3 wejścia) ma od pierwszego dnia 9 szkoleń, godzinowe szkolenia pojawiają się około dnia 18, a po 30 dniach jest na ok. 33. rozdziale.
 - **Okazjonalny** (1 wejście) jest ograniczony liczbą miejsc w kolejce (3 na wizytę), więc postęp jest wolniejszy. Dźwignia na przyszłość: dodatkowe miejsca w kolejce za rangi.
-- **Po ok. 4 miesiącach** (po 49 rozdziałach, szkolenia po 10-20 h) gracz jest ograniczony pieniędzmi: koszt poziomu rośnie szybciej niż wypłaty. To celowy hamulec, a bonus Handlu przesuwa ten moment o 2-3 miesiące. Dalsze dźwignie: wyższe prace odblokowywane rangami, sprzedaż przedmiotów, nowe źródła monet.
-- **Nadwyżka monet** w pierwszych miesiącach (saldo 12-38 tys.) jest zarezerwowana na przyszłe wydatki (sklep, wyposażenie).
+- **Po ok. 4 miesiącach** (po 49 rozdziałach, szkolenia po 10-20 h) gracz jest ograniczony pieniędzmi: koszt poziomu rośnie szybciej niż wypłaty. To celowy hamulec, a bonus Handlu przesuwa ten moment o 2-3 miesiące. Dalsze dźwignie: wyższe prace odblokowywane rangami, sprzedaż przedmiotów, nowe źródła dukatów.
+- **Nadwyżka dukatów** w pierwszych miesiącach (saldo 12-38 tys.) jest zarezerwowana na przyszłe wydatki (sklep, wyposażenie).
 - Wartości można zmieniać w `skill_definitions` (migracja) oraz w `Economy::TRADE_BONUS_*` i sprawdzać ponownie symulatorem.

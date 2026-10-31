@@ -30,7 +30,7 @@ final class Wallet
 
         $new = $balance + $amount;
         if ($new < 0) {
-            throw new ApiException(422, 'insufficient_funds', 'Nie masz wystarczająco monet.');
+            throw new ApiException(422, 'insufficient_funds', 'Nie masz wystarczająco dukatów.');
         }
 
         $pdo->prepare("UPDATE wallets SET $column = ? WHERE user_id = ?")->execute([$new, $userId]);
@@ -43,7 +43,7 @@ final class Wallet
     }
 
     /**
-     * Wplyw monet ze zrodla zarobku (praca, a w przyszlosci m.in. sprzedaz, nagrody): saldo + ksiega + licznik w user_earnings.
+     * Wplyw dukatow ze zrodla zarobku (praca, a w przyszlosci m.in. sprzedaz, nagrody): saldo + ksiega + licznik w user_earnings.
      * Zwroty i premie startowe nie sa zarobkiem - te ida przez apply().
      * $source: np. "job:market"; nowe zrodla dopisuja sie same i wchodza do sumy w statystykach.
      */

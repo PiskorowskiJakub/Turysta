@@ -165,7 +165,7 @@ def simulate(days, profile):
 
 def markdown(rows, days_shown):
     # wyplata za prace jest zapisywana przy starcie; kolumna 'Zarobek' to wyplaty rozliczone w danym dniu
-    head = ('| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |\n'
+    head = ('| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |\n'
             '|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n')
     out = head
     for r in rows:

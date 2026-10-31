@@ -56,6 +56,6 @@ final class Economy
 
     public static function jobPoints(int $payoutCents): int
     {
-        return intdiv($payoutCents, 1000); // 1 punkt za kazde pelne 10 monet
+        return intdiv($payoutCents, 1000); // 1 punkt za kazde pelne 10 dukatow
     }
 }

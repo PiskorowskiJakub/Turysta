@@ -5,7 +5,7 @@ namespace Turysta\Game;
 
 use PDO;
 
-/** Stopnie awansu: swiaty podzielone na rozdzialy, awans wymaga poziomow umiejetnosci i monet. */
+/** Stopnie awansu: swiaty podzielone na rozdzialy, awans wymaga poziomow umiejetnosci i dukatow. */
 final class ChapterService
 {
     public function __construct(private PDO $pdo)
