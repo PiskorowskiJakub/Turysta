@@ -4,3 +4,9 @@ backups/
 backend/vendor/
 
 frontend/_to_delete/
+
+# Zrzuty bazy zawieraja dane graczy (e-maile, hasze hasel) - nigdy do repozytorium
+backup.sql
+*.sql.gz
+*.dump
+
