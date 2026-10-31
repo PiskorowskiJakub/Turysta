@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import type { Avatar } from '../api/types';
@@ -71,6 +71,12 @@ export default function Layout() {
             <b>{t('fact')}</b>
             <span>{fact ?? t('tagline')}</span>
           </div>
+          {status === 'anon' && (
+            <div className="topbar-cta">
+              <Link className="button small secondary" to="/logowanie">{t('nav.login')}</Link>
+              <Link className="button small" to="/rejestracja">{t('nav.register')}</Link>
+            </div>
+          )}
           {authed && (
             <div className="plaque">
               <div className="plaque-who">
