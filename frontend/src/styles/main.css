@@ -188,13 +188,15 @@ h1, h2, h3 { font-weight: 600; }
 .icon-tile svg { width: 48%; height: 48%; }
 
 /* ---------- Szkolenia ---------- */
-.train-card { display: grid; grid-template-columns: 1fr 84px; grid-template-areas: 'head icon' 'meta icon' 'bar bar' 'act act'; gap: 10px 16px; border-left-color: var(--trail, var(--orange)); }
-.train-card h3 { grid-area: head; align-self: end; }
-.train-meta { grid-area: meta; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); }
-.train-card .icon-tile { grid-area: icon; width: 72px; height: 72px; justify-self: end; }
-.train-card .bar, .queued-note { grid-area: bar; }
-.queued-note { font-size: 13px; color: var(--khaki); }
-.train-card .btn { grid-area: act; max-width: 340px; justify-self: center; }
+/* Kompaktowa karta cwiczonej umiejetnosci: ikona | tytul + dane | przycisk, pod spodem szlak */
+.train-card { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; grid-template-areas: 'icon head act' 'icon meta act' 'bar bar bar'; gap: 2px 14px; align-items: center; padding: 10px 14px 6px; border-left-color: var(--trail, var(--orange)); }
+.train-card h3 { grid-area: head; align-self: end; font-size: 1rem; }
+.train-meta { grid-area: meta; display: flex; flex-wrap: wrap; gap: 0 14px; font-size: 12px; color: var(--muted); align-self: start; }
+.train-card .icon-tile { grid-area: icon; width: 46px; height: 46px; border-width: 2px; box-shadow: 0 0 0 2px var(--tile), 0 0 0 3.5px var(--line); }
+.train-card .bar { grid-area: bar; height: 40px; margin-top: 0; }
+.queued-note { grid-area: bar; font-size: 12px; color: var(--khaki); padding: 4px 0; }
+.train-card .btn { grid-area: act; width: auto; padding: 6px 14px; font-size: 13px; }
+@media (max-width: 600px) { .train-card { grid-template-columns: 46px minmax(0, 1fr); grid-template-areas: 'icon head' 'icon meta' 'bar bar' 'act act'; } .train-card .btn { width: 100%; } }
 
 .skill-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .skill-col { display: flex; flex-direction: column; gap: 10px; }

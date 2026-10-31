@@ -14,6 +14,8 @@ describe('formatDuration', () => {
     expect(formatDuration(0)).toBe('0:00:00');
     expect(formatDuration(1908)).toBe('0:31:48');
     expect(formatDuration(28800)).toBe('8:00:00');
+    expect(formatDuration(86400)).toBe('24:00:00');
+    expect(formatDuration(86401)).toBe('1 d 0:00:01');
     expect(formatDuration(90061)).toBe('1 d 1:01:01');
     expect(formatDuration(-5)).toBe('0:00:00');
   });

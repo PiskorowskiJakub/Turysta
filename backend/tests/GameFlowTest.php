@@ -94,17 +94,21 @@ final class GameFlowTest extends TestCase
             $this->assertSame('queue_full', $e->errorCode);
         }
 
-        // Usuniecie nie-ostatniego poziomu jest zabronione, ostatniego zwraca 100%.
-        try {
-            $this->training->remove($this->userId, $state['queue'][0]['id']);
-            $this->fail('Nie mozna usunac srodkowego poziomu');
-        } catch (ApiException $e) {
-            $this->assertSame('not_last_of_skill', $e->errorCode);
-        }
+        // Usuniecie srodkowego poziomu: pelny zwrot, a kolejny poziom przesuwa sie w dol
+        // (nizszy koszt i czas, roznica wraca do portfela).
         $before = $this->coins();
+        $middle = $state['queue'][0];
         $last = $state['queue'][1];
-        $this->training->remove($this->userId, $last['id']);
+        $after = $this->training->remove($this->userId, $middle['id']);
         $this->assertSame($before + $last['cost_cents'], $this->coins());
+        $this->assertCount(1, $after['queue']);
+        $this->assertSame(2, $after['queue'][0]['target_level']);
+        $this->assertSame($middle['cost_cents'], $after['queue'][0]['cost_cents']);
+
+        $before = $this->coins();
+        $rest = $after['queue'][0];
+        $this->training->remove($this->userId, $rest['id']);
+        $this->assertSame($before + $rest['cost_cents'], $this->coins());
     }
 
     public function testCancellingActiveRefundsHalfAndStartsNext(): void

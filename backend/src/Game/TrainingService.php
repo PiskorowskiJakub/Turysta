@@ -59,11 +59,6 @@ final class TrainingService
         $stmt->execute([$userId]);
         $rows = $stmt->fetchAll();
 
-        $maxTarget = [];
-        foreach ($rows as $r) {
-            $maxTarget[$r['skill_id']] = max($maxTarget[$r['skill_id']] ?? 0, (int) $r['target_level']);
-        }
-
         $active = null;
         $queue = [];
         foreach ($rows as $r) {
@@ -78,7 +73,7 @@ final class TrainingService
                 'duration_seconds' => (int) $r['duration_seconds'],
                 'started_at' => Clock::iso($r['started_at']),
                 'ends_at' => Clock::iso($r['ends_at']),
-                'cancellable' => (int) $r['target_level'] === $maxTarget[$r['skill_id']],
+                'cancellable' => true,
                 'refund_cents' => $refund,
             ];
             if ($r['status'] === 'active') {
@@ -176,16 +171,6 @@ final class TrainingService
                 throw new ApiException(404, 'not_found', 'Nie znaleziono takiego szkolenia.');
             }
 
-            // Kolejne poziomy tej samej umiejetnosci zalezaly od tego szkolenia, wiec usuwamy tylko ostatnie.
-            $stmt = $this->pdo->prepare(
-                "SELECT COUNT(*) FROM training_queue
-                 WHERE user_id = ? AND skill_id = ? AND status IN ('active','queued') AND target_level > ?"
-            );
-            $stmt->execute([$userId, $row['skill_id'], $row['target_level']]);
-            if ((int) $stmt->fetchColumn() > 0) {
-                throw new ApiException(422, 'not_last_of_skill', 'Najpierw usuń późniejsze szkolenia tej umiejętności.');
-            }
-
             $wasActive = $row['status'] === 'active';
             $refund = $wasActive
                 ? intdiv((int) $row['cost_cents'] * TrainingQueue::ACTIVE_REFUND_PERCENT, 100)
@@ -196,6 +181,7 @@ final class TrainingService
             if ($refund > 0) {
                 Wallet::apply($this->pdo, $userId, 'coins', $refund, 'training_refund', 'training', $trainingId);
             }
+            $this->shiftLaterLevels($userId, $row);
             if ($wasActive) {
                 TrainingQueue::startNext($this->pdo, $userId, $now);
             }
@@ -205,6 +191,36 @@ final class TrainingService
             throw $e;
         }
         return $this->state($userId);
+    }
+
+    /**
+     * Po usunieciu szkolenia kolejne poziomy tej samej umiejetnosci przesuwaja sie o jeden w dol:
+     * dostaja nizszy poziom docelowy, nowy (nizszy) koszt i czas, a roznica kosztu wraca do portfela.
+     *
+     * @param array<string,mixed> $removed
+     */
+    private function shiftLaterLevels(int $userId, array $removed): void
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM skill_definitions WHERE id = ?');
+        $stmt->execute([$removed['skill_id']]);
+        $skill = $stmt->fetch();
+
+        $stmt = $this->pdo->prepare(
+            "SELECT id, target_level, cost_cents FROM training_queue
+             WHERE user_id = ? AND skill_id = ? AND status = 'queued' AND target_level > ?
+             ORDER BY target_level FOR UPDATE"
+        );
+        $stmt->execute([$userId, $removed['skill_id'], $removed['target_level']]);
+        foreach ($stmt->fetchAll() as $later) {
+            $target = (int) $later['target_level'] - 1;
+            $cost = Economy::cost($skill, $target);
+            $this->pdo->prepare('UPDATE training_queue SET target_level = ?, cost_cents = ?, duration_seconds = ? WHERE id = ?')
+                ->execute([$target, $cost, Economy::seconds($skill, $target), $later['id']]);
+            $diff = (int) $later['cost_cents'] - $cost;
+            if ($diff > 0) {
+                Wallet::apply($this->pdo, $userId, 'coins', $diff, 'training_refund', 'training', (int) $later['id']);
+            }
+        }
     }
 
     private function insert(int $userId, int $skillId, int $target, int $cost, int $seconds, string $status, int $position, ?string $start, ?string $end): void
