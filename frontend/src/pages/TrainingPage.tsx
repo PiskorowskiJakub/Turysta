@@ -142,11 +142,10 @@ export default function TrainingPage() {
   const skillCard = (s: SkillInfo) => {
     const cost = s.next_cost_cents ?? 0;
     const cantAfford = s.next_level !== null && cost > coins;
+    // Cena zawsze widoczna; przy pelnej kolejce przycisk jest tylko nieaktywny.
     const label = s.next_level === null
       ? t('training.maxed')
-      : full
-        ? t('training.queueFull')
-        : `${t('training.train')}: ${formatCoins(cost)} ${t('wallet.coinsShort')}`;
+      : `${t('training.train')}: ${formatCoins(cost)} ${t('wallet.coinsShort')}`;
     return (
       <div key={s.id} className="skill-col">
         <article className="tile skill-card">
@@ -164,7 +163,7 @@ export default function TrainingPage() {
             type="button"
             className="btn"
             disabled={busy || full || cantAfford || s.next_level === null}
-            title={cantAfford ? t('training.noFunds') : undefined}
+            title={full ? t('training.queueFull') : cantAfford ? t('training.noFunds') : undefined}
             onClick={() => void onAdd(s.id)}
           >
             {label}
