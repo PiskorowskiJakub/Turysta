@@ -170,7 +170,8 @@ final class AdminFlowTest extends TestCase
         }
 
         try {
-            $this->users->update($admin, $admin, ['role' => 'player']);
+            // Gracz z AuthService ma role player, wiec zmiana na inna rola jest probą zmiany wlasnej roli.
+            $this->users->update($admin, $admin, ['role' => 'moderator']);
             $this->fail('Nie mozna zmienic wlasnej roli.');
         } catch (ApiException $e) {
             $this->assertArrayHasKey('role', $e->fields);
@@ -199,7 +200,9 @@ final class AdminFlowTest extends TestCase
 
         $this->assertSame(0, $this->users->list(1, 'L' . $this->suffix, 'banned', '', 'new')['total']);
         $this->assertSame(0, $this->users->list(1, 'L' . $this->suffix, '', 'admin', 'new')['total']);
-        $this->assertSame(1, $this->users->list(1, (string) $id, '', 'player', 'points')['total']);
+        // Szukanie po liczbie dopasowuje tez nazwy i e-maile zawierajace te cyfry, wiec na bazie z innymi graczami wynikow moze byc wiecej niz 1.
+        $byId = $this->users->list(1, (string) $id, '', 'player', 'new');
+        $this->assertContains($id, array_column($byId['rows'], 'id'));
     }
 
     public function testAuditLogAndLoginLogs(): void

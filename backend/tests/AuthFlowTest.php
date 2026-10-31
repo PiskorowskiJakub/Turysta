@@ -52,7 +52,11 @@ final class AuthFlowTest extends TestCase
         $user = $this->auth->register($this->data(), '10.0.0.' . random_int(1, 250));
         $pdo = Database::pdo();
 
-        $this->assertSame(3, (int) $pdo->query("SELECT COUNT(*) FROM user_skills WHERE user_id = {$user['id']}")->fetchColumn());
+        $this->assertGreaterThan(0, (int) $pdo->query('SELECT COUNT(*) FROM skill_definitions')->fetchColumn());
+        $this->assertSame(
+            (int) $pdo->query('SELECT COUNT(*) FROM skill_definitions')->fetchColumn(),
+            (int) $pdo->query("SELECT COUNT(*) FROM user_skills WHERE user_id = {$user['id']}")->fetchColumn()
+        );
         $this->assertSame(1, (int) $pdo->query("SELECT COUNT(*) FROM wallets WHERE user_id = {$user['id']}")->fetchColumn());
         $this->assertSame(1, (int) $pdo->query("SELECT COUNT(*) FROM referral_codes WHERE user_id = {$user['id']}")->fetchColumn());
         $this->assertStringStartsWith('$argon2id$', (string) $pdo->query("SELECT password_hash FROM users WHERE id = {$user['id']}")->fetchColumn());

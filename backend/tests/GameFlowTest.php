@@ -12,6 +12,7 @@ use Turysta\Database;
 use Turysta\Game\ActivityTracker;
 use Turysta\Game\BadgeService;
 use Turysta\Game\Clock;
+use Turysta\Game\Economy;
 use Turysta\Game\JobService;
 use Turysta\Game\PlayerProfileService;
 use Turysta\Game\RankingService;
@@ -30,6 +31,9 @@ final class GameFlowTest extends TestCase
     private TrainingService $training;
     private JobService $jobs;
     private int $userId;
+
+    /** Bonus startowy z rejestracji (AuthService::STARTING_COINS_CENTS), obecny w portfelu kazdego nowego gracza. */
+    private const START_CENTS = 200;
 
     protected function setUp(): void
     {
@@ -167,13 +171,18 @@ final class GameFlowTest extends TestCase
         $this->training->add($this->userId, $this->skillId());
 
         $this->pdo->exec(
-            "UPDATE training_queue SET ends_at = UTC_TIMESTAMP() - INTERVAL 1 MINUTE
+            "UPDATE training_queue SET ends_at = UTC_TIMESTAMP() - INTERVAL 1 SECOND
              WHERE user_id = {$this->userId} AND status = 'active'"
         );
         $endedAt = (string) $this->pdo->query(
             "SELECT ends_at FROM training_queue WHERE user_id = {$this->userId} AND status = 'active'"
         )->fetchColumn();
 
+        $duration = (int) $this->pdo->query(
+            "SELECT duration_seconds FROM training_queue WHERE user_id = {$this->userId} AND target_level = 1 AND skill_id = {$this->skillId()}"
+        )->fetchColumn();
+
+        // Ledwie skonczone (1 s temu), zeby krotki 2. poziom nie zdazyl sie skonczyc w tym samym rozliczeniu.
         $this->settler->settleUser($this->userId);
         $this->settler->settleUser($this->userId); // idempotentnie
 
@@ -181,7 +190,7 @@ final class GameFlowTest extends TestCase
             "SELECT level FROM user_skills WHERE user_id = {$this->userId} AND skill_id = {$this->skillId()}"
         )->fetchColumn();
         $this->assertSame(1, $level);
-        $this->assertSame(1, (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = {$this->userId}")->fetchColumn());
+        $this->assertSame(Economy::trainingPoints($duration), (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = {$this->userId}")->fetchColumn());
 
         $next = $this->pdo->query(
             "SELECT started_at, status FROM training_queue WHERE user_id = {$this->userId} AND target_level = 2"
@@ -201,7 +210,7 @@ final class GameFlowTest extends TestCase
         $result = $this->jobs->stop($this->userId, false);
 
         $this->assertEqualsWithDelta(12350, $result['payout_cents'], 20);
-        $this->assertSame($result['payout_cents'], $this->coins());
+        $this->assertSame(self::START_CENTS + $result['payout_cents'], $this->coins());
         $this->assertNull($result['active']);
 
         // Przerwanie pracy proporcjonalnej nie uruchamia przerwy - mozna zaczac od razu.
@@ -228,7 +237,7 @@ final class GameFlowTest extends TestCase
 
         $this->settler->settleUser($this->userId);
 
-        $this->assertSame(39520, $this->coins());
+        $this->assertSame(self::START_CENTS + 39520, $this->coins());
     }
 
     public function testEarningsAreRecordedPerJobAndInTotal(): void
@@ -382,7 +391,7 @@ final class GameFlowTest extends TestCase
 
         $result = $this->jobs->stop($this->userId, true);
         $this->assertSame(0, $result['payout_cents']);
-        $this->assertSame(0, $this->coins());
+        $this->assertSame(self::START_CENTS, $this->coins());
     }
 
     public function testFinishedJobIsPaidInFullOnRead(): void
@@ -395,13 +404,17 @@ final class GameFlowTest extends TestCase
 
         $this->settler->settleUser($this->userId);
 
-        $this->assertSame(24700, $this->coins());
+        $this->assertSame(self::START_CENTS + 24700, $this->coins());
         $this->assertSame(4, (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = {$this->userId}")->fetchColumn());
     }
 
     public function testRankingSearchPaginationAndMyPlace(): void
     {
-        $this->pdo->exec("UPDATE wallets SET points = 900000000 WHERE user_id = {$this->userId}");
+        // Punkty o 1 wyzsze niz u kazdego innego gracza, wiec test dziala tez na bazie z danymi po poprzednich uruchomieniach.
+        $this->pdo->exec(
+            "UPDATE wallets SET points = (SELECT m FROM (SELECT COALESCE(MAX(points), 0) + 1 AS m FROM wallets WHERE user_id <> {$this->userId}) x)
+             WHERE user_id = {$this->userId}"
+        );
         $name = (string) $this->pdo->query("SELECT character_name FROM users WHERE id = {$this->userId}")->fetchColumn();
         $ranking = new RankingService($this->pdo);
 
