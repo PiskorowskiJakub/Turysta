@@ -146,10 +146,10 @@ final class HomeFlowTest extends TestCase
         }
     }
 
-    public function testReferralCountersTrackRegisteredVerifiedAndActive(): void
+    public function testReferralCountersCountOnlyVerifiedAccountsAndTheirActivity(): void
     {
         $referral = new ReferralService($this->pdo);
-        $this->assertSame(['registered' => 0, 'verified' => 0, 'active' => 0, 'active_days_required' => 7], $referral->stats($this->userId));
+        $this->assertSame(['registered' => 0, 'active' => 0, 'active_days_required' => 7], $referral->stats($this->userId));
 
         $ids = [];
         foreach ([0, 1, 2] as $i) {
@@ -160,7 +160,7 @@ final class HomeFlowTest extends TestCase
             $ids[] = $id;
             $this->pdo->prepare('INSERT INTO referrals (referrer_id, referred_id) VALUES (?, ?)')->execute([$this->userId, $id]);
         }
-        // Drugi i trzeci potwierdzili e-mail; tylko trzeci ma 7 dni aktywnosci (pierwszy ma 7 dni, ale bez e-maila - nie liczy sie).
+        // Konto liczy sie po potwierdzeniu e-maila: drugi i trzeci. Tylko trzeci ma 7 dni aktywnosci (pierwszy ma 7 dni, ale bez e-maila - nie liczy sie).
         $this->pdo->prepare('UPDATE users SET email_verified_at = NOW() WHERE id IN (?, ?)')->execute([$ids[1], $ids[2]]);
         foreach ([[$ids[0], 7], [$ids[1], 6], [$ids[2], 7]] as [$id, $days]) {
             $this->pdo->prepare(
@@ -168,7 +168,7 @@ final class HomeFlowTest extends TestCase
             )->execute([$id, $days]);
         }
 
-        $this->assertSame(['registered' => 3, 'verified' => 2, 'active' => 1, 'active_days_required' => 7], $referral->stats($this->userId));
+        $this->assertSame(['registered' => 2, 'active' => 1, 'active_days_required' => 7], $referral->stats($this->userId));
     }
 
     public function testAnnouncementsLifecycleAndVisibility(): void

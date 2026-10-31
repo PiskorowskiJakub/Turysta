@@ -281,7 +281,6 @@ export interface HomeResponse {
 
 export interface ReferralStats {
   registered: number;
-  verified: number;
   active: number;
   active_days_required: number;
 }

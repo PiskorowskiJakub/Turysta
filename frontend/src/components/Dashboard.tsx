@@ -143,7 +143,6 @@ export default function Dashboard() {
             {home.referrals && (
               <dl className="admin-tiles invite-stats">
                 <div className="admin-tile"><dt>{t('home.invite.registered')}</dt><dd>{home.referrals.registered}</dd></div>
-                <div className="admin-tile"><dt>{t('home.invite.verified')}</dt><dd>{home.referrals.verified}</dd></div>
                 <div className="admin-tile"><dt>{t('home.invite.active', { n: home.referrals.active_days_required })}</dt><dd>{home.referrals.active}</dd></div>
               </dl>
             )}

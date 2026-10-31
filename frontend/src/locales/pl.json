@@ -134,11 +134,10 @@
     },
     "invite": {
       "title": "Twój link polecający",
-      "lead": "Podaj ten link znajomym, aby mogli założyć konto w grze. Dzięki niemu zliczamy, ile osób zaprosiłeś. Za zaproszenia będą odznaki i nagrody.",
+      "lead": "Podaj ten link znajomym, aby mogli założyć konto w grze. Dzięki niemu zliczamy, ile osób zaprosiłeś. Osoba liczy się po potwierdzeniu adresu e-mail. Za zaproszenia będą odznaki i nagrody.",
       "copy": "Kopiuj",
       "copied": "Skopiowano",
       "registered": "Założyło konto",
-      "verified": "Aktywowało konto e-mailem",
       "active": "Z tego ze stażem {{n}}+ dni aktywności"
     },
     "log": {
