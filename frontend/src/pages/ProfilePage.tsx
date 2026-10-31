@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
+import Notifications from '../components/Notifications';
 import { formatCoins } from '../format';
 
 export default function ProfilePage() {
@@ -31,6 +32,8 @@ export default function ProfilePage() {
           </li>
         ))}
       </ul>
+
+      <Notifications />
     </div>
   );
 }

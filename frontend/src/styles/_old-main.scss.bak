@@ -151,3 +151,44 @@ footer {
 
   li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid $second-color; }
 }
+
+.card.wide { max-width: 760px; }
+.button.small { padding: 6px 12px; font-size: 0.9rem; }
+
+.progress {
+  height: 12px;
+  background: $second-color;
+  border-radius: 6px;
+  overflow: hidden;
+
+  .progress-fill { height: 100%; background: $third-color; transition: width 1s linear; }
+}
+
+.queue, .skills, .notifications { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.queue-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: 8px;
+
+  .queue-head { display: flex; justify-content: space-between; gap: 8px; }
+  .button { align-self: flex-start; }
+}
+
+.skill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid $second-color;
+}
+
+.active-job { display: flex; flex-direction: column; gap: 8px; padding: 12px; background: #fff; border-radius: 8px; }
+
+.notifications li { padding: 6px 10px; border-radius: 6px; background: #fff; }
+.notifications li.unread { border-left: 4px solid $third-color; font-weight: 600; }

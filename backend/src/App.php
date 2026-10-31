@@ -8,7 +8,11 @@ use Turysta\Auth\AuthService;
 use Turysta\Auth\RateLimiter;
 use Turysta\Auth\Session;
 use Turysta\Controller\AuthController;
+use Turysta\Controller\GameController;
 use Turysta\Controller\MeController;
+use Turysta\Game\JobService;
+use Turysta\Game\Settler;
+use Turysta\Game\TrainingService;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
 use Turysta\Http\Router;
@@ -19,7 +23,11 @@ final class App
     {
         $pdo = Database::pdo();
         $auth = new AuthController(new AuthService($pdo, new Mailer(), new RateLimiter($pdo)));
-        $me = new MeController($pdo);
+        $settler = new Settler($pdo);
+        $training = new TrainingService($pdo, $settler);
+        $jobs = new JobService($pdo, $settler);
+        $me = new MeController($pdo, $settler, $training, $jobs);
+        $game = new GameController($pdo, $settler, $training, $jobs);
 
         $router = new Router();
         $health = function (): array {
@@ -43,6 +51,18 @@ final class App
         $router->get('/v1/avatars', [$me, 'avatars']);
         $router->get('/v1/me', [$me, 'show']);
         $router->patch('/v1/me', [$me, 'update']);
+
+        $router->get('/v1/facts/today', [$game, 'todayFact']);
+        $router->get('/v1/skills', [$game, 'skills']);
+        $router->get('/v1/training', [$game, 'training']);
+        $router->post('/v1/training', [$game, 'addTraining']);
+        $router->delete('/v1/training/{id}', [$game, 'removeTraining']);
+        $router->get('/v1/jobs', [$game, 'jobs']);
+        $router->get('/v1/jobs/active', [$game, 'activeJob']);
+        $router->post('/v1/jobs/active/stop', [$game, 'stopJob']);
+        $router->post('/v1/jobs/{id}/start', [$game, 'startJob']);
+        $router->get('/v1/notifications', [$game, 'notifications']);
+        $router->post('/v1/notifications/read', [$game, 'readNotifications']);
 
         return $router;
     }

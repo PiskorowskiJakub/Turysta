@@ -1,0 +1,139 @@
+<?php
+declare(strict_types=1);
+
+namespace Turysta\Controller;
+
+use PDO;
+use Turysta\Auth\Session;
+use Turysta\Game\JobService;
+use Turysta\Game\Settler;
+use Turysta\Game\TrainingService;
+use Turysta\Http\ApiException;
+use Turysta\Http\Request;
+
+final class GameController
+{
+    public function __construct(
+        private PDO $pdo,
+        private Settler $settler,
+        private TrainingService $training,
+        private JobService $jobs
+    ) {
+    }
+
+    /** Ciekawostka dnia: ta sama dla wszystkich w danej dobie UTC. @return array{0:int,1:array<string,mixed>} */
+    public function todayFact(Request $r): array
+    {
+        $ids = $this->pdo->query('SELECT id FROM daily_facts WHERE active = 1 ORDER BY id')->fetchAll(\PDO::FETCH_COLUMN);
+        if (!$ids) {
+            return [200, ['text' => null]];
+        }
+        $id = (int) $ids[intdiv(time(), 86400) % count($ids)];
+        $stmt = $this->pdo->prepare('SELECT text FROM daily_facts WHERE id = ?');
+        $stmt->execute([$id]);
+        return [200, ['text' => (string) $stmt->fetchColumn()]];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function skills(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        return [200, $this->training->skills($uid)];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function training(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        return [200, $this->training->state($uid)];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function addTraining(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $skillId = $r->body['skill_id'] ?? null;
+        if (!is_int($skillId)) {
+            throw new ApiException(422, 'validation_failed', 'Wybierz umiejętność.', ['skill_id' => 'Wybierz umiejętność.']);
+        }
+        return [201, $this->training->add($uid, $skillId)];
+    }
+
+    /**
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
+    public function removeTraining(Request $r, array $params = []): array
+    {
+        $uid = $this->uid($r);
+        return [200, $this->training->remove($uid, (int) ($params['id'] ?? 0))];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function jobs(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        return [200, $this->jobs->list($uid)];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function activeJob(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        return [200, ['server_time' => gmdate('c'), 'active' => $this->jobs->active($uid)]];
+    }
+
+    /**
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
+    public function startJob(Request $r, array $params = []): array
+    {
+        $uid = $this->uid($r);
+        return [201, $this->jobs->start($uid, (int) ($params['id'] ?? 0))];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function stopJob(Request $r): array
+    {
+        $uid = $this->uid($r);
+        return [200, $this->jobs->stop($uid, ($r->body['confirm'] ?? false) === true)];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function notifications(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        $stmt = $this->pdo->prepare(
+            'SELECT id, type, payload, created_at, read_at FROM notifications WHERE user_id = ? ORDER BY id DESC LIMIT 30'
+        );
+        $stmt->execute([$uid]);
+        $items = array_map(static fn(array $n) => [
+            'id' => (int) $n['id'],
+            'type' => $n['type'],
+            'payload' => $n['payload'] ? json_decode((string) $n['payload'], true) : new \stdClass(),
+            'created_at' => str_replace(' ', 'T', (string) $n['created_at']) . 'Z',
+            'read' => $n['read_at'] !== null,
+        ], $stmt->fetchAll());
+        return [200, ['notifications' => $items]];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function readNotifications(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->pdo->prepare('UPDATE notifications SET read_at = UTC_TIMESTAMP() WHERE user_id = ? AND read_at IS NULL')
+            ->execute([$uid]);
+        return [200, ['message' => 'Oznaczono jako przeczytane.']];
+    }
+
+    private function uid(Request $r): int
+    {
+        return (int) Session::requireUser($r)['id'];
+    }
+}

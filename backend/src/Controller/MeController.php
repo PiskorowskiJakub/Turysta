@@ -5,19 +5,27 @@ namespace Turysta\Controller;
 
 use PDO;
 use Turysta\Auth\Session;
+use Turysta\Game\JobService;
+use Turysta\Game\Settler;
+use Turysta\Game\TrainingService;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
 
 final class MeController
 {
-    public function __construct(private PDO $pdo)
-    {
+    public function __construct(
+        private PDO $pdo,
+        private Settler $settler,
+        private TrainingService $training,
+        private JobService $jobs
+    ) {
     }
 
     /** @return array{0:int,1:array<string,mixed>} */
     public function show(Request $r): array
     {
         $user = Session::requireUser($r);
+        $this->settler->settleUser((int) $user['id']);
         return [200, $this->profile($user)];
     }
 
@@ -110,7 +118,7 @@ final class MeController
             ],
             'skills' => $skills,
             'progress' => $progress ? ['world_id' => (int) $progress['world_id'], 'chapter_id' => (int) $progress['chapter_id']] : null,
-            'active' => ['training' => null, 'job' => null],
+            'active' => ['training' => $this->training->state($uid)['active'], 'job' => $this->jobs->active($uid)],
             'notifications_unread' => (int) $stmt->fetchColumn(),
         ];
     }

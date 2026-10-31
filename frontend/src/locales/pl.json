@@ -1,11 +1,34 @@
 {
-  "nav": { "home": "Strona główna", "login": "Zaloguj się", "register": "Załóż konto", "profile": "Profil", "logout": "Wyloguj" },
-  "footer": "Turysta",
+  "nav": {
+    "home": "Strona główna",
+    "login": "Zaloguj się",
+    "register": "Załóż konto",
+    "profile": "Profil",
+    "logout": "Wyloguj się",
+    "training": "Szkolenia",
+    "jobs": "Praca",
+    "menu": "Menu",
+    "skills": "Umiejętności"
+  },
+  "footer": "Copyright © 2026 Jakub Piskorowski",
   "tagline": "Turysta – gra o podróżowaniu",
   "loading": "Ładowanie…",
-  "wallet": { "coins": "Monety", "tickets": "Bilety", "points": "Punkty" },
-  "gender": { "f": "Kobieta", "m": "Mężczyzna", "x": "Inna / wolę nie podawać" },
-  "skills": { "fitness": "Kondycja", "orientation": "Orientacja w terenie", "trade": "Handel" },
+  "wallet": {
+    "coins": "Monety",
+    "tickets": "Bilety",
+    "points": "Punkty",
+    "coinsShort": "mon."
+  },
+  "gender": {
+    "f": "Kobieta",
+    "m": "Mężczyzna",
+    "x": "Inna / wolę nie podawać"
+  },
+  "skills": {
+    "fitness": "Kondycja",
+    "orientation": "Orientacja w terenie",
+    "trade": "Handel"
+  },
   "home": {
     "title": "Witaj w Turyście",
     "lead": "Ruszaj w drogę, szkol się, pracuj i zdobywaj odznaki. Zacznij od założenia konta.",
@@ -43,12 +66,78 @@
     "skills": "Umiejętności",
     "level": "poziom {{level}}"
   },
-  "notFound": { "title": "Nie znaleziono strony", "back": "Wróć na stronę główną" },
+  "notFound": {
+    "title": "Nie znaleziono strony",
+    "back": "Wróć na stronę główną"
+  },
   "errors": {
     "network": "Nie udało się połączyć z serwerem. Spróbuj ponownie.",
     "invalid_credentials": "Nieprawidłowy e-mail lub hasło.",
     "rate_limited": "Za dużo prób. Spróbuj ponownie za kilkanaście minut.",
     "banned": "To konto zostało zablokowane.",
-    "csrf_invalid": "Sesja wygasła. Odśwież stronę i spróbuj ponownie."
+    "csrf_invalid": "Sesja wygasła. Odśwież stronę i spróbuj ponownie.",
+    "insufficient_funds": "Nie masz wystarczająco monet.",
+    "queue_full": "Kolejka szkoleń jest pełna.",
+    "max_level": "Ta umiejętność ma już maksymalny poziom.",
+    "not_last_of_skill": "Najpierw usuń późniejsze szkolenia tej umiejętności.",
+    "job_active": "Już pracujesz. Dokończ lub przerwij obecną pracę.",
+    "job_cooldown": "Musisz odpocząć przed kolejną pracą.",
+    "no_active_job": "Nie masz aktywnej pracy.",
+    "not_found": "Nie znaleziono.",
+    "job_cancel_forfeit": "Jeśli przerwiesz tę pracę, nie dostaniesz nic."
+  },
+  "training": {
+    "title": "Szkolenia",
+    "queue": "Kolejka ({{used}}/{{max}})",
+    "empty": "Nic się teraz nie szkolisz. Wybierz umiejętność poniżej.",
+    "skills": "Umiejętności",
+    "toLevel": "do poziomu {{level}}",
+    "remaining": "Do końca",
+    "duration": "Czas",
+    "train": "Szkol",
+    "queueFull": "Kolejka pełna",
+    "noFunds": "Za mało monet",
+    "maxed": "Maksymalny poziom",
+    "cancelActive": "Anuluj szkolenie (zwrot {{refund}}, 50%)",
+    "removeQueued": "Usuń z kolejki (zwrot {{refund}})",
+    "confirmCancel": "Anulować aktywne szkolenie? Odzyskasz tylko połowę kosztu: {{refund}} monet.",
+    "cost": "Koszt",
+    "level": "Poziom",
+    "time": "Czas",
+    "queued": "W kolejce",
+    "practiced": "Ćwiczone umiejętności ({{used}}/{{max}})",
+    "basic": "Umiejętności podstawowe",
+    "tierAt": "Odznaka od poziomu {{level}}"
+  },
+  "jobs": {
+    "title": "Praca",
+    "available": "Dostępne prace",
+    "start": "Rozpocznij",
+    "working": "W trakcie: {{name}}",
+    "remaining": "Do końca",
+    "earned": "Zarobione do tej pory",
+    "stop": "Zakończ",
+    "stopForfeit": "Zakończ (bez wypłaty)",
+    "noStop": "Tej pracy nie opłaca się przerywać: wypłata {{amount}} mon. dopiero po jej zakończeniu. Przerwanie oznacza brak wynagrodzenia.",
+    "confirmForfeit": "Jeśli przerwiesz tę pracę, nie dostaniesz nic. Czy na pewno przerwać?",
+    "stopped": "Praca przerwana. Wypłata: {{amount}} mon.",
+    "cooldown": "Musisz odpocząć. Kolejna praca za {{time}}.",
+    "policyProportional": "można przerwać w każdej chwili (wypłata proporcjonalna)",
+    "policyNone": "przerwanie = brak wypłaty",
+    "names": {
+      "market": "Rynek",
+      "hostel": "Dyżur w schronisku",
+      "expedition": "Całodobowa wyprawa"
+    },
+    "time": "Czas",
+    "timeLeft": "Pozostało",
+    "reward": "Zarobek",
+    "earnedShort": "Zarobiono"
+  },
+  "notifications": {
+    "title": "Powiadomienia",
+    "markRead": "Oznacz jako przeczytane",
+    "training_finished": "Ukończono szkolenie: {{skill}} (poziom {{level}}).",
+    "job_finished": "Praca „{{job}}” zakończona. Wypłata: {{amount}} mon."
   }
 }

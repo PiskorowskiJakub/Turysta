@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import RequireAuth from './components/RequireAuth';
 import HomePage from './pages/HomePage';
@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import TutorialPage from './pages/TutorialPage';
 import ProfilePage from './pages/ProfilePage';
+import TrainingPage from './pages/TrainingPage';
+import JobsPage from './pages/JobsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -18,6 +20,9 @@ export default function App() {
         <Route element={<RequireAuth />}>
           <Route path="samouczek" element={<TutorialPage />} />
           <Route path="profil" element={<ProfilePage />} />
+          <Route path="umiejetnosci" element={<TrainingPage />} />
+          <Route path="szkolenia" element={<Navigate to="/umiejetnosci" replace />} />
+          <Route path="praca" element={<JobsPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>
