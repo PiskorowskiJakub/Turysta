@@ -7,6 +7,7 @@ Dokumentacja zasad gry. Szczegóły ekonomii i symulacji znajdziesz w [głównym
 - [Światy](#światy)
 - [Tabela awansów](#tabela-awansów-wymagania-czas-i-koszt)
 - [Dlaczego wymagania umiejętności bazowych są nierówne](#dlaczego-wymagania-umiejętności-bazowych-są-nierówne)
+- [Punkty (ranking i prestiż)](#punkty-ranking-i-prestiż)
 
 ## Światy
 
@@ -88,3 +89,16 @@ Powody:
 - **Orientacja jest blisko Kondycji.** Współczynnik 0,95 daje niewielką różnicę, żeby wymagania nie były trzema identycznymi liczbami.
 
 Współczynniki 0,95 i 0,8 są parametrami kalibracji tempa gry (symulator `scripts/simulate_economy.py`). Ich zmiana wymaga ponownego przeliczenia symulacji i nowej migracji z wymaganiami awansów.
+
+## Punkty (ranking i prestiż)
+
+Punkty to miara postępu gracza do rankingu i rang, nie waluta (nie da się nimi płacić). Liczy się łączna suma.
+
+| Źródło | Zasada |
+|---|---|
+| Szkolenie umiejętności (bazowych i światów) | 1 punkt za każde rozpoczęte 20 minut szkolenia, minimum 1 |
+| Awans do kolejnego rozdziału | 50 × numer świata (50 w świecie 1, 250 w świecie 5) |
+| Wejście do nowego świata (rozdział 1 świata) | 1000 |
+| Praca | 1 punkt za każde pełne 50 dk wypłaty |
+
+Punkty za szkolenia są proporcjonalne do czasu, a nie do poziomu, więc rosną mniej więcej liniowo z czasem gry: dłuższe szkolenia dają więcej, a aktywny i zwykły gracz zdobywają podobnie dużo, bo tempo ogranicza kolejka. Awanse i wejścia do światów są największymi pojedynczymi nagrodami.

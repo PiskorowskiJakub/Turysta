@@ -49,13 +49,28 @@ final class Economy
         return intdiv($baseCents * (1000 + self::tradeBonusPermille($tradeLevel)), 1000);
     }
 
-    public static function trainingPoints(int $targetLevel): int
+    /** Punkty to ranking i prestiz, nie waluta. Rok gry to rzad wielkosci kilkudziesieciu tysiecy. */
+    public const POINTS_TRAINING_SECONDS = 1200;   // 1 punkt za kazde rozpoczete 20 minut szkolenia
+    public const POINTS_CHAPTER_PER_WORLD = 50;    // zwykly awans: 50 x numer swiata
+    public const POINTS_WORLD_TRANSITION = 1000;   // wejscie do nowego swiata
+    public const POINTS_JOB_CENTS = 5000;          // 1 punkt za kazde pelne 50 dukatow z pracy
+
+    /** Punkty za ukonczone szkolenie umiejetnosci: proporcjonalne do jego czasu, minimum 1. */
+    public static function trainingPoints(int $durationSeconds): int
     {
-        return 10 * $targetLevel;
+        return max(1, intdiv(max(0, $durationSeconds) + self::POINTS_TRAINING_SECONDS - 1, self::POINTS_TRAINING_SECONDS));
     }
 
     public static function jobPoints(int $payoutCents): int
     {
-        return intdiv($payoutCents, 1000); // 1 punkt za kazde pelne 10 dukatow
+        return intdiv($payoutCents, self::POINTS_JOB_CENTS);
+    }
+
+    /** Punkty za awans do rozdzialu o podanym numerze w swiecie (1-10); rozdzial 1 to wejscie do nowego swiata. */
+    public static function chapterPoints(int $worldOrdinal, int $chapterOrdinal): int
+    {
+        return $chapterOrdinal === 1
+            ? self::POINTS_WORLD_TRANSITION
+            : self::POINTS_CHAPTER_PER_WORLD * $worldOrdinal;
     }
 }

@@ -113,13 +113,23 @@ export default function TrainingPage() {
     {
       path: 'swiaty',
       label: t('training.tabs.worlds'),
-      children: skills.worlds.map((w) => ({
-        path: String(w.ordinal),
-        label: `${w.ordinal}. ${w.name}`,
-        disabled: w.ordinal > skills.current_world,
-        hint: t('training.worldLockedHint', { n: w.ordinal }),
-      })),
+      // Pelna nazwa tylko dla swiata, w ktorym gracz jest teraz. Przyszle swiaty: sam numer i klodka
+      // (bez spoilerow), ukonczone: numer i zielony ptaszek.
+      children: skills.worlds.map((w) => {
+        const current = w.ordinal === skills.current_world;
+        const ws = skills.skills.filter((s) => s.world_ordinal === w.ordinal);
+        const done = w.ordinal < skills.current_world && ws.length > 0 && ws.every((s) => s.max_level !== null && s.level >= s.max_level);
+        return {
+          path: String(w.ordinal),
+          label: current ? `${w.ordinal}. ${w.name}` : `${w.ordinal}.`,
+          disabled: w.ordinal > skills.current_world,
+          done,
+          hint: t('training.worldLockedHint', { n: w.ordinal }),
+        };
+      }),
     },
+    // Umiejetnosci oddzialu: zakladka zapowiedziana, jeszcze nieaktywna.
+    { path: 'oddzial', label: `${t('training.tabs.squad')} (${t('nav.soon')})`, disabled: true, hint: t('training.squadHint') },
     { path: 'awans', label: t('training.tabs.advance') },
   ];
 
@@ -241,7 +251,7 @@ export default function TrainingPage() {
         world && <WorldPanel world={world} coins={coins} queueFull={full} busy={busy} onAdvance={onAdvance} />
       ) : tab === 'swiaty' && worldTab !== null ? (
         <section className="panel trail-blue">
-          <h2>{t('training.worldSkills', { n: worldTab, name: skills.worlds.find((w) => w.ordinal === worldTab)?.name ?? '' })}</h2>
+          <h2>{worldTab > skills.current_world ? t('training.worldLockedTitle', { n: worldTab }) : t('training.worldSkills', { n: worldTab, name: skills.worlds.find((w) => w.ordinal === worldTab)?.name ?? '' })}</h2>
           {worldTab > skills.current_world ? (
             <p className="page-message">{t('training.worldLockedMessage', { n: worldTab })}</p>
           ) : (

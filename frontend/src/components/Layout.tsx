@@ -5,6 +5,7 @@ import { api } from '../api/client';
 import type { Avatar } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import Coins from './Coins';
+import Points from './Points';
 import AvatarImage from './AvatarImage';
 import { Icon, type IconName } from './icons';
 
@@ -96,7 +97,7 @@ export default function Layout() {
                 </li>
                 <li className="points" title={t('wallet.points')}>
                   <Icon name="points" />
-                  <span><b>{me.wallet.points.toLocaleString('pl-PL')}</b><small>{t('wallet.points')}</small></span>
+                  <span><b><Points value={me.wallet.points} /></b><small>{t('wallet.points')}</small></span>
                 </li>
               </ul>
             </div>

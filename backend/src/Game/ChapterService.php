@@ -191,15 +191,14 @@ final class ChapterService
         ];
     }
 
-    /** Punkty za awans: 100 razy numer rozdzialu licony przez wszystkie swiaty. */
+    /** Punkty za awans: 50 x numer swiata, a za wejscie do nowego swiata (rozdzial 1) 1000. */
     public function points(int $chapterId): int
     {
         $stmt = $this->pdo->prepare(
-            'SELECT COUNT(*) FROM chapters c JOIN worlds w ON w.id = c.world_id
-             JOIN (SELECT c2.ordinal AS co, w2.ordinal AS wo FROM chapters c2 JOIN worlds w2 ON w2.id = c2.world_id WHERE c2.id = ?) t
-             WHERE w.ordinal < t.wo OR (w.ordinal = t.wo AND c.ordinal <= t.co)'
+            'SELECT w.ordinal AS wo, c.ordinal AS co FROM chapters c JOIN worlds w ON w.id = c.world_id WHERE c.id = ?'
         );
         $stmt->execute([$chapterId]);
-        return 100 * (int) $stmt->fetchColumn();
+        $row = $stmt->fetch();
+        return $row ? Economy::chapterPoints((int) $row['wo'], (int) $row['co']) : 0;
     }
 }

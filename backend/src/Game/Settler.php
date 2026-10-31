@@ -62,7 +62,7 @@ final class Settler
                     $this->pdo,
                     $userId,
                     'points',
-                    Economy::trainingPoints((int) $row['target_level']),
+                    Economy::trainingPoints((int) $row['duration_seconds']),
                     'training_points',
                     'training',
                     (int) $row['id']

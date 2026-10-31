@@ -1,7 +1,7 @@
 export type IconName =
   | 'home' | 'profile' | 'skills' | 'job' | 'logout' | 'login' | 'register'
   | 'coins' | 'ticket' | 'points' | 'fitness' | 'orientation' | 'trade'
-  | 'sprout' | 'rank' | 'medal' | 'market' | 'hostel' | 'expedition' | 'lock' | 'team';
+  | 'sprout' | 'rank' | 'medal' | 'market' | 'hostel' | 'expedition' | 'lock' | 'team' | 'check';
 
 const PATHS: Record<IconName, string> = {
   home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
@@ -24,6 +24,7 @@ const PATHS: Record<IconName, string> = {
   hostel: 'M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6M16 6V4h2v4',
   expedition: 'M3 20l6-11 4 6 3-4 5 9zM12 3v4M10 5h4',
   lock: 'M6 11h12v9H6zM8 11V8a4 4 0 0 1 8 0v3',
+  check: 'M5 13l4 4L19 7',
   team: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 3a4 4 0 1 0 0.01 0M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8',
 };
 

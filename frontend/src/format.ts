@@ -11,6 +11,21 @@ export function formatCoinsFull(cents: number): string {
   return `${group(Math.floor(c / 100))},${String(c % 100).padStart(2, '0')}`;
 }
 
+/** Liczba calkowita w skrocie, zawsze w dol: do 100 tys. ze spacjami, wyzej "123,4 tys.", "1,2 mln", "3,5 mld". */
+function abbreviate(n: number): string {
+  if (n < 100_000) return group(n);
+  const units: [number, string][] = [[1_000_000_000, 'mld'], [1_000_000, 'mln'], [1_000, 'tys.']];
+  for (const [size, name] of units) {
+    if (n >= size) {
+      const tenths = Math.floor((n * 10) / size);
+      const whole = Math.floor(tenths / 10);
+      const frac = tenths % 10;
+      return `${frac === 0 ? group(whole) : `${group(whole)},${frac}`}${NBSP}${name}`;
+    }
+  }
+  return group(n);
+}
+
 /**
  * Dukaty trzymamy w setnych czesciach (int). Wyswietlanie skrocone, zawsze w dol (nie pokazujemy wiecej, niz gracz ma):
  * do 100 dk dwa miejsca po przecinku, do 100 tys. dk calosci ze spacjami, wyzej "123,4 tys.", "1,2 mln", "3,5 mld".
@@ -19,17 +34,17 @@ export function formatCoins(cents: number): string {
   const c = Math.max(0, Math.floor(cents));
   const dk = Math.floor(c / 100);
   if (dk < 100) return `${dk},${String(c % 100).padStart(2, '0')}`;
-  if (dk < 100_000) return group(dk);
-  const units: [number, string][] = [[1_000_000_000, 'mld'], [1_000_000, 'mln'], [1_000, 'tys.']];
-  for (const [size, name] of units) {
-    if (dk >= size) {
-      const tenths = Math.floor((dk * 10) / size);
-      const whole = Math.floor(tenths / 10);
-      const frac = tenths % 10;
-      return `${frac === 0 ? group(whole) : `${group(whole)},${frac}`}${NBSP}${name}`;
-    }
-  }
-  return group(dk);
+  return abbreviate(dk);
+}
+
+/** Punkty (liczby calkowite): do 100 tys. ze spacjami, wyzej "123,4 tys.", "1,2 mln", "3,5 mld". */
+export function formatPoints(points: number): string {
+  return abbreviate(Math.max(0, Math.floor(points)));
+}
+
+/** Pelna liczba punktow ze spacjami, pokazywana w dymku po najechaniu: 1234567 -> "1 234 567". */
+export function formatPointsFull(points: number): string {
+  return group(Math.max(0, Math.floor(points)));
 }
 
 /** Czas trwania jako g:mm:ss; dni (Nd) dopiero powyzej 24 godzin. */

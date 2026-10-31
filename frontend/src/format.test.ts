@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCoins, formatCoinsFull, formatDuration, formatEndTime } from './format';
+import { formatCoins, formatCoinsFull, formatDuration, formatEndTime, formatPoints, formatPointsFull } from './format';
 
 describe('formatCoins', () => {
   const n = '\u00a0';
@@ -49,5 +49,24 @@ describe('formatEndTime', () => {
     expect(formatEndTime(new Date(2026, 9, 31, 14, 32).getTime(), now)).toBe('dziś 14:32');
     expect(formatEndTime(new Date(2026, 10, 1, 3, 5).getTime(), now)).toBe('jutro 03:05');
     expect(formatEndTime(new Date(2026, 10, 3, 9, 0).getTime(), now)).toBe('3 lis 09:00');
+  });
+});
+
+describe('formatPoints', () => {
+  const n = '\u00a0';
+  it('do 100 tys. pokazuje cale punkty ze spacjami', () => {
+    expect(formatPoints(0)).toBe('0');
+    expect(formatPoints(999)).toBe('999');
+    expect(formatPoints(1234)).toBe(`1${n}234`);
+    expect(formatPoints(99999)).toBe(`99${n}999`);
+  });
+  it('od 100 tys. skraca do tys., mln, mld (w dol)', () => {
+    expect(formatPoints(123456)).toBe(`123,4${n}tys.`);
+    expect(formatPoints(100000)).toBe(`100${n}tys.`);
+    expect(formatPoints(1250000)).toBe(`1,2${n}mln`);
+    expect(formatPoints(3500000000)).toBe(`3,5${n}mld`);
+  });
+  it('pelna wartosc ze spacjami', () => {
+    expect(formatPointsFull(1234567)).toBe(`1${n}234${n}567`);
   });
 });

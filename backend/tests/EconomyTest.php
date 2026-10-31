@@ -54,8 +54,18 @@ final class EconomyTest extends TestCase
 
     public function testPoints(): void
     {
-        $this->assertSame(30, Economy::trainingPoints(3));
-        $this->assertSame(24, Economy::jobPoints(24700));
-        $this->assertSame(0, Economy::jobPoints(999));
+        // Szkolenie: 1 punkt za kazde rozpoczete 20 minut, minimum 1.
+        $this->assertSame(1, Economy::trainingPoints(5));
+        $this->assertSame(1, Economy::trainingPoints(1200));
+        $this->assertSame(2, Economy::trainingPoints(1201));
+        $this->assertSame(3, Economy::trainingPoints(3600));
+        // Praca: 1 punkt za kazde pelne 50 dk.
+        $this->assertSame(4, Economy::jobPoints(24700));
+        $this->assertSame(0, Economy::jobPoints(4999));
+        $this->assertSame(1, Economy::jobPoints(5000));
+        // Awans: 50 x numer swiata, wejscie do nowego swiata 1000.
+        $this->assertSame(50, Economy::chapterPoints(1, 2));
+        $this->assertSame(250, Economy::chapterPoints(5, 10));
+        $this->assertSame(1000, Economy::chapterPoints(2, 1));
     }
 }

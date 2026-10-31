@@ -16,6 +16,21 @@ BONUS_ON = True
 FLAT = 50                 # po tym poziomie wzrost wielomianowy
 START_CENTS = 200
 SLOTS = 4
+
+# Punkty (ranking i prestiz); zasady jak w backend/src/Game/Economy.php i ChapterService.php
+POINTS_TRAIN_SECONDS = 1200     # 1 punkt za kazde rozpoczete 20 minut szkolenia
+POINTS_CHAPTER_PER_WORLD = 50   # zwykly awans: 50 x numer swiata
+POINTS_TRANSITION = 1000        # wejscie do nowego swiata
+POINTS_JOB_CENTS = 5000         # 1 punkt za kazde pelne 50 dk z pracy
+
+
+def train_points(seconds):
+    return max(1, -(-int(seconds) // POINTS_TRAIN_SECONDS))
+
+
+def chapter_points(g):
+    """Punkty za awans numer g (1-49; 10, 20, 30, 40 to wejscie do nowego swiata)."""
+    return POINTS_TRANSITION if g % 10 == 0 else POINTS_CHAPTER_PER_WORLD * (1 + g // 10)
 JOBS = {  # kod: (czas s, wyplata grosze, przerwa s, proporcjonalna)
     'market': (8 * 3600, 24700, 3600, True),
     'hostel': (12 * 3600, 42000, 7200, False),
@@ -144,6 +159,7 @@ def simulate(days, profile):
     cd_until = 0.0
     rows = []
     stat = dict(started=0, done=0, active_s=0.0, earned=0, spent=0, empty=0, durs=[], broke=0)
+    points = [0]
     t = 0.0
 
     wlv = [[0] * WORLD_SKILLS for _ in range(5)]
@@ -171,27 +187,27 @@ def simulate(days, profile):
             if active: stat['active_s'] += when - t
             t = when
             if kind == 'train':
-                typ, idx, _ = active
-                if typ == 'skill': lv[idx] += 1
-                elif typ == 'wskill': wlv[idx[0]][idx[1]] += 1
+                typ, idx, _, dur = active
+                if typ == 'skill': lv[idx] += 1; points[0] += train_points(dur)
+                elif typ == 'wskill': wlv[idx[0]][idx[1]] += 1; points[0] += train_points(dur)
                 elif typ == 'chapter':
-                    chap += 1; chap_q = False
+                    chap += 1; chap_q = False; points[0] += chapter_points(chap)
                     milestones.setdefault(chap, int(t // 86400) + 1)
                 stat['done'] += 1
                 active = None
                 if queue:
                     q = queue.pop(0)
-                    active = [q[0], q[1], t + q[2]]
+                    active = [q[0], q[1], t + q[2], q[2]]
             else:
                 code, st, en, rew = job
-                coins += rew; stat['earned'] += rew
+                coins += rew; stat['earned'] += rew; points[0] += rew // POINTS_JOB_CENTS
                 cd_until = en + JOBS[code][2]
                 job = None
 
     def push(q):
         nonlocal active
         if active is None:
-            active = [q[0], q[1], t + q[2]]
+            active = [q[0], q[1], t + q[2], q[2]]
         else:
             queue.append(q)
 
@@ -237,7 +253,7 @@ def simulate(days, profile):
         if job and JOBS[job[0]][3]:                       # rynek: wyplata proporcjonalna, brak przerwy
             code, st, en, rew = job
             pay = int(rew * (t - st) / (en - st))
-            coins += pay; stat['earned'] += pay; job = None
+            coins += pay; stat['earned'] += pay; points[0] += pay // POINTS_JOB_CENTS; job = None
         if job is None and t >= cd_until:
             code = 'expedition' if next_gap >= 24 * 3600 - 1 else 'hostel' if next_gap >= 12 * 3600 - 1 else 'market'
             job = [code, t, t + JOBS[code][0], int(JOBS[code][1] * (trade_bonus(lv[2]) if BONUS_ON else 1))]
@@ -257,7 +273,7 @@ def simulate(days, profile):
         advance((day + 1) * 86400)
         d = stat['durs']
         rows.append((day + 1, min(lv), max(lv), chap, stat['started'], stat['done'], stat['active_s'] / 86400,
-                     (sum(d) / len(d)) if d else 0, stat['earned'], stat['spent'], coins, stat['empty'], stat['broke']))
+                     (sum(d) / len(d)) if d else 0, stat['earned'], stat['spent'], coins, stat['empty'], stat['broke'], points[0]))
     simulate.milestones = milestones
     return rows
 
@@ -321,12 +337,20 @@ def main():
     ap.add_argument('--markdown', action='store_true', help='wypisz tabelę w formacie Markdown (wybrane dni)')
     ap.add_argument('--sql', action='store_true', help='wypisz migracje 017 (umiejetnosci swiatow) wyliczona z modelu')
     ap.add_argument('--sql-chapters', action='store_true', help='wypisz UPDATE-y awansow (wymagania, koszty)')
+    ap.add_argument('--punkty', action='store_true', help='wypisz lacznie zdobyte punkty w wybranych dniach')
     ap.add_argument('--bez-bonusu', action='store_true', help='wylacz bonus Handlu (porownanie)')
     a = ap.parse_args()
     global BONUS_ON
     BONUS_ON = not a.bez_bonusu
     if a.sql or a.sql_chapters:
         print(migration_sql(chapters=a.sql_chapters))
+        return
+    if a.punkty:
+        rows = simulate(a.days, a.profile)
+        print(f'Profil: {a.profile}')
+        for r in rows:
+            if r[0] in (1, 7, 14, 30, 60, 90, 120, 180, 270, 365, a.days):
+                print(f'dzien {r[0]:>4}: {r[13]:>7} pkt')
         return
     if a.markdown:
         shown = {1, 2, 3, 5, 7, 10, 14, 18, 21, 25, 30} if a.days <= 30 else {1, 7, 14, 30, 60, 90, 120, 180, 270, 365}

@@ -7,6 +7,8 @@ export interface TabItem {
   children?: TabItem[];
   /** Zablokowana zakladka: widoczna z klodka, bez linku. */
   disabled?: boolean;
+  /** Ukonczona zakladka: zielony ptaszek przy etykiecie. */
+  done?: boolean;
   hint?: string;
 }
 
@@ -33,7 +35,8 @@ export default function Tabs({ base, items }: Props) {
             {i.label}
           </span>
         ) : (
-          <NavLink key={i.path} to={`${base}/${i.path}`} className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}>
+          <NavLink key={i.path} to={`${base}/${i.path}`} className={({ isActive }) => 'tab' + (isActive ? ' active' : '') + (i.done ? ' done' : '')}>
+            {i.done && <Icon name="check" />}
             {i.label}
           </NavLink>
         ))}

@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import Notifications from '../components/Notifications';
 import { Sprout } from '../components/icons';
 import Coins from '../components/Coins';
+import Points from '../components/Points';
 import { formatDate, formatDays } from '../format';
 
 export default function ProfilePage() {
@@ -35,7 +36,7 @@ export default function ProfilePage() {
       <ul className="stats">
         <li><span>{t('wallet.coins')}</span><strong><Coins cents={me.wallet.coins_cents} /></strong></li>
         <li><span>{t('wallet.tickets')}</span><strong>{me.wallet.tickets}</strong></li>
-        <li><span>{t('wallet.points')}</span><strong>{me.wallet.points}</strong></li>
+        <li><span>{t('wallet.points')}</span><strong><Points value={me.wallet.points} /></strong></li>
       </ul>
 
       <h2>{t('stats.title')}</h2>

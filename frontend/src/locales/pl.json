@@ -128,9 +128,12 @@
     "tabs": {
       "basic": "Podstawowe",
       "worlds": "Światy",
+      "squad": "Oddział",
       "advance": "Awans"
     },
+    "squadHint": "Umiejętności oddziału pojawią się wkrótce",
     "worldLockedHint": "Odblokujesz w świecie {{n}}",
+    "worldLockedTitle": "Świat {{n}}",
     "worldSkills": "Świat {{n}}: {{name}}",
     "worldSkillsInfo": "Umiejętności tego świata. Każda ma maksymalnie {{max}} poziomów.",
     "worldLockedMessage": "Ten świat jeszcze przed Tobą. Dotrzyj do świata {{n}}, aby odblokować jego umiejętności.",

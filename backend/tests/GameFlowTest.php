@@ -177,7 +177,7 @@ final class GameFlowTest extends TestCase
             "SELECT level FROM user_skills WHERE user_id = {$this->userId} AND skill_id = {$this->skillId()}"
         )->fetchColumn();
         $this->assertSame(1, $level);
-        $this->assertSame(10, (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = {$this->userId}")->fetchColumn());
+        $this->assertSame(1, (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = {$this->userId}")->fetchColumn());
 
         $next = $this->pdo->query(
             "SELECT started_at, status FROM training_queue WHERE user_id = {$this->userId} AND target_level = 2"
@@ -391,6 +391,6 @@ final class GameFlowTest extends TestCase
         $this->settler->settleUser($this->userId);
 
         $this->assertSame(24700, $this->coins());
-        $this->assertSame(24, (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = {$this->userId}")->fetchColumn());
+        $this->assertSame(4, (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = {$this->userId}")->fetchColumn());
     }
 }

@@ -313,6 +313,8 @@ h1, h2, h3 { font-weight: 600; }
   border: 2px solid var(--line); border-bottom-color: var(--line);
 }
 .tab.disabled { display: inline-flex; align-items: center; gap: 6px; opacity: 0.55; cursor: not-allowed; }
+.tab.done { display: inline-flex; align-items: center; gap: 6px; }
+.tab.done svg { width: 14px; height: 14px; color: #5fd078; stroke-width: 3; }
 .tab.disabled svg { width: 14px; height: 14px; }
 .tab:hover:not(.disabled) { color: var(--cream); background: var(--panel); }
 .tab.active { background: var(--panel); color: var(--cream); font-weight: 600; border-bottom-color: var(--panel); box-shadow: inset 0 3px 0 var(--orange); }
