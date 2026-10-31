@@ -346,3 +346,17 @@ h1, h2, h3 { font-weight: 600; }
 .progress-card b { display: block; font-size: 1.05rem; }
 .progress-card span { font-size: 13px; color: var(--muted); }
 @media (max-width: 900px) { .plaque .who-wrap { display: none; } }
+
+/* Opis fabularny umiejetnosci w miejscu ikony - po najechaniu lub fokusie */
+.skill-art { position: relative; width: 100%; height: 96px; display: grid; place-items: center; }
+.skill-art .icon-tile { transition: opacity 0.18s, transform 0.18s; }
+.skill-story {
+  position: absolute; inset: 0; margin: 0; padding: 8px 12px; border-radius: 12px;
+  display: grid; place-items: center; text-align: center;
+  background: var(--bg2); border: 1.5px dashed var(--line); color: var(--cream);
+  font-size: 12px; line-height: 1.4; opacity: 0; transform: scale(0.96); pointer-events: none;
+  transition: opacity 0.18s, transform 0.18s;
+}
+.skill-card:hover .skill-story, .skill-card:focus-visible .skill-story, .skill-card:focus-within .skill-story { opacity: 1; transform: none; }
+.skill-card:hover .skill-art .icon-tile, .skill-card:focus-visible .skill-art .icon-tile, .skill-card:focus-within .skill-art .icon-tile { opacity: 0; transform: scale(0.85); }
+.skill-card:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }

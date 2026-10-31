@@ -169,9 +169,12 @@ export default function TrainingPage() {
       : `${t('training.train')}: ${formatCoins(cost)} ${t('wallet.coinsShort')}`;
     return (
       <div key={s.id} className="skill-col">
-        <article className="tile skill-card">
+        <article className="tile skill-card" tabIndex={0}>
           <h3>{skillName(s.code, s.name)}</h3>
-          <div className="icon-tile"><SkillIcon code={s.code} /></div>
+          <div className="skill-art">
+            <div className="icon-tile"><SkillIcon code={s.code} /></div>
+            <p className="skill-story">{t(`skills.stories.${s.code}`, { defaultValue: s.description ?? '' })}</p>
+          </div>
           <div>
             <div className="line">
               {t('training.time')}: <strong>{s.next_duration_seconds !== null ? formatDuration(s.next_duration_seconds) : '–'}</strong>

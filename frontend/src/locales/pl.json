@@ -27,7 +27,12 @@
   "skills": {
     "fitness": "Kondycja",
     "orientation": "Orientacja w terenie",
-    "trade": "Handel"
+    "trade": "Handel",
+    "stories": {
+      "fitness": "Długie podejścia i kamienne schody nie robią na Tobie wrażenia. Im więcej kilometrów w nogach, tym dalej zajdziesz.",
+      "orientation": "Mapa, kompas i znaki na drzewach – nigdy nie zbłądzisz, nawet gdy mgła zgęstnieje.",
+      "trade": "Targ pachnie okazjami. Dobry turysta wie, kiedy się potargować, a kiedy kupić od razu."
+    }
   },
   "home": {
     "title": "Witaj w Turyście",
