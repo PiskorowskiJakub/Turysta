@@ -228,6 +228,23 @@ h1, h2, h3 { font-weight: 600; }
 }
 .tier:hover::after, .tier:focus-visible::after { opacity: 1; }
 
+/* ---------- Ranking ---------- */
+.ranking-me { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ranking-me-btn { padding: 4px 12px; font-size: 13px; }
+.ranking-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.ranking-filters input, .ranking-filters select { padding: 7px 10px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg2); color: var(--cream); font: inherit; font-size: 13px; }
+.ranking-filters input:focus, .ranking-filters select:focus { outline: 0; border-color: var(--orange); }
+.ranking-filters input[type='search'] { flex: 1 1 220px; min-width: 0; }
+.ranking-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ranking-table th, .ranking-table td { padding: 3px 10px; text-align: left; border-bottom: 1px solid var(--line); line-height: 1.35; }
+.ranking-table th { font-weight: 600; color: var(--orange); position: sticky; top: 0; background: var(--tile); }
+.ranking-table .num { text-align: right; white-space: nowrap; width: 1%; }
+.ranking-table tbody tr:nth-child(even) { background: var(--bg2); }
+.ranking-table tr.me { background: #f0c23f26; font-weight: 600; }
+.ranking-empty { text-align: center !important; padding: 16px 0 !important; opacity: 0.75; }
+.ranking-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 13px; }
+.ranking-pager .btn { padding: 4px 12px; }
+
 /* ---------- Ksiazeczka odznak ---------- */
 .badge-total { margin: 6px 0 0; font-weight: 600; color: var(--orange); }
 .badge-list { display: flex; flex-wrap: wrap; gap: 8px; }

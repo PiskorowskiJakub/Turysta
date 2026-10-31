@@ -11,6 +11,7 @@ use Turysta\Auth\RateLimiter;
 use Turysta\Database;
 use Turysta\Game\ActivityTracker;
 use Turysta\Game\JobService;
+use Turysta\Game\RankingService;
 use Turysta\Game\Settler;
 use Turysta\Game\StatsService;
 use Turysta\Game\TrainingService;
@@ -392,5 +393,35 @@ final class GameFlowTest extends TestCase
 
         $this->assertSame(24700, $this->coins());
         $this->assertSame(4, (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = {$this->userId}")->fetchColumn());
+    }
+
+    public function testRankingSearchPaginationAndMyPlace(): void
+    {
+        $this->pdo->exec("UPDATE wallets SET points = 900000000 WHERE user_id = {$this->userId}");
+        $name = (string) $this->pdo->query("SELECT character_name FROM users WHERE id = {$this->userId}")->fetchColumn();
+        $ranking = new RankingService($this->pdo);
+
+        $all = $ranking->page($this->userId, 1, 50, '', 0);
+        $this->assertSame(1, $all['rows'][0]['rank']);
+        $this->assertTrue($all['rows'][0]['me']);
+        $this->assertSame(1, $all['me']['rank']);
+        $this->assertSame(1, $all['me']['page']);
+        $this->assertSame(50, $all['per_page']);
+
+        // Nieprawidlowa liczba wierszy na strone wraca do domyslnej, strona poza zakresem jest przycinana.
+        $odd = $ranking->page($this->userId, 9999, 7, '', 0);
+        $this->assertSame(50, $odd['per_page']);
+        $this->assertSame($odd['pages'], $odd['page']);
+
+        // Wyszukiwanie po fragmencie nazwy nie zmienia miejsca w rankingu.
+        $found = $ranking->page($this->userId, 1, 50, mb_substr($name, 1, 6), 0);
+        $this->assertGreaterThanOrEqual(1, $found['total']);
+        $mine = array_values(array_filter($found['rows'], fn($r) => $r['me']));
+        $this->assertCount(1, $mine);
+        $this->assertSame(1, $mine[0]['rank']);
+
+        // Znaki specjalne LIKE sa traktowane doslownie.
+        $this->assertSame(0, $ranking->page($this->userId, 1, 50, '%%%', 0)['total']);
+        $this->assertSame(0, $ranking->page($this->userId, 1, 50, 'zzzz-nie-ma-takiego-gracza', 0)['total']);
     }
 }

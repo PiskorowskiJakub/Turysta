@@ -11,7 +11,8 @@
     "squad": "Oddział",
     "soon": "wkrótce",
     "skills": "Umiejętności",
-    "badges": "Odznaki"
+    "badges": "Odznaki",
+    "ranking": "Ranking"
   },
   "footer": "Copyright © 2026 Jakub Piskorowski",
   "tagline": "Turysta – gra o podróżowaniu",
@@ -26,6 +27,28 @@
     "f": "Kobieta",
     "m": "Mężczyzna",
     "x": "Inna / wolę nie podawać"
+  },
+  "ranking": {
+    "title": "Ranking graczy",
+    "myPlace": "Twoje miejsce: {{rank}}",
+    "pointsShort": "pkt",
+    "goToMe": "Pokaż moje miejsce",
+    "searchPlaceholder": "Szukaj gracza po nazwie…",
+    "world": "Świat",
+    "allWorlds": "Wszystkie światy",
+    "worldN": "Świat {{n}}",
+    "perPage": "Wierszy na stronę",
+    "perPageN": "{{n}} na stronę",
+    "place": "Miejsce",
+    "player": "Gracz",
+    "worldChapter": "Świat / rozdział",
+    "empty": "Nie znaleziono żadnego gracza.",
+    "prev": "Poprzednia",
+    "next": "Następna",
+    "first": "Pierwsza strona",
+    "last": "Ostatnia strona",
+    "pageOf": "Strona {{page}} z {{pages}}",
+    "total": "graczy: {{n}}"
   },
   "badges": {
     "title": "Książeczka odznak",

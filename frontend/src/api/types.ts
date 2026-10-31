@@ -185,3 +185,22 @@ export interface WorldResponse {
     in_queue: boolean;
   } | null;
 }
+
+export interface RankingRow {
+  rank: number;
+  name: string;
+  points: number;
+  world: number | null;
+  chapter: number | null;
+  me: boolean;
+}
+
+export interface RankingResponse {
+  total: number;
+  page: number;
+  pages: number;
+  per_page: number;
+  per_page_options: number[];
+  rows: RankingRow[];
+  me: { rank: number; points: number; page: number } | null;
+}

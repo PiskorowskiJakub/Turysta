@@ -7,6 +7,7 @@ use PDO;
 use Turysta\Auth\Session;
 use Turysta\Game\ChapterService;
 use Turysta\Game\JobService;
+use Turysta\Game\RankingService;
 use Turysta\Game\Settler;
 use Turysta\Game\TrainingService;
 use Turysta\Http\ApiException;
@@ -145,6 +146,21 @@ final class GameController
         $this->pdo->prepare('UPDATE notifications SET read_at = UTC_TIMESTAMP() WHERE user_id = ? AND read_at IS NULL')
             ->execute([$uid]);
         return [200, ['message' => 'Oznaczono jako przeczytane.']];
+    }
+
+    /** Ranking graczy: ?page=&per_page=&q=&world= @return array{0:int,1:array<string,mixed>} */
+    public function ranking(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        $q = $r->query;
+        return [200, (new RankingService($this->pdo))->page(
+            $uid,
+            (int) ($q['page'] ?? 1),
+            (int) ($q['per_page'] ?? RankingService::DEFAULT_PER_PAGE),
+            is_string($q['q'] ?? null) ? $q['q'] : '',
+            (int) ($q['world'] ?? 0)
+        )];
     }
 
     private function uid(Request $r): int
