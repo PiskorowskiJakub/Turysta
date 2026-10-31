@@ -26,6 +26,7 @@ final class TrainingService
              ORDER BY s.id"
         );
         $stmt->execute([$userId, $userId]);
+        $worldNow = $this->worldOrdinal($userId);
 
         $skills = [];
         foreach ($stmt->fetchAll() as $s) {
@@ -36,6 +37,8 @@ final class TrainingService
                 'code' => $s['code'],
                 'name' => $s['name'],
                 'description' => $s['description'],
+                'world_ordinal' => $s['world_ordinal'] === null ? null : (int) $s['world_ordinal'],
+                'locked' => $s['world_ordinal'] !== null && (int) $s['world_ordinal'] > $worldNow,
                 'level' => (int) $s['level'],
                 'in_queue' => (int) $s['in_queue'],
                 'max_level' => $s['max_level'] === null ? null : (int) $s['max_level'],
@@ -44,7 +47,22 @@ final class TrainingService
                 'next_duration_seconds' => $maxed ? null : Economy::seconds($s, $next),
             ];
         }
-        return ['server_time' => gmdate('c'), 'skills' => $skills];
+        $worlds = array_map(
+            fn(array $w) => ['ordinal' => (int) $w['ordinal'], 'name' => $w['name']],
+            $this->pdo->query('SELECT ordinal, name FROM worlds ORDER BY ordinal')->fetchAll()
+        );
+        return ['server_time' => gmdate('c'), 'current_world' => $worldNow, 'worlds' => $worlds, 'skills' => $skills];
+    }
+
+    /** Numer swiata, w ktorym gracz aktualnie jest (od 1); 1 gdy brak postepu. */
+    private function worldOrdinal(int $userId): int
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT w.ordinal FROM player_progress p JOIN chapters c ON c.id = p.chapter_id JOIN worlds w ON w.id = c.world_id
+             WHERE p.user_id = ?'
+        );
+        $stmt->execute([$userId]);
+        return max(1, (int) $stmt->fetchColumn());
     }
 
     /** @return array<string,mixed> */
@@ -114,6 +132,9 @@ final class TrainingService
             if (!$skill) {
                 throw new ApiException(404, 'not_found', 'Nie ma takiej umiejętności.');
             }
+            if ($skill['world_ordinal'] !== null && (int) $skill['world_ordinal'] > $this->worldOrdinal($userId)) {
+                throw new ApiException(409, 'skill_locked', 'Ta umiejętność odblokuje się w świecie ' . (int) $skill['world_ordinal'] . '.');
+            }
 
             $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM training_queue WHERE user_id = ? AND status IN ('active','queued')");
             $stmt->execute([$userId]);
@@ -121,6 +142,8 @@ final class TrainingService
                 throw new ApiException(409, 'queue_full', 'Kolejka szkoleń jest pełna.');
             }
 
+            // Wiersz moze nie istniec dla umiejetnosci dodanych po rejestracji konta.
+            $this->pdo->prepare('INSERT IGNORE INTO user_skills (user_id, skill_id, level) VALUES (?, ?, 0)')->execute([$userId, $skillId]);
             $stmt = $this->pdo->prepare('SELECT level FROM user_skills WHERE user_id = ? AND skill_id = ? FOR UPDATE');
             $stmt->execute([$userId, $skillId]);
             $level = (int) $stmt->fetchColumn();

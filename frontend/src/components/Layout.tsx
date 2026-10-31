@@ -114,6 +114,13 @@ export default function Layout() {
                 <MenuLink to="/umiejetnosci" icon="skills" label={t('nav.skills')} />
                 <MenuLink to="/praca" icon="job" label={t('nav.jobs')} />
                 <li>
+                  <span className="menu-item disabled" aria-disabled="true" title={t('nav.soon')}>
+                    <Icon name="team" />
+                    <span>{t('nav.squad')}</span>
+                    <small className="soon">{t('nav.soon')}</small>
+                  </span>
+                </li>
+                <li>
                   <button type="button" className="menu-item" onClick={() => void onLogout()}>
                     <Icon name="logout" />
                     <span>{t('nav.logout')}</span>

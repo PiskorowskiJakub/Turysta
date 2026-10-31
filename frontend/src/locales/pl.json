@@ -8,6 +8,8 @@
     "training": "Szkolenia",
     "jobs": "Praca",
     "menu": "Menu",
+    "squad": "Oddział",
+    "soon": "wkrótce",
     "skills": "Umiejętności"
   },
   "footer": "Copyright © 2026 Jakub Piskorowski",
@@ -104,10 +106,20 @@
     "job_cancel_forfeit": "Jeśli przerwiesz tę pracę, nie dostaniesz nic.",
     "chapter_in_queue": "Awans na kolejny stopień jest już w kolejce.",
     "requirements_not_met": "Nie spełniasz wymagań do awansu.",
+    "skill_locked": "Ta umiejętność odblokuje się w kolejnym świecie.",
     "max_chapter": "Osiągnięto ostatni dostępny stopień."
   },
   "training": {
     "title": "Szkolenia",
+    "tabs": {
+      "basic": "Podstawowe",
+      "worlds": "Światy",
+      "advance": "Awans"
+    },
+    "worldLockedHint": "Odblokujesz w świecie {{n}}",
+    "worldSkills": "Świat {{n}}: {{name}}",
+    "worldSkillsInfo": "Umiejętności tego świata. Każda ma maksymalnie {{max}} poziomów.",
+    "worldLockedMessage": "Ten świat jeszcze przed Tobą. Dotrzyj do świata {{n}}, aby odblokować jego umiejętności.",
     "queue": "Kolejka ({{used}}/{{max}})",
     "empty": "Nic się teraz nie szkolisz. Wybierz umiejętność poniżej.",
     "skills": "Umiejętności",

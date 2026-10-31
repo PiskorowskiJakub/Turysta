@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
 import type { SkillInfo, SkillsResponse, TrainingItem, TrainingState, WorldResponse } from '../api/types';
@@ -24,12 +24,6 @@ const TIERS: { name: string; min: number | null }[] = [
 ];
 const ACTIVE_TIERS = TIERS.filter((t): t is { name: string; min: number } => t.min !== null);
 
-// Kolejne kategorie dodajemy tutaj; podzakladki przez pole children.
-const SKILL_TABS: TabItem[] = [
-  { path: 'podstawowe', label: 'Podstawowe' },
-  { path: 'swiat', label: 'Świat' },
-];
-
 const SKILL_ICONS: Record<string, IconName> = { fitness: 'fitness', orientation: 'orientation', trade: 'trade' };
 
 function SkillIcon({ code }: { code: string }) {
@@ -43,7 +37,10 @@ export default function TrainingPage() {
   const [training, setTraining] = useState<TrainingState | null>(null);
   const [world, setWorld] = useState<WorldResponse | null>(null);
   const { pathname } = useLocation();
-  const tab = pathname.endsWith('/swiat') ? 'swiat' : 'podstawowe';
+  // /umiejetnosci/podstawowe | /umiejetnosci/awans | /umiejetnosci/swiaty/<numer swiata>
+  const worldMatch = /\/swiaty\/(\d+)$/.exec(pathname);
+  const tab = pathname.endsWith('/awans') ? 'awans' : pathname.endsWith('/swiaty') || worldMatch ? 'swiaty' : 'podstawowe';
+  const worldTab = worldMatch ? Number(worldMatch[1]) : null;
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const settledFor = useRef<string | null>(null);
@@ -79,7 +76,7 @@ export default function TrainingPage() {
 
   // Po wejsciu w zakladke Swiat odswiezamy dane od razu.
   useEffect(() => {
-    if (tab === 'swiat') void load();
+    if (tab === 'awans') void load();
   }, [tab, load]);
 
   // Gdy odliczanie dojdzie do zera, dociagamy stan (serwer rozlicza przy odczycie).
@@ -121,6 +118,26 @@ export default function TrainingPage() {
   const full = slotsUsed >= training.max_slots;
   const coins = me?.wallet.coins_cents ?? 0;
   const skillName = (code: string, name: string) => t(`skills.${code}`, { defaultValue: name });
+
+  // Zakladka "Swiaty" bez numeru prowadzi do swiata, w ktorym gracz jest teraz.
+  if (tab === 'swiaty' && worldTab === null) {
+    return <Navigate to={`/umiejetnosci/swiaty/${skills.current_world}`} replace />;
+  }
+
+  const skillTabs: TabItem[] = [
+    { path: 'podstawowe', label: t('training.tabs.basic') },
+    {
+      path: 'swiaty',
+      label: t('training.tabs.worlds'),
+      children: skills.worlds.map((w) => ({
+        path: String(w.ordinal),
+        label: `${w.ordinal}. ${w.name}`,
+        disabled: w.ordinal > skills.current_world,
+        hint: t('training.worldLockedHint', { n: w.ordinal }),
+      })),
+    },
+    { path: 'awans', label: t('training.tabs.advance') },
+  ];
 
   // Przewidywane zakonczenie: aktywne konczy sie o ends_at, kolejne startuja jedno po drugim.
   const endTimes = new Map<number, number>();
@@ -198,7 +215,7 @@ export default function TrainingPage() {
             {label}
           </button>
         </article>
-        <div className="tier-row">
+        {s.max_level === null && <div className="tier-row">
           {ACTIVE_TIERS.map((tier) => {
             const reached = s.level >= tier.min;
             const tip = `${t(`training.tier.${tier.name}`)}: ${t('training.tierAt', { level: tier.min })}`;
@@ -214,14 +231,14 @@ export default function TrainingPage() {
               </span>
             );
           })}
-        </div>
+        </div>}
       </div>
     );
   };
 
   return (
     <>
-      <Tabs base="/umiejetnosci" items={SKILL_TABS} />
+      <Tabs base="/umiejetnosci" items={skillTabs} />
       {error && <p className="panel form-error" role="alert">{error}</p>}
 
       <section className="panel trail-blue">
@@ -236,12 +253,24 @@ export default function TrainingPage() {
         )}
       </section>
 
-      {tab === 'swiat' ? (
+      {tab === 'awans' ? (
         world && <WorldPanel world={world} coins={coins} queueFull={full} busy={busy} onAdvance={onAdvance} />
+      ) : tab === 'swiaty' && worldTab !== null ? (
+        <section className="panel trail-blue">
+          <h2>{t('training.worldSkills', { n: worldTab, name: skills.worlds.find((w) => w.ordinal === worldTab)?.name ?? '' })}</h2>
+          {worldTab > skills.current_world ? (
+            <p className="page-message">{t('training.worldLockedMessage', { n: worldTab })}</p>
+          ) : (
+            <>
+              <p className="page-message">{t('training.worldSkillsInfo', { max: 30 })}</p>
+              <div className="skill-grid">{skills.skills.filter((s) => s.world_ordinal === worldTab).map(skillCard)}</div>
+            </>
+          )}
+        </section>
       ) : (
         <section className="panel trail-blue">
           <h2>{t('training.basic')}</h2>
-          <div className="skill-grid">{skills.skills.map(skillCard)}</div>
+          <div className="skill-grid">{skills.skills.filter((s) => s.world_ordinal === null).map(skillCard)}</div>
         </section>
       )}
     </>

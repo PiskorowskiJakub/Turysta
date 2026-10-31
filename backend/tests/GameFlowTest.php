@@ -281,6 +281,34 @@ final class GameFlowTest extends TestCase
         $this->assertSame(0, $s['account_days']);
     }
 
+    public function testWorldSkillsAreLockedUntilTheWorldIsReached(): void
+    {
+        // Gracz zaczyna w swiecie 1: umiejetnosc swiata 1 dziala, swiata 2 jest zablokowana.
+        $list = $this->training->skills($this->userId);
+        $byCode = array_column($list['skills'], null, 'code');
+        $this->assertFalse($byCode['w1_packing']['locked']);
+        $this->assertTrue($byCode['w2_mushrooms']['locked']);
+        $this->assertSame(1, $list['current_world']);
+        $this->assertCount(5, $list['worlds']);
+
+        $state = $this->training->add($this->userId, $byCode['w1_packing']['id']);
+        $this->assertSame('w1_packing', $state['active']['skill']['code']);
+
+        try {
+            $this->training->add($this->userId, $byCode['w2_mushrooms']['id']);
+            $this->fail('Umiejetnosc swiata 2 powinna byc zablokowana');
+        } catch (ApiException $e) {
+            $this->assertSame('skill_locked', $e->errorCode);
+        }
+
+        // Po przejsciu do swiata 2 odblokowuje sie.
+        $this->pdo->prepare(
+            "UPDATE player_progress SET chapter_id = (SELECT c.id FROM chapters c JOIN worlds w ON w.id = c.world_id
+             WHERE w.ordinal = 2 AND c.ordinal = 1) WHERE user_id = ?"
+        )->execute([$this->userId]);
+        $this->assertFalse(array_column($this->training->skills($this->userId)['skills'], null, 'code')['w2_mushrooms']['locked']);
+    }
+
     public function testLongJobNeedsConfirmationAndPaysNothing(): void
     {
         $this->jobs->start($this->userId, $this->jobId('hostel'));

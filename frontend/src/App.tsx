@@ -21,6 +21,7 @@ export default function App() {
           <Route path="samouczek" element={<TutorialPage />} />
           <Route path="profil" element={<ProfilePage />} />
           <Route path="umiejetnosci" element={<Navigate to="/umiejetnosci/podstawowe" replace />} />
+          <Route path="umiejetnosci/swiat" element={<Navigate to="/umiejetnosci/awans" replace />} />
           <Route path="umiejetnosci/*" element={<TrainingPage />} />
           <Route path="szkolenia" element={<Navigate to="/umiejetnosci" replace />} />
           <Route path="praca" element={<JobsPage />} />

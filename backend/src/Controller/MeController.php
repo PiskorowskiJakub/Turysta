@@ -85,7 +85,8 @@ final class MeController
 
         $stmt = $this->pdo->prepare(
             'SELECT s.code, s.name, us.level FROM user_skills us
-             JOIN skill_definitions s ON s.id = us.skill_id WHERE us.user_id = ? ORDER BY s.id'
+             JOIN skill_definitions s ON s.id = us.skill_id
+             WHERE us.user_id = ? AND (s.world_ordinal IS NULL OR us.level > 0) ORDER BY s.id'
         );
         $stmt->execute([$uid]);
         $skills = array_map(

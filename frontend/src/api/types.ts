@@ -65,6 +65,8 @@ export interface SkillInfo {
   code: string;
   name: string;
   description: string | null;
+  world_ordinal: number | null;
+  locked: boolean;
   level: number;
   in_queue: number;
   max_level: number | null;
@@ -75,6 +77,8 @@ export interface SkillInfo {
 
 export interface SkillsResponse {
   server_time: string;
+  current_world: number;
+  worlds: { ordinal: number; name: string }[];
   skills: SkillInfo[];
 }
 

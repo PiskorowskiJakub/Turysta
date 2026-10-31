@@ -152,6 +152,30 @@ Okazjonalny, dalsze dni:
 | 270 | 159–160 | 49 | 1 | 19% | 20.5 h | 1515 | 1416 | 1089 |
 | 365 | 174–175 | 49 | 0 | 83% | 0 s | 0 | 0 | 1312 |
 
+### Umiejętności światów (migracja `014_world_skills.sql`)
+
+Poza trzema podstawowymi umiejętnościami każdy ze światów ma **10 własnych** (razem 50), dobranych do klimatu świata. Gracz widzi je w zakładce *Umiejętności → Światy*; zakładki światów, do których jeszcze nie dotarł, są zablokowane (kłódka), a serwer odrzuca szkolenie takiej umiejętności (`skill_locked`).
+
+| Świat | Przykłady umiejętności |
+|---|---|
+| 1. Nowy Początek | Pakowanie plecaka, Rozpalanie ogniska, Znaki szlaków, Pierwsza pomoc |
+| 2. Las | Rozpoznawanie grzybów, Tropienie zwierząt, Budowa szałasu, Nocny marsz |
+| 3. Tundra | Ubiór warstwowy, Rakiety śnieżne, Zaprzęg psi, Nawigacja w zamieci |
+| 4. Pustynia | Gospodarka wodą, Jazda na wielbłądzie, Nawigacja po gwiazdach, Targowanie na bazarze |
+| 5. Dżungla | Torowanie drogi maczetą, Wspinaczka po lianach, Spływ kajakiem, Nocleg w hamaku |
+
+Trudność: poziom 1 umiejętności świata kosztuje i trwa **40% tego, co poziom, na którym gracz wchodzi do świata** (podstawowa umiejętność na poziomie 10, 23, 43, 63, 83), wzrost 10% na poziom, maksymalnie 30 poziomów. Proporcja koszt/czas jest taka sama jak w podstawowych (ok. 0,6 grosza na sekundę).
+
+| Świat | Poziom 1 | Poziom 30 | Cały zestaw 10 umiejętności |
+|---|---|---|---|
+| 1 | 0,04 dk, 8 s | 0,63 dk, 2 min | ok. 3,7 h, 64 dk |
+| 2 | 0,31 dk, 52 s | 4,9 dk, 13 min | ok. 24 h, 509 dk |
+| 3 | 6,1 dk, 16 min | 97 dk, 4,5 h | ok. 19 dni, 10 tys. dk |
+| 4 | 34,6 dk, 1,3 h | 548 dk, 20 h | ok. 87 dni, 57 tys. dk |
+| 5 | 79 dk, 2,2 h | 1254 dk, 1,5 dnia | ok. 151 dni, 130 tys. dk |
+
+Są to dodatkowe, opcjonalne zajęcia dla kolejki (nie wchodzą w wymagania awansu), więc nie zmieniają tempa awansów w symulacji; służą jako zapas „co rozwijać” oraz przyszłe efekty (np. bonusy w pracach i wyprawach).
+
 ### Wnioski
 
 - **Pierwsze 30 dni:** w żadnym profilu kolejka nie stoi z braku dukatów; saldo cały czas rośnie.

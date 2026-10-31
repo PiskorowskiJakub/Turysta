@@ -1,9 +1,13 @@
 import { NavLink, useLocation } from 'react-router-dom';
+import { Icon } from './icons';
 
 export interface TabItem {
   path: string;
   label: string;
   children?: TabItem[];
+  /** Zablokowana zakladka: widoczna z klodka, bez linku. */
+  disabled?: boolean;
+  hint?: string;
 }
 
 interface Props {
@@ -23,7 +27,12 @@ export default function Tabs({ base, items }: Props) {
   return (
     <>
       <nav className="tabs" aria-label="Zakładki">
-        {items.map((i) => (
+        {items.map((i) => i.disabled ? (
+          <span key={i.path} className="tab disabled" title={i.hint} aria-disabled="true">
+            <Icon name="lock" />
+            {i.label}
+          </span>
+        ) : (
           <NavLink key={i.path} to={`${base}/${i.path}`} className={({ isActive }) => 'tab' + (isActive ? ' active' : '')}>
             {i.label}
           </NavLink>
