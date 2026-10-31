@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Turysta\Game;
 
-/** Wzory ekonomii. Parametry siedza w skill_definitions; po poziomie 50 krzywa jest splaszczona. */
+/** Wzory ekonomii. Parametry siedza w skill_definitions; po poziomie 50 koszt i czas rosna kwadratowo (koszt proporcjonalny do czasu, wiec pieniadze nie sa scianka). */
 final class Economy
 {
     public const FLAT_FROM = 50;
@@ -17,7 +17,7 @@ final class Economy
             return (int) floor($k0 * ($g ** ($level - 1)));
         }
         $c50 = floor($k0 * ($g ** (self::FLAT_FROM - 1)));
-        return (int) floor($c50 * (($level / self::FLAT_FROM) ** 3));
+        return (int) floor($c50 * (($level / self::FLAT_FROM) ** 2));
     }
 
     /** @param array<string,mixed> $skill */

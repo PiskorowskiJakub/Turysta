@@ -4,7 +4,7 @@ Monorepo:
 
 - `frontend/` React + TypeScript + Vite
 - `backend/` PHP 8.3 + Apache, REST pod `/api`
-- `scripts/` backup.sh, restore.sh
+- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii)
 - `docker-compose.yml` wspolny stos
 
 ## Uruchomienie calosci
@@ -25,163 +25,137 @@ docker compose exec backend php bin/migrate.php
 Nigdy nie uruchamiaj `docker compose down -v` na produkcji (kasuje baze).
 TLS (Let's Encrypt) dojdzie przy wdrozeniu na VPS.
 
-## Ekonomia i symulacja pierwszych 30 dni
+## Ekonomia i symulacja gry (30 dni i rok)
 
-Cel: przez pierwszy miesiac gracz ma codziennie co rozwijac i wystarczajaco duzo dukatów, zeby kolejka (1 aktywne + 2 oczekujace szkolenia) nigdy nie stala pusta z braku pieniedzy.
+Cele:
 
-### Parametry (migracja `011_economy_v3.sql`)
+1. Przez pierwszy miesiąc gracz ma codziennie co rozwijać (dużo krótkich szkoleń) i dość dukatów, żeby kolejka (1 aktywne + 2 oczekujące) nie stała pusta.
+2. Ukończenie wszystkich 49 awansów (5 światów) ma zająć **ok. roku** graczowi, który przez 2 miesiące gra aktywnie, a potem jak zwykły gracz.
+3. W nowym świecie pojawiają się umiejętności o trudności **proporcjonalnej do etapu gry**: dają powiew świeżości, ale doświadczony gracz nie zaczyna od sekund.
+4. Brak hiperinflacji: w pierwszym roku nie ma kwot w milionach.
 
-- Koszt poziomu: `floor(3 * 1,16^(n-1))` groszy, czas: `round(5 * 1,16^(n-1))` sekund. Koszt rosnie tak samo szybko jak czas (stosunek ~0,6 grosza na sekunde), wiec pieniadze nigdy nie "uciekaja" przed czasem.
-- Powyzej poziomu 50 krzywa splaszcza sie: koszt `* (n/50)^3`, czas `* (n/50)^2`.
-- Poziom 50 to ok. 43 dukaty i ok. 2 h. Pierwsze poziomy trwaja kilka sekund, minuty pojawiaja sie okolo dnia 7-10, godziny okolo dnia 10-18 (zaleznie od aktywnosci).
-- Awans (rozdzial): wymagania `req(g) = (3+round(2g), 3+round(1,9g), 2+round(1,6g))` poziomow Kondycji/Orientacji/Handlu, koszt `max(50, round(2,5 * koszt(f)))`, czas `max(30, 2 * czas(f))`.
-- Start: 200 groszy (2 dukaty) premii na koncie.
-- Prace (bazowe wyplaty): targ 8 h (247 dukatów), hostel 12 h (420 dukatów, cooldown 2 h), wyprawa 24 h (900 dukatów, cooldown 4 h).
-- **Bonus Handlu** (migracja `012_trade_bonus.sql`): poziom Handlu zwieksza wyplaty ze wszystkich trzech prac, patrz nizej.
+### Parametry (migracje `011`, `015`)
+
+- Koszt poziomu `n`: `floor(3 * 1,16^(n-1))` groszy, czas `round(5 * 1,16^(n-1))` sekund. Koszt rośnie tak samo szybko jak czas (ok. 0,6 grosza na sekundę), więc pieniądze nie są ścianką.
+- Od poziomu 50 koszt i czas rosną **kwadratowo**: `(n/50)^2` (wcześniej koszt rósł sześciennie i po ok. 4 miesiącach blokował graczy brakiem dukatów). Poziom 50 to ok. 43 dk i ok. 2 h.
+- Awans numer `g` (1..49) wymaga Kondycji `3 + 209 * (g/49)^0,55` (Orientacja 0,95 ×, Handel 0,8 × tej wartości), czyli ok. 28 na pierwszym awansie i 212 na ostatnim. Koszt awansu `max(50, 2,5 * koszt(f))`, czas `max(30, 2 * czas(f))`.
+- Start: 2 dk premii. Bazowe wypłaty prac: targ 8 h (247 dk), hostel 12 h (420 dk), wyprawa 24 h (900 dk), z bonusem Handlu (patrz niżej).
 
 ### Profile graczy w symulacji
 
-| Profil | Logowania (godziny) | Zalozenia |
+| Profil | Logowania (godziny) | Założenia |
 |---|---|---|
-| aktywny | 8, 11, 14, 17, 20, 22:30 | 6 wejsc dziennie, uzupelnia kolejke i odbiera prace |
-| zwykly | 8:30, 13, 20:30 | 3 wejscia dziennie |
-| okazjonalny | 19:30 | 1 wejscie dziennie |
+| aktywny | 8, 11, 14, 17, 20, 22:30 | 6 wejść dziennie, uzupełnia kolejkę, odbiera prace |
+| zwykły | 8:30, 13, 20:30 | 3 wejścia dziennie |
+| okazjonalny | 19:30 | 1 wejście dziennie |
+| mieszany | 60 dni aktywny, potem zwykły | profil docelowy do kalibracji tempa |
 
-Symulacja zaklada ze gracz zawsze uzupelnia kolejke do 3 pozycji (najtansze/najkrotsze wg sensownej kolejnosci), przy kazdej wizycie rozpoczyna dostepna prace i inwestuje w awans, gdy ma wymagane poziomy.
+Gracz zawsze uzupełnia kolejkę, co 4. element to umiejętność świata (najtańsza z odblokowanych), przy każdej wizycie rozpoczyna dostępną pracę i inwestuje w awans, gdy ma wymagane poziomy.
 
-Uruchomienie: `python scripts/simulate_economy.py --profile aktywny --days 30 --markdown` (profile: `aktywny`, `zwykly`, `okazjonalny`; `--days 365` pokazuje caly rok; `--bez-bonusu` wylacza bonus Handlu do porownan). Kolumna "Czas pracy kolejki" to procent doby, w ktorym kolejka cos trenuje; kwoty w dukatówach.
+Uruchomienie: `python scripts/simulate_economy.py --profile mieszany --days 365 --markdown` (profile: `aktywny`, `zwykly`, `okazjonalny`, `mieszany`; `--bez-bonusu` wyłącza bonus Handlu; `--sql` wypisuje parametry migracji 015). Kolumna „Zarobek” to wypłaty rozliczone danego dnia (dni bez zakończonej pracy pokazują 0).
 
-### Wyniki 30 dni (z bonusem Handlu): aktywny
+### Tempo: kiedy gracz wchodzi do kolejnych światów
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
+| Profil | Świat 2 (awans 10) | Świat 3 (awans 20) | Świat 4 (awans 30) | Świat 5 (awans 40) | Koniec (awans 49) |
+|---|---:|---:|---:|---:|---:|
+| mieszany (cel) | dzień 32 | dzień 83 | dzień 155 | dzień 250 | **dzień 363** |
+| aktywny cały rok | dzień 32 | dzień 83 | dzień 155 | dzień 250 | dzień 363 |
+| zwykły | dzień 46 | dzień 98 | dzień 170 | dzień 265 | dzień 378 |
+| okazjonalny | dzień 115 | dzień 177 | dzień 251 | dzień 347 | dzień 460 |
+
+Tempo jest ograniczone czasem kolejki (3 miejsca), a nie liczbą logowań, więc różnica między aktywnym a zwykłym graczem jest niewielka. Bez szkolenia umiejętności światów koniec wypada w dniu ok. 369.
+
+### Pierwsze 30 dni: aktywny
+
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 5–6 | 1 | 18 | 0% | 8 s | 453 | 1 | 453 |
-| 2 | 11–11 | 3 | 18 | 0% | 17 s | 735 | 2 | 1186 |
-| 3 | 15–17 | 6 | 18 | 1% | 40 s | 765 | 5 | 1946 |
-| 5 | 26–27 | 11 | 18 | 4% | 2 min | 820 | 20 | 3529 |
-| 7 | 36–37 | 17 | 18 | 18% | 14 min | 866 | 100 | 5091 |
-| 10 | 47–50 | 23 | 11 | 75% | 1.7 h | 922 | 432 | 6770 |
-| 14 | 56–59 | 27 | 7 | 83% | 3.1 h | 956 | 572 | 8394 |
-| 18 | 64–67 | 31 | 6 | 100% | 4.0 h | 981 | 744 | 9437 |
-| 21 | 69–71 | 34 | 5 | 98% | 4.8 h | 995 | 800 | 10236 |
-| 25 | 74–77 | 37 | 4 | 100% | 5.8 h | 1010 | 844 | 10963 |
-| 30 | 80–83 | 40 | 3 | 100% | 5.3 h | 1025 | 565 | 11583 |
+| 1 | 1–8 | 0 | 18 | 0% | 7 s | 448 | 1 | 449 |
+| 2 | 5–12 | 0 | 18 | 0% | 11 s | 705 | 1 | 1153 |
+| 3 | 10–17 | 0 | 18 | 0% | 22 s | 735 | 2 | 1885 |
+| 5 | 19–26 | 0 | 18 | 2% | 1 min | 788 | 9 | 3422 |
+| 7 | 26–35 | 1 | 18 | 7% | 5 min | 834 | 37 | 5013 |
+| 10 | 39–48 | 2 | 17 | 41% | 34 min | 880 | 214 | 7190 |
+| 14 | 47–60 | 4 | 10 | 92% | 1.9 h | 929 | 408 | 9256 |
+| 18 | 56–69 | 5 | 8 | 86% | 3.1 h | 952 | 576 | 11053 |
+| 21 | 61–75 | 6 | 7 | 100% | 3.6 h | 971 | 592 | 12376 |
+| 25 | 68–81 | 8 | 6 | 100% | 4.0 h | 991 | 517 | 14220 |
+| 30 | 70–89 | 9 | 5 | 100% | 3.2 h | 1002 | 349 | 16937 |
 
-### Wyniki 30 dni: zwykły
+### Pierwsze 30 dni: zwykły
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 2–4 | 0 | 9 | 0% | 6 s | 370 | 0 | 372 |
-| 2 | 5–6 | 1 | 9 | 0% | 11 s | 662 | 1 | 1034 |
-| 3 | 7–9 | 2 | 9 | 0% | 15 s | 685 | 1 | 1718 |
-| 5 | 13–14 | 5 | 9 | 0% | 34 s | 710 | 2 | 3123 |
-| 7 | 18–19 | 8 | 9 | 1% | 1 min | 740 | 4 | 4583 |
-| 10 | 26–27 | 11 | 9 | 2% | 3 min | 776 | 11 | 6845 |
-| 14 | 36–37 | 17 | 9 | 10% | 16 min | 815 | 56 | 9906 |
-| 18 | 45–48 | 22 | 9 | 47% | 1.3 h | 856 | 273 | 12601 |
-| 21 | 51–55 | 25 | 7 | 73% | 2.6 h | 879 | 435 | 14040 |
-| 25 | 58–62 | 29 | 6 | 82% | 3.4 h | 900 | 567 | 15623 |
-| 30 | 67–69 | 33 | 5 | 89% | 4.6 h | 925 | 734 | 16862 |
+| 1 | 0–5 | 0 | 9 | 0% | 6 s | 370 | 0 | 372 |
+| 2 | 1–8 | 0 | 9 | 0% | 8 s | 652 | 0 | 1023 |
+| 3 | 3–10 | 0 | 9 | 0% | 10 s | 656 | 1 | 1679 |
+| 5 | 8–14 | 0 | 9 | 0% | 17 s | 685 | 1 | 3031 |
+| 7 | 12–19 | 0 | 9 | 0% | 37 s | 710 | 2 | 4434 |
+| 10 | 19–26 | 0 | 9 | 1% | 1 min | 745 | 6 | 6625 |
+| 14 | 26–35 | 1 | 9 | 4% | 6 min | 783 | 20 | 9661 |
+| 18 | 34–44 | 2 | 9 | 16% | 26 min | 820 | 85 | 12680 |
+| 21 | 41–51 | 3 | 9 | 46% | 1.2 h | 841 | 255 | 14704 |
+| 25 | 46–59 | 4 | 7 | 53% | 1.9 h | 868 | 287 | 17009 |
+| 30 | 54–68 | 5 | 7 | 71% | 2.9 h | 891 | 432 | 19598 |
 
-### Wyniki 30 dni: okazjonalny
+### Pierwsze 30 dni: okazjonalny
 
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 0–2 | 0 | 3 | 0% | 5 s | 0 | 0 | 2 |
-| 2 | 1–3 | 0 | 3 | 0% | 6 s | 900 | 0 | 902 |
-| 3 | 2–4 | 0 | 3 | 0% | 7 s | 0 | 0 | 902 |
-| 5 | 5–5 | 0 | 3 | 0% | 8 s | 0 | 0 | 1810 |
-| 7 | 6–7 | 1 | 3 | 0% | 11 s | 0 | 0 | 2736 |
-| 10 | 9–9 | 3 | 3 | 0% | 20 s | 960 | 1 | 4637 |
-| 14 | 12–13 | 4 | 3 | 0% | 28 s | 991 | 0 | 6601 |
-| 18 | 15–17 | 6 | 3 | 0% | 48 s | 1013 | 1 | 8609 |
-| 21 | 18–19 | 8 | 3 | 0% | 1 min | 0 | 2 | 9624 |
-| 25 | 21–23 | 9 | 3 | 0% | 1 min | 0 | 2 | 11685 |
-| 30 | 26–27 | 11 | 3 | 1% | 3 min | 1080 | 3 | 14875 |
+| 1 | 0–3 | 0 | 3 | 0% | 6 s | 0 | 0 | 2 |
+| 2 | 0–4 | 0 | 3 | 0% | 6 s | 900 | 0 | 902 |
+| 3 | 0–5 | 0 | 3 | 0% | 7 s | 0 | 0 | 902 |
+| 5 | 0–7 | 0 | 3 | 0% | 9 s | 0 | 0 | 1801 |
+| 7 | 2–8 | 0 | 3 | 0% | 7 s | 0 | 0 | 2701 |
+| 10 | 4–11 | 0 | 3 | 0% | 11 s | 918 | 0 | 4527 |
+| 14 | 7–14 | 0 | 3 | 0% | 17 s | 943 | 0 | 6404 |
+| 18 | 10–17 | 0 | 3 | 0% | 26 s | 968 | 0 | 8329 |
+| 21 | 12–19 | 0 | 3 | 0% | 50 s | 0 | 1 | 9310 |
+| 25 | 15–22 | 0 | 3 | 0% | 1 min | 0 | 1 | 11303 |
+| 30 | 19–26 | 0 | 3 | 0% | 1 min | 1034 | 2 | 14369 |
 
-Kolumna „Zarobek” to wypłaty rozliczone w danym dniu (dni bez zakończonej pracy pokazują 0).
+### Cały rok: profil mieszany (60 dni aktywny, potem zwykły)
+
+| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (mon.) | Wydatki (mon.) | Saldo (mon.) |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 30 | 70–89 | 9 | 5 | 100% | 3.2 h | 1002 | 349 | 16937 |
+| 60 | 96–116 | 16 | 3 | 100% | 6.9 h | 1063 | 450 | 32102 |
+| 90 | 112–135 | 21 | 3 | 100% | 9.4 h | 1028 | 608 | 46123 |
+| 120 | 123–150 | 25 | 3 | 100% | 20.3 h | 1047 | 1508 | 60136 |
+| 180 | 144–171 | 33 | 0 | 100% | 0 s | 1078 | 0 | 92027 |
+| 240 | 162–187 | 39 | 1 | 100% | 1.1 d | 1100 | 554 | 124233 |
+| 300 | 180–200 | 44 | 1 | 100% | 1.2 d | 1120 | 630 | 157746 |
+| 365 | 195–212 | 49 | 1 | 100% | 5 min | 1135 | 2 | 195687 |
+
+- Szkolenia trwają kilka sekund w pierwszych dniach, minuty około dnia 7, godziny od dnia ~14, a po pół roku ponad dobę. Kolejka pracuje bez przerwy (100%).
+- Przychód roczny ok. 389 tys. dk, wypłaty stabilne na poziomie ok. 1,0-1,1 tys. dk dziennie. Saldo rośnie do ok. 196 tys. dk, bo koszty są ok. dwa razy mniejsze od wpływów. To zapas na przyszłe wydatki (sklep, wyposażenie); gdy się pojawią, wypłaty można zostawić bez zmian. Nigdzie nie ma kwot w milionach.
 
 ### Bonus Handlu do wypłat z prac
 
-Poziom umiejętności **Handel** zwiększa wypłatę ze wszystkich trzech prac (targ, hostel, wyprawa). Wzór: `bonus = 120% * L / (L + 120)`, czyli hiperbola z sufitem **+120%** (wypłata nigdy nie przekroczy 2,2 × bazowej).
+Poziom **Handlu** zwiększa wypłatę ze wszystkich prac: `bonus = 120% * L / (L + 120)`, sufit +120% (wypłata nigdy nie przekroczy 2,2 × bazowej).
 
-| Poziom Handlu | 10 | 30 | 50 | 80 | 100 | 150 | 200 | 300 |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Bonus do wypłat | +9% | +24% | +35% | +48% | +55% | +67% | +75% | +86% |
+| Poziom Handlu | 10 | 30 | 50 | 80 | 100 | 150 | 200 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Bonus do wypłat | +9% | +24% | +35% | +48% | +55% | +67% | +75% |
 
-- Pierwsze poziomy dają odczuwalny przyrost (każdy poziom ~+1% do poziomu 30), potem zysk z poziomu maleje. Dzięki temu nie ma hiperinflacji, a wydatki na szkolenia (rosnące szybciej niż bonus) nadal wymagają pracy.
-- Wypłata jest zapisywana przy starcie pracy (`job_runs.reward_snapshot_cents`), więc późniejszy awans Handlu nie zmienia trwającej pracy. Wypłata proporcjonalna (targ) liczona jest od zapisanej kwoty.
-- Premia dotyczy tylko dukatów z prac; punkty za pracę liczone są od faktycznej wypłaty.
+Wypłata jest zapisywana przy starcie pracy (`job_runs.reward_snapshot_cents`), więc późniejszy awans Handlu nie zmienia trwającej pracy.
 
-### Symulacja roku (365 dni, z bonusem Handlu)
+### Umiejętności światów (migracje `014`, `015`)
 
-Przychód roczny: aktywny ok. 418 tys. dukatów, zwykły ok. 388 tys., okazjonalny ok. 254 tys. (bez bonusu: 253 / 238 / 164 tys.). Największe saldo w całym roku: aktywny ok. 12 tys. dukatów, zwykły ok. 18 tys., okazjonalny ok. 38 tys. Dzienne wypłaty ustabilizowane na 1,0-1,5 tys. dukatów, czyli **nigdzie nie ma kwot w milionach**.
+Każdy świat ma **10 własnych umiejętności** (razem 50), dobranych do jego klimatu, np. Las: Rozpoznawanie grzybów, Tropienie zwierząt, Budowa szałasu; Tundra: Ubiór warstwowy, Rakiety śnieżne, Zaprzęg psi; Pustynia: Gospodarka wodą, Jazda na wielbłądzie, Nawigacja po gwiazdach; Dżungla: Torowanie drogi maczetą, Wspinaczka po lianach, Spływ kajakiem. Zakładki światów, do których gracz jeszcze nie dotarł, są zablokowane (serwer odrzuca szkolenie błędem `skill_locked`). Maksymalnie 30 poziomów, nie wchodzą w wymagania awansu.
 
-Pierwszy dzień z brakiem dukatów w kolejce: aktywny 112 (bez bonusu: 45), zwykły 126 (66), okazjonalny 179 (143). W pierwszych 30 dniach (i 60) bonus nie powoduje żadnych niedoborów.
+**Trudność zależy od etapu gry.** Poziom 1 umiejętności świata trwa 15% czasu szkolenia podstawowej umiejętności na poziomie, na którym gracz wchodzi do świata, a koszt jest proporcjonalny do czasu. Wzrost na poziom dobrany tak, że poziom 30 trwa tyle, ile podstawowa umiejętność na koniec świata. Nowy gracz w świecie 1 zaczyna od sekund; doświadczony wchodzi w świat 5 z godzinami zamiast sekund, gdy podstawowe trwają ponad dobę.
 
-Aktywny, dalsze dni:
-
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 60 | 108–108 | 49 | 2 | 100% | 9.5 h | 1088 | 895 | 11635 |
-| 90 | 129–129 | 49 | 2 | 100% | 13.5 h | 1126 | 1519 | 6997 |
-| 120 | 144–145 | 49 | 1 | 90% | 16.8 h | 1149 | 1054 | 169 |
-| 180 | 162–163 | 49 | 1 | 67% | 21.3 h | 1174 | 1497 | 879 |
-| 270 | 182–183 | 49 | 1 | 67% | 1.1 d | 1197 | 2118 | 1124 |
-| 365 | 198–199 | 49 | 0 | 65% | 0 s | 1214 | 0 | 2306 |
-
-Zwykły, dalsze dni:
-
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 60 | 97–101 | 49 | 2 | 100% | 7.7 h | 999 | 651 | 17274 |
-| 90 | 122–123 | 49 | 2 | 100% | 12.2 h | 1045 | 1302 | 12534 |
-| 120 | 139–140 | 49 | 2 | 100% | 15.9 h | 1071 | 1938 | 2333 |
-| 180 | 159–160 | 49 | 0 | 71% | 0 s | 1097 | 0 | 1256 |
-| 270 | 179–179 | 49 | 0 | 92% | 0 s | 1119 | 0 | 1135 |
-| 365 | 194–195 | 49 | 0 | 100% | 0 s | 1135 | 0 | 1243 |
-
-Okazjonalny, dalsze dni:
-
-| Dzień | Poziomy umiej. | Awans (rozdz.) | Szkolenia/dzień | Czas pracy kolejki | Śr. czas szkolenia | Zarobek (dk) | Wydatki (dk) | Saldo (dk) |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 60 | 49–53 | 25 | 3 | 27% | 2.9 h | 1213 | 218 | 30421 |
-| 90 | 75–79 | 38 | 3 | 79% | 5.0 h | 1308 | 512 | 38280 |
-| 120 | 100–101 | 49 | 3 | 99% | 8.2 h | 1386 | 1079 | 33006 |
-| 180 | 140–141 | 49 | 2 | 96% | 15.9 h | 1480 | 1938 | 254 |
-| 270 | 159–160 | 49 | 1 | 19% | 20.5 h | 1515 | 1416 | 1089 |
-| 365 | 174–175 | 49 | 0 | 83% | 0 s | 0 | 0 | 1312 |
-
-### Umiejętności światów (migracja `014_world_skills.sql`)
-
-Poza trzema podstawowymi umiejętnościami każdy ze światów ma **10 własnych** (razem 50), dobranych do klimatu świata. Gracz widzi je w zakładce *Umiejętności → Światy*; zakładki światów, do których jeszcze nie dotarł, są zablokowane (kłódka), a serwer odrzuca szkolenie takiej umiejętności (`skill_locked`).
-
-| Świat | Przykłady umiejętności |
-|---|---|
-| 1. Nowy Początek | Pakowanie plecaka, Rozpalanie ogniska, Znaki szlaków, Pierwsza pomoc |
-| 2. Las | Rozpoznawanie grzybów, Tropienie zwierząt, Budowa szałasu, Nocny marsz |
-| 3. Tundra | Ubiór warstwowy, Rakiety śnieżne, Zaprzęg psi, Nawigacja w zamieci |
-| 4. Pustynia | Gospodarka wodą, Jazda na wielbłądzie, Nawigacja po gwiazdach, Targowanie na bazarze |
-| 5. Dżungla | Torowanie drogi maczetą, Wspinaczka po lianach, Spływ kajakiem, Nocleg w hamaku |
-
-Trudność: poziom 1 umiejętności świata kosztuje i trwa **40% tego, co poziom, na którym gracz wchodzi do świata** (podstawowa umiejętność na poziomie 10, 23, 43, 63, 83), wzrost 10% na poziom, maksymalnie 30 poziomów. Proporcja koszt/czas jest taka sama jak w podstawowych (ok. 0,6 grosza na sekundę).
-
-| Świat | Poziom 1 | Poziom 30 | Cały zestaw 10 umiejętności |
-|---|---|---|---|
-| 1 | 0,04 dk, 8 s | 0,63 dk, 2 min | ok. 3,7 h, 64 dk |
-| 2 | 0,31 dk, 52 s | 4,9 dk, 13 min | ok. 24 h, 509 dk |
-| 3 | 6,1 dk, 16 min | 97 dk, 4,5 h | ok. 19 dni, 10 tys. dk |
-| 4 | 34,6 dk, 1,3 h | 548 dk, 20 h | ok. 87 dni, 57 tys. dk |
-| 5 | 79 dk, 2,2 h | 1254 dk, 1,5 dnia | ok. 151 dni, 130 tys. dk |
-
-Są to dodatkowe, opcjonalne zajęcia dla kolejki (nie wchodzą w wymagania awansu), więc nie zmieniają tempa awansów w symulacji; służą jako zapas „co rozwijać” oraz przyszłe efekty (np. bonusy w pracach i wyprawach).
+| Świat | Poziom podstawowych przy wejściu | Poziom 1 | Poziom 30 | Cały zestaw 10 umiejętności |
+|---|---:|---|---|---|
+| 1. Nowy Początek | 1 | 0,03 dk, 5 s | 19 dk, 53 min | ok. 1,9 d, 967 dk |
+| 2. Las | 90 | 21,00 dk, 58 min | 297 dk, 13,7 h | ok. 61,3 d, 31 792 dk |
+| 3. Tundra | 131 | 44,49 dk, 2,1 h | 459 dk, 21,3 h | ok. 104,3 d, 54 068 dk |
+| 4. Pustynia | 163 | 68,88 dk, 3,2 h | 624 dk, 1,2 d | ok. 147,7 d, 76 541 dk |
+| 5. Dżungla | 190 | 93,59 dk, 4,3 h | 777 dk, 1,5 d | ok. 189,1 d, 98 014 dk |
 
 ### Wnioski
 
-- **Pierwsze 30 dni:** w żadnym profilu kolejka nie stoi z braku dukatów; saldo cały czas rośnie.
-- **Aktywny** ma co rozwijać codziennie: dni 1-7 to kilkanaście szybkich szkoleń dziennie, od ok. dnia 10 szkolenia trwają godziny i kolejka pracuje niemal cały czas. Do dnia 30 osiąga ok. 80 poziomów i 40. rozdział.
-- **Zwykły** (3 wejścia) ma od pierwszego dnia 9 szkoleń, godzinowe szkolenia pojawiają się około dnia 18, a po 30 dniach jest na ok. 33. rozdziale.
-- **Okazjonalny** (1 wejście) jest ograniczony liczbą miejsc w kolejce (3 na wizytę), więc postęp jest wolniejszy. Dźwignia na przyszłość: dodatkowe miejsca w kolejce za rangi.
-- **Po ok. 4 miesiącach** (po 49 rozdziałach, szkolenia po 10-20 h) gracz jest ograniczony pieniędzmi: koszt poziomu rośnie szybciej niż wypłaty. To celowy hamulec, a bonus Handlu przesuwa ten moment o 2-3 miesiące. Dalsze dźwignie: wyższe prace odblokowywane rangami, sprzedaż przedmiotów, nowe źródła dukatów.
-- **Nadwyżka dukatów** w pierwszych miesiącach (saldo 12-38 tys.) jest zarezerwowana na przyszłe wydatki (sklep, wyposażenie).
-- Wartości można zmieniać w `skill_definitions` (migracja) oraz w `Economy::TRADE_BONUS_*` i sprawdzać ponownie symulatorem.
+- Pierwszy miesiąc: kilkanaście krótkich szkoleń dziennie u aktywnego gracza do ok. dnia 10, brak niedoborów dukatów w żadnym profilu.
+- Tempo roku jest ograniczone przez czas kolejki, nie przez dukaty (zmieniony wzór kosztu po poziomie 50).
+- Każde wejście do świata odświeża grę: 10 nowych umiejętności o trudności dostosowanej do etapu.
+- Do ustalenia później: efekty umiejętności światów, ujścia dla nadwyżki dukatów, dodatkowe miejsca w kolejce za rangi (poprawiłyby tempo okazjonalnych graczy).

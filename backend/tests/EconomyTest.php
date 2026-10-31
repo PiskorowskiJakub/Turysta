@@ -34,7 +34,7 @@ final class EconomyTest extends TestCase
     public function testCurveIsFlattenedAfterLevel50(): void
     {
         $c50 = Economy::cost($this->skill(), 50);
-        $this->assertEqualsWithDelta($c50 * 8, Economy::cost($this->skill(), 100), 2);
+        $this->assertEqualsWithDelta($c50 * 4, Economy::cost($this->skill(), 100), 2);
         $t50 = Economy::seconds($this->skill(), 50);
         $this->assertEqualsWithDelta($t50 * 4, Economy::seconds($this->skill(), 100), 2);
         $this->assertGreaterThan($c50, Economy::cost($this->skill(), 51));
