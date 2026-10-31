@@ -1,6 +1,7 @@
 export type IconName =
   | 'home' | 'profile' | 'skills' | 'job' | 'logout' | 'login' | 'register'
-  | 'coins' | 'ticket' | 'points' | 'fitness' | 'orientation' | 'trade';
+  | 'coins' | 'ticket' | 'points' | 'fitness' | 'orientation' | 'trade'
+  | 'medal' | 'market' | 'hostel' | 'expedition';
 
 const PATHS: Record<IconName, string> = {
   home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
@@ -16,6 +17,10 @@ const PATHS: Record<IconName, string> = {
   fitness: 'M3 20l6-11 4 6 3-4 5 9zM16 4v5l4-1.5z',
   orientation: 'M12 3a9 9 0 1 0 0.01 0M15.5 8.5l-2 5-5 2 2-5z',
   trade: 'M12 3v18M5 21h14M5 7h14M7 7l-3 7a3.5 3.5 0 0 0 6 0zM17 7l-3 7a3.5 3.5 0 0 0 6 0z',
+  medal: 'M8 3h8l-2 6h-4zM12 9a6 6 0 1 0 0.01 0M12 13l1 2 2 .3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1L9 15.3l2-.3z',
+  market: 'M3 9l2-5h14l2 5M3 9h18M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M5 12v8h14v-8M9 20v-5h6v5',
+  hostel: 'M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6M16 6V4h2v4',
+  expedition: 'M3 20l6-11 4 6 3-4 5 9zM12 3v4M10 5h4',
 };
 
 export function Icon({ name }: { name: IconName }) {

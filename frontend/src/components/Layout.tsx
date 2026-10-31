@@ -18,6 +18,17 @@ function MenuLink({ to, icon, label, end }: { to: string; icon: IconName; label:
   );
 }
 
+function BrandMark() {
+  // Znak szlaku: bialy-czerwony-bialy w gorskim trojkacie.
+  return (
+    <svg className="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M2 34 14 10l7 13 5-8 12 19z" fill="#34493b" stroke="#d6c48c" strokeWidth="2" strokeLinejoin="round" />
+      <rect x="15" y="25" width="10" height="9" rx="1.5" fill="#f3ecd8" />
+      <rect x="15" y="28" width="10" height="3" fill="#d8473a" />
+    </svg>
+  );
+}
+
 export default function Layout() {
   const { t } = useTranslation();
   const { status, me, logout } = useAuth();
@@ -47,61 +58,64 @@ export default function Layout() {
   const avatar = authed ? avatars.find((a) => a.id === me.user.avatar_id) : undefined;
 
   return (
-    <div className="shell">
-      <nav className="menu" aria-label={t('nav.menu')}>
-        <div className="menu-title" role="img" aria-label={t('nav.menu')} />
-        <ul>
-          <MenuLink to="/" end icon="home" label={t('nav.home')} />
-          {authed ? (
-            <>
-              <MenuLink to="/profil" icon="profile" label={t('nav.profile')} />
-              <MenuLink to="/umiejetnosci" icon="skills" label={t('nav.skills')} />
-              <MenuLink to="/praca" icon="job" label={t('nav.jobs')} />
-              <li>
-                <button type="button" className="menu-item" onClick={() => void onLogout()}>
-                  <Icon name="logout" />
-                  <span>{t('nav.logout')}</span>
-                </button>
-              </li>
-            </>
-          ) : status === 'anon' ? (
-            <>
-              <MenuLink to="/logowanie" icon="login" label={t('nav.login')} />
-              <MenuLink to="/rejestracja" icon="register" label={t('nav.register')} />
-            </>
-          ) : null}
-        </ul>
-      </nav>
-
-      <div className="top">
-        <div className="info-board">
-          <div className="info-text">{fact ?? t('tagline')}</div>
-        </div>
-        {authed && (
-          <div className="resource-board">
-            <ul className="res-list">
-              <li title={t('wallet.coins')}><Icon name="coins" />{formatCoins(me.wallet.coins_cents)}</li>
-              <li title={t('wallet.tickets')}><Icon name="ticket" />{me.wallet.tickets}</li>
-              <li title={t('wallet.points')}><Icon name="points" />{me.wallet.points.toLocaleString('pl-PL')}</li>
-            </ul>
-            {avatar && (
-              <div className="res-avatar">
-                <img src={avatar.image_url} alt={me.user.character_name} />
-              </div>
-            )}
+    <>
+      <header className="topbar">
+        <div className="topbar-inner">
+          <NavLink to="/" className="brand">
+            <BrandMark />
+            <span className="brand-name">Turysta</span>
+          </NavLink>
+          <div className="fact">
+            <b>{t('fact')}</b>
+            <span>{fact ?? t('tagline')}</span>
           </div>
-        )}
+          {authed && (
+            <div className="hud">
+              <span className="chip" title={t('wallet.coins')}><Icon name="coins" />{formatCoins(me.wallet.coins_cents)}</span>
+              <span className="chip tickets" title={t('wallet.tickets')}><Icon name="ticket" />{me.wallet.tickets}</span>
+              <span className="chip points" title={t('wallet.points')}><Icon name="points" />{me.wallet.points.toLocaleString('pl-PL')}</span>
+              <span className="chip avatar-pill">
+                <span className="av">
+                  {avatar ? <img src={avatar.image_url} alt="" /> : me.user.character_name.slice(0, 1).toUpperCase()}
+                </span>
+                <span className="who">{me.user.character_name}</span>
+              </span>
+            </div>
+          )}
+        </div>
+      </header>
+
+      <div className="shell">
+        <nav className="menu" aria-label={t('nav.menu')}>
+          <ul>
+            <MenuLink to="/" end icon="home" label={t('nav.home')} />
+            {authed ? (
+              <>
+                <MenuLink to="/profil" icon="profile" label={t('nav.profile')} />
+                <MenuLink to="/umiejetnosci" icon="skills" label={t('nav.skills')} />
+                <MenuLink to="/praca" icon="job" label={t('nav.jobs')} />
+                <li>
+                  <button type="button" className="menu-item" onClick={() => void onLogout()}>
+                    <Icon name="logout" />
+                    <span>{t('nav.logout')}</span>
+                  </button>
+                </li>
+              </>
+            ) : status === 'anon' ? (
+              <>
+                <MenuLink to="/logowanie" icon="login" label={t('nav.login')} />
+                <MenuLink to="/rejestracja" icon="register" label={t('nav.register')} />
+              </>
+            ) : null}
+          </ul>
+        </nav>
+
+        <main className="content">
+          <Outlet />
+        </main>
       </div>
 
-      <main className="board">
-        <div className="board-top" />
-        <div className="board-mid">
-          <Outlet />
-        </div>
-        <div className="board-bottom" />
-      </main>
-
       <footer className="site-footer">{t('footer')}</footer>
-    </div>
+    </>
   );
 }

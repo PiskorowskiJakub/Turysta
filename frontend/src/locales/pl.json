@@ -139,5 +139,6 @@
     "markRead": "Oznacz jako przeczytane",
     "training_finished": "Ukończono szkolenie: {{skill}} (poziom {{level}}).",
     "job_finished": "Praca „{{job}}” zakończona. Wypłata: {{amount}} mon."
-  }
+  },
+  "fact": "Ciekawostka"
 }

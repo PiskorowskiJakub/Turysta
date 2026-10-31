@@ -5,27 +5,25 @@ import type { SkillInfo, SkillsResponse, TrainingItem, TrainingState } from '../
 import { useAuth } from '../auth/AuthContext';
 import { Icon, type IconName } from '../components/icons';
 import ProgressBar from '../components/ProgressBar';
+import Tabs, { type TabItem } from '../components/Tabs';
 import { formatCoins, formatDuration } from '../format';
 import { usePolling } from '../hooks/usePolling';
 import { useServerNow } from '../hooks/useServerNow';
-import scales from '../assets/ui/scales.webp';
-import scalesBronze from '../assets/ui/scales-bronze.webp';
-import scalesSilver from '../assets/ui/scales-silver.webp';
-import scalesGold from '../assets/ui/scales-gold.webp';
-import scalesDiamond from '../assets/ui/scales-diamond.webp';
 
 // Progi poziomow dla kolejnych odznak (do potwierdzenia projektowo).
-const TIERS: { min: number; src: string }[] = [
-  { min: 10, src: scalesBronze },
-  { min: 25, src: scalesSilver },
-  { min: 50, src: scalesGold },
-  { min: 100, src: scalesDiamond },
+const TIERS = [
+  { min: 10, name: 'bronze' },
+  { min: 25, name: 'silver' },
+  { min: 50, name: 'gold' },
+  { min: 100, name: 'diamond' },
 ];
+
+// Kolejne kategorie dodajemy tutaj; podzakladki przez pole children.
+const SKILL_TABS: TabItem[] = [{ path: 'podstawowe', label: 'Podstawowe' }];
 
 const SKILL_ICONS: Record<string, IconName> = { fitness: 'fitness', orientation: 'orientation', trade: 'trade' };
 
 function SkillIcon({ code }: { code: string }) {
-  if (code === 'trade') return <img src={scales} alt="" />;
   return <Icon name={SKILL_ICONS[code] ?? 'skills'} />;
 }
 
@@ -161,8 +159,8 @@ export default function TrainingPage() {
         </article>
         <div className="tier-row">
           {TIERS.map((tier) => (
-            <span key={tier.min} className={'tier' + (s.level >= tier.min ? ' reached' : '')} title={t('training.tierAt', { level: tier.min })}>
-              <img src={tier.src} alt="" />
+            <span key={tier.min} className={`tier tier-${tier.name}` + (s.level >= tier.min ? ' reached' : '')} title={t('training.tierAt', { level: tier.min })}>
+              <Icon name="medal" />
             </span>
           ))}
         </div>
@@ -172,6 +170,7 @@ export default function TrainingPage() {
 
   return (
     <>
+      <Tabs base="/umiejetnosci" items={SKILL_TABS} />
       {error && <p className="panel form-error" role="alert">{error}</p>}
 
       <section className="panel">

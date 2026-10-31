@@ -7,9 +7,9 @@ import ProgressBar from '../components/ProgressBar';
 import { formatCoins, formatDuration } from '../format';
 import { usePolling } from '../hooks/usePolling';
 import { useServerNow } from '../hooks/useServerNow';
-import market from '../assets/ui/market.webp';
+import { Icon, type IconName } from '../components/icons';
 
-const JOB_IMAGES: Record<string, string> = { market };
+const JOB_ICONS: Record<string, IconName> = { market: 'market', hostel: 'hostel', expedition: 'expedition' };
 
 export default function JobsPage() {
   const { t } = useTranslation();
@@ -85,7 +85,7 @@ export default function JobsPage() {
 
   const card = (j: JobInfo) => {
     const isActive = active?.job.id === j.id;
-    const img = JOB_IMAGES[j.code];
+    const jobIcon: IconName = JOB_ICONS[j.code] ?? 'job';
     let timeLabel = formatDuration(j.duration_seconds);
     let earnLabel = formatCoins(j.reward_cents);
     let progress = 0;
@@ -109,7 +109,7 @@ export default function JobsPage() {
           {j.description && <p>{j.description}</p>}
           <p className="job-policy">{j.cancel_policy === 'none' ? t('jobs.policyNone') : t('jobs.policyProportional')}</p>
         </div>
-        {img && <div className="job-img"><img src={img} alt="" /></div>}
+        <div className="job-img"><div className="icon-tile"><Icon name={jobIcon} /></div></div>
         <div className="job-stats">
           <div className="lines">
             <div className="line">{isActive ? t('jobs.timeLeft') : t('jobs.time')}: <strong>{timeLabel}</strong></div>
