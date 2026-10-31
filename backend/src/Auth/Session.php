@@ -93,9 +93,16 @@ final class Session
         $stmt = Database::pdo()->prepare('SELECT * FROM users WHERE id = ?');
         $stmt->execute([(int) $id]);
         $user = $stmt->fetch();
-        if (!$user || $user['status'] === 'banned') {
+        if (!$user) {
             self::destroy();
             throw new ApiException(401, 'unauthorized', 'Musisz się zalogować.');
+        }
+        try {
+            AccountStatus::assertCanPlay($user);
+        } catch (ApiException $e) {
+            // Zablokowany lub zawieszony gracz od razu traci sesje.
+            self::destroy();
+            throw $e;
         }
         \Turysta\Game\ActivityTracker::touch(Database::pdo(), (int) $user['id']);
         return $user;

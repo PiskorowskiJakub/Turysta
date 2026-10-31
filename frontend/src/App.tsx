@@ -35,7 +35,7 @@ export default function App() {
           <Route path="praca" element={<JobsPage />} />
           <Route path="odznaki" element={<BadgesPage />} />
           <Route path="ranking" element={<RankingPage />} />
-          <Route path="admin" element={<AdminPage />} />
+          <Route path="admin/*" element={<AdminPage />} />
           <Route path="gracz/:id" element={<PlayerPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />

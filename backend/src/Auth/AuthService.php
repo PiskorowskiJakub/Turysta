@@ -139,9 +139,7 @@ final class AuthService
             $this->limiter->hit($accountKey, 5, 900);
             throw new ApiException(401, 'invalid_credentials', 'Nieprawidłowy e-mail lub hasło.');
         }
-        if ($user['status'] === 'banned') {
-            throw new ApiException(403, 'banned', 'To konto zostało zablokowane.');
-        }
+        AccountStatus::assertCanPlay($user);
 
         $this->limiter->clear($accountKey);
         if (password_needs_rehash($user['password_hash'], PASSWORD_ARGON2ID)) {

@@ -67,6 +67,22 @@ final class App
         $router->get('/v1/announcements', [$home, 'announcements']);
         $router->post('/v1/daily-reward/claim', [$home, 'claimDaily']);
 
+        $router->get('/v1/admin/stats', [$admin, 'stats']);
+        $router->get('/v1/admin/users', [$admin, 'users']);
+        $router->get('/v1/admin/users/{id}', [$admin, 'user']);
+        $router->patch('/v1/admin/users/{id}', [$admin, 'updateUser']);
+        $router->post('/v1/admin/users/{id}/status', [$admin, 'setStatus']);
+        $router->post('/v1/admin/users/{id}/wallet', [$admin, 'adjustWallet']);
+        $router->post('/v1/admin/users/{id}/logout', [$admin, 'logoutUser']);
+        $router->get('/v1/admin/users/{id}/logins', [$admin, 'userLogins']);
+        $router->get('/v1/admin/users/{id}/ledger', [$admin, 'userLedger']);
+        $router->get('/v1/admin/users/{id}/audit', [$admin, 'userAudit']);
+        $router->get('/v1/admin/logins', [$admin, 'logins']);
+        $router->get('/v1/admin/audit', [$admin, 'audit']);
+        $router->get('/v1/admin/facts', [$admin, 'facts']);
+        $router->post('/v1/admin/facts', [$admin, 'createFact']);
+        $router->put('/v1/admin/facts/{id}', [$admin, 'updateFact']);
+        $router->delete('/v1/admin/facts/{id}', [$admin, 'deleteFact']);
         $router->get('/v1/admin/announcements', [$admin, 'announcements']);
         $router->post('/v1/admin/announcements', [$admin, 'createAnnouncement']);
         $router->put('/v1/admin/announcements/{id}', [$admin, 'updateAnnouncement']);

@@ -8,14 +8,7 @@ final class Validator
     /** @return array<string,string> bledy pol (pusta tablica = OK) */
     public static function registration(string $name, string $email, string $password, string $confirm): array
     {
-        $errors = [];
-
-        $len = mb_strlen($name);
-        if ($len < 3 || $len > 20) {
-            $errors['character_name'] = 'Nazwa postaci musi mieć od 3 do 20 znaków.';
-        } elseif (!preg_match('/^[\p{L}\p{N}_\- ]+$/u', $name) || str_contains($name, '  ')) {
-            $errors['character_name'] = 'Dozwolone są litery, cyfry, spacja, myślnik i podkreślenie.';
-        }
+        $errors = self::characterName($name);
 
         if (strlen($email) > 190 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Podaj poprawny adres e-mail.';
@@ -55,5 +48,18 @@ final class Validator
             $errors['password_confirm'] = 'Hasła muszą być takie same.';
         }
         return $errors;
+    }
+
+    /** @return array<string,string> */
+    public static function characterName(string $name): array
+    {
+        $len = mb_strlen($name);
+        if ($len < 3 || $len > 20) {
+            return ['character_name' => 'Nazwa postaci musi mieć od 3 do 20 znaków.'];
+        }
+        if (!preg_match('/^[\p{L}\p{N}_\- ]+$/u', $name) || str_contains($name, '  ')) {
+            return ['character_name' => 'Dozwolone są litery, cyfry, spacja, myślnik i podkreślenie.'];
+        }
+        return [];
     }
 }

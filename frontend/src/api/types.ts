@@ -282,3 +282,135 @@ export interface ClaimResponse {
   daily: DailyRewardState;
   reward: DailyRewardDay;
 }
+
+
+export interface Paged<T> {
+  total: number;
+  page: number;
+  pages: number;
+  per_page: number;
+  rows: T[];
+}
+
+export type AccountStatus = 'active' | 'suspended' | 'banned' | 'pending';
+export type Role = 'player' | 'moderator' | 'admin';
+
+export interface AdminUserRow {
+  id: number;
+  name: string;
+  email: string;
+  role: Role;
+  status: AccountStatus;
+  email_verified: boolean;
+  registered_at: string;
+  last_login_at: string | null;
+  points: number;
+  coins_cents: number;
+  world: number | null;
+  chapter: number | null;
+}
+
+export interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  role: Role;
+  status: AccountStatus;
+  status_reason: string | null;
+  suspended_until: string | null;
+  email_verified: boolean;
+  tutorial_done: boolean;
+  gender: Gender | null;
+  gender_changed_at: string | null;
+  avatar_id: number | null;
+  avatar_name: string | null;
+  registered_at: string;
+  last_login_at: string | null;
+  wallet: { coins_cents: number; tickets: number; points: number };
+  stats: { last_active_day: string | null; active_days: number; current_streak: number; longest_streak: number };
+  progress: { world_ordinal: number; world_name: string; chapter_ordinal: number; chapter_name: string } | null;
+  counts: { logins: number; jobs_done: number; trainings_done: number; badges: number; referrals: number; sessions: number };
+  referral_code: string | null;
+  referred_by: { id: number; name: string } | null;
+}
+
+export interface LoginRow {
+  id: number;
+  user_id: number;
+  name: string;
+  logged_in_at: string;
+  logged_out_at: string | null;
+  ip: string | null;
+  user_agent: string | null;
+}
+
+export interface LedgerRow {
+  id: number;
+  currency: 'coins' | 'tickets' | 'points';
+  amount: number;
+  balance_after: number;
+  reason: string;
+  created_at: string;
+}
+
+export interface AuditRow {
+  id: number;
+  action: string;
+  admin: { id: number; name: string } | null;
+  target: { id: number; name: string } | null;
+  details: Record<string, unknown> | null;
+  ip: string | null;
+  created_at: string;
+}
+
+export interface Fact {
+  id: number;
+  text: string;
+  active: boolean;
+}
+
+export interface DayCount {
+  day: string;
+  count: number;
+}
+
+export interface AdminStats {
+  generated_at: string;
+  accounts: {
+    total: number;
+    active: number;
+    suspended: number;
+    banned: number;
+    unverified: number;
+    admins: number;
+    new_24h: number;
+    new_7d: number;
+    new_30d: number;
+    tutorial_done: number;
+    referred: number;
+  };
+  activity: {
+    dau: number;
+    wau: number;
+    mau: number;
+    online_now: number;
+    logins_24h: number;
+    logins_7d: number;
+    avg_active_days: number;
+    daily_claims_today: number;
+    daily_claims_total: number;
+  };
+  economy: {
+    coins_cents: number;
+    tickets: number;
+    points: number;
+    jobs_done_24h: number;
+    jobs_done_total: number;
+    trainings_done_24h: number;
+    trainings_done_total: number;
+    badges_earned: number;
+  };
+  worlds: { world: number; players: number }[];
+  registrations: DayCount[];
+  logins: DayCount[];
+}

@@ -16,7 +16,7 @@ docker compose up -d
 docker compose exec backend php bin/migrate.php
 ```
 
-- Administrator (dostęp do panelu `/admin`, m.in. tablica ogłoszeń): `docker compose exec backend php bin/set_role.php adres@email.pl admin` (odebranie roli: `... adres@email.pl player`)
+- Administrator (dostęp do panelu `/admin`: przegląd statystyk, zarządzanie graczami, ogłoszenia, ciekawostki, logi): `docker compose exec backend php bin/set_role.php adres@email.pl admin` (odebranie roli: `... adres@email.pl player`)
 - Gra: http://localhost (Traefik)
 - Health: http://localhost/api/health
 - phpMyAdmin: http://127.0.0.1:8081
@@ -25,6 +25,17 @@ docker compose exec backend php bin/migrate.php
 
 Nigdy nie uruchamiaj `docker compose down -v` na produkcji (kasuje baze).
 TLS (Let's Encrypt) dojdzie przy wdrozeniu na VPS.
+
+## Panel administratora
+
+Dostępny pod `/admin` tylko dla roli `admin` (serwer sprawdza rolę przy każdym żądaniu). Karty i podkarty:
+
+- **Przegląd** – konta (razem, aktywne, zawieszone, zablokowane, niezweryfikowane), aktywność (online, DAU/WAU/MAU, logowania), ekonomia (dukaty, punkty, bilety w obiegu, prace i treningi), rozkład graczy po światach, wykresy rejestracji i logowań z 30 dni.
+- **Gracze** – lista z wyszukiwaniem (nazwa, e-mail, ID), filtrami statusu i roli oraz sortowaniem; karta gracza: dane i edycja (nazwa postaci, e-mail, rola, płeć, awatar), blokada, zawieszenie na N dni, wylogowanie ze wszystkich urządzeń, portfel z korektą (wpis w księdze), logowania, księga operacji, historia zmian.
+- **Treści** – ogłoszenia oraz ciekawostki dnia.
+- **Logi** – logowania wszystkich graczy (z IP i przeglądarką) oraz dziennik działań administratorów.
+
+Każda zmiana wykonana w panelu trafia do dziennika `admin_audit` (kto, co, kogo dotyczyło, szczegóły, IP). Zablokowane lub zawieszone konto traci sesje i nie może się zalogować. Nie można zablokować ani zawiesić administratora ani własnego konta.
 
 ## Ekonomia i symulacja gry (30 dni i rok)
 
