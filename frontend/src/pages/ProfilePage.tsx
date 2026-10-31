@@ -42,6 +42,8 @@ export default function ProfilePage() {
 
   return (
     <>
+    <p className="profile-edit-link"><Link className="button secondary" to="/profil/edycja">{t('profile.edit')}</Link></p>
+
     <ProfileCard
       hint={t('profileCard.publicInfo')}
       data={{
@@ -58,8 +60,6 @@ export default function ProfilePage() {
         skillLevels,
       }}
     />
-
-    <p className="profile-edit-link"><Link className="button secondary" to="/profil/edycja">{t('profile.edit')}</Link></p>
 
     {badges.ready ? <BadgeBook data={badges} /> : null}
 
