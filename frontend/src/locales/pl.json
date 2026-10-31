@@ -53,7 +53,14 @@
   "badges": {
     "title": "Książeczka odznak",
     "intro": "Za rozwój umiejętności zdobywasz odznaki: brązową, srebrną i złotą. Wpisują się do Twojej książeczki automatycznie.",
-    "total": "Zdobyte odznaki: {{got}} z {{total}}",
+    "tallyLabel": "Zdobyte odznaki według stopnia",
+    "tally": {
+      "bronze": "Brąz",
+      "silver": "Srebro",
+      "gold": "Złoto",
+      "diamond": "Diament",
+      "ruby": "Rubin"
+    },
     "none": "Jeszcze nie masz tu żadnej odznaki.",
     "count": "Zdobyte: {{got}} z {{total}}",
     "special": "Odznaki specjalne",

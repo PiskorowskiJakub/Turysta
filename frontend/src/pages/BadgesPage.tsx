@@ -53,10 +53,9 @@ export default function BadgesPage() {
 
   const skillName = (s: SkillInfo) => t(`skills.${s.code}`, { defaultValue: s.name });
   const earnedCount = (groups: string[]) => groups.reduce((n, g) => n + (highest.get(g)?.count ?? 0), 0);
-  const specialGroups = SPECIAL_BADGES.map((b) => b.code);
-  const specialTotal = SPECIAL_BADGES.reduce((n, b) => n + b.tiers.length, 0);
-  const total = skills.skills.reduce((n, s) => n + tiersFor(s.max_level).length, 0) + specialTotal;
-  const got = earnedCount(skills.skills.map((s) => s.code)) + earnedCount(specialGroups);
+  // Ile odznaki zdobyto w kazdym stopniu (liczymy wszystkie zdobyte stopnie, nie tylko najwyzsze).
+  const tally: Record<string, number> = {};
+  for (const b of earned) tally[b.tier] = (tally[b.tier] ?? 0) + 1;
 
   const meta = (group: string): { name: string; unit: 'level' | 'days' } => {
     const sk = skills.skills.find((x) => x.code === group);
@@ -147,9 +146,16 @@ export default function BadgesPage() {
   return (
     <>
       <section className="panel">
+        <InfoHint text={t('badges.intro')} label={t('badges.moreInfo')} />
         <h1>{t('badges.title')}</h1>
-        <p className="page-message">{t('badges.intro')}</p>
-        <p className="badge-total">{t('badges.total', { got, total })}</p>
+        <p className="badge-tally" aria-label={t('badges.tallyLabel')}>
+          {TIER_ORDER.filter((tier) => tier === 'bronze' || tier === 'silver' || tier === 'gold' || (tally[tier] ?? 0) > 0).map((tier) => (
+            <span key={tier} className="badge-tally-item" title={t(`training.tier.${tier}`)}>
+              <i className={`badge-dot tier-${tier}`} />
+              {t(`badges.tally.${tier}`)}: <strong>{tally[tier] ?? 0}</strong>
+            </span>
+          ))}
+        </p>
 
         <h3 className="badge-sub">{t('badges.featured')}</h3>
         {picking ? (
