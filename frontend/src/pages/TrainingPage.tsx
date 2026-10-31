@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
 import type { SkillInfo, SkillsResponse, TrainingItem, TrainingState, WorldResponse } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
-import { Icon, type IconName } from '../components/icons';
+import { Icon, SkillIcon } from '../components/icons';
 import ProgressBar from '../components/ProgressBar';
 import Tabs, { type TabItem } from '../components/Tabs';
 import WorldPanel from '../components/WorldPanel';
@@ -23,12 +23,6 @@ const TIERS: { name: string; min: number | null }[] = [
   { name: 'ruby', min: null },
 ];
 const ACTIVE_TIERS = TIERS.filter((t): t is { name: string; min: number } => t.min !== null);
-
-const SKILL_ICONS: Record<string, IconName> = { fitness: 'fitness', orientation: 'orientation', trade: 'trade' };
-
-function SkillIcon({ code }: { code: string }) {
-  return <Icon name={SKILL_ICONS[code] ?? 'skills'} />;
-}
 
 export default function TrainingPage() {
   const { t } = useTranslation();
