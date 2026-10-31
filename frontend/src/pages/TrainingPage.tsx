@@ -24,6 +24,16 @@ const TIERS: { name: string; min: number | null }[] = [
 ];
 const ACTIVE_TIERS = TIERS.filter((t): t is { name: string; min: number } => t.min !== null);
 
+// Umiejetnosci z limitem poziomow (swiaty): 3 odznaki - brazowa, srebrna i zlota - na 1/3, 2/3 i 100% limitu.
+function tiersFor(maxLevel: number | null): { name: string; min: number }[] {
+  if (maxLevel === null) return ACTIVE_TIERS;
+  return [
+    { name: 'bronze', min: Math.ceil(maxLevel / 3) },
+    { name: 'silver', min: Math.ceil((maxLevel * 2) / 3) },
+    { name: 'gold', min: maxLevel },
+  ];
+}
+
 export default function TrainingPage() {
   const { t } = useTranslation();
   const { me, refresh } = useAuth();
@@ -209,8 +219,8 @@ export default function TrainingPage() {
             {label}
           </button>
         </article>
-        {s.max_level === null && <div className="tier-row">
-          {ACTIVE_TIERS.map((tier) => {
+        <div className="tier-row">
+          {tiersFor(s.max_level).map((tier) => {
             const reached = s.level >= tier.min;
             const tip = `${t(`training.tier.${tier.name}`)}: ${t('training.tierAt', { level: tier.min })}`;
             return (
@@ -225,7 +235,7 @@ export default function TrainingPage() {
               </span>
             );
           })}
-        </div>}
+        </div>
       </div>
     );
   };
