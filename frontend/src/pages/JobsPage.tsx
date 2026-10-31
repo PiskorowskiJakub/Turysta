@@ -106,7 +106,7 @@ export default function JobsPage() {
       <article key={j.id} className="tile job-card">
         <h3>{t(`jobs.names.${j.code}`, { defaultValue: j.name })}</h3>
         <div className="job-desc">
-          {j.description && <p>{j.description}</p>}
+          <p>{t(`jobs.stories.${j.code}`, { defaultValue: j.description ?? '' })}</p>
           <p className="job-policy">{j.cancel_policy === 'none' ? t('jobs.policyNone') : t('jobs.policyProportional')}</p>
         </div>
         <div className="job-img"><div className="icon-tile"><Icon name={jobIcon} /></div></div>

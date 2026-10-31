@@ -132,7 +132,12 @@
     "time": "Czas",
     "timeLeft": "Pozostało",
     "reward": "Zarobek",
-    "earnedShort": "Zarobiono"
+    "earnedShort": "Zarobiono",
+    "stories": {
+      "market": "Wczesnym rankiem rozkładasz kramik na rynku starego miasteczka. Turyści pytają o drogę, a ty sprzedajesz mapy i pamiątki – przy okazji nauczysz się targować.",
+      "hostel": "Gospodarz schroniska potrzebuje pomocnej ręki: palenie w piecu, gorąca zupa dla zmarzniętych wędrowców i księga gości do prowadzenia. Dyżur trwa pół doby.",
+      "expedition": "Całodobowa wyprawa w góry z przewodnikiem: świt na grani, marsz przez las i nocleg pod gwiazdami. Kto zawróci w połowie drogi, wraca z niczym."
+    }
   },
   "notifications": {
     "title": "Powiadomienia",
