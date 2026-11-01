@@ -403,12 +403,54 @@
   },
   "tutorial": {
     "title": "Pierwsze kroki",
-    "story": "Witaj, {{name}}! Twoja pierwsza wyprawa dopiero się zaczyna. Zanim ruszysz w drogę, powiedz nam, kim jesteś.",
-    "genderTitle": "Wybierz płeć postaci",
-    "avatarTitle": "Wybierz awatar",
+    "stepOf": "Krok {{n}} z {{total}}",
+    "inGame": "W grze wygląda to tak:",
     "next": "Dalej",
     "back": "Wstecz",
-    "finish": "Zaczynam przygodę"
+    "finish": "Zaczynam przygodę",
+    "map": {
+      "title": "Mapa na ścianie",
+      "p1": "{{name}}, pamiętasz to lato z dzieciństwa, kiedy leżało się w trawie i liczyło, dokąd płyną chmury? Chciało się wiedzieć, co jest za następnym wzgórzem, jak pachnie morze i o czym szumią obce lasy.",
+      "p2": "Potem przyszła codzienność: budzik, biurko, wtorek bardzo podobny do poniedziałku. Tylko mapa na ścianie została taka sama – z każdym rokiem trochę bardziej wyblakła i trochę bardziej kusząca. Pewnego ranka patrzysz na nią dłużej niż zwykle. Tydzień urlopu niczego nie zmieni. Trzeba zrobić coś odważniejszego."
+    },
+    "sold": {
+      "title": "Sprzedane wszystko",
+      "p1": "Decyzja zapada szybko, jak każda ważna. Sprzedajesz meble, rower i kanapę, oddajesz klucze od mieszkania. Rzeczy, które przez lata wydawały się niezbędne, mieszczą się w jednej, ostatniej sumie. Zostaje plecak, stara mapa i dwa dukaty w kieszeni. Dwa to bardzo mało, ale na pierwszy krok wystarczy.",
+      "tip1": "Swoje dukaty widzisz zawsze na tabliczce u góry strony. Dukaty wydajesz na szkolenia, a zarabiasz w pracy.",
+      "tip2": "Obok są punkty, które rosną za Twój postęp i decydują o miejscu w rankingu, oraz bilety, które poznasz później."
+    },
+    "genderTitle": "Kim jesteś w drodze?",
+    "genderLead": "Zanim ruszysz, powiedz, jak o Tobie opowiadać.",
+    "genderHint": "Płeć możesz później zmienić raz na 30 dni w edycji profilu. Nazwy postaci zmienić się nie da.",
+    "avatarTitle": "Wybierz awatar",
+    "avatarLead": "Tak zobaczą Cię inni wędrowcy.",
+    "skills": {
+      "title": "Pierwszy dzień w drodze",
+      "p1": "Pierwszy dzień uczy pokory. Plecak ciąży, po kilku kilometrach palą łydki, a mapa, choć znana na pamięć, w prawdziwym terenie wygląda zupełnie inaczej. Mgła zasnuwa dolinę i nie wiadomo, w którą stronę iść. Marzyć o świecie to jedno, a go przejść – drugie.",
+      "p2": "Trzeba się nauczyć chodzić daleko (Kondycja), czytać teren (Orientacja w terenie) i nie dać się oskubać na targu (Handel). Dobrze, że każdej z tych rzeczy można się po prostu nauczyć.",
+      "tip1": "Wszystko to znajdziesz w zakładce Umiejętności w menu. Wybierz umiejętność i zacznij szkolenie.",
+      "tip2": "Szkolenie kosztuje dukaty i trwa określony czas. Płynie dalej, nawet gdy zamkniesz grę, a kolejne szkolenia możesz ustawić w kolejce."
+    },
+    "jobs": {
+      "title": "Pierwsze zarobione dukaty",
+      "p1": "Szkolenia kosztują, a w kieszeni zostały resztki. Na szczęście świat zawsze potrzebuje rąk do pracy. Na rynku kupcy szukają kogoś do noszenia skrzyń, w schronisku brakuje dyżurnego, a przewodnicy wypraw płacą za pomoc w całodobowym marszu. Nikt nie pyta o przeszłość – liczy się to, że przyjdziesz.",
+      "tip1": "Prace czekają w zakładce Praca w menu. Wybierz jedną i kliknij Rozpocznij. Praca trwa swój czas i płaci dukatami.",
+      "tip2": "Krótszą pracę możesz przerwać i dostać zapłatę za przepracowany czas. Dłuższe płacą tylko po ukończeniu, ale za to więcej. Po ukończonej pracy jest krótka przerwa."
+    },
+    "worlds": {
+      "title": "Światy i rozdziały",
+      "p1": "Mijają dni i okazuje się, że ta podróż ma swój kształt. To nie jedna długa ścieżka, tylko wędrówka przez światy. Każdy świat dzieli się na rozdziały – małe etapy, z których każdy ma swoją nazwę i swoją opowieść. Zaczynasz w pierwszym świecie, Nowym Początku, w rozdziale Pierwsze kroki.",
+      "p2": "Żeby ruszyć dalej, trzeba zasłużyć na awans: opanować potrzebne umiejętności i zapłacić za wyprawę do kolejnego rozdziału. Gdy ukończysz ostatni rozdział świata, otwiera się droga do następnego – dalszego, trudniejszego i droższego, ale pełnego nowych miejsc. Dawna mapa ze ściany zaczyna się zapełniać.",
+      "tip1": "Swoje miejsce widzisz na tabliczce u góry strony: numer świata i rozdziału. Rozdziały bieżącego świata oraz przycisk awansu znajdziesz w zakładce Umiejętności, w panelu Świat.",
+      "tip2": "Awans to osobne szkolenie. Wymaga odpowiednich poziomów umiejętności i kosztuje dukaty, a po ukończeniu dostajesz za niego punkty. Awans do nowego świata kosztuje znacznie więcej niż zwykły rozdział.",
+      "promo": "Pierwsza ścieżka"
+    },
+    "road": {
+      "title": "Dalej w drogę",
+      "p1": "Tak właśnie to się zaczyna: szkolenie, praca, szkolenie, praca – a kilometry powoli zamieniają się w historie. Z każdym dniem jesteś odrobinę dalej od biurka i odrobinę bliżej świata, który tyle lat czekał na mapie.",
+      "p2": "Plecak spakowany? Pora ruszać.",
+      "tip1": "Na stronie głównej czekają ogłoszenia, powiadomienia i codzienna nagroda za logowanie. W Odznakach zbierasz pamiątki z drogi, a Ranking pokazuje, jak radzą sobie inni wędrowcy."
+    }
   },
   "stats": {
     "title": "Statystyki",
@@ -589,5 +631,78 @@
     "skillsAll": "Wszystkie na maksymalnym poziomie ({{level}})",
     "skillsDone": "Spełniło wymaganie: {{done}} z {{total}}",
     "eventNote": "To wielkie wydarzenie: awans do nowego świata trwa znacznie dłużej i kosztuje znacznie więcej niż zwykły rozdział."
+  },
+  "landing": {
+    "kicker": "Gra przeglądarkowa o podróżowaniu",
+    "title": "Rzuć wszystko i ruszaj w świat",
+    "lead": "Zostaw biurko, spakuj plecak i zacznij od zera. Szkol się, pracuj, zdobywaj odznaki i przemierzaj kolejne światy. Twoja podróż toczy się dalej, nawet gdy zamkniesz kartę.",
+    "register": "Załóż konto",
+    "login": "Zaloguj się",
+    "note": "Bez instalacji, prosto w przeglądarce. Konto założysz w minutę.",
+    "howTitle": "Jak się gra",
+    "how": {
+      "train": {
+        "title": "Szkol się",
+        "text": "Kondycja, orientacja w terenie, handel. Szkolenia kosztują dukaty i trwają swój czas, a kolejne ustawisz w kolejce."
+      },
+      "work": {
+        "title": "Pracuj",
+        "text": "Na rynku, w schronisku albo na całodobowej wyprawie. Praca płaci dukatami, które wydasz na dalszy rozwój."
+      },
+      "advance": {
+        "title": "Awansuj",
+        "text": "Zdobywaj awanse w rozdziałach i odkrywaj kolejne światy. Z każdym krokiem mapa zapełnia się nowymi miejscami."
+      }
+    },
+    "shotsTitle": "Tak wygląda gra",
+    "shotsLead": "Kilka ekranów z rozgrywki. Wszystko, co tu widzisz, znajdziesz w grze zaraz po założeniu konta.",
+    "shots": {
+      "training": {
+        "url": "turysta / umiejętności",
+        "title": "Szkolenia",
+        "text": "Rozwijaj umiejętności. Pasek pokazuje, ile zostało do końca."
+      },
+      "job": {
+        "url": "turysta / praca",
+        "title": "Praca",
+        "text": "Zarabiaj dukaty. Krótsze prace możesz przerwać i dostać część zapłaty."
+      },
+      "worlds": {
+        "url": "turysta / światy",
+        "title": "Światy i rozdziały",
+        "text": "Awansuj z rozdziału do rozdziału, a potem do kolejnego świata."
+      },
+      "daily": {
+        "url": "turysta / start",
+        "title": "Codzienna nagroda",
+        "text": "Loguj się codziennie, a nagrody w serii rosną z każdym dniem."
+      },
+      "ranking": {
+        "url": "turysta / ranking",
+        "title": "Ranking",
+        "text": "Sprawdź, jak radzą sobie inni wędrowcy, i wspinaj się na szczyt."
+      }
+    },
+    "featuresTitle": "Dlaczego warto",
+    "features": {
+      "badges": {
+        "title": "Odznaki. ",
+        "text": "Za umiejętności, serie dni aktywności i wydarzenia dostajesz pamiątki z drogi."
+      },
+      "ranking": {
+        "title": "Ranking. ",
+        "text": "Punkty za postępy decydują o Twoim miejscu wśród wszystkich graczy."
+      },
+      "daily": {
+        "title": "Codzienna nagroda. ",
+        "text": "Dukaty i punkty za każde logowanie, rosnące przez siedem dni serii."
+      },
+      "offline": {
+        "title": "Gra toczy się sama. ",
+        "text": "Szkolenia i prace biegną dalej, gdy zamkniesz kartę. Wróć i odbierz efekty."
+      }
+    },
+    "endTitle": "Plecak czeka",
+    "endLead": "Pierwsze kroki zajmą Ci kilka minut. Reszta drogi należy do Ciebie."
   }
 }
