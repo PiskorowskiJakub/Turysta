@@ -498,7 +498,17 @@
     "newPasswordConfirm": "Powtórz nowe hasło",
     "passwordInfo": "Po zmianie hasła pozostałe urządzenia zostaną wylogowane.",
     "savePassword": "Zmień hasło",
-    "savedPassword": "Hasło zostało zmienione. Pozostałe sesje zostały wylogowane."
+    "savedPassword": "Hasło zostało zmienione. Pozostałe sesje zostały wylogowane.",
+    "deleteSection": "Usunięcie konta",
+    "deleteInfo": "Usunięcie konta kasuje na stałe Twoją postać: dukaty, umiejętności, odznaki, historię i postępy. Tego nie da się cofnąć. Później możesz założyć nowe konto na ten sam adres e-mail.",
+    "deleteSure": "Rozumiem, że konta nie da się odzyskać.",
+    "deleteButton": "Usuń konto na stałe"
+  },
+  "verify": {
+    "title": "Twoje konto nie zostało jeszcze potwierdzone.",
+    "text": "Kliknij link w wiadomości wysłanej na adres {{email}}. Nie widzisz jej? Zajrzyj do spamu albo poproś o nowy link.",
+    "resend": "Wyślij link ponownie",
+    "sent": "Wysłaliśmy nowy link na {{email}}. Poprzednie linki przestały działać."
   },
   "notFound": {
     "title": "Nie znaleziono strony",
@@ -515,6 +525,9 @@
     "rate_limited": "Za dużo prób. Spróbuj ponownie za kilkanaście minut.",
     "banned": "To konto zostało zablokowane.",
     "csrf_invalid": "Sesja wygasła. Odśwież stronę i spróbuj ponownie.",
+    "already_verified": "Ten adres e-mail jest już potwierdzony.",
+    "mail_failed": "Nie udało się wysłać wiadomości. Spróbuj ponownie później.",
+    "last_admin": "Nie można usunąć ostatniego konta administratora.",
     "insufficient_funds": "Nie masz wystarczająco dukatów.",
     "queue_full": "Kolejka szkoleń jest pełna.",
     "max_level": "Ta umiejętność ma już maksymalny poziom.",

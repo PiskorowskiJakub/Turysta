@@ -183,4 +183,84 @@ final class AuthFlowTest extends TestCase
         $this->assertSame(1, (int) $pdo->query("SELECT COUNT(*) FROM sessions WHERE id = 'keep{$this->suffix}'")->fetchColumn());
         $this->assertSame(0, (int) $pdo->query("SELECT COUNT(*) FROM sessions WHERE id = 'drop{$this->suffix}'")->fetchColumn());
     }
+
+    public function testResendVerificationReplacesTokenAndIsLimited(): void
+    {
+        [$account, $user] = $this->accountFixture();
+        $pdo = Database::pdo();
+        $ip = '10.0.10.' . random_int(1, 250);
+        $before = $pdo->query("SELECT token_hash FROM email_verifications WHERE user_id = {$user['id']}")->fetchColumn();
+
+        $account->resendVerification($user, $ip);
+        $after = $pdo->query("SELECT token_hash FROM email_verifications WHERE user_id = {$user['id']}")->fetchColumn();
+        $this->assertNotSame($before, $after);
+        $this->assertSame(1, (int) $pdo->query("SELECT COUNT(*) FROM email_verifications WHERE user_id = {$user['id']}")->fetchColumn());
+
+        $account->resendVerification($user, $ip);
+        $account->resendVerification($user, $ip);
+        try {
+            $account->resendVerification($user, $ip);
+            $this->fail('Czwarta prosba w godzine powinna byc zablokowana.');
+        } catch (ApiException $e) {
+            $this->assertSame(429, $e->status);
+        }
+    }
+
+    public function testResendVerificationRejectedWhenAlreadyVerified(): void
+    {
+        [$account, $user] = $this->accountFixture();
+        Database::pdo()->prepare('UPDATE users SET email_verified_at = UTC_TIMESTAMP() WHERE id = ?')->execute([$user['id']]);
+        $user = $this->userRow((int) $user['id']);
+
+        try {
+            $account->resendVerification($user, '10.0.11.' . random_int(1, 250));
+            $this->fail('Potwierdzone konto nie potrzebuje linku.');
+        } catch (ApiException $e) {
+            $this->assertSame('already_verified', $e->errorCode);
+        }
+    }
+
+    public function testDeleteAccountNeedsPasswordAndRemovesEverything(): void
+    {
+        [$account, $user, $d] = $this->accountFixture();
+        $pdo = Database::pdo();
+        $id = (int) $user['id'];
+        $ip = '10.0.12.' . random_int(1, 250);
+
+        try {
+            $account->deleteAccount($user, 'zle-haslo-zle-haslo', $ip);
+            $this->fail('Zle haslo powinno zablokowac usuniecie.');
+        } catch (ApiException $e) {
+            $this->assertArrayHasKey('current_password', $e->fields);
+        }
+        $this->assertSame(1, (int) $pdo->query("SELECT COUNT(*) FROM users WHERE id = $id")->fetchColumn());
+
+        $account->deleteAccount($user, $d['password'], $ip);
+        foreach (['users' => 'id', 'wallets' => 'user_id', 'user_skills' => 'user_id', 'referral_codes' => 'user_id', 'email_verifications' => 'user_id'] as $table => $col) {
+            $this->assertSame(0, (int) $pdo->query("SELECT COUNT(*) FROM $table WHERE $col = $id")->fetchColumn(), $table);
+        }
+
+        // Ten sam adres mozna zarejestrowac ponownie.
+        $again = $this->auth->register($d, '10.0.13.' . random_int(1, 250));
+        $this->assertNotSame($id, (int) $again['id']);
+    }
+
+    public function testLastAdminCannotDeleteAccount(): void
+    {
+        [$account, $user, $d] = $this->accountFixture();
+        $pdo = Database::pdo();
+        $pdo->prepare("UPDATE users SET role = 'admin' WHERE id = ?")->execute([$user['id']]);
+        $user = $this->userRow((int) $user['id']);
+        $others = (int) $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'admin' AND id <> {$user['id']}")->fetchColumn();
+        if ($others > 0) {
+            $this->markTestSkipped('W bazie sa inni administratorzy, wiec to konto nie jest ostatnim.');
+        }
+
+        try {
+            $account->deleteAccount($user, $d['password'], '10.0.14.' . random_int(1, 250));
+            $this->fail('Ostatni administrator nie moze usunac konta.');
+        } catch (ApiException $e) {
+            $this->assertSame('last_admin', $e->errorCode);
+        }
+    }
 }
