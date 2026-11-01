@@ -7,6 +7,7 @@ use PDO;
 use Turysta\Game\Clock;
 use Turysta\Http\ApiException;
 use Turysta\Mailer;
+use Turysta\MailTemplate;
 
 /** Edycja konta przez zalogowanego gracza: plec i awatar, e-mail, haslo. Nazwy postaci zmienic nie mozna. */
 final class AccountService
@@ -102,11 +103,8 @@ final class AccountService
         $this->pdo->commit();
 
         $base = rtrim(getenv('APP_URL') ?: 'http://localhost', '/');
-        $this->mailer->send(
-            $email,
-            'Potwierdź nowy adres e-mail w grze Dwa Dukaty',
-            "Cześć {$user['character_name']}!\n\nPotwierdź nowy adres e-mail, klikając link:\n$base/api/v1/auth/verify-email?token=$token\n\nLink działa przez 2 dni."
-        );
+        $mail = MailTemplate::verification((string) $user['character_name'], "$base/potwierdz-email?token=$token", true);
+        $this->mailer->send($email, 'Potwierdź nowy adres e-mail w grze Dwa Dukaty', $mail['text'], $mail['html']);
     }
 
     /**
@@ -154,11 +152,8 @@ final class AccountService
         $this->pdo->commit();
 
         $base = rtrim(getenv('APP_URL') ?: 'http://localhost', '/');
-        $sent = $this->mailer->send(
-            (string) $user['email'],
-            'Potwierdź adres e-mail w grze Dwa Dukaty',
-            "Cześć {$user['character_name']}!\n\nPotwierdź swój adres e-mail, klikając link:\n$base/api/v1/auth/verify-email?token=$token\n\nLink działa przez 2 dni."
-        );
+        $mail = MailTemplate::verification((string) $user['character_name'], "$base/potwierdz-email?token=$token", false);
+        $sent = $this->mailer->send((string) $user['email'], 'Potwierdź adres e-mail w grze Dwa Dukaty', $mail['text'], $mail['html']);
         if (!$sent) {
             throw new ApiException(503, 'mail_failed', 'Nie udało się wysłać wiadomości. Spróbuj ponownie później.');
         }

@@ -109,11 +109,8 @@ final class AuthService
         }
 
         $base = rtrim(getenv('APP_URL') ?: 'http://localhost', '/');
-        $this->mailer->send(
-            $email,
-            'Potwierdź adres e-mail w grze Dwa Dukaty',
-            "Cześć $name!\n\nPotwierdź swój adres e-mail, klikając link:\n$base/api/v1/auth/verify-email?token=$token\n\nLink działa przez 2 dni."
-        );
+        $mail = \Turysta\MailTemplate::verification($name, "$base/potwierdz-email?token=$token", false);
+        $this->mailer->send($email, 'Potwierdź adres e-mail w grze Dwa Dukaty', $mail['text'], $mail['html']);
 
         return ['id' => $userId, 'email' => $email, 'character_name' => $name];
     }

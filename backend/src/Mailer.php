@@ -8,7 +8,8 @@ use Throwable;
 
 class Mailer
 {
-    public function send(string $to, string $subject, string $text): bool
+    /** Wysyla wiadomosc; z $html idzie wersja HTML, a $text jest jej odpowiednikiem tekstowym (AltBody). */
+    public function send(string $to, string $subject, string $text, ?string $html = null): bool
     {
         try {
             $mail = new PHPMailer(true);
@@ -34,8 +35,14 @@ class Mailer
             $mail->setFrom(getenv('MAIL_FROM') ?: 'no-reply@dwadukaty.pl', 'Dwa Dukaty');
             $mail->addAddress($to);
             $mail->Subject = $subject;
-            $mail->Body = $text;
-            $mail->isHTML(false);
+            if ($html !== null) {
+                $mail->isHTML(true);
+                $mail->Body = $html;
+                $mail->AltBody = $text;
+            } else {
+                $mail->isHTML(false);
+                $mail->Body = $text;
+            }
             $mail->send();
             return true;
         } catch (Throwable $e) {

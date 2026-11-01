@@ -510,6 +510,14 @@
     "resend": "Wyślij link ponownie",
     "sent": "Wysłaliśmy nowy link na {{email}}. Poprzednie linki przestały działać."
   },
+  "verifyPage": {
+    "title": "Potwierdzenie adresu e-mail",
+    "loading": "Potwierdzamy Twój adres…",
+    "ok": "Adres e-mail został potwierdzony. Dziękujemy!",
+    "errorHint": "Link mógł wygasnąć albo został już użyty. Zaloguj się i poproś o nowy w pasku u góry strony.",
+    "toGame": "Przejdź do gry",
+    "toLogin": "Zaloguj się"
+  },
   "notFound": {
     "title": "Nie znaleziono strony",
     "back": "Wróć na stronę główną"

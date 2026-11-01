@@ -27,7 +27,7 @@ final class AuthFlowTest extends TestCase
             $this->markTestSkipped('Brak bazy z migracjami: ' . $e->getMessage());
         }
         $mailer = new class extends Mailer {
-            public function send(string $to, string $subject, string $text): bool
+            public function send(string $to, string $subject, string $text, ?string $html = null): bool
             {
                 return true;
             }
@@ -92,7 +92,7 @@ final class AuthFlowTest extends TestCase
         $d = $this->data();
         $created = $this->auth->register($d, '10.0.6.' . random_int(1, 250));
         $mailer = new class extends Mailer {
-            public function send(string $to, string $subject, string $text): bool
+            public function send(string $to, string $subject, string $text, ?string $html = null): bool
             {
                 return true;
             }
