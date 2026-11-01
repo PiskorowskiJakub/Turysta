@@ -399,7 +399,24 @@
     "title": "Zaloguj się",
     "submit": "Zaloguj",
     "noAccount": "Nie masz konta?",
-    "registered": "Udało się stworzyć konto. Możesz się zalogować."
+    "registered": "Udało się stworzyć konto. Możesz się zalogować.",
+    "forgot": "Nie pamiętasz hasła?"
+  },
+  "forgot": {
+    "title": "Nie pamiętasz hasła?",
+    "lead": "Podaj adres e-mail konta. Wyślemy na niego link do ustawienia nowego hasła.",
+    "submit": "Wyślij link",
+    "sent": "Jeśli konto z adresem {{email}} istnieje, wysłaliśmy na nie link do ustawienia nowego hasła.",
+    "sentHint": "Link działa przez godzinę. Nie ma wiadomości? Sprawdź spam albo spróbuj ponownie za kilka minut.",
+    "backToLogin": "Wróć do logowania"
+  },
+  "resetPassword": {
+    "title": "Nowe hasło",
+    "lead": "Wybierz nowe hasło do swojego konta. Po zmianie wylogujemy Cię na wszystkich urządzeniach.",
+    "submit": "Ustaw nowe hasło",
+    "done": "Hasło zostało ustawione. Możesz się teraz zalogować.",
+    "toLogin": "Zaloguj się",
+    "askAgain": "Poproś o nowy link"
   },
   "tutorial": {
     "title": "Pierwsze kroki",
@@ -498,7 +515,25 @@
     "newPasswordConfirm": "Powtórz nowe hasło",
     "passwordInfo": "Po zmianie hasła pozostałe urządzenia zostaną wylogowane.",
     "savePassword": "Zmień hasło",
-    "savedPassword": "Hasło zostało zmienione. Pozostałe sesje zostały wylogowane."
+    "savedPassword": "Hasło zostało zmienione. Pozostałe sesje zostały wylogowane.",
+    "deleteSection": "Usunięcie konta",
+    "deleteInfo": "Usunięcie konta kasuje na stałe Twoją postać: dukaty, umiejętności, odznaki, historię i postępy. Tego nie da się cofnąć. Później możesz założyć nowe konto na ten sam adres e-mail.",
+    "deleteSure": "Rozumiem, że konta nie da się odzyskać.",
+    "deleteButton": "Usuń konto na stałe"
+  },
+  "verify": {
+    "title": "Twoje konto nie zostało jeszcze potwierdzone.",
+    "text": "Kliknij link w wiadomości wysłanej na adres {{email}}. Nie widzisz jej? Zajrzyj do spamu albo poproś o nowy link.",
+    "resend": "Wyślij link ponownie",
+    "sent": "Wysłaliśmy nowy link na {{email}}. Poprzednie linki przestały działać."
+  },
+  "verifyPage": {
+    "title": "Potwierdzenie adresu e-mail",
+    "loading": "Potwierdzamy Twój adres…",
+    "ok": "Adres e-mail został potwierdzony. Dziękujemy!",
+    "errorHint": "Link mógł wygasnąć albo został już użyty. Zaloguj się i poproś o nowy w pasku u góry strony.",
+    "toGame": "Przejdź do gry",
+    "toLogin": "Zaloguj się"
   },
   "notFound": {
     "title": "Nie znaleziono strony",
@@ -515,6 +550,10 @@
     "rate_limited": "Za dużo prób. Spróbuj ponownie za kilkanaście minut.",
     "banned": "To konto zostało zablokowane.",
     "csrf_invalid": "Sesja wygasła. Odśwież stronę i spróbuj ponownie.",
+    "already_verified": "Ten adres e-mail jest już potwierdzony.",
+    "invalid_token": "Link jest nieprawidłowy lub wygasł.",
+    "mail_failed": "Nie udało się wysłać wiadomości. Spróbuj ponownie później.",
+    "last_admin": "Nie można usunąć ostatniego konta administratora.",
     "insufficient_funds": "Nie masz wystarczająco dukatów.",
     "queue_full": "Kolejka szkoleń jest pełna.",
     "max_level": "Ta umiejętność ma już maksymalny poziom.",

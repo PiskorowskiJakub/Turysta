@@ -4,6 +4,9 @@ import RequireAuth from './components/RequireAuth';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import TutorialPage from './pages/TutorialPage';
 import ProfilePage from './pages/ProfilePage';
 import EditProfilePage from './pages/EditProfilePage';
@@ -23,6 +26,9 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="logowanie" element={<LoginPage />} />
         <Route path="rejestracja" element={<RegisterPage />} />
+        <Route path="potwierdz-email" element={<VerifyEmailPage />} />
+        <Route path="zapomniane-haslo" element={<ForgotPasswordPage />} />
+        <Route path="nowe-haslo" element={<ResetPasswordPage />} />
         <Route element={<RequireAuth />}>
           <Route path="start/*" element={<HomeShell />} />
           <Route path="samouczek" element={<TutorialPage />} />

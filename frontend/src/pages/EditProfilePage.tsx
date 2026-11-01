@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
 import type { Avatar, Gender } from '../api/types';
@@ -19,7 +19,8 @@ const empty: Result = { fields: {} };
 
 export default function EditProfilePage() {
   const { t } = useTranslation();
-  const { me, updateAccountProfile, changeEmail, changePassword } = useAuth();
+  const { me, updateAccountProfile, changeEmail, changePassword, deleteAccount } = useAuth();
+  const navigate = useNavigate();
 
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [gender, setGender] = useState<Gender | null>(me?.user.gender ?? null);
@@ -34,6 +35,10 @@ export default function EditProfilePage() {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [pass, setPass] = useState<Result>(empty);
+
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteSure, setDeleteSure] = useState(false);
+  const [del, setDel] = useState<Result>(empty);
 
   const [busy, setBusy] = useState(false);
 
@@ -90,6 +95,20 @@ export default function EditProfilePage() {
       setPassword('');
       setPasswordConfirm('');
     });
+  };
+
+  const onDelete = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!deleteSure || !deletePassword) return;
+    setBusy(true);
+    setDel(empty);
+    try {
+      await deleteAccount(deletePassword);
+      navigate('/', { replace: true });
+    } catch (err) {
+      setDel(fail(err));
+      setBusy(false);
+    }
   };
 
   const messages = (r: Result) => (
@@ -178,6 +197,18 @@ export default function EditProfilePage() {
         <FormField label={t('editProfile.newPasswordConfirm')} name="password_confirm" type="password" value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)} error={pass.fields.password_confirm} autoComplete="new-password" required />
         <p className="field-hint">{t('editProfile.passwordInfo')}</p>
         <button className="button" type="submit" disabled={busy || !oldPassword || !password || !passwordConfirm}>{t('editProfile.savePassword')}</button>
+      </form>
+
+      <form className="panel edit-section danger-zone" onSubmit={(e) => void onDelete(e)} noValidate>
+        <h2>{t('editProfile.deleteSection')}</h2>
+        <p>{t('editProfile.deleteInfo')}</p>
+        {messages(del)}
+        <FormField label={t('editProfile.currentPassword')} name="delete_current_password" type="password" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)} error={del.fields.current_password} autoComplete="current-password" required />
+        <label className="check">
+          <input type="checkbox" checked={deleteSure} onChange={(e) => setDeleteSure(e.target.checked)} />
+          <span>{t('editProfile.deleteSure')}</span>
+        </label>
+        <button className="button danger" type="submit" disabled={busy || !deleteSure || !deletePassword}>{t('editProfile.deleteButton')}</button>
       </form>
     </>
   );

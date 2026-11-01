@@ -48,7 +48,7 @@ final class GameFlowTest extends TestCase
         $this->jobs = new JobService($this->pdo, $this->settler);
 
         $mailer = new class extends Mailer {
-            public function send(string $to, string $subject, string $text): bool
+            public function send(string $to, string $subject, string $text, ?string $html = null): bool
             {
                 return true;
             }

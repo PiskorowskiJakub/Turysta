@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { api } from '../api/client';
+import { api, ApiError } from '../api/client';
 import type { Avatar } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import Coins from './Coins';
@@ -28,6 +28,45 @@ function BrandMark() {
       <rect x="15" y="25" width="10" height="9" rx="1.5" fill="#f3ecd8" />
       <rect x="15" y="28" width="10" height="3" fill="#d8473a" />
     </svg>
+  );
+}
+
+/** Pasek dla gracza, ktory nie potwierdzil adresu e-mail; pozwala poprosic o nowy link. */
+function VerifyBanner({ email }: { email: string }) {
+  const { t } = useTranslation();
+  const { resendVerification, refresh } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const onResend = async () => {
+    setBusy(true);
+    setNotice(null);
+    setError(null);
+    try {
+      await resendVerification();
+      setNotice(t('verify.sent', { email }));
+    } catch (err) {
+      if (err instanceof ApiError && err.code === 'already_verified') {
+        await refresh();
+        return;
+      }
+      setError(err instanceof ApiError ? t(`errors.${err.code}`, { defaultValue: err.message }) : t('errors.network'));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="verify-banner" role="status">
+      <div className="verify-text">
+        <b>{t('verify.title')}</b>
+        <span>{t('verify.text', { email })}</span>
+        {notice && <span className="verify-ok">{notice}</span>}
+        {error && <span className="verify-err" role="alert">{error}</span>}
+      </div>
+      <button type="button" className="button small" disabled={busy} onClick={() => void onResend()}>{t('verify.resend')}</button>
+    </div>
   );
 }
 
@@ -108,6 +147,8 @@ export default function Layout() {
           )}
         </div>
       </header>
+
+      {authed && !me.user.email_verified && <VerifyBanner email={me.user.email} />}
 
       <div className="shell">
         <nav className="menu" aria-label={t('nav.menu')}>

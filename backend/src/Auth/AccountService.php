@@ -7,6 +7,7 @@ use PDO;
 use Turysta\Game\Clock;
 use Turysta\Http\ApiException;
 use Turysta\Mailer;
+use Turysta\MailTemplate;
 
 /** Edycja konta przez zalogowanego gracza: plec i awatar, e-mail, haslo. Nazwy postaci zmienic nie mozna. */
 final class AccountService
@@ -102,11 +103,8 @@ final class AccountService
         $this->pdo->commit();
 
         $base = rtrim(getenv('APP_URL') ?: 'http://localhost', '/');
-        $this->mailer->send(
-            $email,
-            'Potwierdź nowy adres e-mail w grze Dwa Dukaty',
-            "Cześć {$user['character_name']}!\n\nPotwierdź nowy adres e-mail, klikając link:\n$base/api/v1/auth/verify-email?token=$token\n\nLink działa przez 2 dni."
-        );
+        $mail = MailTemplate::verification((string) $user['character_name'], "$base/potwierdz-email?token=$token", true);
+        $this->mailer->send($email, 'Potwierdź nowy adres e-mail w grze Dwa Dukaty', $mail['text'], $mail['html']);
     }
 
     /**
@@ -129,6 +127,53 @@ final class AccountService
             ->execute([password_hash($password, PASSWORD_ARGON2ID), $user['id']]);
         $this->pdo->prepare('DELETE FROM sessions WHERE user_id = ? AND id <> ?')
             ->execute([$user['id'], $keepSessionId ?? '']);
+    }
+
+    /**
+     * Wysyla ponownie link potwierdzajacy adres e-mail (poprzednie linki przestaja dzialac).
+     *
+     * @param array<string,mixed> $user wiersz users
+     */
+    public function resendVerification(array $user, string $ip): void
+    {
+        if ($user['email_verified_at'] !== null) {
+            throw new ApiException(409, 'already_verified', 'Ten adres e-mail jest już potwierdzony.');
+        }
+        if ($this->limiter->hit('resend:' . $user['id'], 3, 3600) || $this->limiter->hit('resend:ip:' . $ip, 10, 3600)) {
+            throw new ApiException(429, 'rate_limited', 'Za dużo próśb o link. Spróbuj za godzinę.');
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $this->pdo->beginTransaction();
+        $this->pdo->prepare('DELETE FROM email_verifications WHERE user_id = ?')->execute([$user['id']]);
+        $this->pdo->prepare(
+            'INSERT INTO email_verifications (token_hash, user_id, expires_at) VALUES (?, ?, UTC_TIMESTAMP() + INTERVAL 2 DAY)'
+        )->execute([hash('sha256', $token), $user['id']]);
+        $this->pdo->commit();
+
+        $base = rtrim(getenv('APP_URL') ?: 'http://localhost', '/');
+        $mail = MailTemplate::verification((string) $user['character_name'], "$base/potwierdz-email?token=$token", false);
+        $sent = $this->mailer->send((string) $user['email'], 'Potwierdź adres e-mail w grze Dwa Dukaty', $mail['text'], $mail['html']);
+        if (!$sent) {
+            throw new ApiException(503, 'mail_failed', 'Nie udało się wysłać wiadomości. Spróbuj ponownie później.');
+        }
+    }
+
+    /**
+     * Usuwa konto gracza po podaniu hasla. Ostatniego administratora usunac nie mozna.
+     *
+     * @param array<string,mixed> $user wiersz users
+     */
+    public function deleteAccount(array $user, string $currentPassword, string $ip): void
+    {
+        $this->requirePassword($user, $currentPassword, $ip);
+        if ($user['role'] === 'admin') {
+            $admins = (int) $this->pdo->query("SELECT COUNT(*) FROM users WHERE role = 'admin'")->fetchColumn();
+            if ($admins <= 1) {
+                throw new ApiException(409, 'last_admin', 'Nie można usunąć ostatniego konta administratora.');
+            }
+        }
+        (new UserDeleter($this->pdo))->delete((int) $user['id']);
     }
 
     /** @param array<string,mixed> $user */

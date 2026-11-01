@@ -6,6 +6,7 @@ namespace Turysta;
 use Throwable;
 use Turysta\Auth\AccountService;
 use Turysta\Auth\AuthService;
+use Turysta\Auth\PasswordResetService;
 use Turysta\Auth\RateLimiter;
 use Turysta\Auth\Session;
 use Turysta\Controller\AccountController;
@@ -14,6 +15,7 @@ use Turysta\Controller\AuthController;
 use Turysta\Controller\GameController;
 use Turysta\Controller\HomeController;
 use Turysta\Controller\MeController;
+use Turysta\Controller\PasswordResetController;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
 use Turysta\Game\TrainingService;
@@ -27,6 +29,7 @@ final class App
     {
         $pdo = Database::pdo();
         $auth = new AuthController(new AuthService($pdo, new Mailer(), new RateLimiter($pdo)));
+        $passwordReset = new PasswordResetController(new PasswordResetService($pdo, new Mailer(), new RateLimiter($pdo)));
         $settler = new Settler($pdo);
         $training = new TrainingService($pdo, $settler);
         $jobs = new JobService($pdo, $settler);
@@ -54,6 +57,8 @@ final class App
         $router->post('/v1/auth/login', [$auth, 'login']);
         $router->post('/v1/auth/logout', [$auth, 'logout']);
         $router->get('/v1/auth/verify-email', [$auth, 'verifyEmail']);
+        $router->post('/v1/auth/forgot-password', [$passwordReset, 'forgot']);
+        $router->post('/v1/auth/reset-password', [$passwordReset, 'reset']);
 
         $router->get('/v1/avatars', [$me, 'avatars']);
         $router->get('/v1/me', [$me, 'show']);
@@ -62,6 +67,8 @@ final class App
         $router->patch('/v1/account/profile', [$account, 'updateProfile']);
         $router->put('/v1/account/email', [$account, 'changeEmail']);
         $router->put('/v1/account/password', [$account, 'changePassword']);
+        $router->post('/v1/account/resend-verification', [$account, 'resendVerification']);
+        $router->post('/v1/account/delete', [$account, 'deleteAccount']);
 
         $router->get('/v1/home', [$home, 'show']);
         $router->get('/v1/announcements', [$home, 'announcements']);
