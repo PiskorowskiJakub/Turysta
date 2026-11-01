@@ -1,0 +1,101 @@
+# Produkcja za ISTNIEJACYM Traefikiem (ten sam serwer co inna strona): gra nie uruchamia wlasnego Traefika,
+# tylko podlacza sie do jego sieci i dostaje certyfikat Let's Encrypt z jego resolvera.
+# Uzycie: docker compose -f docker-compose.prod.yml up -d --build   (albo COMPOSE_FILE=docker-compose.prod.yml w .env)
+# Wymagane zmienne w .env: patrz .env.prod.example (GAME_DOMAIN, TRAEFIK_NETWORK, TRAEFIK_CERTRESOLVER, ...).
+name: turysta
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # Uwaga: usługi w sieci Traefika (web) mają unikalne nazwy (turysta-web, turysta-api), bo druga strona na tym serwerze
+  # ma kontenery o nazwach frontend/backend i DNS Dockera nie moze ich pomylic.
+  turysta-web:
+    build: ./frontend
+    restart: unless-stopped
+    logging: *logging
+    networks: [default, proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.turysta-web.rule=Host(`${GAME_DOMAIN}`)
+      - traefik.http.routers.turysta-web.priority=1
+      - traefik.http.routers.turysta-web.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}
+      - traefik.http.routers.turysta-web.tls=true
+      - traefik.http.routers.turysta-web.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.services.turysta-web.loadbalancer.server.port=80
+
+  turysta-api:
+    build: ./backend
+    restart: unless-stopped
+    logging: *logging
+    env_file: .env
+    environment:
+      # Unikalna nazwa bazy: backend jest tez w sieci Traefika, gdzie moze istniec inny kontener o nazwie "db".
+      DB_HOST: turysta-db
+    networks: [default, proxy]
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.turysta-api.rule=Host(`${GAME_DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.routers.turysta-api.priority=10
+      - traefik.http.routers.turysta-api.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}
+      - traefik.http.routers.turysta-api.tls=true
+      - traefik.http.routers.turysta-api.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.services.turysta-api.loadbalancer.server.port=80
+
+  scheduler:
+    build: ./backend
+    restart: unless-stopped
+    logging: *logging
+    env_file: .env
+    environment:
+      DB_HOST: turysta-db
+    entrypoint: ["/var/www/html/docker/scheduler-entrypoint.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep cron > /dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    logging: *logging
+    # performance_schema wylaczone: oszczedza kilkaset MB RAM na wspolnym serwerze.
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --performance-schema=OFF
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: UTC
+    networks:
+      default:
+        aliases: [turysta-db]
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+networks:
+  # Siec istniejacego Traefika (sprawdz: docker network ls). Musi byc zewnetrzna.
+  proxy:
+    external: true
+    name: ${TRAEFIK_NETWORK}
+
+volumes:
+  db_data:
+    name: turysta_db_data
