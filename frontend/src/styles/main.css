@@ -357,6 +357,13 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .field input { padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg2); color: var(--cream); font: inherit; }
 .field input:focus { outline: 0; border-color: var(--orange); }
 .field input[aria-invalid='true'] { border-color: var(--error); }
+.input-wrap { position: relative; display: flex; }
+.input-wrap input { width: 100%; padding-right: 46px; }
+.input-wrap input::-ms-reveal, .input-wrap input::-ms-clear { display: none; }
+.reveal { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; padding: 0; display: grid; place-items: center; background: transparent; border: 0; border-radius: 8px; color: var(--khaki); cursor: pointer; }
+.reveal svg { width: 20px; height: 20px; }
+.reveal:hover { color: var(--orange); }
+.reveal:focus-visible { outline: 2px solid var(--orange); outline-offset: 1px; }
 .field-error, .form-error { color: var(--error); margin: 0 0 8px; font-size: 0.9rem; }
 .form-success { color: var(--moss); font-weight: 600; }
 .form-notice { background: rgba(240, 138, 60, 0.12); border: 1.5px dashed var(--orange); padding: 8px 12px; border-radius: 10px; margin: 0 0 12px; font-size: 14px; }

@@ -1,7 +1,7 @@
 export type IconName =
   | 'home' | 'profile' | 'skills' | 'job' | 'logout' | 'login' | 'register'
   | 'coins' | 'ticket' | 'points' | 'fitness' | 'orientation' | 'trade'
-  | 'sprout' | 'rank' | 'medal' | 'market' | 'hostel' | 'expedition' | 'lock' | 'team' | 'check' | 'help' | 'gift' | 'admin';
+  | 'sprout' | 'rank' | 'medal' | 'market' | 'hostel' | 'expedition' | 'lock' | 'team' | 'check' | 'help' | 'gift' | 'admin' | 'eye' | 'eyeOff';
 
 const PATHS: Record<IconName, string> = {
   home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
@@ -28,6 +28,8 @@ const PATHS: Record<IconName, string> = {
   help: 'M12 3a9 9 0 1 0 .01 0M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01',
   gift: 'M3 9h18v4H3zM5 13v8h14v-8M12 9v12M12 9C9 9 8 4 11 4c1.5 0 1 5 1 5zM12 9c3 0 4-5 1-5-1.5 0-1 5-1 5z',
   admin: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4',
+  eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 .01 0',
+  eyeOff: 'M3 3l18 18M10.6 5.1A9.8 9.8 0 0 1 12 5c6 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6A17 17 0 0 0 2 12s4 7 10 7a9.7 9.7 0 0 0 4-.9M9.9 9.9a3 3 0 0 0 4.2 4.2',
   team: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 3a4 4 0 1 0 0.01 0M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8',
 };
 
