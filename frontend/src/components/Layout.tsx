@@ -65,7 +65,7 @@ export default function Layout() {
         <div className="topbar-inner">
           <NavLink to="/" className="brand">
             <BrandMark />
-            <span className="brand-name">Turysta</span>
+            <span className="brand-name">Dwa Dukaty</span>
           </NavLink>
           <div className="fact">
             <b>{t('fact')}</b>

@@ -1,4 +1,4 @@
-# Turysta
+# Dwa Dukaty
 
 Monorepo:
 
@@ -26,6 +26,10 @@ docker compose exec backend php bin/migrate.php
 
 Nigdy nie uruchamiaj `docker compose down -v` na produkcji (kasuje baze).
 TLS (Let's Encrypt) dojdzie przy wdrozeniu na VPS.
+
+## Wdrożenie
+
+Na serwerze za istniejącym Traefikiem: [DEPLOY.md](DEPLOY.md) (`docker-compose.prod.yml`, `.env.prod.example`).
 
 ## Panel administratora
 

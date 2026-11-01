@@ -104,7 +104,7 @@ final class AccountService
         $base = rtrim(getenv('APP_URL') ?: 'http://localhost', '/');
         $this->mailer->send(
             $email,
-            'Potwierdź nowy adres e-mail w grze Turysta',
+            'Potwierdź nowy adres e-mail w grze Dwa Dukaty',
             "Cześć {$user['character_name']}!\n\nPotwierdź nowy adres e-mail, klikając link:\n$base/api/v1/auth/verify-email?token=$token\n\nLink działa przez 2 dni."
         );
     }

@@ -16,7 +16,7 @@
     "admin": "Panel admina"
   },
   "footer": "Copyright © 2026 Jakub Piskorowski",
-  "tagline": "Turysta – gra o podróżowaniu",
+  "tagline": "Dwa Dukaty – gra o podróżowaniu",
   "loading": "Ładowanie…",
   "wallet": {
     "coins": "Dukaty",
@@ -106,7 +106,7 @@
     }
   },
   "home": {
-    "title": "Witaj w Turyście",
+    "title": "Witaj w Dwóch Dukatach",
     "lead": "Ruszaj w drogę, szkol się, pracuj i zdobywaj odznaki. Zacznij od założenia konta.",
     "leadAuthed": "Miło Cię widzieć! Twoja wyprawa czeka.",
     "tabs": {
@@ -658,27 +658,27 @@
     "shotsLead": "Kilka ekranów z rozgrywki. Wszystko, co tu widzisz, znajdziesz w grze zaraz po założeniu konta.",
     "shots": {
       "training": {
-        "url": "turysta / umiejętności",
+        "url": "dwadukaty.pl / umiejętności",
         "title": "Szkolenia",
         "text": "Rozwijaj umiejętności. Pasek pokazuje, ile zostało do końca."
       },
       "job": {
-        "url": "turysta / praca",
+        "url": "dwadukaty.pl / praca",
         "title": "Praca",
         "text": "Zarabiaj dukaty. Krótsze prace możesz przerwać i dostać część zapłaty."
       },
       "worlds": {
-        "url": "turysta / światy",
+        "url": "dwadukaty.pl / światy",
         "title": "Światy i rozdziały",
         "text": "Awansuj z rozdziału do rozdziału, a potem do kolejnego świata."
       },
       "daily": {
-        "url": "turysta / start",
+        "url": "dwadukaty.pl / start",
         "title": "Codzienna nagroda",
         "text": "Loguj się codziennie, a nagrody w serii rosną z każdym dniem."
       },
       "ranking": {
-        "url": "turysta / ranking",
+        "url": "dwadukaty.pl / ranking",
         "title": "Ranking",
         "text": "Sprawdź, jak radzą sobie inni wędrowcy, i wspinaj się na szczyt."
       }

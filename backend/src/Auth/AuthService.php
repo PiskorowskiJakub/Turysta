@@ -111,7 +111,7 @@ final class AuthService
         $base = rtrim(getenv('APP_URL') ?: 'http://localhost', '/');
         $this->mailer->send(
             $email,
-            'Potwierdź adres e-mail w grze Turysta',
+            'Potwierdź adres e-mail w grze Dwa Dukaty',
             "Cześć $name!\n\nPotwierdź swój adres e-mail, klikając link:\n$base/api/v1/auth/verify-email?token=$token\n\nLink działa przez 2 dni."
         );
 
