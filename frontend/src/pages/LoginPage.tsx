@@ -41,6 +41,7 @@ export default function LoginPage() {
       <FormField label={t('register.email')} name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />
       <FormField label={t('register.password')} name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
       <button className="button" type="submit" disabled={busy}>{t('login.submit')}</button>
+      <p className="muted"><Link to="/zapomniane-haslo">{t('login.forgot')}</Link></p>
       <p className="muted">{t('login.noAccount')} <Link to="/rejestracja">{t('nav.register')}</Link></p>
     </form>
   );

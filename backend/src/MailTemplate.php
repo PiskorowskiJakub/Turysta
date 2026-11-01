@@ -23,7 +23,24 @@ final class MailTemplate
                 : 'Cieszymy się, że dołączasz do gry. Kliknij przycisk, aby potwierdzić swój adres e-mail i dokończyć zakładanie konta.',
             'Potwierdź adres e-mail',
             $url,
-            'Link działa przez 2 dni. Jeśli to nie Ty zakładałeś konto, po prostu zignoruj tę wiadomość.'
+            'Link działa przez 2 dni. Jeśli konto nie zostało założone przez Ciebie, po prostu zignoruj tę wiadomość.'
+        );
+    }
+
+    /**
+     * Mail z linkiem do ustawienia nowego hasla.
+     *
+     * @return array{html:string,text:string}
+     */
+    public static function passwordReset(string $name, string $url): array
+    {
+        return self::action(
+            'Ustaw nowe hasło',
+            "Cześć $name!",
+            'Dostaliśmy prośbę o ustawienie nowego hasła do Twojego konta w grze. Kliknij przycisk, aby je wybrać.',
+            'Ustaw nowe hasło',
+            $url,
+            'Link działa przez 1 godzinę i można go użyć tylko raz. Jeśli to nie Ty prosisz o zmianę, zignoruj tę wiadomość: Twoje dotychczasowe hasło nadal działa.'
         );
     }
 
