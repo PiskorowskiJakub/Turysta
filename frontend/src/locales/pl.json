@@ -675,6 +675,11 @@
     "skillsDone": "Spełniło wymaganie: {{done}} z {{total}}",
     "eventNote": "To wielkie wydarzenie: awans do nowego świata trwa znacznie dłużej i kosztuje znacznie więcej niż zwykły rozdział."
   },
+  "seo": {
+    "title": "Dwa Dukaty – darmowa gra przeglądarkowa o podróżowaniu",
+    "description": "Rzuć wszystko i ruszaj w świat. Szkol umiejętności, pracuj, zdobywaj odznaki i odkrywaj kolejne światy w darmowej grze przeglądarkowej. Bez instalacji.",
+    "imageAlt": "Dwa Dukaty – darmowa gra przeglądarkowa o podróżowaniu"
+  },
   "landing": {
     "kicker": "Gra przeglądarkowa o podróżowaniu",
     "title": "Rzuć wszystko i ruszaj w świat",

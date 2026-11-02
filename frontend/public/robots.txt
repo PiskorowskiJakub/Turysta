@@ -1,3 +1,6 @@
 # https://www.robotstxt.org/robotstxt.html
+# Indeksowana jest strona glowna; reszta serwisu dostaje naglowek X-Robots-Tag: noindex (nginx).
 User-agent: *
-Disallow:
+Disallow: /api/
+
+Sitemap: https://dwadukaty.pl/sitemap.xml
