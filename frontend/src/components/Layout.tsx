@@ -86,6 +86,12 @@ export default function Layout() {
       .catch(() => setFact(null));
   }, []);
 
+  // Na telefonie dolne menu przewija sie poziomo: aktywna pozycja ma byc widoczna.
+  useEffect(() => {
+    if (!window.matchMedia('(max-width: 900px)').matches) return;
+    document.querySelector('.menu-item.active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+  }, [location.pathname, status]);
+
   useEffect(() => {
     if (status !== 'authed') return;
     api<{ avatars: Avatar[] }>('GET', '/avatars')
