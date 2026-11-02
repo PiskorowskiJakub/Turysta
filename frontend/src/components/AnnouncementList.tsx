@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { Announcement } from '../api/types';
 import { formatDate } from '../format';
@@ -13,6 +14,7 @@ export default function AnnouncementList({ items }: { items: Announcement[] }) {
           <h3>{a.pinned && <span title={t('home.board.pinned')} aria-label={t('home.board.pinned')}>★ </span>}{a.title}</h3>
           <time dateTime={a.created_at}>{formatDate(a.created_at)}</time>
           <p>{a.body}</p>
+          {typeof a.update_id === 'number' && <p><Link to={`/aktualizacje/${a.update_id}`}>{t('home.board.more')}</Link></p>}
         </li>
       ))}
     </ul>

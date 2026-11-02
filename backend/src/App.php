@@ -85,6 +85,7 @@ final class App
 
         $router->get('/v1/home', [$home, 'show']);
         $router->get('/v1/announcements', [$home, 'announcements']);
+        $router->get('/v1/updates', [$home, 'updates']);
         $router->post('/v1/daily-reward/claim', [$home, 'claimDaily']);
 
         $router->get('/v1/admin/stats', [$admin, 'stats']);
@@ -108,6 +109,10 @@ final class App
         $router->put('/v1/admin/announcements/{id}', [$admin, 'updateAnnouncement']);
         $router->delete('/v1/admin/announcements/{id}', [$admin, 'deleteAnnouncement']);
 
+        $router->get('/v1/admin/updates', [$admin, 'updates']);
+        $router->post('/v1/admin/updates', [$admin, 'createUpdate']);
+        $router->put('/v1/admin/updates/{id}', [$admin, 'saveUpdate']);
+        $router->delete('/v1/admin/updates/{id}', [$admin, 'deleteUpdate']);
         $router->get('/v1/admin/bug-reports', [$admin, 'bugReports']);
         $router->patch('/v1/admin/bug-reports/{id}', [$admin, 'setBugReportStatus']);
         $router->delete('/v1/admin/bug-reports/{id}', [$admin, 'deleteBugReport']);

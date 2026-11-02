@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import Tabs, { type TabItem } from '../components/Tabs';
+import AdminUpdatesPage from './admin/AdminUpdatesPage';
 import AdminBugReportsPage from './admin/AdminBugReportsPage';
 import AdminAnnouncementsPage from './admin/AdminAnnouncementsPage';
 import AdminFactsPage from './admin/AdminFactsPage';
@@ -25,6 +26,7 @@ export default function AdminPage() {
       label: t('admin.tabs.content'),
       children: [
         { path: 'ogloszenia', label: t('admin.tabs.announcements') },
+        { path: 'aktualizacje', label: t('admin.tabs.updates') },
         { path: 'ciekawostki', label: t('admin.tabs.facts') },
       ],
     },
@@ -50,6 +52,7 @@ export default function AdminPage() {
         <Route path="gracze/:id/*" element={<AdminUserPage />} />
         <Route path="tresci" element={<Navigate to="ogloszenia" replace />} />
         <Route path="tresci/ogloszenia" element={<AdminAnnouncementsPage />} />
+        <Route path="tresci/aktualizacje" element={<AdminUpdatesPage />} />
         <Route path="tresci/ciekawostki" element={<AdminFactsPage />} />
         <Route path="zgloszenia" element={<AdminBugReportsPage />} />
         <Route path="logi" element={<Navigate to="logowania" replace />} />

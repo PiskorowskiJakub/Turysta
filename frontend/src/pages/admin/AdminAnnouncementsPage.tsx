@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../../api/client';
-import type { Announcement } from '../../api/types';
+import type { Announcement, UpdateEntry } from '../../api/types';
 import { formatDate } from '../../format';
 
 interface Draft {
@@ -10,14 +10,16 @@ interface Draft {
   body: string;
   published: boolean;
   pinned: boolean;
+  update_id: number | null;
 }
 
-const EMPTY: Draft = { id: null, title: '', body: '', published: true, pinned: false };
+const EMPTY: Draft = { id: null, title: '', body: '', published: true, pinned: false, update_id: null };
 
 /** Tablica ogloszen: dodawanie, edycja, przypinanie, szkice i usuwanie. */
 export default function AdminAnnouncementsPage() {
   const { t } = useTranslation();
   const [items, setItems] = useState<Announcement[]>([]);
+  const [updates, setUpdates] = useState<UpdateEntry[]>([]);
   const [draft, setDraft] = useState<Draft>(EMPTY);
   const [fields, setFields] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -39,6 +41,7 @@ export default function AdminAnnouncementsPage() {
   const load = useCallback(async () => {
     try {
       setItems((await api<{ announcements: Announcement[] }>('GET', '/admin/announcements')).announcements);
+      setUpdates((await api<{ updates: UpdateEntry[] }>('GET', '/admin/updates')).updates);
     } catch (e) {
       fail(e);
     }
@@ -54,7 +57,7 @@ export default function AdminAnnouncementsPage() {
     setFields({});
     setMessage(null);
     try {
-      const body = { title: draft.title, body: draft.body, published: draft.published, pinned: draft.pinned };
+      const body = { title: draft.title, body: draft.body, published: draft.published, pinned: draft.pinned, update_id: draft.update_id };
       if (draft.id === null) await api('POST', '/admin/announcements', body);
       else await api('PUT', `/admin/announcements/${draft.id}`, body);
       setMessage({ ok: true, text: t(draft.id === null ? 'admin.created' : 'admin.saved') });
@@ -99,6 +102,14 @@ export default function AdminAnnouncementsPage() {
           <textarea id="ann-body" rows={6} value={draft.body} maxLength={2000} onChange={(e) => setDraft({ ...draft, body: e.target.value })} aria-invalid={fields.body ? true : undefined} />
           {fields.body && <p className="field-error">{fields.body}</p>}
         </div>
+        <div className="field">
+          <label htmlFor="ann-update">{t('admin.announcementUpdate')}</label>
+          <select id="ann-update" value={draft.update_id ?? ''} onChange={(e) => setDraft({ ...draft, update_id: e.target.value === '' ? null : Number(e.target.value) })}>
+            <option value="">{t('admin.noUpdate')}</option>
+            {updates.map((u) => <option key={u.id} value={u.id}>{u.title}</option>)}
+          </select>
+          {fields.update_id && <p className="field-error">{fields.update_id}</p>}
+        </div>
         <p className="check-row">
           <label><input type="checkbox" checked={draft.published} onChange={(e) => setDraft({ ...draft, published: e.target.checked })} /> {t('admin.published')}</label>
           <label><input type="checkbox" checked={draft.pinned} onChange={(e) => setDraft({ ...draft, pinned: e.target.checked })} /> {t('admin.pinned')}</label>
@@ -122,7 +133,7 @@ export default function AdminAnnouncementsPage() {
                 <small>{formatDate(a.created_at)} · {a.published ? t('admin.statusPublished') : t('admin.statusDraft')}</small>
               </div>
               <div className="actions">
-                <button type="button" className="button small secondary" onClick={() => { setDraft({ id: a.id, title: a.title, body: a.body, published: a.published, pinned: a.pinned }); setFields({}); setMessage(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>{t('admin.edit')}</button>
+                <button type="button" className="button small secondary" onClick={() => { setDraft({ id: a.id, title: a.title, body: a.body, published: a.published, pinned: a.pinned, update_id: a.update_id }); setFields({}); setMessage(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>{t('admin.edit')}</button>
                 {confirmId === a.id ? (
                   <>
                     <button type="button" className="button small" disabled={busy} onClick={() => void remove(a.id)}>{t('admin.confirmDelete')}</button>

@@ -40,9 +40,9 @@ final class AnnouncementService
      */
     public function create(int $authorId, array $in): array
     {
-        [$title, $body, $published, $pinned] = $this->validated($in);
-        $this->pdo->prepare('INSERT INTO announcements (title, body, published, pinned, author_id) VALUES (?, ?, ?, ?, ?)')
-            ->execute([$title, $body, $published, $pinned, $authorId]);
+        [$title, $body, $published, $pinned, $updateId] = $this->validated($in);
+        $this->pdo->prepare('INSERT INTO announcements (title, body, published, pinned, update_id, author_id) VALUES (?, ?, ?, ?, ?, ?)')
+            ->execute([$title, $body, $published, $pinned, $updateId, $authorId]);
         return $this->find((int) $this->pdo->lastInsertId());
     }
 
@@ -53,9 +53,9 @@ final class AnnouncementService
     public function update(int $id, array $in): array
     {
         $this->find($id);
-        [$title, $body, $published, $pinned] = $this->validated($in);
-        $this->pdo->prepare('UPDATE announcements SET title = ?, body = ?, published = ?, pinned = ? WHERE id = ?')
-            ->execute([$title, $body, $published, $pinned, $id]);
+        [$title, $body, $published, $pinned, $updateId] = $this->validated($in);
+        $this->pdo->prepare('UPDATE announcements SET title = ?, body = ?, published = ?, pinned = ?, update_id = ? WHERE id = ?')
+            ->execute([$title, $body, $published, $pinned, $updateId, $id]);
         return $this->find($id);
     }
 
@@ -79,7 +79,7 @@ final class AnnouncementService
 
     /**
      * @param array<string,mixed> $in
-     * @return array{0:string,1:string,2:int,3:int}
+     * @return array{0:string,1:string,2:int,3:int,4:?int}
      */
     private function validated(array $in): array
     {
@@ -92,10 +92,14 @@ final class AnnouncementService
         if ($body === '' || mb_strlen($body) > self::BODY_MAX) {
             $errors['body'] = 'Treść musi mieć od 1 do ' . self::BODY_MAX . ' znaków.';
         }
+        $updateId = isset($in['update_id']) && $in['update_id'] !== '' && $in['update_id'] !== null ? (int) $in['update_id'] : null;
+        if ($updateId !== null && !(new UpdateService($this->pdo))->exists($updateId)) {
+            $errors['update_id'] = 'Wybrana aktualizacja nie istnieje.';
+        }
         if ($errors) {
             throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', $errors);
         }
-        return [$title, $body, empty($in['published']) ? 0 : 1, empty($in['pinned']) ? 0 : 1];
+        return [$title, $body, empty($in['published']) ? 0 : 1, empty($in['pinned']) ? 0 : 1, $updateId];
     }
 
     /**
@@ -110,6 +114,7 @@ final class AnnouncementService
             'body' => (string) $r['body'],
             'published' => (bool) $r['published'],
             'pinned' => (bool) $r['pinned'],
+            'update_id' => $r['update_id'] !== null ? (int) $r['update_id'] : null,
             'created_at' => Clock::iso((string) $r['created_at']),
             'updated_at' => Clock::iso((string) $r['updated_at']),
         ];
