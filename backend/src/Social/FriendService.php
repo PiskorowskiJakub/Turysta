@@ -6,6 +6,8 @@ namespace Turysta\Social;
 use PDO;
 use PDOException;
 use Turysta\Auth\RateLimiter;
+use Turysta\Game\BadgeService;
+use Turysta\Game\Clock;
 use Turysta\Game\Notifier;
 use Turysta\Http\ApiException;
 
@@ -160,6 +162,9 @@ final class FriendService
         [$a, $b] = $this->pair($me, $otherId);
         $this->pdo->prepare("UPDATE friendships SET status = 'accepted', responded_at = UTC_TIMESTAMP() WHERE user_a = ? AND user_b = ?")
             ->execute([$a, $b]);
+        $now = Clock::now($this->pdo);
+        BadgeService::sync($this->pdo, $me, $now);
+        BadgeService::sync($this->pdo, $otherId, $now);
         Notifier::add($this->pdo, $otherId, 'friend_accepted', ['name' => (string) $user['character_name']]);
     }
 

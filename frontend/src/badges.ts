@@ -52,6 +52,24 @@ export const SPECIAL_BADGES: SpecialBadge[] = [
       { name: 'gold', min: 365 },
     ],
   },
+  {
+    code: 'special_friends',
+    tiers: [
+      { name: 'bronze', min: 1 },
+      { name: 'silver', min: 5 },
+      { name: 'gold', min: 10 },
+      { name: 'diamond', min: 25 },
+      { name: 'ruby', min: 50 },
+    ],
+  },
+  {
+    code: 'special_rival',
+    tiers: [
+      { name: 'bronze', min: 1 },
+      { name: 'silver', min: 3 },
+      { name: 'gold', min: 10 },
+    ],
+  },
 ];
 
 /** Kolejnosc stopni od najnizszego; sluzy do wyboru najwyzszej zdobytej odznaki. */

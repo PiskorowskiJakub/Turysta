@@ -7,7 +7,7 @@ interface Props {
   group: string;
   badge: Highest;
   name: string;
-  unit: 'level' | 'days';
+  unit: 'level' | 'days' | 'friends' | 'rivals';
   onClick?: () => void;
   selected?: boolean;
 }
@@ -15,7 +15,7 @@ interface Props {
 /** Okragla odznaka (najwyzszy zdobyty stopien), pod nia nazwa i data zdobycia. Z onClick dziala jak przycisk wyboru. */
 export default function BadgeCircle({ group, badge, name, unit, onClick, selected = false }: Props) {
   const { t } = useTranslation();
-  const need = unit === 'days' ? t('badges.tierDays', { n: badge.min }) : t('training.tierAt', { level: badge.min });
+  const need = unit === 'level' ? t('training.tierAt', { level: badge.min }) : t(`badges.tier_${unit}`, { count: badge.min });
   const tip = `${t(`training.tier.${badge.tier}`)}: ${need}`;
   const body = (
     <>
