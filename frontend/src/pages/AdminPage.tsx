@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import Tabs, { type TabItem } from '../components/Tabs';
+import AdminBugReportsPage from './admin/AdminBugReportsPage';
 import AdminAnnouncementsPage from './admin/AdminAnnouncementsPage';
 import AdminFactsPage from './admin/AdminFactsPage';
 import { AdminAuditPage, AdminLoginsPage } from './admin/AdminLogsPages';
@@ -27,6 +28,7 @@ export default function AdminPage() {
         { path: 'ciekawostki', label: t('admin.tabs.facts') },
       ],
     },
+    { path: 'zgloszenia', label: t('admin.tabs.bugs') },
     {
       path: 'logi',
       label: t('admin.tabs.logs'),
@@ -49,6 +51,7 @@ export default function AdminPage() {
         <Route path="tresci" element={<Navigate to="ogloszenia" replace />} />
         <Route path="tresci/ogloszenia" element={<AdminAnnouncementsPage />} />
         <Route path="tresci/ciekawostki" element={<AdminFactsPage />} />
+        <Route path="zgloszenia" element={<AdminBugReportsPage />} />
         <Route path="logi" element={<Navigate to="logowania" replace />} />
         <Route path="logi/logowania" element={<AdminLoginsPage />} />
         <Route path="logi/dzialania" element={<AdminAuditPage />} />

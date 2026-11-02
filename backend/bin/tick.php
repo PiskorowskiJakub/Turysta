@@ -30,4 +30,12 @@ foreach ($ids as $id) {
 $pdo->exec('DELETE FROM rate_limits WHERE window_start < UTC_TIMESTAMP() - INTERVAL 1 DAY');
 $pdo->exec('DELETE FROM sessions WHERE last_activity < UTC_TIMESTAMP() - INTERVAL 14 DAY');
 
+// Raz na godzine: konta, ktorych adres e-mail nie zostal potwierdzony w ciagu 30 dni.
+if ((int) gmdate('i') === 7) {
+    $removed = (new \Turysta\Auth\UnverifiedCleaner($pdo))->run();
+    if ($removed > 0) {
+        echo gmdate('c'), " tick: usunieto niepotwierdzone konta: $removed\n";
+    }
+}
+
 echo gmdate('c'), " tick: rozliczono $done\n";

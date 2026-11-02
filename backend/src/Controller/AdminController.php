@@ -9,10 +9,12 @@ use Turysta\Admin\AdminLogService;
 use Turysta\Admin\AdminStatsService;
 use Turysta\Admin\AdminUserService;
 use Turysta\Admin\FactService;
+use Turysta\Auth\RateLimiter;
 use Turysta\Auth\Session;
 use Turysta\Game\AnnouncementService;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
+use Turysta\Support\BugReportService;
 
 /** Panel administratora: statystyki, gracze, logi i tresci (ogloszenia, ciekawostki). Kazda akcja wymaga roli admin, a zmiany trafiaja do dziennika. */
 final class AdminController
@@ -22,6 +24,7 @@ final class AdminController
     private AdminUserService $users;
     private AdminLogService $logs;
     private AdminStatsService $stats;
+    private BugReportService $bugs;
 
     public function __construct(private PDO $pdo)
     {
@@ -30,6 +33,7 @@ final class AdminController
         $this->users = new AdminUserService($pdo);
         $this->logs = new AdminLogService($pdo);
         $this->stats = new AdminStatsService($pdo);
+        $this->bugs = new BugReportService($pdo, new RateLimiter($pdo));
     }
 
     // ---- statystyki ----
@@ -223,6 +227,43 @@ final class AdminController
         $this->announcements->delete($id);
         AdminAudit::log($this->pdo, (int) $admin['id'], 'announcement.delete', null, ['id' => $id], $r->ip());
         return [200, ['message' => 'Ogłoszenie usunięto.']];
+    }
+
+    // ---- zgloszenia bledow ----
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function bugReports(Request $r): array
+    {
+        Session::requireAdmin($r);
+        $q = $r->query;
+        return [200, $this->bugs->list((int) ($q['page'] ?? 1), $this->str($q['status'] ?? '')) + ['new_count' => $this->bugs->countNew()]];
+    }
+
+    /**
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
+    public function setBugReportStatus(Request $r, array $params = []): array
+    {
+        $admin = Session::requireAdmin($r);
+        $id = $this->id($params);
+        $status = $this->str($r->body['status'] ?? '');
+        $this->bugs->setStatus($id, $status);
+        AdminAudit::log($this->pdo, (int) $admin['id'], 'bugreport.status', null, ['id' => $id, 'status' => $status], $r->ip());
+        return [200, ['message' => 'Status zapisany.']];
+    }
+
+    /**
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
+    public function deleteBugReport(Request $r, array $params = []): array
+    {
+        $admin = Session::requireAdmin($r);
+        $id = $this->id($params);
+        $this->bugs->delete($id);
+        AdminAudit::log($this->pdo, (int) $admin['id'], 'bugreport.delete', null, ['id' => $id], $r->ip());
+        return [200, ['message' => 'Zgłoszenie usunięto.']];
     }
 
     // ---- ciekawostki dnia ----

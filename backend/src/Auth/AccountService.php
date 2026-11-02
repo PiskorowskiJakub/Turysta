@@ -95,7 +95,7 @@ final class AccountService
 
         $token = bin2hex(random_bytes(32));
         $this->pdo->beginTransaction();
-        $this->pdo->prepare('UPDATE users SET email = ?, email_verified_at = NULL WHERE id = ?')->execute([$email, $user['id']]);
+        $this->pdo->prepare('UPDATE users SET email = ?, email_verified_at = NULL, email_unverified_since = UTC_TIMESTAMP() WHERE id = ?')->execute([$email, $user['id']]);
         $this->pdo->prepare('DELETE FROM email_verifications WHERE user_id = ?')->execute([$user['id']]);
         $this->pdo->prepare(
             'INSERT INTO email_verifications (token_hash, user_id, expires_at) VALUES (?, ?, UTC_TIMESTAMP() + INTERVAL 2 DAY)'

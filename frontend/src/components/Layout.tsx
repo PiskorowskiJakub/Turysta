@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
 import type { Avatar } from '../api/types';
@@ -7,6 +7,7 @@ import { useAuth } from '../auth/AuthContext';
 import Coins from './Coins';
 import Points from './Points';
 import PlayerAvatar from './PlayerAvatar';
+import { formatDate } from '../format';
 import { Icon, type IconName } from './icons';
 
 function MenuLink({ to, icon, label, end }: { to: string; icon: IconName; label: string; end?: boolean }) {
@@ -32,7 +33,7 @@ function BrandMark() {
 }
 
 /** Pasek dla gracza, ktory nie potwierdzil adresu e-mail; pozwala poprosic o nowy link. */
-function VerifyBanner({ email }: { email: string }) {
+function VerifyBanner({ email, deadline }: { email: string; deadline: string | null }) {
   const { t } = useTranslation();
   const { resendVerification, refresh } = useAuth();
   const [busy, setBusy] = useState(false);
@@ -62,6 +63,7 @@ function VerifyBanner({ email }: { email: string }) {
       <div className="verify-text">
         <b>{t('verify.title')}</b>
         <span>{t('verify.text', { email })}</span>
+        {deadline && <span className="verify-deadline">{t('verify.deadline', { date: formatDate(deadline) })}</span>}
         {notice && <span className="verify-ok">{notice}</span>}
         {error && <span className="verify-err" role="alert">{error}</span>}
       </div>
@@ -74,6 +76,7 @@ export default function Layout() {
   const { t } = useTranslation();
   const { status, me, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [fact, setFact] = useState<string | null>(null);
   const [avatars, setAvatars] = useState<Avatar[]>([]);
 
@@ -148,7 +151,7 @@ export default function Layout() {
         </div>
       </header>
 
-      {authed && !me.user.email_verified && <VerifyBanner email={me.user.email} />}
+      {authed && !me.user.email_verified && <VerifyBanner email={me.user.email} deadline={me.user.email_verification_deadline} />}
 
       <div className="shell">
         <nav className="menu" aria-label={t('nav.menu')}>
@@ -190,7 +193,14 @@ export default function Layout() {
         </main>
       </div>
 
-      <footer className="site-footer">{t('footer')}</footer>
+      <footer className="site-footer">
+        <span>{t('footer')}</span>
+        <nav className="footer-links" aria-label={t('footerLinks.terms')}>
+          <Link to="/regulamin">{t('footerLinks.terms')}</Link>
+          <Link to="/polityka-prywatnosci">{t('footerLinks.privacy')}</Link>
+          {authed && <Link to="/zglos-blad" state={{ from: location.pathname }}>{t('footerLinks.bug')}</Link>}
+        </nav>
+      </footer>
     </>
   );
 }

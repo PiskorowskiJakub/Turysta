@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
-import type { PlayerProfile, SkillsResponse } from '../api/types';
+import type { FriendsResponse, FriendshipState, PlayerProfile, SkillsResponse } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import BadgeBook from '../components/BadgeBook';
 import ProfileCard from '../components/ProfileCard';
@@ -17,6 +17,8 @@ export default function PlayerPage() {
   const [player, setPlayer] = useState<PlayerProfile | null>(null);
   const [skills, setSkills] = useState<SkillsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [friendship, setFriendship] = useState<FriendshipState>('none');
+  const [friendMsg, setFriendMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -27,6 +29,8 @@ export default function PlayerPage() {
         if (cancelled) return;
         setPlayer(p);
         setSkills(s);
+        setFriendship(p.friendship);
+        setFriendMsg(null);
       })
       .catch((e) => {
         if (!cancelled) setError(e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network'));
@@ -35,6 +39,24 @@ export default function PlayerPage() {
       cancelled = true;
     };
   }, [playerId, t]);
+
+  const onFriend = async (action: 'invite' | 'accept' | 'remove') => {
+    setFriendMsg(null);
+    try {
+      if (action === 'invite') {
+        const r = await api<FriendsResponse & { status: string }>('POST', '/friends/requests', { user_id: playerId });
+        setFriendship(r.status === 'accepted' ? 'friends' : 'outgoing');
+      } else if (action === 'accept') {
+        await api('POST', `/friends/${playerId}/accept`);
+        setFriendship('friends');
+      } else {
+        await api('DELETE', `/friends/${playerId}`);
+        setFriendship('none');
+      }
+    } catch (e) {
+      setFriendMsg({ ok: false, text: e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network') });
+    }
+  };
 
   const view = useBadgeView(skills, player?.badges ?? null);
 
@@ -64,6 +86,13 @@ export default function PlayerPage() {
   return (
     <>
       <p className="player-back"><Link to="/ranking">← {t('player.backToRanking')}</Link></p>
+      <p className="friend-action">
+        {friendship === 'none' && <button type="button" className="button small" onClick={() => void onFriend('invite')}>{t('friends.addToFriends')}</button>}
+        {friendship === 'outgoing' && <button type="button" className="button small secondary" onClick={() => void onFriend('remove')}>{t('friends.cancelInvite')}</button>}
+        {friendship === 'incoming' && <button type="button" className="button small" onClick={() => void onFriend('accept')}>{t('friends.acceptInvite')}</button>}
+        {friendship === 'friends' && <span className="muted">{t('friends.isFriend')} <button type="button" className="button small secondary" onClick={() => void onFriend('remove')}>{t('friends.remove')}</button></span>}
+        {friendMsg && <span className="form-error" role="alert"> {friendMsg.text}</span>}
+      </p>
       <ProfileCard
         data={{
           name: player.name,

@@ -172,7 +172,10 @@ final class GameController
     {
         $uid = $this->uid($r);
         $this->settler->settleUser($uid);
-        return [200, (new PlayerProfileService($this->pdo))->forPlayer($uid, (int) ($params['id'] ?? 0))];
+        $playerId = (int) ($params['id'] ?? 0);
+        $profile = (new PlayerProfileService($this->pdo))->forPlayer($uid, $playerId);
+        $profile['friendship'] = (new \Turysta\Social\FriendService($this->pdo, new \Turysta\Auth\RateLimiter($this->pdo)))->state($uid, $playerId);
+        return [200, $profile];
     }
 
     /** Ranking graczy: ?page=&per_page=&q=&world= @return array{0:int,1:array<string,mixed>} */
