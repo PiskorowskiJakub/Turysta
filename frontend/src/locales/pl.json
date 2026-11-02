@@ -508,7 +508,11 @@
     "activity": "Aktywność",
     "basicSkills": "Podstawowe",
     "skills": "Umiejętności",
-    "level": "poziom {{level}}"
+    "level": "poziom {{level}}",
+    "tabs": {
+      "overview": "Przegląd",
+      "friends": "Znajomi"
+    }
   },
   "editProfile": {
     "title": "Edycja profilu",
@@ -591,7 +595,10 @@
     "chapter_in_queue": "Awans na kolejny stopień jest już w kolejce.",
     "requirements_not_met": "Nie spełniasz wymagań do awansu.",
     "skill_locked": "Ta umiejętność odblokuje się w kolejnym świecie.",
-    "max_chapter": "Osiągnięto ostatni dostępny stopień."
+    "max_chapter": "Osiągnięto ostatni dostępny stopień.",
+    "already_friends": "Jesteście już znajomymi.",
+    "request_pending": "Zaproszenie dla tego gracza już czeka na odpowiedź.",
+    "friend_limit": "Osiągnięto limit znajomych lub oczekujących zaproszeń."
   },
   "training": {
     "title": "Szkolenia",
@@ -676,7 +683,9 @@
     "empty": "Nie masz jeszcze żadnych powiadomień.",
     "training_finished": "Ukończono szkolenie: {{skill}} (poziom {{level}}).",
     "job_finished": "Praca „{{job}}” zakończona. Wypłata: {{amount}} dk",
-    "chapter_finished": "Awansowałeś na stopień: {{chapter}}."
+    "chapter_finished": "Awansowałeś na stopień: {{chapter}}.",
+    "friend_request": "{{name}} zaprasza Cię do znajomych. Odpowiedz w zakładce Profil, Znajomi.",
+    "friend_accepted": "{{name}} przyjął(-ęła) Twoje zaproszenie do znajomych."
   },
   "fact": "Ciekawostka",
   "world": {
@@ -886,6 +895,7 @@
           "p": [
             "Dane konta: adres e-mail, nazwa postaci, hasło (przechowujemy wyłącznie jego nieodwracalny skrót, a nie samo hasło) oraz wybrane przez Ciebie płeć i awatar. Używamy ich, żeby prowadzić Twoje konto i umożliwić grę (art. 6 ust. 1 lit. b RODO).",
             "Dane z gry: umiejętności, portfel, prace, odznaki, postępy i punkty. Nazwa postaci, awatar, punkty i postępy są widoczne dla innych graczy w rankingu i na profilu postaci. Nie ujawniamy innym Twojego adresu e-mail.",
+            "Znajomi: jeśli dodasz kogoś do znajomych i ta osoba przyjmie zaproszenie, oboje widzicie nawzajem swój status online (aktywność w ciągu ostatnich minut), stan dukatów i punkty. Znajomego możesz usunąć w każdej chwili.",
             "Dane techniczne: adres IP i dane przeglądarki zapisujemy przy logowaniu oraz w dziennikach serwera. Służą bezpieczeństwu i ochronie przed nadużyciami (art. 6 ust. 1 lit. f RODO, nasz prawnie uzasadniony interes).",
             "Zgłoszenia błędów: treść zgłoszenia, adres strony i dane przeglądarki, powiązane z Twoim kontem. Używamy ich do naprawiania gry (art. 6 ust. 1 lit. f RODO).",
             "Polecenia: jeżeli założysz konto z kodem polecającym, zapisujemy, kto Cię polecił. Osoba polecająca może zobaczyć, że ktoś założył konto z jej kodu.",
@@ -935,5 +945,39 @@
         }
       ]
     }
+  },
+  "friends": {
+    "addTitle": "Dodaj znajomego",
+    "addLabel": "Nazwa postaci gracza",
+    "invite": "Wyślij zaproszenie",
+    "privacy": "Gdy gracz przyjmie zaproszenie, zobaczycie nawzajem, czy jesteście online, oraz swoje dukaty i punkty.",
+    "invited": "Zaproszenie dla {{name}} zostało wysłane.",
+    "nowFriends": "Ty i {{name}} jesteście teraz znajomymi.",
+    "incomingTitle": "Zaproszenia do Ciebie ({{n}})",
+    "accept": "Przyjmij",
+    "decline": "Odrzuć",
+    "accepted": "Ty i {{name}} jesteście teraz znajomymi.",
+    "declined": "Zaproszenie od {{name}} odrzucone.",
+    "listTitle": "Twoi znajomi ({{n}}/{{max}})",
+    "empty": "Nie masz jeszcze znajomych. Wpisz nazwę postaci gracza powyżej albo zaproś kogoś z profilu w rankingu.",
+    "cols": {
+      "player": "Gracz",
+      "status": "Status",
+      "coins": "Dukaty",
+      "points": "Punkty"
+    },
+    "online": "online",
+    "offline": "offline",
+    "onlineHint": "Online oznacza aktywność w grze w ciągu ostatnich {{minutes}} minut. Status odświeża się co pół minuty.",
+    "remove": "Usuń",
+    "confirmRemove": "Na pewno usuń",
+    "removed": "{{name}} nie jest już na Twojej liście znajomych.",
+    "outgoingTitle": "Wysłane zaproszenia",
+    "cancel": "Anuluj",
+    "cancelled": "Zaproszenie dla {{name}} anulowane.",
+    "addToFriends": "Dodaj do znajomych",
+    "cancelInvite": "Anuluj zaproszenie",
+    "acceptInvite": "Przyjmij zaproszenie",
+    "isFriend": "Jesteście znajomymi."
   }
 }

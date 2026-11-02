@@ -13,6 +13,7 @@ use Turysta\Controller\AccountController;
 use Turysta\Controller\AdminController;
 use Turysta\Controller\AuthController;
 use Turysta\Controller\BugReportController;
+use Turysta\Controller\FriendController;
 use Turysta\Controller\GameController;
 use Turysta\Controller\HomeController;
 use Turysta\Controller\MeController;
@@ -23,6 +24,7 @@ use Turysta\Game\TrainingService;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
 use Turysta\Http\Router;
+use Turysta\Social\FriendService;
 use Turysta\Support\BugReportService;
 
 final class App
@@ -40,6 +42,7 @@ final class App
         $home = new HomeController($pdo);
         $admin = new AdminController($pdo);
         $bugs = new BugReportController(new BugReportService($pdo, new RateLimiter($pdo)));
+        $friends = new FriendController(new FriendService($pdo, new RateLimiter($pdo)));
         $game = new GameController($pdo, $settler, $training, $jobs);
 
         $router = new Router();
@@ -74,6 +77,11 @@ final class App
         $router->post('/v1/account/delete', [$account, 'deleteAccount']);
 
         $router->post('/v1/bug-reports', [$bugs, 'create']);
+
+        $router->get('/v1/friends', [$friends, 'list']);
+        $router->post('/v1/friends/requests', [$friends, 'request']);
+        $router->post('/v1/friends/{id}/accept', [$friends, 'accept']);
+        $router->delete('/v1/friends/{id}', [$friends, 'remove']);
 
         $router->get('/v1/home', [$home, 'show']);
         $router->get('/v1/announcements', [$home, 'announcements']);

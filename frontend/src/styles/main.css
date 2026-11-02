@@ -687,3 +687,10 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .bug-new { border-left: 3px solid var(--orange); }
 .check input { margin-top: 3px; }
 .check a { color: var(--orange); }
+
+/* ---------- Znajomi ---------- */
+.friend-who { display: flex; align-items: center; gap: 10px; }
+.online-dot { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: 50%; background: #6b7a70; vertical-align: middle; }
+.online-dot.on { background: #6fd36f; box-shadow: 0 0 6px rgba(111, 211, 111, 0.7); }
+.friends-table td { vertical-align: middle; }
+.friend-action { margin: 0 0 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

@@ -37,6 +37,7 @@ export default function Notifications() {
       skill: p.skill,
       level: p.level,
       job: p.job,
+      name: p.name,
       chapter: p.chapter,
       amount: typeof p.payout_cents === 'number' ? formatCoins(p.payout_cents) : '',
     });

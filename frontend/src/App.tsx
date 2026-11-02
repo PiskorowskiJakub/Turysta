@@ -8,7 +8,7 @@ import VerifyEmailPage from './pages/VerifyEmailPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import TutorialPage from './pages/TutorialPage';
-import ProfilePage from './pages/ProfilePage';
+import ProfileShell from './components/ProfileShell';
 import EditProfilePage from './pages/EditProfilePage';
 import TrainingPage from './pages/TrainingPage';
 import JobsPage from './pages/JobsPage';
@@ -37,7 +37,7 @@ export default function App() {
           <Route path="start/*" element={<HomeShell />} />
           <Route path="zglos-blad" element={<BugReportPage />} />
           <Route path="samouczek" element={<TutorialPage />} />
-          <Route path="profil" element={<ProfilePage />} />
+          <Route path="profil/*" element={<ProfileShell />} />
           <Route path="profil/edycja" element={<EditProfilePage />} />
           <Route path="umiejetnosci" element={<Navigate to="/umiejetnosci/podstawowe" replace />} />
           <Route path="umiejetnosci/swiat" element={<Navigate to="/umiejetnosci/awans" replace />} />

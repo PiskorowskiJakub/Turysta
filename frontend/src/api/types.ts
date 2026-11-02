@@ -239,6 +239,28 @@ export interface PlayerProfile {
   skill_levels: number;
   badges: EarnedBadge[];
   featured: string[];
+  friendship: FriendshipState;
+}
+
+export type FriendshipState = 'self' | 'none' | 'friends' | 'outgoing' | 'incoming';
+
+export interface FriendPerson {
+  id: number;
+  name: string;
+  avatar_url: string | null;
+}
+
+export interface Friend extends FriendPerson {
+  online: boolean;
+  coins_cents: number;
+  points: number;
+}
+
+export interface FriendsResponse {
+  friends: Friend[];
+  incoming: FriendPerson[];
+  outgoing: FriendPerson[];
+  limits: { max_friends: number; max_pending: number; online_minutes: number };
 }
 
 export interface Announcement {

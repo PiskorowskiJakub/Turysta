@@ -20,6 +20,7 @@ docker compose exec backend php bin/migrate.php
 - Sprzątanie kont po testach integracyjnych (`@example.com`; podgląd, a z `--yes` usunięcie): `docker compose exec backend php bin/cleanup_test_users.php [--yes]`
 - Usunięcie jednego konta z danymi (np. własnego, administratora też): `docker compose exec backend php bin/delete_user.php adres@email [--yes]`
 - Konta graczy bez potwierdzonego adresu e-mail są usuwane po 30 dniach (scheduler robi to co godzinę). Podgląd i ręczne uruchomienie: `docker compose exec backend php bin/cleanup_unverified.php [--yes]` (w produkcji `turysta-api` zamiast `backend`).
+- Znajomi: zakładka Profil, Znajomi (zaproszenia po nazwie postaci albo z profilu gracza). Zaakceptowany znajomy widzi status online (sesja aktywna w ciągu 5 minut), dukaty i punkty. Tabela `friendships` (migracja 027), logika w `backend/src/Social/FriendService.php`.
 - Zgłoszenia błędów od graczy (formularz „Zgłoś błąd” w stopce) są w panelu admina, karta „Zgłoszenia błędów”. Regulamin i polityka prywatności: `/regulamin` i `/polityka-prywatnosci` (treść w `frontend/src/locales/pl.json`, blok `legal`).
 - Gra: http://localhost (Traefik)
 - Health: http://localhost/api/health
