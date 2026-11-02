@@ -1003,7 +1003,9 @@
     "cancelInvite": "Anuluj zaproszenie",
     "acceptInvite": "Przyjmij zaproszenie",
     "isFriend": "Jesteście znajomymi.",
-    "compare": "Porównaj"
+    "compare": "Porównaj",
+    "sort": "Sortuj",
+    "sortBy": "Sortuj według: {{column}}"
   },
   "updates": {
     "title": "Aktualizacje gry",

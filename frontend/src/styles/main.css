@@ -779,3 +779,9 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .compare-section th { background: var(--tile); color: var(--orange); text-align: left; padding: 8px 10px; font-size: 13px; letter-spacing: 0.04em; }
 .compare-table td.better { background: rgba(95, 208, 120, 0.18); color: #8be59d; font-weight: 700; }
 .compare-summary { font-weight: 600; margin: 4px 0 12px; }
+
+/* ---------- Sortowanie listy znajomych ---------- */
+.sort-btn { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--orange); cursor: pointer; white-space: nowrap; }
+.sort-btn:hover, .sort-btn.active { color: var(--cream); }
+.friends-sort { display: none; align-items: center; gap: 14px; margin: 0 0 8px; font-size: 14px; color: var(--muted); }
+@media (max-width: 600px) { .friends-sort { display: flex; } }

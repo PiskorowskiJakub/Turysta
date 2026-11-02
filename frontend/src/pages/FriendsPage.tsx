@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
@@ -8,6 +8,12 @@ import Coins from '../components/Coins';
 import PlayerAvatar from '../components/PlayerAvatar';
 import Points from '../components/Points';
 import { usePolling } from '../hooks/usePolling';
+
+type SortKey = 'coins' | 'points';
+interface Sort {
+  key: SortKey;
+  dir: 'desc' | 'asc';
+}
 
 /** Zakladka "Znajomi": zaproszenia, lista znajomych ze statusem online, dukatami i punktami. */
 export default function FriendsPage() {
@@ -19,6 +25,8 @@ export default function FriendsPage() {
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
+  // Klikniecie w kolumne: malejaco, potem rosnaco, potem domyslna kolejnosc (online, nazwa).
+  const [sort, setSort] = useState<Sort | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -75,6 +83,33 @@ export default function FriendsPage() {
     }
   };
 
+  const toggleSort = (key: SortKey) =>
+    setSort((s) => (s?.key !== key ? { key, dir: 'desc' } : s.dir === 'desc' ? { key, dir: 'asc' } : null));
+
+  const friends = useMemo(() => {
+    const list = data?.friends ?? [];
+    if (!sort) return list;
+    const field = sort.key === 'coins' ? 'coins_cents' : 'points';
+    const sign = sort.dir === 'desc' ? -1 : 1;
+    return [...list].sort((a, b) => sign * (a[field] - b[field]) || a.name.localeCompare(b.name, 'pl'));
+  }, [data, sort]);
+
+  const sortHeader = (key: SortKey, label: string) => {
+    const active = sort?.key === key;
+    return (
+      <button
+        type="button"
+        className={`sort-btn${active ? ' active' : ''}`}
+        onClick={() => toggleSort(key)}
+        aria-label={t('friends.sortBy', { column: label })}
+      >
+        {label}
+        <span aria-hidden="true">{active ? (sort?.dir === 'desc' ? ' ▼' : ' ▲') : ' ↕'}</span>
+      </button>
+    );
+  };
+  const ariaSort = (key: SortKey) => (sort?.key === key ? (sort?.dir === 'desc' ? 'descending' : 'ascending') : 'none');
+
   if (!data) return <p className="panel page-message">{message?.text ?? t('loading')}</p>;
 
   return (
@@ -117,19 +152,25 @@ export default function FriendsPage() {
         {data.friends.length === 0 ? (
           <p className="muted">{t('friends.empty')}</p>
         ) : (
+          <>
+          <div className="friends-sort">
+            <span>{t('friends.sort')}:</span>
+            {sortHeader('coins', t('friends.cols.coins'))}
+            {sortHeader('points', t('friends.cols.points'))}
+          </div>
           <div className="table-scroll">
             <table className="ranking-table friends-table">
               <thead>
                 <tr>
                   <th>{t('friends.cols.player')}</th>
                   <th>{t('friends.cols.status')}</th>
-                  <th className="num">{t('friends.cols.coins')}</th>
-                  <th className="num">{t('friends.cols.points')}</th>
+                  <th className="num" aria-sort={ariaSort('coins')}>{sortHeader('coins', t('friends.cols.coins'))}</th>
+                  <th className="num" aria-sort={ariaSort('points')}>{sortHeader('points', t('friends.cols.points'))}</th>
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {data.friends.map((f) => (
+                {friends.map((f) => (
                   <tr key={f.id}>
                     <td>
                       <span className="friend-who">
@@ -158,6 +199,7 @@ export default function FriendsPage() {
               </tbody>
             </table>
           </div>
+          </>
         )}
         <p className="muted">{t('friends.onlineHint', { minutes: data.limits.online_minutes })}</p>
       </section>
