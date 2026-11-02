@@ -22,12 +22,13 @@ function MenuLink({ to, icon, label, end }: { to: string; icon: IconName; label:
 }
 
 function BrandMark() {
-  // Znak szlaku: bialy-czerwony-bialy w gorskim trojkacie.
+  // Logo: dwie zlote monety (dwa dukaty) i gorski szczyt; ta sama grafika co favicon.
   return (
-    <svg className="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
-      <path d="M2 34 14 10l7 13 5-8 12 19z" fill="#34493b" stroke="#d6c48c" strokeWidth="2" strokeLinejoin="round" />
-      <rect x="15" y="25" width="10" height="9" rx="1.5" fill="#f3ecd8" />
-      <rect x="15" y="28" width="10" height="3" fill="#d8473a" />
+    <svg className="brand-mark" viewBox="2 2 62 62" aria-hidden="true">
+      <circle cx="22" cy="23" r="17" fill="#c8942f" stroke="#f2d27a" strokeWidth="3" />
+      <circle cx="40" cy="40" r="21" fill="#f6bd4b" stroke="#fff3c9" strokeWidth="3.5" />
+      <path d="M25 52 36 26l6 12 4-6 10 20z" fill="#19261f" />
+      <path d="M36 26l-3.5 8 3.5-1.5 3 3z" fill="#fff3c9" />
     </svg>
   );
 }

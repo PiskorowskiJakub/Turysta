@@ -28,6 +28,27 @@ final class AdminUserService
         'old' => 'id ASC',
         'points' => 'points DESC, id ASC',
         'login' => 'last_login_at IS NULL, last_login_at DESC, id DESC',
+        // Sortowanie po kliknieciu w kolumne: <kolumna>_asc / <kolumna>_desc (puste wartosci zawsze na koncu).
+        'id_asc' => 'id ASC',
+        'id_desc' => 'id DESC',
+        'name_asc' => 'name ASC, id ASC',
+        'name_desc' => 'name DESC, id ASC',
+        'email_asc' => 'email ASC, id ASC',
+        'email_desc' => 'email DESC, id ASC',
+        'role_asc' => 'role ASC, id ASC',
+        'role_desc' => 'role DESC, id ASC',
+        'status_asc' => 'eff_status ASC, id ASC',
+        'status_desc' => 'eff_status DESC, id ASC',
+        'world_asc' => 'world IS NULL, world ASC, chapter ASC, id ASC',
+        'world_desc' => 'world IS NULL, world DESC, chapter DESC, id ASC',
+        'points_asc' => 'points ASC, id ASC',
+        'points_desc' => 'points DESC, id ASC',
+        'coins_asc' => 'coins ASC, id ASC',
+        'coins_desc' => 'coins DESC, id ASC',
+        'registered_asc' => 'created_at ASC, id ASC',
+        'registered_desc' => 'created_at DESC, id DESC',
+        'login_asc' => 'last_login_at IS NULL, last_login_at ASC, id ASC',
+        'login_desc' => 'last_login_at IS NULL, last_login_at DESC, id DESC',
     ];
 
     public function __construct(private PDO $pdo)
