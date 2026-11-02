@@ -140,7 +140,10 @@
       "copy": "Kopiuj",
       "copied": "Skopiowano",
       "registered": "Założyło konto",
-      "active": "Z tego ze stażem {{n}}+ dni aktywności"
+      "active": "Z tego ze stażem {{n}}+ dni aktywności",
+      "codeLead": "Albo podaj sam kod. Nowy gracz wpisze go w polu „Kod polecający” przy zakładaniu konta.",
+      "codeLabel": "Kod polecający",
+      "copyCode": "Kopiuj kod"
     },
     "log": {
       "title": "Dziennik wyprawy",
