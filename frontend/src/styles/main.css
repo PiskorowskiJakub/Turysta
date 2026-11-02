@@ -512,11 +512,15 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .home-main > .panel, .home-side > .panel { margin: 0; }
 .home-welcome h1 { margin: 0 0 6px; }
 .home-welcome p { margin: 0; }
-.board { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-.board li { padding: 10px 12px; border-radius: 10px; background: rgba(0, 0, 0, 0.14); border: 1.5px dashed var(--line); }
+.board { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.board li { border-radius: 10px; background: rgba(0, 0, 0, 0.14); border: 1.5px dashed var(--line); }
 .board li.pinned { border-color: var(--orange); }
-.board h3 { margin: 0; font-size: 16px; }
-.board time { display: block; margin: 2px 0 6px; font-size: 12px; color: var(--muted); }
+.board-head { display: flex; align-items: baseline; gap: 10px; width: 100%; padding: 8px 12px; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.board-title { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board li.open .board-title { white-space: normal; }
+.board time { flex: none; font-size: 12px; color: var(--muted); }
+.board-chevron { flex: none; font-size: 10px; color: var(--muted); }
+.board-body { padding: 0 12px 10px; display: flex; flex-direction: column; gap: 6px; }
 .board p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .season { opacity: .85; }
 .daily-days { list-style: none; margin: 12px 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
