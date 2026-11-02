@@ -256,6 +256,32 @@ export interface Friend extends FriendPerson {
   points: number;
 }
 
+export interface ComparePerson {
+  id: number;
+  name: string;
+  avatar_url: string | null;
+  rank: number;
+  points: number;
+  coins_cents: number;
+  tickets: number;
+  world: number;
+  chapter: number;
+  skill_levels: number;
+  badges: number;
+  account_days: number;
+  active_days: number;
+  current_streak: number;
+  longest_streak: number;
+  earned_cents: number;
+}
+
+export interface CompareResponse {
+  me: ComparePerson;
+  friend: ComparePerson;
+  jobs: { code: string; name: string; me: number; friend: number }[];
+  skills: { code: string; name: string; world: number | null; me: number; friend: number }[];
+}
+
 export interface FriendsResponse {
   friends: Friend[];
   incoming: FriendPerson[];

@@ -620,7 +620,8 @@
     "max_chapter": "Osiągnięto ostatni dostępny stopień.",
     "already_friends": "Jesteście już znajomymi.",
     "request_pending": "Zaproszenie dla tego gracza już czeka na odpowiedź.",
-    "friend_limit": "Osiągnięto limit znajomych lub oczekujących zaproszeń."
+    "friend_limit": "Osiągnięto limit znajomych lub oczekujących zaproszeń.",
+    "not_friends": "Porównać możesz tylko konta swoich znajomych."
   },
   "training": {
     "title": "Szkolenia",
@@ -918,7 +919,7 @@
           "p": [
             "Dane konta: adres e-mail, nazwa postaci, hasło (przechowujemy wyłącznie jego nieodwracalny skrót, a nie samo hasło) oraz wybrane przez Ciebie płeć i awatar. Używamy ich, żeby prowadzić Twoje konto i umożliwić grę (art. 6 ust. 1 lit. b RODO).",
             "Dane z gry: umiejętności, portfel, prace, odznaki, postępy i punkty. Nazwa postaci, awatar, punkty i postępy są widoczne dla innych graczy w rankingu i na profilu postaci. Nie ujawniamy innym Twojego adresu e-mail.",
-            "Znajomi: jeśli dodasz kogoś do znajomych i ta osoba przyjmie zaproszenie, oboje widzicie nawzajem swój status online (aktywność w ciągu ostatnich minut), stan dukatów i punkty. Znajomego możesz usunąć w każdej chwili.",
+            "Znajomi: jeśli dodasz kogoś do znajomych i ta osoba przyjmie zaproszenie, oboje widzicie nawzajem swój status online (aktywność w ciągu ostatnich minut), stan dukatów i punkty. Możecie też porównać swoje statystyki, postępy w grze i poziomy umiejętności. Znajomego możesz usunąć w każdej chwili.",
             "Dane techniczne: adres IP i dane przeglądarki zapisujemy przy logowaniu oraz w dziennikach serwera. Służą bezpieczeństwu i ochronie przed nadużyciami (art. 6 ust. 1 lit. f RODO, nasz prawnie uzasadniony interes).",
             "Zgłoszenia błędów: treść zgłoszenia, adres strony i dane przeglądarki, powiązane z Twoim kontem. Używamy ich do naprawiania gry (art. 6 ust. 1 lit. f RODO).",
             "Polecenia: jeżeli założysz konto z kodem polecającym, zapisujemy, kto Cię polecił. Osoba polecająca może zobaczyć, że ktoś założył konto z jej kodu.",
@@ -973,7 +974,7 @@
     "addTitle": "Dodaj znajomego",
     "addLabel": "Nazwa postaci gracza",
     "invite": "Wyślij zaproszenie",
-    "privacy": "Gdy gracz przyjmie zaproszenie, zobaczycie nawzajem, czy jesteście online, oraz swoje dukaty i punkty.",
+    "privacy": "Gdy gracz przyjmie zaproszenie, zobaczycie nawzajem, czy jesteście online, oraz swoje dukaty i punkty. Możecie też porównać swoje statystyki i poziomy umiejętności.",
     "invited": "Zaproszenie dla {{name}} zostało wysłane.",
     "nowFriends": "Ty i {{name}} jesteście teraz znajomymi.",
     "incomingTitle": "Zaproszenia do Ciebie ({{n}})",
@@ -1001,12 +1002,35 @@
     "addToFriends": "Dodaj do znajomych",
     "cancelInvite": "Anuluj zaproszenie",
     "acceptInvite": "Przyjmij zaproszenie",
-    "isFriend": "Jesteście znajomymi."
+    "isFriend": "Jesteście znajomymi.",
+    "compare": "Porównaj"
   },
   "updates": {
     "title": "Aktualizacje gry",
     "intro": "Tu znajdziesz szczegółowy opis zmian i nowości w Dwóch Dukatach. W ogłoszeniach podajemy tylko skrót.",
     "empty": "Nie ma jeszcze żadnych aktualizacji.",
     "all": "Pokaż wszystkie aktualizacje"
+  },
+  "compare": {
+    "title": "Porównanie kont",
+    "back": "Wróć do znajomych",
+    "you": "Ty",
+    "legend": "Na zielono wyróżniamy lepszy wynik. Przy miejscu w rankingu lepsze jest niższe miejsce. Wiek konta nie jest wyróżniany.",
+    "summary": "Lepszy wynik masz w {{mine}} kategoriach, a {{name}} w {{theirs}}.",
+    "progressValue": "Świat {{world}}, rozdział {{chapter}}",
+    "rows": {
+      "rank": "Miejsce w rankingu",
+      "progress": "Postęp w grze",
+      "skillLevels": "Suma poziomów umiejętności",
+      "badges": "Odznaki",
+      "longestStreak": "Najdłuższa seria"
+    },
+    "sections": {
+      "general": "Ogólne",
+      "activity": "Aktywność",
+      "earnings": "Zarobki",
+      "basicSkills": "Umiejętności podstawowe",
+      "worldSkills": "Umiejętności: świat {{n}}"
+    }
   }
 }

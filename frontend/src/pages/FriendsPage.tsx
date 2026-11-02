@@ -147,7 +147,10 @@ export default function FriendsPage() {
                           <button type="button" className="button small secondary" onClick={() => setConfirmId(null)}>{t('admin.cancel')}</button>
                         </span>
                       ) : (
-                        <button type="button" className="button small secondary" onClick={() => setConfirmId(f.id)}>{t('friends.remove')}</button>
+                        <span className="actions">
+                          <Link className="button small" to={`/profil/znajomi/porownaj/${f.id}`}>{t('friends.compare')}</Link>
+                          <button type="button" className="button small secondary" onClick={() => setConfirmId(f.id)}>{t('friends.remove')}</button>
+                        </span>
                       )}
                     </td>
                   </tr>

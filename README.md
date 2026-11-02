@@ -21,6 +21,7 @@ docker compose exec backend php bin/migrate.php
 - Usunięcie jednego konta z danymi (np. własnego, administratora też): `docker compose exec backend php bin/delete_user.php adres@email [--yes]`
 - Konta graczy bez potwierdzonego adresu e-mail są usuwane po 30 dniach (scheduler robi to co godzinę). Podgląd i ręczne uruchomienie: `docker compose exec backend php bin/cleanup_unverified.php [--yes]` (w produkcji `turysta-api` zamiast `backend`).
 - Znajomi: zakładka Profil, Znajomi (zaproszenia po nazwie postaci albo z profilu gracza). Zaakceptowany znajomy widzi status online (sesja aktywna w ciągu 5 minut), dukaty i punkty. Tabela `friendships` (migracja 027), logika w `backend/src/Social/FriendService.php`.
+- Porównanie kont: przycisk „Porównaj” przy znajomym (`/profil/znajomi/porownaj/:id`, API `GET /v1/friends/{id}/compare`, tylko dla zaakceptowanych znajomych). Lepszy wynik jest na zielono; umiejętności światów, do których gracz jeszcze nie dotarł, są ukryte (bez spoilerów).
 - Aktualizacje gry (dziennik zmian) są pod `/aktualizacje` i dostępne bez logowania. Administrator dodaje je w panelu: Treści, Aktualizacje. Ogłoszenie może wskazać aktualizację i wtedy pokazuje link „Szczegóły w aktualizacji”. Ogłoszenia mają zawierać tylko ogólnik.
 - Zgłoszenia błędów od graczy (formularz „Zgłoś błąd” w stopce) są w panelu admina, karta „Zgłoszenia błędów”. Regulamin i polityka prywatności: `/regulamin` i `/polityka-prywatnosci` (treść w `frontend/src/locales/pl.json`, blok `legal`).
 - Gra: http://localhost (Traefik)

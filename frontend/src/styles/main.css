@@ -770,3 +770,12 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .field select { padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg2); color: var(--cream); font: inherit; }
 
 .invite-code-label { margin: 14px 0 6px; }
+
+/* ---------- Porownanie kont ---------- */
+.compare-table th[scope='row'] { text-align: left; font-weight: 400; color: var(--cream); }
+.compare-table .num { width: auto; min-width: 90px; text-align: center; }
+.compare-table thead th { background: var(--panel); vertical-align: bottom; }
+.compare-who { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; }
+.compare-section th { background: var(--tile); color: var(--orange); text-align: left; padding: 8px 10px; font-size: 13px; letter-spacing: 0.04em; }
+.compare-table td.better { background: rgba(95, 208, 120, 0.18); color: #8be59d; font-weight: 700; }
+.compare-summary { font-weight: 600; margin: 4px 0 12px; }

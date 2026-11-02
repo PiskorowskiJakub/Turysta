@@ -90,7 +90,7 @@ export default function PlayerPage() {
         {friendship === 'none' && <button type="button" className="button small" onClick={() => void onFriend('invite')}>{t('friends.addToFriends')}</button>}
         {friendship === 'outgoing' && <button type="button" className="button small secondary" onClick={() => void onFriend('remove')}>{t('friends.cancelInvite')}</button>}
         {friendship === 'incoming' && <button type="button" className="button small" onClick={() => void onFriend('accept')}>{t('friends.acceptInvite')}</button>}
-        {friendship === 'friends' && <span className="muted">{t('friends.isFriend')} <button type="button" className="button small secondary" onClick={() => void onFriend('remove')}>{t('friends.remove')}</button></span>}
+        {friendship === 'friends' && <span className="muted">{t('friends.isFriend')} <Link className="button small" to={`/profil/znajomi/porownaj/${playerId}`}>{t('friends.compare')}</Link> <button type="button" className="button small secondary" onClick={() => void onFriend('remove')}>{t('friends.remove')}</button></span>}
         {friendMsg && <span className="form-error" role="alert"> {friendMsg.text}</span>}
       </p>
       <ProfileCard
