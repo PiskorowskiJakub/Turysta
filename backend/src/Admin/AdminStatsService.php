@@ -67,6 +67,9 @@ final class AdminStatsService
             'trainings_done_24h' => $val("SELECT COUNT(*) FROM training_queue WHERE status = 'done' AND finished_at >= UTC_TIMESTAMP() - INTERVAL 1 DAY"),
             'trainings_done_total' => $val("SELECT COUNT(*) FROM training_queue WHERE status = 'done'"),
             'badges_earned' => $val('SELECT COUNT(*) FROM user_badges'),
+            'gifts_total' => $val('SELECT COUNT(*) FROM friend_gifts'),
+            'gifts_24h' => $val('SELECT COUNT(*) FROM friend_gifts WHERE created_at >= UTC_TIMESTAMP() - INTERVAL 1 DAY'),
+            'gifts_cents_total' => $val('SELECT COALESCE(SUM(cents), 0) FROM friend_gifts'),
         ];
 
         $worlds = [];

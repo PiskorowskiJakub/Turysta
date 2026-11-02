@@ -30,6 +30,15 @@ final class AccountService
         return Clock::parse($changedAt)->modify('+' . self::GENDER_COOLDOWN_DAYS . ' days')->format('Y-m-d H:i:s');
     }
 
+    /** Ustawienia prywatnosci: czy pokazywac aktywnosc znajomym (i ich aktywnosc u siebie). @param array<string,mixed> $user wiersz users */
+    public function setPrivacy(array $user, mixed $shareActivity): void
+    {
+        if (!is_bool($shareActivity)) {
+            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', ['share_activity' => 'Wybierz tak lub nie.']);
+        }
+        $this->pdo->prepare('UPDATE users SET share_activity = ? WHERE id = ?')->execute([$shareActivity ? 1 : 0, (int) $user['id']]);
+    }
+
     /** @param array<string,mixed> $user wiersz users */
     public function updateProfile(array $user, mixed $gender, mixed $avatarId): void
     {

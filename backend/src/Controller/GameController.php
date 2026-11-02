@@ -193,6 +193,15 @@ final class GameController
         )];
     }
 
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function friendsRanking(Request $r): array
+    {
+        $uid = $this->uid($r);
+        $this->settler->settleUser($uid);
+        $period = is_string($r->query['period'] ?? null) ? $r->query['period'] : 'week';
+        return [200, (new RankingService($this->pdo))->friends($uid, $period)];
+    }
+
     private function uid(Request $r): int
     {
         return (int) Session::requireUser($r)['id'];

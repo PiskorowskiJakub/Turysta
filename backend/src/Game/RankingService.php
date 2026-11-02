@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Turysta\Game;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use PDO;
 
 /** Ranking graczy wg lacznej sumy punktow (remisy: to samo miejsce, kolejnosc wg rejestracji). */
@@ -13,6 +15,76 @@ final class RankingService
 
     public function __construct(private PDO $pdo)
     {
+    }
+
+    public const FRIEND_PERIODS = ['week', 'month', 'all'];
+
+    /** Poczatek okresu (UTC) liczony wg kalendarza w strefie gry: tydzien od poniedzialku, miesiac od 1. dnia. */
+    public static function periodStart(string $period, DateTimeImmutable $now): ?string
+    {
+        $local = $now->setTimezone(new DateTimeZone(Clock::GAME_TZ));
+        $start = match ($period) {
+            'week' => $local->modify('monday this week')->setTime(0, 0),
+            'month' => $local->modify('first day of this month')->setTime(0, 0),
+            default => null,
+        };
+        return $start?->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Ranking gracza i jego znajomych: punkty zdobyte w okresie (tydzien/miesiac) albo lacznie ('all').
+     * Do okresu nie wliczamy korekt administratora ani jednorazowego przeliczenia punktow.
+     *
+     * @return array<string,mixed>
+     */
+    public function friends(int $userId, string $period): array
+    {
+        $period = in_array($period, self::FRIEND_PERIODS, true) ? $period : 'week';
+        $now = Clock::now($this->pdo);
+        $start = self::periodStart($period, $now);
+
+        $members = "(u.id = ? OR u.id IN (SELECT IF(user_a = ?, user_b, user_a) FROM friendships WHERE status = 'accepted' AND (user_a = ? OR user_b = ?)))";
+        if ($start === null) {
+            $sql = "SELECT u.id, u.character_name AS name, w.points AS gained, w.points AS total
+                    FROM users u JOIN wallets w ON w.user_id = u.id
+                    WHERE u.status = 'active' AND $members";
+            $params = [$userId, $userId, $userId, $userId];
+        } else {
+            $sql = "SELECT u.id, u.character_name AS name, w.points AS total,
+                           COALESCE(SUM(CASE WHEN l.amount > 0 AND l.reason NOT IN ('points_rescale', 'admin_adjust') THEN l.amount END), 0) AS gained
+                    FROM users u JOIN wallets w ON w.user_id = u.id
+                    LEFT JOIN ledger_entries l ON l.user_id = u.id AND l.currency = 'points' AND l.created_at >= ?
+                    WHERE u.status = 'active' AND $members
+                    GROUP BY u.id, u.character_name, w.points";
+            $params = [$start, $userId, $userId, $userId, $userId];
+        }
+        $stmt = $this->pdo->prepare($sql . ' ORDER BY gained DESC, total DESC, u.id');
+        $stmt->execute($params);
+
+        $rows = [];
+        $rank = 0;
+        $prev = null;
+        foreach ($stmt->fetchAll() as $i => $r) {
+            $gained = (int) $r['gained'];
+            if ($prev === null || $gained !== $prev) {
+                $rank = $i + 1;
+                $prev = $gained;
+            }
+            $rows[] = [
+                'id' => (int) $r['id'],
+                'rank' => $rank,
+                'name' => (string) $r['name'],
+                'points' => $gained,
+                'total' => (int) $r['total'],
+                'me' => (int) $r['id'] === $userId,
+            ];
+        }
+
+        return [
+            'period' => $period,
+            'since' => $start !== null ? Clock::iso($start) : null,
+            'rows' => $rows,
+        ];
     }
 
     /** Miejsce gracza w rankingu (remis = to samo miejsce, wszyscy aktywni gracze). */

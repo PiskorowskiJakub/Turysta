@@ -6,6 +6,7 @@ namespace Turysta\Game;
 use DateTimeImmutable;
 use PDO;
 use Throwable;
+use Turysta\Social\ActivityFeed;
 
 /** Rozlicza zakonczone szkolenia i prace. Idempotentne: drugie wywolanie nic nie zmienia. */
 final class Settler
@@ -55,6 +56,12 @@ final class Settler
                 )->execute([$row['chapter_id'], $row['chapter_id'], $userId]);
                 Wallet::apply($this->pdo, $userId, 'points', $chapters->points((int) $row['chapter_id']), 'chapter_points', 'training', (int) $row['id']);
                 Notifier::add($this->pdo, $userId, 'chapter_finished', ['chapter' => $row['chapter_name']]);
+                $stmt = $this->pdo->prepare('SELECT c.ordinal AS co, w.ordinal AS wo FROM chapters c JOIN worlds w ON w.id = c.world_id WHERE c.id = ?');
+                $stmt->execute([$row['chapter_id']]);
+                $reached = $stmt->fetch();
+                if ($reached && (int) $reached['co'] === 1 && (int) $reached['wo'] >= 2) {
+                    ActivityFeed::record($this->pdo, $userId, 'world', 'w' . (int) $reached['wo'], ['world' => (int) $reached['wo']]);
+                }
             } else {
                 $this->pdo->prepare('UPDATE user_skills SET level = level + 1 WHERE user_id = ? AND skill_id = ?')
                     ->execute([$userId, $row['skill_id']]);

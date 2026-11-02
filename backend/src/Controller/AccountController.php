@@ -22,6 +22,14 @@ final class AccountController
     }
 
     /** @return array{0:int,1:array<string,mixed>} */
+    public function updatePrivacy(Request $r): array
+    {
+        $user = Session::requireUser($r);
+        $this->account->setPrivacy($user, $r->body['share_activity'] ?? null);
+        return $this->me->show($r);
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
     public function changeEmail(Request $r): array
     {
         $user = Session::requireUser($r);

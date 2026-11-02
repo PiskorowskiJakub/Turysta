@@ -11,7 +11,9 @@ use Turysta\Auth\RateLimiter;
 use Turysta\Database;
 use Turysta\Http\ApiException;
 use Turysta\Mailer;
+use Turysta\Social\ActivityFeed;
 use Turysta\Social\FriendService;
+use Turysta\Social\GiftService;
 
 /** Znajomi: zaproszenia, akceptacja, widocznosc statusu online, dukatow i punktow (prawdziwy MySQL). */
 final class FriendFlowTest extends TestCase
@@ -175,5 +177,163 @@ final class FriendFlowTest extends TestCase
         \Turysta\Game\BadgeService::sync($this->pdo, $ids[1], \Turysta\Game\Clock::now($this->pdo));
         $this->assertSame('bronze', $codes($ids[0])['special_rival']);
         $this->assertArrayNotHasKey('special_rival', $codes($ids[1]));
+    }
+
+    /** Robi z dwoch graczy znajomych od dawna (prezenty wymagaja 24 godzin znajomosci). */
+    private function befriend(array $a, array $b, bool $old = true): void
+    {
+        $this->friends->request($a, ['user_id' => (int) $b['id']], $this->ip());
+        $this->friends->accept($b, (int) $a['id']);
+        if ($old) {
+            $this->pdo->exec("UPDATE friendships SET responded_at = UTC_TIMESTAMP() - INTERVAL 3 DAY WHERE user_a = LEAST({$a['id']}, {$b['id']}) AND user_b = GREATEST({$a['id']}, {$b['id']})");
+        }
+    }
+
+    private function coins(array $u): int
+    {
+        return (int) $this->pdo->query("SELECT coins_cents FROM wallets WHERE user_id = {$u['id']}")->fetchColumn();
+    }
+
+    public function testGiftsMoveCoinsAndRespectLimits(): void
+    {
+        $gifts = new GiftService($this->pdo, $this->friends);
+        $ala = $this->user('Ala');
+        $others = [$this->user('Bob'), $this->user('Cyn'), $this->user('Dar'), $this->user('Ewa')];
+        foreach ($others as $o) {
+            $this->befriend($ala, $o);
+        }
+        $this->pdo->exec("UPDATE wallets SET coins_cents = 100000 WHERE user_id = {$ala['id']}");
+
+        $cents = $gifts->giftCents((int) $ala['id']);
+        $bonus = GiftService::bonusCents($cents);
+        $this->assertGreaterThan(0, $cents);
+        $this->assertGreaterThan(0, $bonus);
+        $this->assertLessThan($cents, $bonus);
+
+        $bobBefore = $this->coins($others[0]);
+        $sent = $gifts->send($ala, (int) $others[0]['id']);
+        $this->assertSame($cents, $sent['cents']);
+        $this->assertSame(100000 - $cents + $bonus, $this->coins($ala));
+        $this->assertSame($bobBefore + $cents, $this->coins($others[0]));
+        $this->assertSame(1, (int) $this->pdo->query("SELECT COUNT(*) FROM notifications WHERE user_id = {$others[0]['id']} AND type = 'friend_gift'")->fetchColumn());
+
+        // Ta sama osoba dwa razy dziennie: nie. Czwarty prezent dziennie: tez nie.
+        $this->expectCode(fn() => $gifts->send($ala, (int) $others[0]['id']), 'gift_already_sent');
+        $gifts->send($ala, (int) $others[1]['id']);
+        $gifts->send($ala, (int) $others[2]['id']);
+        $this->expectCode(fn() => $gifts->send($ala, (int) $others[3]['id']), 'gift_limit');
+
+        $state = $gifts->state((int) $ala['id']);
+        $this->assertSame(0, $state['sent_left']);
+        $this->assertSame(['sent_count' => 3, 'sent_cents' => 3 * $cents, 'received_count' => 0, 'received_cents' => 0], $state['totals']);
+        $this->assertSame(['sent_count' => 0, 'sent_cents' => 0, 'received_count' => 1, 'received_cents' => $cents], $gifts->state((int) $others[0]['id'])['totals']);
+        $this->assertSame('sent', ((array) $state['per_friend'])[(int) $others[0]['id']]['status']);
+        $this->assertSame('limit', ((array) $state['per_friend'])[(int) $others[3]['id']]['status']);
+    }
+
+    public function testGiftRulesForNewFriendsStrangersAndFunds(): void
+    {
+        $gifts = new GiftService($this->pdo, $this->friends);
+        $ala = $this->user('Ala');
+        $bob = $this->user('Bob');
+        $obcy = $this->user('Obcy');
+        $this->pdo->exec("UPDATE wallets SET coins_cents = 100000 WHERE user_id = {$ala['id']}");
+
+        $this->expectCode(fn() => $gifts->send($ala, (int) $obcy['id']), 'not_friends');
+        $this->expectCode(fn() => $gifts->send($ala, (int) $ala['id']), 'not_friends');
+
+        // Swiezy znajomy: za wczesnie.
+        $this->befriend($ala, $bob, false);
+        $this->expectCode(fn() => $gifts->send($ala, (int) $bob['id']), 'gift_too_early');
+        $this->assertSame('early', ((array) $gifts->state((int) $ala['id'])['per_friend'])[(int) $bob['id']]['status']);
+
+        // Brak srodkow: nic sie nie zmienia i nie zuzywa limitu.
+        $this->pdo->exec("UPDATE friendships SET responded_at = UTC_TIMESTAMP() - INTERVAL 3 DAY");
+        $this->pdo->exec("UPDATE wallets SET coins_cents = 0 WHERE user_id = {$ala['id']}");
+        $this->expectCode(fn() => $gifts->send($ala, (int) $bob['id']), 'insufficient_funds');
+        $this->assertSame(0, (int) $this->pdo->query("SELECT COUNT(*) FROM friend_gifts WHERE sender_id = {$ala['id']}")->fetchColumn());
+    }
+
+    private function expectCode(callable $fn, string $code): void
+    {
+        try {
+            $fn();
+            $this->fail("Oczekiwano bledu $code.");
+        } catch (ApiException $e) {
+            $this->assertSame($code, $e->errorCode);
+        }
+    }
+
+    public function testFriendsRankingByPeriod(): void
+    {
+        $ranking = new \Turysta\Game\RankingService($this->pdo);
+        $ala = $this->user('Ala');
+        $bob = $this->user('Bob');
+        $obcy = $this->user('Obcy');
+        $this->befriend($ala, $bob);
+
+        \Turysta\Game\Wallet::apply($this->pdo, (int) $ala['id'], 'points', 30, 'job_points');
+        \Turysta\Game\Wallet::apply($this->pdo, (int) $bob['id'], 'points', 50, 'job_points');
+        \Turysta\Game\Wallet::apply($this->pdo, (int) $ala['id'], 'points', 900, 'admin_adjust');
+        \Turysta\Game\Wallet::apply($this->pdo, (int) $obcy['id'], 'points', 5000, 'job_points');
+        // Stary wpis (przed poczatkiem miesiaca) nie liczy sie do tygodnia ani miesiaca.
+        \Turysta\Game\Wallet::apply($this->pdo, (int) $ala['id'], 'points', 400, 'job_points');
+        $this->pdo->exec("UPDATE ledger_entries SET created_at = UTC_TIMESTAMP() - INTERVAL 90 DAY WHERE user_id = {$ala['id']} AND amount = 400");
+
+        foreach (['week', 'month'] as $period) {
+            $r = $ranking->friends((int) $ala['id'], $period);
+            $this->assertSame([(int) $bob['id'], (int) $ala['id']], array_column($r['rows'], 'id'), $period);
+            $this->assertSame([50, 30], array_column($r['rows'], 'points'), $period);
+            $this->assertSame([1, 2], array_column($r['rows'], 'rank'));
+            $this->assertNotNull($r['since']);
+        }
+
+        // Lacznie: calkowite punkty (z korektami i starymi wpisami), obcy w ogole sie nie pojawia.
+        $all = $ranking->friends((int) $ala['id'], 'all');
+        $this->assertNull($all['since']);
+        $this->assertSame([(int) $ala['id'], (int) $bob['id']], array_column($all['rows'], 'id'));
+        $this->assertNotContains((int) $obcy['id'], array_column($all['rows'], 'id'));
+
+        // Nieznany okres to tydzien.
+        $this->assertSame('week', $ranking->friends((int) $ala['id'], 'xyz')['period']);
+        $start = \Turysta\Game\RankingService::periodStart('week', \Turysta\Game\Clock::parse('2026-11-04 12:00:00'));
+        $this->assertSame('2026-11-01 23:00:00', $start); // poniedzialek 2 listopada 00:00 w Warszawie (UTC+1)
+    }
+
+    public function testActivityFeedAndPrivacy(): void
+    {
+        $ala = $this->user('Ala');
+        $bob = $this->user('Bob');
+        $obcy = $this->user('Obcy');
+        $this->befriend($ala, $bob);
+
+        // Zlota odznaka Boba i wejscie do swiata 3 trafiaja do aktywnosci.
+        $this->pdo->exec("INSERT IGNORE INTO user_stats (user_id) VALUES ({$bob['id']})");
+        $this->pdo->exec("UPDATE user_stats SET longest_streak = 30 WHERE user_id = {$bob['id']}");
+        \Turysta\Game\BadgeService::sync($this->pdo, (int) $bob['id'], \Turysta\Game\Clock::now($this->pdo));
+        \Turysta\Game\BadgeService::sync($this->pdo, (int) $bob['id'], \Turysta\Game\Clock::now($this->pdo));
+        ActivityFeed::record($this->pdo, (int) $bob['id'], 'world', 'w3', ['world' => 3]);
+        ActivityFeed::record($this->pdo, (int) $obcy['id'], 'world', 'w2', ['world' => 2]);
+
+        $feed = ActivityFeed::forUser($this->pdo, (int) $ala['id']);
+        $this->assertTrue($feed['enabled']);
+        $types = array_map(fn($e) => $e['type'] . ':' . ($e['payload']['group'] ?? $e['payload']['world']), $feed['events']);
+        sort($types);
+        // Brazowa i srebrna odznaki serii nie sa pokazywane, zlota tak; zdarzenie jest tylko raz mimo dwoch synchronizacji.
+        $this->assertSame(['badge:special_streak', 'world:3'], $types);
+        $this->assertSame((int) $bob['id'], $feed['events'][0]['user']['id']);
+        // Obcy gracz nie jest widoczny.
+        $this->assertCount(2, $feed['events']);
+
+        // Bob wylacza aktywnosc: znika z feedu Ali.
+        $this->pdo->exec("UPDATE users SET share_activity = 0 WHERE id = {$bob['id']}");
+        $this->assertSame([], ActivityFeed::forUser($this->pdo, (int) $ala['id'])['events']);
+        $this->pdo->exec("UPDATE users SET share_activity = 1 WHERE id = {$bob['id']}");
+
+        // Ala wylacza: sama nic nie widzi.
+        $this->pdo->exec("UPDATE users SET share_activity = 0 WHERE id = {$ala['id']}");
+        $off = ActivityFeed::forUser($this->pdo, (int) $ala['id']);
+        $this->assertFalse($off['enabled']);
+        $this->assertSame([], $off['events']);
     }
 }

@@ -12,6 +12,8 @@ import AnnouncementList from './AnnouncementList';
 import BadgeBook from './BadgeBook';
 import Coins from './Coins';
 import DailyReward from './DailyReward';
+import FriendActivity from './FriendActivity';
+import GiftQuick from './GiftQuick';
 import { Icon } from './icons';
 import Points from './Points';
 import ProfileCard from './ProfileCard';
@@ -114,6 +116,10 @@ export default function Dashboard() {
         </section>
 
         {home && <DailyReward daily={home.daily} busy={claiming} onClaim={() => void claim()} />}
+
+        <FriendActivity />
+
+        <GiftQuick />
 
         <ProfileCard
           data={{

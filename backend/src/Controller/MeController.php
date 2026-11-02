@@ -136,6 +136,7 @@ final class MeController
                     ? \Turysta\Game\Clock::iso(\Turysta\Auth\UnverifiedCleaner::deadline($user))
                     : null,
                 'tutorial_done' => $user['tutorial_done_at'] !== null,
+                'share_activity' => (int) ($user['share_activity'] ?? 1) === 1,
             ],
             'wallet' => [
                 'coins_cents' => (int) $wallet['coins_cents'],

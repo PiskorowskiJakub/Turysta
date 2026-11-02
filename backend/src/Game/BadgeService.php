@@ -58,6 +58,16 @@ final class BadgeService
                        WHERE f.status = 'accepted' AND (f.user_a = ? OR f.user_b = ?)
                          AND fw.points > 0 AND fw.points < mw.points)"
             )->execute([$userId, $when, $userId, $userId, $userId, $userId]);
+            // Zdarzenie dla znajomych: nowo zdobyta odznaka od zlotej wzwyz (INSERT IGNORE pilnuje, zeby nie dublowac).
+            $pdo->prepare(
+                "INSERT IGNORE INTO activity_events (user_id, type, ref_key, payload, created_at)
+                 SELECT ub.user_id, 'badge', b.code,
+                        JSON_OBJECT('group', SUBSTRING_INDEX(b.code, '.', 1), 'tier', b.tier, 'world', sd.world_ordinal), ub.earned_at
+                 FROM user_badges ub
+                 JOIN badge_definitions b ON b.id = ub.badge_id
+                 LEFT JOIN skill_definitions sd ON sd.code = b.skill_code
+                 WHERE ub.user_id = ? AND ub.earned_at = ? AND b.tier IN ('gold', 'diamond', 'ruby')"
+            )->execute([$userId, $when]);
         } catch (Throwable $e) {
             error_log('BadgeService: ' . $e->getMessage());
         }

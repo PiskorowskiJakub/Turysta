@@ -62,7 +62,22 @@
     "first": "Pierwsza",
     "last": "Ostatnia",
     "pageOf": "Strona {{page}} z {{pages}}",
-    "total": "graczy: {{n}}"
+    "total": "graczy: {{n}}",
+    "scopeAll": "Wszyscy gracze",
+    "scopeFriends": "Tylko znajomi",
+    "friends": {
+      "period": "Okres",
+      "week": "Ten tydzień",
+      "month": "Ten miesiąc",
+      "all": "Łącznie",
+      "gained": "Punkty w okresie",
+      "total": "Razem",
+      "sinceWeek": "Punkty zdobyte od poniedziałku, {{date}}.",
+      "sinceMonth": "Punkty zdobyte od początku miesiąca, {{date}}.",
+      "sinceAll": "Wszystkie zdobyte punkty.",
+      "empty": "Dodaj znajomych w zakładce Profil, Znajomi, żeby ścigać się z nimi.",
+      "myPlace": "Twoje miejsce wśród znajomych: {{rank}} z {{n}}"
+    }
   },
   "badges": {
     "title": "Książeczka odznak",
@@ -389,7 +404,11 @@
       "trainings24": "Treningi (24 h)",
       "trainingsTotal": "Treningi łącznie",
       "badges": "Zdobyte odznaki",
-      "worlds": "Gracze w światach"
+      "worlds": "Gracze w światach",
+      "giftsTotal": "Prezenty (razem)",
+      "gifts24": "Prezenty (24 h)",
+      "giftsCoins": "Dukaty w prezentach",
+      "giftsHint": "Prezenty między znajomymi. Dukaty z prezentów tylko przechodzą między graczami, a nadawca dostaje dodatkowo mały bonus."
     },
     "facts": {
       "created": "Ciekawostka dodana.",
@@ -574,7 +593,11 @@
     "deleteSection": "Usunięcie konta",
     "deleteInfo": "Usunięcie konta kasuje na stałe Twoją postać: dukaty, umiejętności, odznaki, historię i postępy. Tego nie da się cofnąć. Później możesz założyć nowe konto na ten sam adres e-mail.",
     "deleteSure": "Rozumiem, że konta nie da się odzyskać.",
-    "deleteButton": "Usuń konto na stałe"
+    "deleteButton": "Usuń konto na stałe",
+    "privacySection": "Prywatność",
+    "shareActivity": "Pokazuj moją aktywność znajomym",
+    "shareActivityHint": "Znajomi zobaczą na stronie głównej, że dotarłeś do nowego świata albo zdobyłeś cenną odznakę. Po wyłączeniu ukrywasz swoją aktywność, ale sam też nie widzisz aktywności znajomych.",
+    "savedPrivacy": "Ustawienia prywatności zapisane."
   },
   "verify": {
     "title": "Twoje konto nie zostało jeszcze potwierdzone.",
@@ -631,7 +654,11 @@
     "already_friends": "Jesteście już znajomymi.",
     "request_pending": "Zaproszenie dla tego gracza już czeka na odpowiedź.",
     "friend_limit": "Osiągnięto limit znajomych lub oczekujących zaproszeń.",
-    "not_friends": "Porównać możesz tylko konta swoich znajomych."
+    "not_friends": "Ta funkcja jest dostępna tylko dla znajomych.",
+    "gift_too_early": "Prezenty można wysyłać dopiero po 24 godzinach od zostania znajomymi.",
+    "gift_limit": "Wysłałeś dziś już maksymalną liczbę prezentów.",
+    "gift_recipient_limit": "Ten gracz dostał dziś już wiele prezentów. Spróbuj jutro.",
+    "gift_already_sent": "Temu znajomemu wysłałeś już dziś prezent."
   },
   "training": {
     "title": "Szkolenia",
@@ -718,7 +745,8 @@
     "job_finished": "Praca „{{job}}” zakończona. Wypłata: {{amount}} dk",
     "chapter_finished": "Awansowałeś na stopień: {{chapter}}.",
     "friend_request": "{{name}} zaprasza Cię do znajomych. Odpowiedz w zakładce Profil, Znajomi.",
-    "friend_accepted": "{{name}} przyjął(-ęła) Twoje zaproszenie do znajomych."
+    "friend_accepted": "{{name}} przyjął(-ęła) Twoje zaproszenie do znajomych.",
+    "friend_gift": "{{name}} podarował(a) Ci {{amount}} dk. Dziękujemy za bycie znajomym!"
   },
   "fact": "Ciekawostka",
   "world": {
@@ -929,7 +957,7 @@
           "p": [
             "Dane konta: adres e-mail, nazwa postaci, hasło (przechowujemy wyłącznie jego nieodwracalny skrót, a nie samo hasło) oraz wybrane przez Ciebie płeć i awatar. Używamy ich, żeby prowadzić Twoje konto i umożliwić grę (art. 6 ust. 1 lit. b RODO).",
             "Dane z gry: umiejętności, portfel, prace, odznaki, postępy i punkty. Nazwa postaci, awatar, punkty i postępy są widoczne dla innych graczy w rankingu i na profilu postaci. Nie ujawniamy innym Twojego adresu e-mail.",
-            "Znajomi: jeśli dodasz kogoś do znajomych i ta osoba przyjmie zaproszenie, oboje widzicie nawzajem swój status online (aktywność w ciągu ostatnich minut), stan dukatów i punkty. Możecie też porównać swoje statystyki, postępy w grze i poziomy umiejętności. Znajomego możesz usunąć w każdej chwili.",
+            "Znajomi: jeśli dodasz kogoś do znajomych i ta osoba przyjmie zaproszenie, oboje widzicie nawzajem swój status online (aktywność w ciągu ostatnich minut), stan dukatów i punkty. Możecie też porównać swoje statystyki, postępy w grze i poziomy umiejętności. Znajomego możesz usunąć w każdej chwili. Znajomi widzą też, że dotarłeś do nowego świata albo zdobyłeś cenną odznakę; możesz to wyłączyć w Edycji profilu, w sekcji Prywatność. Możesz też podarować znajomemu niewielką liczbę dukatów (raz dziennie).",
             "Dane techniczne: adres IP i dane przeglądarki zapisujemy przy logowaniu oraz w dziennikach serwera. Służą bezpieczeństwu i ochronie przed nadużyciami (art. 6 ust. 1 lit. f RODO, nasz prawnie uzasadniony interes).",
             "Zgłoszenia błędów: treść zgłoszenia, adres strony i dane przeglądarki, powiązane z Twoim kontem. Używamy ich do naprawiania gry (art. 6 ust. 1 lit. f RODO).",
             "Polecenia: jeżeli założysz konto z kodem polecającym, zapisujemy, kto Cię polecił. Osoba polecająca może zobaczyć, że ktoś założył konto z jej kodu.",
@@ -1015,7 +1043,18 @@
     "isFriend": "Jesteście znajomymi.",
     "compare": "Porównaj",
     "sort": "Sortuj",
-    "sortBy": "Sortuj według: {{column}}"
+    "sortBy": "Sortuj według: {{column}}",
+    "gift": "Podaruj",
+    "giftTitle": "Podaruj {{amount}} dk",
+    "giftSent": "Wysłano prezent dla {{name}}: {{amount}} dk. Bonus dla Ciebie: {{bonus}} dk.",
+    "giftSentShort": "Wysłano",
+    "giftEarly": "Prezenty można wysyłać po {{hours}} godzinach od zostania znajomymi.",
+    "giftLimit": "Dzienny limit prezentów wyczerpany.",
+    "giftAlready": "Dziś już obdarowano tego znajomego.",
+    "giftInfo": "Prezent: {{amount}} dk dla znajomego, a Ty dostajesz bonus {{bonus}} dk. Raz dziennie dla każdej osoby, dziś zostało {{left}} z {{max}}. Kwota rośnie wraz z Twoim postępem.",
+    "giftConfirmTitle": "Potwierdź prezent dla {{name}}",
+    "giftConfirm": "Podarujesz {{amount}} dk graczowi {{name}}. Ta kwota zostanie odjęta z Twojego konta i przekazana znajomemu. W zamian dostaniesz bonus {{bonus}} dk.",
+    "giftConfirmYes": "Przekaż {{amount}} dk"
   },
   "updates": {
     "title": "Aktualizacje gry",
@@ -1044,5 +1083,32 @@
       "basicSkills": "Umiejętności podstawowe",
       "worldSkills": "Umiejętności: świat {{n}}"
     }
+  },
+  "feed": {
+    "title": "Aktywność znajomych",
+    "empty": "Gdy Twoi znajomi dotrą do nowego świata albo zdobędą cenną odznakę, zobaczysz to tutaj.",
+    "world": "{{name}} dotarł(a) do świata {{world}}.",
+    "badge": "{{name}} zdobył(a) {{tier}} odznakę „{{badge}}”.",
+    "badgeWorld": "{{name}} zdobył(a) {{tier}} odznakę ze świata {{world}}.",
+    "tier": {
+      "bronze": "brązową",
+      "silver": "srebrną",
+      "gold": "złotą",
+      "diamond": "diamentową",
+      "ruby": "rubinową"
+    },
+    "friends": "Znajomi"
+  },
+  "giftQuick": {
+    "title": "Prezent dla znajomego",
+    "pick": "Wybierz znajomego",
+    "noFriends": "Nie masz jeszcze znajomych, którym można podarować dukaty.",
+    "addFriends": "Dodaj znajomych",
+    "nobody": "Dziś nie możesz nikomu nic podarować. Nowi znajomi dostępni są po {{hours}} godzinach, a każdy dostaje najwyżej jeden prezent dziennie.",
+    "sent": "Przekazane prezenty",
+    "received": "Otrzymane prezenty",
+    "left": "Dziś możesz jeszcze podarować: {{left}} z {{max}}.",
+    "goToList": "Podaruj prezenty",
+    "how": "Prezent możesz też wysłać z listy znajomych (Profil, Znajomi): kliknij „Podaruj” przy wybranej osobie i potwierdź."
   }
 }

@@ -95,6 +95,9 @@ export default function AdminStatsPage() {
           <Tile label={t('admin.stats.trainings24')} value={s.economy.trainings_done_24h} />
           <Tile label={t('admin.stats.trainingsTotal')} value={s.economy.trainings_done_total} />
           <Tile label={t('admin.stats.badges')} value={s.economy.badges_earned} />
+          <Tile label={t('admin.stats.giftsTotal')} value={s.economy.gifts_total} hint={t('admin.stats.giftsHint')} />
+          <Tile label={t('admin.stats.gifts24')} value={s.economy.gifts_24h} />
+          <Tile label={t('admin.stats.giftsCoins')} value={<Coins cents={s.economy.gifts_cents_total} />} hint={t('admin.stats.giftsHint')} />
         </dl>
       </section>
 
