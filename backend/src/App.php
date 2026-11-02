@@ -24,6 +24,7 @@ use Turysta\Game\TrainingService;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
 use Turysta\Http\Router;
+use Turysta\Social\CompareService;
 use Turysta\Social\FriendService;
 use Turysta\Support\BugReportService;
 
@@ -42,7 +43,8 @@ final class App
         $home = new HomeController($pdo);
         $admin = new AdminController($pdo);
         $bugs = new BugReportController(new BugReportService($pdo, new RateLimiter($pdo)));
-        $friends = new FriendController(new FriendService($pdo, new RateLimiter($pdo)));
+        $friendService = new FriendService($pdo, new RateLimiter($pdo));
+        $friends = new FriendController($friendService, new CompareService($pdo, $friendService));
         $game = new GameController($pdo, $settler, $training, $jobs);
 
         $router = new Router();
@@ -79,6 +81,7 @@ final class App
         $router->post('/v1/bug-reports', [$bugs, 'create']);
 
         $router->get('/v1/friends', [$friends, 'list']);
+        $router->get('/v1/friends/{id}/compare', [$friends, 'compare']);
         $router->post('/v1/friends/requests', [$friends, 'request']);
         $router->post('/v1/friends/{id}/accept', [$friends, 'accept']);
         $router->delete('/v1/friends/{id}', [$friends, 'remove']);

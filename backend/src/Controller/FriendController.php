@@ -6,11 +6,12 @@ namespace Turysta\Controller;
 use Turysta\Auth\Session;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
+use Turysta\Social\CompareService;
 use Turysta\Social\FriendService;
 
 final class FriendController
 {
-    public function __construct(private FriendService $friends)
+    public function __construct(private FriendService $friends, private CompareService $compare)
     {
     }
 
@@ -49,6 +50,16 @@ final class FriendController
         $user = Session::requireUser($r);
         $this->friends->remove((int) $user['id'], $this->id($params));
         return [200, $this->friends->overview((int) $user['id'])];
+    }
+
+    /**
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
+    public function compare(Request $r, array $params = []): array
+    {
+        $user = Session::requireUser($r);
+        return [200, $this->compare->compare((int) $user['id'], $this->id($params))];
     }
 
     /** @param array<string,string> $params */

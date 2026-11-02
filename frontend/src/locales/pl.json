@@ -78,7 +78,7 @@
     "none": "Jeszcze nie masz tu żadnej odznaki.",
     "count": "Zdobyte: {{got}} z {{total}}",
     "special": "Odznaki specjalne",
-    "specialInfo": "Nagrody za wyjątkowe osiągnięcia, które nie wynikają z poziomu umiejętności.",
+    "specialInfo": "Nagrody za wyjątkowe osiągnięcia, które nie wynikają z poziomu umiejętności: serie dni, aktywność, znajomi i rywalizacja z nimi.",
     "featured": "Wyróżnione odznaki",
     "featuredNone": "Nie wyróżniłeś jeszcze żadnych odznak.",
     "pickFeatured": "Wybierz wyróżnione odznaki",
@@ -93,7 +93,17 @@
     "seasonal": "Odznaki sezonowe",
     "seasonalInfo": "Odznaki za wydarzenia: cykliczne, jak świąteczne, które wracają co roku, oraz jednorazowe, których nie da się zdobyć po zakończeniu eventu.",
     "soon": "Wkrótce.",
-    "worldLocked": "Ten świat jeszcze przed Tobą. Odznaki z jego umiejętności zdobędziesz po dotarciu do niego."
+    "worldLocked": "Ten świat jeszcze przed Tobą. Odznaki z jego umiejętności zdobędziesz po dotarciu do niego.",
+    "special_friends": "Znajomi",
+    "special_rival": "Rywalizacja",
+    "tier_friends_one": "{{count}} znajomy",
+    "tier_friends_few": "{{count}} znajomych",
+    "tier_friends_many": "{{count}} znajomych",
+    "tier_friends_other": "{{count}} znajomych",
+    "tier_rivals_one": "Wyprzedzony {{count}} znajomy",
+    "tier_rivals_few": "Wyprzedzonych {{count}} znajomych",
+    "tier_rivals_many": "Wyprzedzonych {{count}} znajomych",
+    "tier_rivals_other": "Wyprzedzonych {{count}} znajomych"
   },
   "skills": {
     "fitness": "Kondycja",
@@ -140,7 +150,10 @@
       "copy": "Kopiuj",
       "copied": "Skopiowano",
       "registered": "Założyło konto",
-      "active": "Z tego ze stażem {{n}}+ dni aktywności"
+      "active": "Z tego ze stażem {{n}}+ dni aktywności",
+      "codeLead": "Albo podaj sam kod. Nowy gracz wpisze go w polu „Kod polecający” przy zakładaniu konta.",
+      "codeLabel": "Kod polecający",
+      "copyCode": "Kopiuj kod"
     },
     "log": {
       "title": "Dziennik wyprawy",
@@ -617,7 +630,8 @@
     "max_chapter": "Osiągnięto ostatni dostępny stopień.",
     "already_friends": "Jesteście już znajomymi.",
     "request_pending": "Zaproszenie dla tego gracza już czeka na odpowiedź.",
-    "friend_limit": "Osiągnięto limit znajomych lub oczekujących zaproszeń."
+    "friend_limit": "Osiągnięto limit znajomych lub oczekujących zaproszeń.",
+    "not_friends": "Porównać możesz tylko konta swoich znajomych."
   },
   "training": {
     "title": "Szkolenia",
@@ -915,7 +929,7 @@
           "p": [
             "Dane konta: adres e-mail, nazwa postaci, hasło (przechowujemy wyłącznie jego nieodwracalny skrót, a nie samo hasło) oraz wybrane przez Ciebie płeć i awatar. Używamy ich, żeby prowadzić Twoje konto i umożliwić grę (art. 6 ust. 1 lit. b RODO).",
             "Dane z gry: umiejętności, portfel, prace, odznaki, postępy i punkty. Nazwa postaci, awatar, punkty i postępy są widoczne dla innych graczy w rankingu i na profilu postaci. Nie ujawniamy innym Twojego adresu e-mail.",
-            "Znajomi: jeśli dodasz kogoś do znajomych i ta osoba przyjmie zaproszenie, oboje widzicie nawzajem swój status online (aktywność w ciągu ostatnich minut), stan dukatów i punkty. Znajomego możesz usunąć w każdej chwili.",
+            "Znajomi: jeśli dodasz kogoś do znajomych i ta osoba przyjmie zaproszenie, oboje widzicie nawzajem swój status online (aktywność w ciągu ostatnich minut), stan dukatów i punkty. Możecie też porównać swoje statystyki, postępy w grze i poziomy umiejętności. Znajomego możesz usunąć w każdej chwili.",
             "Dane techniczne: adres IP i dane przeglądarki zapisujemy przy logowaniu oraz w dziennikach serwera. Służą bezpieczeństwu i ochronie przed nadużyciami (art. 6 ust. 1 lit. f RODO, nasz prawnie uzasadniony interes).",
             "Zgłoszenia błędów: treść zgłoszenia, adres strony i dane przeglądarki, powiązane z Twoim kontem. Używamy ich do naprawiania gry (art. 6 ust. 1 lit. f RODO).",
             "Polecenia: jeżeli założysz konto z kodem polecającym, zapisujemy, kto Cię polecił. Osoba polecająca może zobaczyć, że ktoś założył konto z jej kodu.",
@@ -970,7 +984,7 @@
     "addTitle": "Dodaj znajomego",
     "addLabel": "Nazwa postaci gracza",
     "invite": "Wyślij zaproszenie",
-    "privacy": "Gdy gracz przyjmie zaproszenie, zobaczycie nawzajem, czy jesteście online, oraz swoje dukaty i punkty.",
+    "privacy": "Gdy gracz przyjmie zaproszenie, zobaczycie nawzajem, czy jesteście online, oraz swoje dukaty i punkty. Możecie też porównać swoje statystyki i poziomy umiejętności.",
     "invited": "Zaproszenie dla {{name}} zostało wysłane.",
     "nowFriends": "Ty i {{name}} jesteście teraz znajomymi.",
     "incomingTitle": "Zaproszenia do Ciebie ({{n}})",
@@ -998,12 +1012,37 @@
     "addToFriends": "Dodaj do znajomych",
     "cancelInvite": "Anuluj zaproszenie",
     "acceptInvite": "Przyjmij zaproszenie",
-    "isFriend": "Jesteście znajomymi."
+    "isFriend": "Jesteście znajomymi.",
+    "compare": "Porównaj",
+    "sort": "Sortuj",
+    "sortBy": "Sortuj według: {{column}}"
   },
   "updates": {
     "title": "Aktualizacje gry",
     "intro": "Tu znajdziesz szczegółowy opis zmian i nowości w Dwóch Dukatach. W ogłoszeniach podajemy tylko skrót.",
     "empty": "Nie ma jeszcze żadnych aktualizacji.",
     "all": "Pokaż wszystkie aktualizacje"
+  },
+  "compare": {
+    "title": "Porównanie kont",
+    "back": "Wróć do znajomych",
+    "you": "Ty",
+    "legend": "Na zielono wyróżniamy lepszy wynik. Przy miejscu w rankingu lepsze jest niższe miejsce. Wiek konta nie jest wyróżniany.",
+    "summary": "Lepszy wynik masz w {{mine}} kategoriach, a {{name}} w {{theirs}}.",
+    "progressValue": "Świat {{world}}, rozdział {{chapter}}",
+    "rows": {
+      "rank": "Miejsce w rankingu",
+      "progress": "Postęp w grze",
+      "skillLevels": "Suma poziomów umiejętności",
+      "badges": "Odznaki",
+      "longestStreak": "Najdłuższa seria"
+    },
+    "sections": {
+      "general": "Ogólne",
+      "activity": "Aktywność",
+      "earnings": "Zarobki",
+      "basicSkills": "Umiejętności podstawowe",
+      "worldSkills": "Umiejętności: świat {{n}}"
+    }
   }
 }

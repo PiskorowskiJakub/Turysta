@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../auth/AuthContext';
 import FriendsPage from '../pages/FriendsPage';
+import ComparePage from '../pages/ComparePage';
 import ProfilePage from '../pages/ProfilePage';
 import Tabs, { type TabItem } from './Tabs';
 
@@ -23,6 +24,7 @@ export default function ProfileShell() {
       <Routes>
         <Route path="przeglad" element={<ProfilePage />} />
         <Route path="znajomi" element={<FriendsPage />} />
+        <Route path="znajomi/porownaj/:id" element={<ComparePage />} />
         <Route path="*" element={<Navigate to="/profil/przeglad" replace />} />
       </Routes>
     </>

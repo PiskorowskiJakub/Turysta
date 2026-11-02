@@ -153,4 +153,27 @@ final class FriendFlowTest extends TestCase
         (new \Turysta\Auth\UserDeleter($this->pdo))->delete((int) $ala['id']);
         $this->assertSame([], $this->friends->overview((int) $bob['id'])['friends']);
     }
+
+    public function testFriendBadges(): void
+    {
+        $ala = $this->user('Ala');
+        $bob = $this->user('Bob');
+        $ids = [(int) $ala['id'], (int) $bob['id']];
+        $codes = fn(int $id): array => array_column(\Turysta\Game\BadgeService::earned($this->pdo, $id), 'tier', 'group');
+
+        $this->assertArrayNotHasKey('special_friends', $codes($ids[0]));
+        $this->friends->request($ala, ['user_id' => $ids[1]], $this->ip());
+        $this->friends->accept($bob, $ids[0]);
+        // Pierwszy znajomy: obie strony dostaja brazowa odznake.
+        $this->assertSame('bronze', $codes($ids[0])['special_friends']);
+        $this->assertSame('bronze', $codes($ids[1])['special_friends']);
+
+        // Wyprzedzenie znajomego liczy sie, gdy ma on juz jakies punkty, a gracz wiecej.
+        $this->pdo->exec("UPDATE wallets SET points = 10 WHERE user_id = {$ids[1]}");
+        $this->pdo->exec("UPDATE wallets SET points = 25 WHERE user_id = {$ids[0]}");
+        \Turysta\Game\BadgeService::sync($this->pdo, $ids[0], \Turysta\Game\Clock::now($this->pdo));
+        \Turysta\Game\BadgeService::sync($this->pdo, $ids[1], \Turysta\Game\Clock::now($this->pdo));
+        $this->assertSame('bronze', $codes($ids[0])['special_rival']);
+        $this->assertArrayNotHasKey('special_rival', $codes($ids[1]));
+    }
 }

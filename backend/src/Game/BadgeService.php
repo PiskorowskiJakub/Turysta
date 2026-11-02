@@ -40,6 +40,24 @@ final class BadgeService
                  JOIN user_stats st ON st.user_id = ? AND st.active_days >= b.threshold
                  WHERE b.condition_type = 'active_days'"
             )->execute([$userId, $when, $userId]);
+            $pdo->prepare(
+                "INSERT IGNORE INTO user_badges (user_id, badge_id, earned_at)
+                 SELECT ?, b.id, ? FROM badge_definitions b
+                 WHERE b.condition_type = 'friends_count'
+                   AND b.threshold <= (SELECT COUNT(*) FROM friendships WHERE status = 'accepted' AND (user_a = ? OR user_b = ?))"
+            )->execute([$userId, $when, $userId, $userId]);
+            // Wyprzedzeni znajomi: maja wiecej niz 0 punktow, a mniej od gracza.
+            $pdo->prepare(
+                "INSERT IGNORE INTO user_badges (user_id, badge_id, earned_at)
+                 SELECT ?, b.id, ? FROM badge_definitions b
+                 WHERE b.condition_type = 'friends_beaten'
+                   AND b.threshold <= (
+                       SELECT COUNT(*) FROM friendships f
+                       JOIN wallets fw ON fw.user_id = IF(f.user_a = ?, f.user_b, f.user_a)
+                       JOIN wallets mw ON mw.user_id = ?
+                       WHERE f.status = 'accepted' AND (f.user_a = ? OR f.user_b = ?)
+                         AND fw.points > 0 AND fw.points < mw.points)"
+            )->execute([$userId, $when, $userId, $userId, $userId, $userId]);
         } catch (Throwable $e) {
             error_log('BadgeService: ' . $e->getMessage());
         }

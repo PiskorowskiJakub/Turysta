@@ -28,7 +28,7 @@ export default function Dashboard() {
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [claiming, setClaiming] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'link' | 'code' | null>(null);
   const [search, setSearch] = useState('');
 
   const load = useCallback(async () => {
@@ -70,13 +70,13 @@ export default function Dashboard() {
   };
 
   const inviteLink = home?.referral_code ? `${window.location.origin}/rejestracja?ref=${home.referral_code}` : '';
-  const copy = async () => {
+  const copy = async (what: 'link' | 'code') => {
     try {
-      await navigator.clipboard.writeText(inviteLink);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(what === 'link' ? inviteLink : (home?.referral_code ?? ''));
+      setCopied(what);
+      window.setTimeout(() => setCopied(null), 2000);
     } catch {
-      setCopied(false);
+      setCopied(null);
     }
   };
 
@@ -138,7 +138,12 @@ export default function Dashboard() {
             <p className="muted">{t('home.invite.lead')}</p>
             <div className="invite-row">
               <input readOnly value={inviteLink} aria-label={t('home.invite.title')} onFocus={(e) => e.currentTarget.select()} />
-              <button type="button" className="button small" onClick={() => void copy()}>{copied ? t('home.invite.copied') : t('home.invite.copy')}</button>
+              <button type="button" className="button small" onClick={() => void copy('link')}>{copied === 'link' ? t('home.invite.copied') : t('home.invite.copy')}</button>
+            </div>
+            <p className="muted invite-code-label">{t('home.invite.codeLead')}</p>
+            <div className="invite-row">
+              <input readOnly value={home.referral_code} aria-label={t('home.invite.codeLabel')} onFocus={(e) => e.currentTarget.select()} />
+              <button type="button" className="button small" onClick={() => void copy('code')}>{copied === 'code' ? t('home.invite.copied') : t('home.invite.copyCode')}</button>
             </div>
             {home.referrals && (
               <dl className="admin-tiles invite-stats">
