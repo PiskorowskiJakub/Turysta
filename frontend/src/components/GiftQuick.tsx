@@ -85,6 +85,8 @@ export default function GiftQuick() {
         <div className="admin-tile"><dt>{t('giftQuick.received')}</dt><dd>{gifts.totals.received_count} <small>(<Coins cents={gifts.totals.received_cents} /> {t('wallet.coinsShort')})</small></dd></div>
       </dl>
       <p className="muted">{t('giftQuick.left', { left: gifts.sent_left, max: gifts.max_per_day })}</p>
+      <p><Link className="button small secondary" to="/profil/znajomi">{t('giftQuick.goToList')}</Link></p>
+      <p className="muted">{t('giftQuick.how')}</p>
     </section>
   );
 }

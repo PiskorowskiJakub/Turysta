@@ -1107,6 +1107,8 @@
     "nobody": "Dziś nie możesz nikomu nic podarować. Nowi znajomi dostępni są po {{hours}} godzinach, a każdy dostaje najwyżej jeden prezent dziennie.",
     "sent": "Przekazane prezenty",
     "received": "Otrzymane prezenty",
-    "left": "Dziś możesz jeszcze podarować: {{left}} z {{max}}."
+    "left": "Dziś możesz jeszcze podarować: {{left}} z {{max}}.",
+    "goToList": "Podaruj prezenty",
+    "how": "Prezent możesz też wysłać z listy znajomych (Profil, Znajomi): kliknij „Podaruj” przy wybranej osobie i potwierdź."
   }
 }
