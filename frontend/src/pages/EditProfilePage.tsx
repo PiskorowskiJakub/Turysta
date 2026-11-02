@@ -19,13 +19,15 @@ const empty: Result = { fields: {} };
 
 export default function EditProfilePage() {
   const { t } = useTranslation();
-  const { me, updateAccountProfile, changeEmail, changePassword, deleteAccount } = useAuth();
+  const { me, updateAccountProfile, updatePrivacy, changeEmail, changePassword, deleteAccount } = useAuth();
   const navigate = useNavigate();
 
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [gender, setGender] = useState<Gender | null>(me?.user.gender ?? null);
   const [avatarId, setAvatarId] = useState<number | null>(me?.user.avatar_id ?? null);
   const [character, setCharacter] = useState<Result>(empty);
+
+  const [privacy, setPrivacy] = useState<Result>(empty);
 
   const [newEmail, setNewEmail] = useState('');
   const [emailPassword, setEmailPassword] = useState('');
@@ -78,6 +80,10 @@ export default function EditProfilePage() {
     e.preventDefault();
     if (!gender || avatarId === null) return;
     void run(setCharacter, () => updateAccountProfile(gender, avatarId), t('editProfile.savedCharacter'));
+  };
+
+  const onShareActivity = (checked: boolean) => {
+    void run(setPrivacy, () => updatePrivacy(checked), t('editProfile.savedPrivacy'));
   };
 
   const onEmail = (e: FormEvent) => {
@@ -178,6 +184,16 @@ export default function EditProfilePage() {
 
         <button className="button" type="submit" disabled={busy || !gender || avatarId === null}>{t('editProfile.saveCharacter')}</button>
       </form>
+
+      <section className="panel edit-section">
+        <h2>{t('editProfile.privacySection')}</h2>
+        {messages(privacy)}
+        <label className="check">
+          <input type="checkbox" checked={me.user.share_activity} disabled={busy} onChange={(e) => onShareActivity(e.target.checked)} />
+          <span>{t('editProfile.shareActivity')}</span>
+        </label>
+        <p className="field-hint">{t('editProfile.shareActivityHint')}</p>
+      </section>
 
       <form className="panel edit-section" onSubmit={onEmail} noValidate>
         <h2>{t('editProfile.emailSection')}</h2>

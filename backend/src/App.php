@@ -26,6 +26,7 @@ use Turysta\Http\Request;
 use Turysta\Http\Router;
 use Turysta\Social\CompareService;
 use Turysta\Social\FriendService;
+use Turysta\Social\GiftService;
 use Turysta\Support\BugReportService;
 
 final class App
@@ -44,7 +45,7 @@ final class App
         $admin = new AdminController($pdo);
         $bugs = new BugReportController(new BugReportService($pdo, new RateLimiter($pdo)));
         $friendService = new FriendService($pdo, new RateLimiter($pdo));
-        $friends = new FriendController($friendService, new CompareService($pdo, $friendService));
+        $friends = new FriendController($friendService, new CompareService($pdo, $friendService), new GiftService($pdo, $friendService), $pdo);
         $game = new GameController($pdo, $settler, $training, $jobs);
 
         $router = new Router();
@@ -73,6 +74,7 @@ final class App
         $router->patch('/v1/me', [$me, 'update']);
 
         $router->patch('/v1/account/profile', [$account, 'updateProfile']);
+        $router->patch('/v1/account/privacy', [$account, 'updatePrivacy']);
         $router->put('/v1/account/email', [$account, 'changeEmail']);
         $router->put('/v1/account/password', [$account, 'changePassword']);
         $router->post('/v1/account/resend-verification', [$account, 'resendVerification']);
@@ -81,7 +83,9 @@ final class App
         $router->post('/v1/bug-reports', [$bugs, 'create']);
 
         $router->get('/v1/friends', [$friends, 'list']);
+        $router->get('/v1/friends/activity', [$friends, 'activity']);
         $router->get('/v1/friends/{id}/compare', [$friends, 'compare']);
+        $router->post('/v1/friends/{id}/gift', [$friends, 'gift']);
         $router->post('/v1/friends/requests', [$friends, 'request']);
         $router->post('/v1/friends/{id}/accept', [$friends, 'accept']);
         $router->delete('/v1/friends/{id}', [$friends, 'remove']);
@@ -134,6 +138,7 @@ final class App
         $router->get('/v1/badges', [$game, 'badges']);
         $router->put('/v1/badges/featured', [$game, 'setFeaturedBadges']);
         $router->get('/v1/ranking', [$game, 'ranking']);
+        $router->get('/v1/ranking/friends', [$game, 'friendsRanking']);
         $router->get('/v1/players/{id}', [$game, 'player']);
         $router->get('/v1/notifications', [$game, 'notifications']);
         $router->post('/v1/notifications/read', [$game, 'readNotifications']);

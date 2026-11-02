@@ -13,6 +13,7 @@ export interface Me {
     email_verified: boolean;
     email_verification_deadline: string | null;
     tutorial_done: boolean;
+    share_activity: boolean;
   };
   wallet: { coins_cents: number; tickets: number; points: number };
   skills: { code: string; name: string; level: number }[];
@@ -282,8 +283,49 @@ export interface CompareResponse {
   skills: { code: string; name: string; world: number | null; me: number; friend: number }[];
 }
 
+export type GiftStatus = 'ok' | 'sent' | 'early' | 'limit';
+
+export interface GiftState {
+  cents: number;
+  bonus_cents: number;
+  totals: { sent_count: number; sent_cents: number; received_count: number; received_cents: number };
+  sent_left: number;
+  max_per_day: number;
+  min_friend_hours: number;
+  per_friend: Record<string, { status: GiftStatus; available_at: string | null }>;
+}
+
+export interface FriendRankingRow {
+  id: number;
+  rank: number;
+  name: string;
+  points: number;
+  total: number;
+  me: boolean;
+}
+
+export interface FriendRanking {
+  period: 'week' | 'month' | 'all';
+  since: string | null;
+  rows: FriendRankingRow[];
+}
+
+export interface ActivityEvent {
+  id: number;
+  type: 'badge' | 'world';
+  user: { id: number; name: string };
+  payload: { group?: string | null; tier?: string; world?: number | null };
+  created_at: string;
+}
+
+export interface ActivityFeedResponse {
+  enabled: boolean;
+  events: ActivityEvent[];
+}
+
 export interface FriendsResponse {
   friends: Friend[];
+  gifts: GiftState;
   incoming: FriendPerson[];
   outgoing: FriendPerson[];
   limits: { max_friends: number; max_pending: number; online_minutes: number };
@@ -489,6 +531,9 @@ export interface AdminStats {
     trainings_done_24h: number;
     trainings_done_total: number;
     badges_earned: number;
+    gifts_total: number;
+    gifts_24h: number;
+    gifts_cents_total: number;
   };
   worlds: { world: number; players: number }[];
   registrations: DayCount[];

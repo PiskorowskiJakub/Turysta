@@ -58,7 +58,7 @@ final class DailyRewardService
      * Koszt zwyklego awansu w biezacym rozdziale gracza (skala jego postepu). W rozdziale 1 swiata (start gry albo wejscie do
      * nowego swiata, ktore kosztuje 20 x wiecej) bierzemy koszt rozdzialu 2 tego swiata.
      */
-    private function referenceCost(int $userId): int
+    public function referenceCost(int $userId): int
     {
         $stmt = $this->pdo->prepare(
             'SELECT c2.cost_cents FROM player_progress p

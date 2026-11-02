@@ -16,6 +16,7 @@ const anon: AuthState = {
   refresh: async () => undefined,
   saveProfile: async () => undefined,
   updateAccountProfile: async () => undefined,
+  updatePrivacy: async () => undefined,
   changeEmail: async () => undefined,
   changePassword: async () => undefined,
   resendVerification: async () => undefined,

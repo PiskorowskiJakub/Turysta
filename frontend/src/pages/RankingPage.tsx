@@ -3,9 +3,33 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
 import type { RankingResponse, SkillsResponse } from '../api/types';
+import FriendsRanking from '../components/FriendsRanking';
 import Points from '../components/Points';
 
+/** Ranking: wszyscy gracze albo tylko znajomi (?widok=znajomi). */
 export default function RankingPage() {
+  const { t } = useTranslation();
+  const [params] = useSearchParams();
+  const friendsView = params.get('widok') === 'znajomi';
+  return (
+    <>
+      <nav className="tabs" aria-label={t('ranking.title')}>
+        <Link to="/ranking" className={'tab' + (friendsView ? '' : ' active')}>{t('ranking.scopeAll')}</Link>
+        <Link to="/ranking?widok=znajomi" className={'tab' + (friendsView ? ' active' : '')}>{t('ranking.scopeFriends')}</Link>
+      </nav>
+      {friendsView ? (
+        <section className="panel trail-blue">
+          <h1>{t('ranking.title')}</h1>
+          <FriendsRanking />
+        </section>
+      ) : (
+        <AllPlayersRanking />
+      )}
+    </>
+  );
+}
+
+function AllPlayersRanking() {
   const { t } = useTranslation();
   const [data, setData] = useState<RankingResponse | null>(null);
   const [error, setError] = useState<string | null>(null);

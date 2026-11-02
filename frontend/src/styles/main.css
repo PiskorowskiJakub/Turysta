@@ -789,3 +789,12 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .sort-btn:hover, .sort-btn.active { color: var(--cream); }
 .friends-sort { display: none; align-items: center; gap: 14px; margin: 0 0 8px; font-size: 14px; color: var(--muted); }
 @media (max-width: 600px) { .friends-sort { display: flex; } }
+
+/* Aktywnosc znajomych na stronie glownej */
+.feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.feed li { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 8px 12px; border-radius: 10px; background: rgba(0, 0, 0, 0.14); border: 1.5px dashed var(--line); }
+.feed-text { color: var(--cream); text-decoration: none; overflow-wrap: anywhere; }
+.feed-text:hover { text-decoration: underline; }
+.feed time { flex: none; font-size: 12px; color: var(--muted); }
+.gift-confirm { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; text-align: left; max-width: 340px; margin-left: auto; padding: 10px 12px; border-radius: 10px; background: rgba(0, 0, 0, 0.18); border: 1.5px dashed var(--orange); }
+.gift-confirm p { margin: 0; font-size: 14px; }

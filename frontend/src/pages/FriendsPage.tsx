@@ -7,6 +7,7 @@ import { useAuth } from '../auth/AuthContext';
 import Coins from '../components/Coins';
 import PlayerAvatar from '../components/PlayerAvatar';
 import Points from '../components/Points';
+import { formatCoins } from '../format';
 import { usePolling } from '../hooks/usePolling';
 
 type SortKey = 'coins' | 'points';
@@ -24,6 +25,7 @@ export default function FriendsPage() {
   const [fieldError, setFieldError] = useState<string | undefined>();
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
+  const [giftId, setGiftId] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   // Klikniecie w kolumne: malejaco, potem rosnaco, potem domyslna kolejnosc (online, nazwa).
   const [sort, setSort] = useState<Sort | null>(null);
@@ -75,13 +77,22 @@ export default function FriendsPage() {
     try {
       setData(await action());
       setConfirmId(null);
-      setMessage({ ok: true, text: okText });
+      setGiftId(null);
+      if (okText) setMessage({ ok: true, text: okText });
     } catch (err) {
       fail(err);
     } finally {
       setBusy(false);
     }
   };
+
+  const sendGift = (id: number, friendName: string) =>
+    act(async () => {
+      const r = await api<FriendsResponse & { gift: { cents: number; bonus_cents: number } }>('POST', `/friends/${id}/gift`);
+      setMessage({ ok: true, text: t('friends.giftSent', { name: friendName, amount: formatCoins(r.gift.cents), bonus: formatCoins(r.gift.bonus_cents) }) });
+      void refresh();
+      return r;
+    }, '');
 
   const toggleSort = (key: SortKey) =>
     setSort((s) => (s?.key !== key ? { key, dir: 'desc' } : s.dir === 'desc' ? { key, dir: 'asc' } : null));
@@ -109,6 +120,17 @@ export default function FriendsPage() {
     );
   };
   const ariaSort = (key: SortKey) => (sort?.key === key ? (sort?.dir === 'desc' ? 'descending' : 'ascending') : 'none');
+
+  const giftButton = (id: number, friendName: string) => {
+    const g = data?.gifts.per_friend[String(id)];
+    if (!g || !data) return null;
+    const hint = g.status === 'sent' ? t('friends.giftAlready') : g.status === 'early' ? t('friends.giftEarly', { hours: data.gifts.min_friend_hours }) : g.status === 'limit' ? t('friends.giftLimit') : t('friends.giftTitle', { amount: formatCoins(data.gifts.cents) });
+    return (
+      <button type="button" className="button small" disabled={busy || g.status !== 'ok'} title={hint} aria-label={`${t('friends.gift')}: ${friendName}. ${hint}`} onClick={() => { setConfirmId(null); setGiftId(id); }}>
+        {g.status === 'sent' ? t('friends.giftSentShort') : `${t('friends.gift')} (${formatCoins(data.gifts.cents)} ${t('wallet.coinsShort')})`}
+      </button>
+    );
+  };
 
   if (!data) return <p className="panel page-message">{message?.text ?? t('loading')}</p>;
 
@@ -182,15 +204,24 @@ export default function FriendsPage() {
                     <td className="num"><Coins cents={f.coins_cents} /> {t('wallet.coinsShort')}</td>
                     <td className="num"><Points value={f.points} /></td>
                     <td className="num">
-                      {confirmId === f.id ? (
+                      {giftId === f.id && data.gifts.per_friend[String(f.id)]?.status === 'ok' ? (
+                        <div className="gift-confirm" role="group" aria-label={t('friends.giftConfirmTitle', { name: f.name })}>
+                          <p>{t('friends.giftConfirm', { name: f.name, amount: formatCoins(data.gifts.cents), bonus: formatCoins(data.gifts.bonus_cents) })}</p>
+                          <span className="actions">
+                            <button type="button" className="button small" disabled={busy} onClick={() => void sendGift(f.id, f.name)}>{t('friends.giftConfirmYes', { amount: formatCoins(data.gifts.cents) })}</button>
+                            <button type="button" className="button small secondary" disabled={busy} onClick={() => setGiftId(null)}>{t('admin.cancel')}</button>
+                          </span>
+                        </div>
+                      ) : confirmId === f.id ? (
                         <span className="actions">
                           <button type="button" className="button small" disabled={busy} onClick={() => void act(() => api<FriendsResponse>('DELETE', `/friends/${f.id}`), t('friends.removed', { name: f.name }))}>{t('friends.confirmRemove')}</button>
                           <button type="button" className="button small secondary" onClick={() => setConfirmId(null)}>{t('admin.cancel')}</button>
                         </span>
                       ) : (
                         <span className="actions">
+                          {giftButton(f.id, f.name)}
                           <Link className="button small" to={`/profil/znajomi/porownaj/${f.id}`}>{t('friends.compare')}</Link>
-                          <button type="button" className="button small secondary" onClick={() => setConfirmId(f.id)}>{t('friends.remove')}</button>
+                          <button type="button" className="button small secondary" onClick={() => { setGiftId(null); setConfirmId(f.id); }}>{t('friends.remove')}</button>
                         </span>
                       )}
                     </td>
@@ -201,6 +232,7 @@ export default function FriendsPage() {
           </div>
           </>
         )}
+        {data.friends.length > 0 && <p className="muted">{t('friends.giftInfo', { amount: formatCoins(data.gifts.cents), bonus: formatCoins(data.gifts.bonus_cents), left: data.gifts.sent_left, max: data.gifts.max_per_day })}</p>}
         <p className="muted">{t('friends.onlineHint', { minutes: data.limits.online_minutes })}</p>
       </section>
 
