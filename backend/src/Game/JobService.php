@@ -21,8 +21,12 @@ final class JobService
         $now = Clock::now($this->pdo);
         $jobs = [];
         $tradeLevel = $this->tradeLevel($userId);
+        $locks = $this->jobLocks($userId, $now);
         foreach ($this->pdo->query('SELECT * FROM job_definitions ORDER BY duration_seconds')->fetchAll() as $j) {
-            $jobs[] = $this->jobView($j, Economy::boostedReward((int) $j['reward_cents'], $tradeLevel));
+            $view = $this->jobView($j, Economy::boostedReward((int) $j['reward_cents'], $tradeLevel));
+            $until = $locks[(int) $j['id']] ?? null;
+            $view['locked_until'] = $until ? Clock::iso(Clock::fmt($until)) : null;
+            $jobs[] = $view;
         }
         $avail = $this->availableAt($userId, $now);
         return [
@@ -82,6 +86,9 @@ final class JobService
             $avail = $this->availableAt($userId, $now);
             if ($avail !== null) {
                 throw new ApiException(409, 'job_cooldown', 'Musisz odpocząć przed kolejną pracą.');
+            }
+            if (isset($this->jobLocks($userId, $now)[$jobId])) {
+                throw new ApiException(409, 'job_locked', 'Tę pracę przerwałeś niedawno. Zacznij ją ponownie później lub wybierz inną.');
             }
 
             $ends = $now->add(new DateInterval('PT' . (int) $job['duration_seconds'] . 'S'));
@@ -182,7 +189,7 @@ final class JobService
             "SELECT r.finished_at, d.cooldown_seconds FROM job_runs r
              JOIN job_definitions d ON d.id = r.job_id
              WHERE r.user_id = ? AND r.status <> 'active' AND r.finished_at IS NOT NULL
-               AND NOT (r.status = 'cancelled' AND d.cancel_policy = 'proportional')
+               AND r.status = 'done'
              ORDER BY r.finished_at DESC, r.id DESC LIMIT 1"
         );
         $stmt->execute([$userId]);
@@ -192,6 +199,31 @@ final class JobService
         }
         $at = Clock::parse((string) $last['finished_at'])->add(new DateInterval('PT' . (int) $last['cooldown_seconds'] . 'S'));
         return $at > $now ? $at : null;
+    }
+
+    /**
+     * Blokady pojedynczych prac po przerwaniu (bez wyplaty): ta sama praca jest niedostepna
+     * przez czas swojego trwania, pozostale mozna zaczynac normalnie.
+     *
+     * @return array<int,DateTimeImmutable> id definicji pracy => koniec blokady
+     */
+    private function jobLocks(int $userId, DateTimeImmutable $now): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT r.job_id, MAX(r.finished_at) AS last_at, d.duration_seconds
+             FROM job_runs r JOIN job_definitions d ON d.id = r.job_id
+             WHERE r.user_id = ? AND r.status = 'cancelled' AND d.cancel_policy = 'none' AND r.finished_at IS NOT NULL
+             GROUP BY r.job_id, d.duration_seconds"
+        );
+        $stmt->execute([$userId]);
+        $locks = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $until = Clock::parse((string) $row['last_at'])->add(new DateInterval('PT' . (int) $row['duration_seconds'] . 'S'));
+            if ($until > $now) {
+                $locks[(int) $row['job_id']] = $until;
+            }
+        }
+        return $locks;
     }
 
     /**
