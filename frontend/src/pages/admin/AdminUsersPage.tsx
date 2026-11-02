@@ -16,7 +16,7 @@ export default function AdminUsersPage() {
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('');
   const [role, setRole] = useState('');
-  const [sort, setSort] = useState('new');
+  const [sort, setSort] = useState<{ col: string; dir: 'asc' | 'desc' }>({ col: 'id', dir: 'desc' });
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function AdminUsersPage() {
     return () => window.clearTimeout(id);
   }, [search]);
 
-  const params = new URLSearchParams({ page: String(page), sort });
+  const params = new URLSearchParams({ page: String(page), sort: `${sort.col}_${sort.dir}` });
   if (query) params.set('q', query);
   if (status) params.set('status', status);
   if (role) params.set('role', role);
@@ -36,6 +36,22 @@ export default function AdminUsersPage() {
   const reset = (set: (v: string) => void) => (e: React.ChangeEvent<HTMLSelectElement>) => {
     set(e.target.value);
     setPage(1);
+  };
+
+  // Klikniecie w kolumne sortuje po niej; ponowne zmienia kierunek. Liczby i daty zaczynaja od najwiekszych/najnowszych.
+  const toggleSort = (col: string) => {
+    setSort((cur) => (cur.col === col ? { col, dir: cur.dir === 'asc' ? 'desc' : 'asc' } : { col, dir: ['name', 'email', 'role', 'status'].includes(col) ? 'asc' : 'desc' }));
+    setPage(1);
+  };
+  const head = (col: string, label: string, num = false) => {
+    const active = sort.col === col;
+    return (
+      <th className={num ? 'num' : undefined} aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}>
+        <button type="button" className={`sort-btn${active ? ' active' : ''}`} onClick={() => toggleSort(col)}>
+          {label} {active ? (sort.dir === 'asc' ? '▲' : '▼') : '↕'}
+        </button>
+      </th>
+    );
   };
 
   return (
@@ -51,9 +67,6 @@ export default function AdminUsersPage() {
           <option value="">{t('admin.users.anyRole')}</option>
           {(['player', 'moderator', 'admin'] as const).map((r) => <option key={r} value={r}>{t(`admin.role.${r}`)}</option>)}
         </select>
-        <select value={sort} onChange={reset(setSort)} aria-label={t('admin.users.sort')}>
-          {(['new', 'old', 'points', 'login'] as const).map((s) => <option key={s} value={s}>{t(`admin.users.sorts.${s}`)}</option>)}
-        </select>
       </div>
 
       {error && <p className="form-error" role="alert">{error}</p>}
@@ -61,16 +74,16 @@ export default function AdminUsersPage() {
         <table className="ranking-table">
           <thead>
             <tr>
-              <th className="num">ID</th>
-              <th>{t('admin.cols.player')}</th>
-              <th>E-mail</th>
-              <th>{t('admin.cols.role')}</th>
-              <th>{t('admin.cols.status')}</th>
-              <th>{t('ranking.worldChapter')}</th>
-              <th className="num">{t('wallet.points')}</th>
-              <th className="num">{t('wallet.coins')}</th>
-              <th>{t('admin.cols.registered')}</th>
-              <th>{t('admin.cols.lastLogin')}</th>
+              {head('id', 'ID', true)}
+              {head('name', t('admin.cols.player'))}
+              {head('email', 'E-mail')}
+              {head('role', t('admin.cols.role'))}
+              {head('status', t('admin.cols.status'))}
+              {head('world', t('ranking.worldChapter'))}
+              {head('points', t('wallet.points'), true)}
+              {head('coins', t('wallet.coins'), true)}
+              {head('registered', t('admin.cols.registered'))}
+              {head('login', t('admin.cols.lastLogin'))}
             </tr>
           </thead>
           <tbody>
