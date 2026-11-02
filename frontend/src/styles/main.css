@@ -106,6 +106,9 @@ h1, h2, h3 { font-weight: 600; }
 .content { min-width: 0; }
 
 .site-footer { text-align: center; padding: 18px; font-size: 13px; color: var(--muted); border-top: 2px solid var(--line); }
+.footer-links { display: flex; justify-content: center; gap: 6px 18px; flex-wrap: wrap; margin-top: 6px; }
+.footer-links a { color: var(--khaki); }
+.footer-links a:hover { color: var(--orange); }
 
 /* ---------- Panele (naszywki ze szwem) ---------- */
 .panel, .card {
@@ -673,3 +676,14 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
   .button.large { flex: 1 1 100%; text-align: center; }
 }
 
+
+/* ---------- Regulamin, polityka prywatnosci, zgloszenia bledow ---------- */
+.legal { max-width: 820px; margin-left: auto; margin-right: auto; }
+.legal h2 { font-size: 1.1rem; margin: 22px 0 6px; }
+.legal p { line-height: 1.6; }
+.verify-deadline { color: var(--khaki); }
+.bug-message { margin: 0 0 4px; white-space: pre-wrap; word-break: break-word; }
+.bug-resolved { opacity: 0.6; }
+.bug-new { border-left: 3px solid var(--orange); }
+.check input { margin-top: 3px; }
+.check a { color: var(--orange); }

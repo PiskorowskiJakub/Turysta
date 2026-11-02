@@ -132,6 +132,9 @@ final class MeController
                 'gender_change_available_at' => $this->genderChangeAt($user),
                 'role' => $user['role'],
                 'email_verified' => $user['email_verified_at'] !== null,
+                'email_verification_deadline' => $user['email_verified_at'] === null
+                    ? \Turysta\Game\Clock::iso(\Turysta\Auth\UnverifiedCleaner::deadline($user))
+                    : null,
                 'tutorial_done' => $user['tutorial_done_at'] !== null,
             ],
             'wallet' => [

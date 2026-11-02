@@ -53,6 +53,7 @@ final class AdminFlowTest extends TestCase
             'email' => strtolower($tag) . "{$this->suffix}@example.com",
             'password' => $password,
             'password_confirm' => $password,
+            'accept_terms' => true,
         ], '10.2.0.' . random_int(1, 250));
         return [(int) $user['id'], $password];
     }

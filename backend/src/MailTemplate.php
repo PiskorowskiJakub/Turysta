@@ -23,7 +23,7 @@ final class MailTemplate
                 : 'Cieszymy się, że dołączasz do gry. Kliknij przycisk, aby potwierdzić swój adres e-mail i dokończyć zakładanie konta.',
             'Potwierdź adres e-mail',
             $url,
-            'Link działa przez 2 dni. Jeśli konto nie zostało założone przez Ciebie, po prostu zignoruj tę wiadomość.'
+            'Link działa przez 2 dni. Niepotwierdzone konto zostanie usunięte po ' . \Turysta\Auth\UnverifiedCleaner::RETENTION_DAYS . ' dniach, a nowy link wyślesz w grze jednym kliknięciem. Jeśli konto nie zostało założone przez Ciebie, po prostu zignoruj tę wiadomość.'
         );
     }
 

@@ -53,6 +53,7 @@ final class PasswordResetFlowTest extends TestCase
             'email' => "reset{$this->suffix}@example.com",
             'password' => 'stare-dlugie-haslo',
             'password_confirm' => 'stare-dlugie-haslo',
+            'accept_terms' => true,
         ];
         $user = $this->auth->register($d, '10.1.0.' . random_int(1, 250));
         return ['id' => (int) $user['id'], 'email' => $d['email'], 'password' => $d['password']];

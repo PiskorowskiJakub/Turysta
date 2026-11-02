@@ -17,6 +17,8 @@ import RankingPage from './pages/RankingPage';
 import PlayerPage from './pages/PlayerPage';
 import HomeShell from './components/HomeShell';
 import AdminPage from './pages/AdminPage';
+import { PrivacyPage, TermsPage } from './pages/LegalPages';
+import BugReportPage from './pages/BugReportPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -29,8 +31,11 @@ export default function App() {
         <Route path="potwierdz-email" element={<VerifyEmailPage />} />
         <Route path="zapomniane-haslo" element={<ForgotPasswordPage />} />
         <Route path="nowe-haslo" element={<ResetPasswordPage />} />
+        <Route path="regulamin" element={<TermsPage />} />
+        <Route path="polityka-prywatnosci" element={<PrivacyPage />} />
         <Route element={<RequireAuth />}>
           <Route path="start/*" element={<HomeShell />} />
+          <Route path="zglos-blad" element={<BugReportPage />} />
           <Route path="samouczek" element={<TutorialPage />} />
           <Route path="profil" element={<ProfilePage />} />
           <Route path="profil/edycja" element={<EditProfilePage />} />

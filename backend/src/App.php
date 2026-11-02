@@ -12,6 +12,7 @@ use Turysta\Auth\Session;
 use Turysta\Controller\AccountController;
 use Turysta\Controller\AdminController;
 use Turysta\Controller\AuthController;
+use Turysta\Controller\BugReportController;
 use Turysta\Controller\GameController;
 use Turysta\Controller\HomeController;
 use Turysta\Controller\MeController;
@@ -22,6 +23,7 @@ use Turysta\Game\TrainingService;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
 use Turysta\Http\Router;
+use Turysta\Support\BugReportService;
 
 final class App
 {
@@ -37,6 +39,7 @@ final class App
         $me = new MeController($pdo, $settler, $training, $jobs);
         $home = new HomeController($pdo);
         $admin = new AdminController($pdo);
+        $bugs = new BugReportController(new BugReportService($pdo, new RateLimiter($pdo)));
         $game = new GameController($pdo, $settler, $training, $jobs);
 
         $router = new Router();
@@ -70,6 +73,8 @@ final class App
         $router->post('/v1/account/resend-verification', [$account, 'resendVerification']);
         $router->post('/v1/account/delete', [$account, 'deleteAccount']);
 
+        $router->post('/v1/bug-reports', [$bugs, 'create']);
+
         $router->get('/v1/home', [$home, 'show']);
         $router->get('/v1/announcements', [$home, 'announcements']);
         $router->post('/v1/daily-reward/claim', [$home, 'claimDaily']);
@@ -94,6 +99,10 @@ final class App
         $router->post('/v1/admin/announcements', [$admin, 'createAnnouncement']);
         $router->put('/v1/admin/announcements/{id}', [$admin, 'updateAnnouncement']);
         $router->delete('/v1/admin/announcements/{id}', [$admin, 'deleteAnnouncement']);
+
+        $router->get('/v1/admin/bug-reports', [$admin, 'bugReports']);
+        $router->patch('/v1/admin/bug-reports/{id}', [$admin, 'setBugReportStatus']);
+        $router->delete('/v1/admin/bug-reports/{id}', [$admin, 'deleteBugReport']);
 
         $router->get('/v1/facts/today', [$game, 'todayFact']);
         $router->get('/v1/skills', [$game, 'skills']);

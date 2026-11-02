@@ -38,6 +38,10 @@ final class AuthService
         $referral = strtoupper(trim((string) ($in['referral_code'] ?? '')));
 
         $errors = Validator::registration($name, $email, $password, $confirm);
+        $accepted = $in['accept_terms'] ?? false;
+        if ($accepted !== true && $accepted !== 1 && $accepted !== '1' && $accepted !== 'true') {
+            $errors['accept_terms'] = 'Aby założyć konto, zaakceptuj regulamin i politykę prywatności.';
+        }
         if ($errors) {
             throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', $errors);
         }
@@ -72,8 +76,10 @@ final class AuthService
 
         $this->pdo->beginTransaction();
         try {
-            $this->pdo->prepare('INSERT INTO users (email, password_hash, character_name) VALUES (?, ?, ?)')
-                ->execute([$email, $hash, $name]);
+            $this->pdo->prepare(
+                'INSERT INTO users (email, password_hash, character_name, terms_accepted_at, email_unverified_since)
+                 VALUES (?, ?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP())'
+            )->execute([$email, $hash, $name]);
             $userId = (int) $this->pdo->lastInsertId();
 
             $this->pdo->prepare('INSERT INTO wallets (user_id) VALUES (?)')->execute([$userId]);

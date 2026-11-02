@@ -44,6 +44,7 @@ final class AuthFlowTest extends TestCase
             'email' => "test{$this->suffix}@example.com",
             'password' => 'bardzo-dlugie-haslo',
             'password_confirm' => 'bardzo-dlugie-haslo',
+            'accept_terms' => true,
         ];
     }
 

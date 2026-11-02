@@ -11,6 +11,7 @@ export interface Me {
     gender_change_available_at: string | null;
     role: string;
     email_verified: boolean;
+    email_verification_deadline: string | null;
     tutorial_done: boolean;
   };
   wallet: { coins_cents: number; tickets: number; points: number };
@@ -60,6 +61,7 @@ export interface RegisterInput {
   password: string;
   password_confirm: string;
   referral_code: string;
+  accept_terms: boolean;
 }
 
 export interface SkillInfo {
@@ -359,6 +361,17 @@ export interface LedgerRow {
   balance_after: number;
   reason: string;
   created_at: string;
+}
+
+export interface BugReportRow {
+  id: number;
+  user: { id: number; name: string };
+  message: string;
+  page: string | null;
+  user_agent: string | null;
+  status: 'new' | 'in_progress' | 'resolved';
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AuditRow {

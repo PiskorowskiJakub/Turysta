@@ -37,6 +37,7 @@ export function AdminLoginsPage() {
 const ACTIONS = [
   'user.update', 'user.ban', 'user.unban', 'user.suspend', 'user.unsuspend', 'user.wallet', 'user.logout',
   'announcement.create', 'announcement.update', 'announcement.delete', 'fact.create', 'fact.update', 'fact.delete',
+  'bugreport.status', 'bugreport.delete',
 ] as const;
 
 /** Dziennik dzialan administratorow z filtrem po rodzaju dzialania. */

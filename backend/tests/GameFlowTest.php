@@ -60,6 +60,7 @@ final class GameFlowTest extends TestCase
             'email' => "gra{$suffix}@example.com",
             'password' => 'bardzo-dlugie-haslo',
             'password_confirm' => 'bardzo-dlugie-haslo',
+            'accept_terms' => true,
         ], '10.1.' . random_int(1, 250) . '.' . random_int(1, 250));
         $this->userId = (int) $user['id'];
     }

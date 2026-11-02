@@ -197,7 +197,8 @@
       "facts": "Ciekawostki",
       "logs": "Logi",
       "logins": "Logowania",
-      "audit": "Działania administratorów"
+      "audit": "Działania administratorów",
+      "bugs": "Zgłoszenia błędów"
     },
     "cols": {
       "player": "Gracz",
@@ -249,7 +250,9 @@
       "announcement_delete": "Usunięcie ogłoszenia",
       "fact_create": "Nowa ciekawostka",
       "fact_update": "Edycja ciekawostki",
-      "fact_delete": "Usunięcie ciekawostki"
+      "fact_delete": "Usunięcie ciekawostki",
+      "bugreport_status": "Zmiana statusu zgłoszenia",
+      "bugreport_delete": "Usunięcie zgłoszenia"
     },
     "users": {
       "title": "Gracze",
@@ -383,6 +386,21 @@
       "off": "wyłączona",
       "disable": "Wyłącz",
       "enable": "Włącz"
+    },
+    "bugs": {
+      "title": "Zgłoszenia błędów",
+      "newCount": "Nowe zgłoszenia: {{n}}",
+      "anyStatus": "Każdy status",
+      "empty": "Brak zgłoszeń.",
+      "page": "Strona",
+      "status": {
+        "new": "nowe",
+        "in_progress": "w trakcie",
+        "resolved": "rozwiązane"
+      },
+      "statusLabel": "Status zgłoszenia",
+      "deleted": "Zgłoszenie usunięte.",
+      "saved": "Status zapisany."
     }
   },
   "register": {
@@ -393,7 +411,8 @@
     "passwordConfirm": "Powtórz hasło",
     "referral": "Kod polecający (opcjonalnie)",
     "submit": "Utwórz konto",
-    "haveAccount": "Masz już konto?"
+    "haveAccount": "Masz już konto?",
+    "accept": "Akceptuję <terms>regulamin</terms> i <privacy>politykę prywatności</privacy>."
   },
   "login": {
     "title": "Zaloguj się",
@@ -525,7 +544,8 @@
     "title": "Twoje konto nie zostało jeszcze potwierdzone.",
     "text": "Kliknij link w wiadomości wysłanej na adres {{email}}. Nie widzisz jej? Zajrzyj do spamu albo poproś o nowy link.",
     "resend": "Wyślij link ponownie",
-    "sent": "Wysłaliśmy nowy link na {{email}}. Poprzednie linki przestały działać."
+    "sent": "Wysłaliśmy nowy link na {{email}}. Poprzednie linki przestały działać.",
+    "deadline": "Niepotwierdzone konto zostanie usunięte {{date}}."
   },
   "field": {
     "showPassword": "Pokaż hasło",
@@ -754,5 +774,166 @@
     },
     "endTitle": "Plecak czeka",
     "endLead": "Pierwsze kroki zajmą Ci kilka minut. Reszta drogi należy do Ciebie."
+  },
+  "footerLinks": {
+    "terms": "Regulamin",
+    "privacy": "Polityka prywatności",
+    "bug": "Zgłoś błąd"
+  },
+  "bugReport": {
+    "title": "Zgłoś błąd",
+    "intro": "Coś nie działa albo wygląda dziwnie? Opisz, co się stało i co robiłeś tuż przed tym. Administrator dostanie zgłoszenie razem z nazwą Twojej postaci.",
+    "about": "Dotyczy strony: {{page}}",
+    "label": "Opis problemu",
+    "placeholder": "Np. po kliknięciu „Rozpocznij” w pracy na rynku nic się nie dzieje.",
+    "counter": "{{n}} / {{max}}",
+    "submit": "Wyślij zgłoszenie",
+    "sent": "Dziękujemy! Zgłoszenie dotarło do administratora.",
+    "another": "Wyślij kolejne",
+    "back": "Wróć do gry",
+    "privacy": "Razem z opisem zapisujemy adres strony i dane Twojej przeglądarki, żeby łatwiej było znaleźć przyczynę."
+  },
+  "legal": {
+    "updated": "Obowiązuje od {{date}}",
+    "backHome": "Wróć na stronę główną",
+    "terms": {
+      "title": "Regulamin",
+      "date": "2 listopada 2026",
+      "sections": [
+        {
+          "h": "1. Postanowienia ogólne",
+          "p": [
+            "Regulamin określa zasady korzystania z gry przeglądarkowej Dwa Dukaty dostępnej pod adresem dwadukaty.pl. Grę prowadzi Jakub Piskorowski (dalej: Usługodawca), kontakt: kontakt@dwadukaty.pl.",
+            "Gra jest bezpłatna. Zakładając konto, akceptujesz niniejszy regulamin oraz politykę prywatności."
+          ]
+        },
+        {
+          "h": "2. Konto",
+          "p": [
+            "Konto może założyć osoba, która ukończyła 16 lat. Młodsze osoby mogą grać za zgodą rodzica lub opiekuna prawnego.",
+            "Jedna osoba prowadzi jedno konto. Podany adres e-mail musi być prawdziwy i należeć do Ciebie, bo wysyłamy na niego link potwierdzający oraz wiadomości o resecie hasła.",
+            "Konto, którego adresu e-mail nie potwierdzisz w ciągu 30 dni od jego założenia (albo od zmiany adresu), zostanie automatycznie usunięte razem z postępami w grze. Link potwierdzający możesz w każdej chwili wysłać ponownie z poziomu gry.",
+            "Dbaj o poufność hasła i nie udostępniaj go innym osobom. Za działania wykonane na koncie odpowiadasz Ty."
+          ]
+        },
+        {
+          "h": "3. Zasady gry",
+          "p": [
+            "Gramy fair. Zabronione jest w szczególności: używanie botów i skryptów automatyzujących grę, wykorzystywanie błędów w grze do uzyskania przewagi, zakładanie dodatkowych kont w celu zdobycia nagród lub przewagi, obraźliwe lub wprowadzające w błąd nazwy postaci oraz utrudnianie działania serwisu.",
+            "Znalezione błędy zgłoś przez formularz „Zgłoś błąd” w grze zamiast je wykorzystywać.",
+            "Za naruszenie regulaminu Usługodawca może ostrzec Cię, zawiesić konto na określony czas, zablokować je albo skorygować stan konta. W razie wątpliwości napisz na kontakt@dwadukaty.pl."
+          ]
+        },
+        {
+          "h": "4. Wirtualne dobra",
+          "p": [
+            "Dukaty, bilety, punkty, odznaki i inne elementy gry są dobrami wirtualnymi. Nie mają wartości pieniężnej, nie można ich wymienić na pieniądze ani przenieść do innych usług.",
+            "Gra się rozwija. Usługodawca może zmieniać zasady rozgrywki, ceny, nagrody i równowagę gry, także w sposób wpływający na posiadane dobra wirtualne."
+          ]
+        },
+        {
+          "h": "5. Dostępność",
+          "p": [
+            "Dokładamy starań, żeby gra działała bez przerw, ale nie gwarantujemy nieprzerwanej dostępności. Mogą zdarzać się prace techniczne i awarie.",
+            "Usługodawca może zakończyć prowadzenie gry. O takiej decyzji poinformujemy w grze z odpowiednim wyprzedzeniem."
+          ]
+        },
+        {
+          "h": "6. Usunięcie konta",
+          "p": [
+            "Konto możesz usunąć w każdej chwili: Profil, Edytuj swój profil, sekcja „Usunięcie konta” (wymaga podania hasła). Usunięcie jest trwałe i kasuje wszystkie dane związane z kontem."
+          ]
+        },
+        {
+          "h": "7. Reklamacje i kontakt",
+          "p": [
+            "Uwagi i reklamacje dotyczące działania gry wysyłaj na adres kontakt@dwadukaty.pl. Odpowiadamy w ciągu 14 dni."
+          ]
+        },
+        {
+          "h": "8. Dane osobowe",
+          "p": [
+            "Zasady przetwarzania danych osobowych opisuje polityka prywatności dostępna pod adresem dwadukaty.pl/polityka-prywatnosci."
+          ]
+        },
+        {
+          "h": "9. Zmiany regulaminu",
+          "p": [
+            "Regulamin może się zmienić, na przykład wraz z nowymi funkcjami gry. O istotnych zmianach poinformujemy w grze z wyprzedzeniem. Jeżeli nie zgadzasz się na zmiany, możesz usunąć konto.",
+            "Zmiany nie ograniczają praw przysługujących konsumentom na mocy obowiązujących przepisów."
+          ]
+        },
+        {
+          "h": "10. Postanowienia końcowe",
+          "p": [
+            "W sprawach nieuregulowanych stosuje się prawo polskie."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Polityka prywatności",
+      "date": "2 listopada 2026",
+      "sections": [
+        {
+          "h": "1. Kto zarządza Twoimi danymi",
+          "p": [
+            "Administratorem danych osobowych w grze Dwa Dukaty (dwadukaty.pl) jest Jakub Piskorowski. W sprawach dotyczących danych pisz na adres kontakt@dwadukaty.pl."
+          ]
+        },
+        {
+          "h": "2. Jakie dane zbieramy i dlaczego",
+          "p": [
+            "Dane konta: adres e-mail, nazwa postaci, hasło (przechowujemy wyłącznie jego nieodwracalny skrót, a nie samo hasło) oraz wybrane przez Ciebie płeć i awatar. Używamy ich, żeby prowadzić Twoje konto i umożliwić grę (art. 6 ust. 1 lit. b RODO).",
+            "Dane z gry: umiejętności, portfel, prace, odznaki, postępy i punkty. Nazwa postaci, awatar, punkty i postępy są widoczne dla innych graczy w rankingu i na profilu postaci. Nie ujawniamy innym Twojego adresu e-mail.",
+            "Dane techniczne: adres IP i dane przeglądarki zapisujemy przy logowaniu oraz w dziennikach serwera. Służą bezpieczeństwu i ochronie przed nadużyciami (art. 6 ust. 1 lit. f RODO, nasz prawnie uzasadniony interes).",
+            "Zgłoszenia błędów: treść zgłoszenia, adres strony i dane przeglądarki, powiązane z Twoim kontem. Używamy ich do naprawiania gry (art. 6 ust. 1 lit. f RODO).",
+            "Polecenia: jeżeli założysz konto z kodem polecającym, zapisujemy, kto Cię polecił. Osoba polecająca może zobaczyć, że ktoś założył konto z jej kodu.",
+            "Wiadomości e-mail wysyłamy wyłącznie w sprawach konta: potwierdzenie adresu i ustawienie nowego hasła. Nie wysyłamy newslettera ani reklam."
+          ]
+        },
+        {
+          "h": "3. Pliki cookie i pamięć przeglądarki",
+          "p": [
+            "Używamy wyłącznie niezbędnych mechanizmów: pliku cookie sesji (turysta_sid), który utrzymuje Cię zalogowanym i chroni przed fałszowaniem żądań, oraz drobnej informacji w pamięci przeglądarki, która podpowiada, że wcześniej byłeś zalogowany.",
+            "Nie stosujemy cookies reklamowych, analitycznych ani śledzących."
+          ]
+        },
+        {
+          "h": "4. Komu powierzamy dane",
+          "p": [
+            "Dane nie są sprzedawane. Korzystamy z dostawców, którzy obsługują nas technicznie: usługodawcy serwera, na którym działa gra (Hetzner), oraz usługodawcy domeny i poczty (OVH). Przetwarzają dane wyłącznie w celu świadczenia swoich usług.",
+            "Dane możemy też ujawnić organom publicznym, jeżeli wymaga tego prawo."
+          ]
+        },
+        {
+          "h": "5. Jak długo przechowujemy dane",
+          "p": [
+            "Dane konta i gry przechowujemy do czasu usunięcia konta. Konta z niepotwierdzonym adresem e-mail usuwamy automatycznie po 30 dniach.",
+            "Po usunięciu konta kasujemy dane konta, postępy w grze i powiązane zgłoszenia błędów. Kopie zapasowe są przechowywane ograniczony czas i służą wyłącznie odtworzeniu gry po awarii."
+          ]
+        },
+        {
+          "h": "6. Twoje prawa",
+          "p": [
+            "Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia oraz sprzeciwu wobec przetwarzania opartego na prawnie uzasadnionym interesie.",
+            "Konto i dane możesz usunąć samodzielnie: Profil, Edytuj swój profil, sekcja „Usunięcie konta”. W pozostałych sprawach napisz na kontakt@dwadukaty.pl.",
+            "Masz też prawo wnieść skargę do Prezesa Urzędu Ochrony Danych Osobowych (uodo.gov.pl)."
+          ]
+        },
+        {
+          "h": "7. Bezpieczeństwo",
+          "p": [
+            "Połączenie z grą jest szyfrowane (HTTPS), hasła zapisujemy w postaci skrótów, a dostęp do panelu administracyjnego mają tylko upoważnione osoby."
+          ]
+        },
+        {
+          "h": "8. Zmiany polityki",
+          "p": [
+            "Politykę możemy aktualizować, na przykład gdy dodamy nowe funkcje. Aktualna wersja jest zawsze dostępna pod tym adresem, a datę jej obowiązywania podajemy na górze strony."
+          ]
+        }
+      ]
+    }
   }
 }

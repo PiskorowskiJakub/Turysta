@@ -46,6 +46,7 @@ final class HomeFlowTest extends TestCase
             'email' => "home{$suffix}@example.com",
             'password' => 'bardzo-dlugie-haslo',
             'password_confirm' => 'bardzo-dlugie-haslo',
+            'accept_terms' => true,
         ], '10.1.0.' . random_int(1, 250));
         $this->userId = (int) $user['id'];
         $this->daily = new DailyRewardService($this->pdo);
