@@ -118,7 +118,9 @@
     "board": {
       "title": "Tablica ogłoszeń",
       "empty": "Na szlaku cisza. Nowe ogłoszenia pojawią się tutaj.",
-      "pinned": "Przypięte"
+      "pinned": "Przypięte",
+      "more": "Szczegóły w aktualizacji →",
+      "allUpdates": "Wszystkie aktualizacje gry"
     },
     "season": {
       "title": "Wydarzenia sezonowe",
@@ -198,7 +200,8 @@
       "logs": "Logi",
       "logins": "Logowania",
       "audit": "Działania administratorów",
-      "bugs": "Zgłoszenia błędów"
+      "bugs": "Zgłoszenia błędów",
+      "updates": "Aktualizacje"
     },
     "cols": {
       "player": "Gracz",
@@ -252,7 +255,10 @@
       "fact_update": "Edycja ciekawostki",
       "fact_delete": "Usunięcie ciekawostki",
       "bugreport_status": "Zmiana statusu zgłoszenia",
-      "bugreport_delete": "Usunięcie zgłoszenia"
+      "bugreport_delete": "Usunięcie zgłoszenia",
+      "update_create": "Nowa aktualizacja",
+      "update_update": "Edycja aktualizacji",
+      "update_delete": "Usunięcie aktualizacji"
     },
     "users": {
       "title": "Gracze",
@@ -401,6 +407,19 @@
       "statusLabel": "Status zgłoszenia",
       "deleted": "Zgłoszenie usunięte.",
       "saved": "Status zapisany."
+    },
+    "announcementUpdate": "Szczegóły w aktualizacji (opcjonalnie)",
+    "noUpdate": "Brak, samo ogłoszenie",
+    "updates": {
+      "new": "Nowa aktualizacja",
+      "edit": "Edycja aktualizacji",
+      "date": "Data aktualizacji",
+      "format": "Pusta linia oddziela akapity. Linie zaczynające się od „- ” tworzą listę, a „## ” na początku akapitu to podtytuł.",
+      "add": "Dodaj aktualizację",
+      "list": "Wszystkie aktualizacje",
+      "empty": "Nie ma jeszcze aktualizacji.",
+      "created": "Aktualizacja dodana.",
+      "deleted": "Aktualizacja usunięta."
     }
   },
   "register": {
@@ -787,7 +806,8 @@
   "footerLinks": {
     "terms": "Regulamin",
     "privacy": "Polityka prywatności",
-    "bug": "Zgłoś błąd"
+    "bug": "Zgłoś błąd",
+    "updates": "Aktualizacje"
   },
   "bugReport": {
     "title": "Zgłoś błąd",
@@ -979,5 +999,11 @@
     "cancelInvite": "Anuluj zaproszenie",
     "acceptInvite": "Przyjmij zaproszenie",
     "isFriend": "Jesteście znajomymi."
+  },
+  "updates": {
+    "title": "Aktualizacje gry",
+    "intro": "Tu znajdziesz szczegółowy opis zmian i nowości w Dwóch Dukatach. W ogłoszeniach podajemy tylko skrót.",
+    "empty": "Nie ma jeszcze żadnych aktualizacji.",
+    "all": "Pokaż wszystkie aktualizacje"
   }
 }

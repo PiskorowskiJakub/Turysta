@@ -92,6 +92,7 @@ export default function RankingPage() {
 
       {error && <p className="form-error">{error}</p>}
 
+      <div className="table-scroll">
       <table className="ranking-table">
         <thead>
           <tr>
@@ -114,6 +115,7 @@ export default function RankingPage() {
           ))}
         </tbody>
       </table>
+      </div>
 
       <div className="ranking-pager">
         <button type="button" className="btn" disabled={page <= 1} onClick={() => setPage(1)}>{t('ranking.first')}</button>

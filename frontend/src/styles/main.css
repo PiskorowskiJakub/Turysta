@@ -694,3 +694,77 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .online-dot.on { background: #6fd36f; box-shadow: 0 0 6px rgba(111, 211, 111, 0.7); }
 .friends-table td { vertical-align: middle; }
 .friend-action { margin: 0 0 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* ---------- Telefon i tablet: dopracowanie ---------- */
+@media (max-width: 900px) {
+  /* "fixed" tla bywa na iOS wolne lub ignorowane */
+  body { background-attachment: scroll; }
+
+  /* Gorny pasek zajmuje mniej miejsca: mniejsza ciekawostka w jednej linii */
+  .topbar-inner { padding: 8px 12px; gap: 8px; }
+  .brand-mark { width: 30px; height: 30px; }
+  .fact { padding: 4px 12px; font-size: 12px; }
+  .fact span { -webkit-line-clamp: 1; }
+
+  /* Dolne menu: gdy pozycji jest wiecej niz miesci sie w szerokosci, przewija sie palcem */
+  .menu ul { justify-content: flex-start; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+  .menu ul::-webkit-scrollbar { display: none; }
+  .menu li { flex: 1 0 70px; scroll-snap-align: center; }
+  .menu li:has(.disabled) { display: none; }
+  .menu-item { justify-content: center; min-height: 52px; white-space: nowrap; }
+  .menu-item span { overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+  /* Dotyk: wiekszy obszar klikniecia */
+  .button.small { min-height: 38px; }
+  .tab { padding: 9px 14px; }
+}
+
+@media (max-width: 600px) {
+  /* Logowanie i rejestracja sa w dolnym menu i w tresci strony glownej */
+  .topbar-cta { display: none; }
+  .topbar:has(.plaque) .brand-name { display: none; }
+  .plaque { margin-left: auto; }
+
+  .shell { padding: 12px 10px 84px; }
+  .panel, .card { padding: 16px 14px 18px; margin-bottom: 14px; }
+  .panel::before, .card::before { inset: 4px; }
+  .panel > h1, .panel > h2, .card > h1, .card > h2 { font-size: 1.15rem; margin-bottom: 14px; gap: 10px; }
+  .tile { padding: 12px; }
+  .verify-banner { margin: 8px 10px 0; padding: 10px 12px; }
+  .verify-banner .button { width: 100%; }
+
+  /* Pola formularzy co najmniej 16px: iOS nie przybliza strony po kliknieciu w pole */
+  input, select, textarea,
+  .ranking-filters input, .ranking-filters select { font-size: 16px; }
+  .ranking-filters input[type='search'], .ranking-filters select { flex: 1 1 100%; }
+
+  /* Tabele rankingu i podglady */
+  .ranking-table th, .ranking-table td { padding: 5px 6px; }
+  .ranking-pager { flex-wrap: wrap; white-space: normal; }
+  .ranking-pager .btn { width: auto; flex: 1 1 22%; min-height: 38px; }
+  .ranking-pager > span { order: -1; flex-basis: 100%; text-align: center; }
+  .shot-body { padding: 8px; }
+  .shot .ranking-table th, .shot .ranking-table td { padding: 3px 5px; font-size: 12px; }
+  .shot .panel { padding: 12px 10px; }
+
+  /* Lista znajomych jako karty zamiast szerokiej tabeli */
+  .friends-table thead { display: none; }
+  .friends-table, .friends-table tbody { display: block; }
+  .friends-table tbody tr { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 10px 0; border-bottom: 1px solid var(--line); background: none; }
+  .friends-table td { display: block; padding: 0; border: 0; width: auto; text-align: left; }
+  .friends-table td:first-child { flex-basis: 100%; }
+  .friends-table td:last-child { margin-left: auto; }
+  .admin-list li .actions { width: 100%; }
+  .admin-list li .actions .button, .admin-list li .actions select { flex: 1 1 auto; }
+
+  .legal { padding-left: 14px; padding-right: 14px; }
+  .actions .button { flex: 1 1 auto; }
+}
+
+/* ---------- Aktualizacje gry ---------- */
+.update > time { display: block; margin: -8px 0 12px; font-size: 13px; color: var(--muted); }
+.update-body p, .update-body ul { margin: 0 0 12px; line-height: 1.6; }
+.update-body ul { padding-left: 22px; }
+.update-body h3 { margin: 18px 0 6px; font-size: 1rem; color: var(--khaki); }
+.update-target { box-shadow: 0 0 0 3px var(--orange), 0 14px 30px rgba(0, 0, 0, 0.25); }
+.field select { padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg2); color: var(--cream); font: inherit; }

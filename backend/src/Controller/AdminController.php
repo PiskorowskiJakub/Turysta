@@ -12,6 +12,7 @@ use Turysta\Admin\FactService;
 use Turysta\Auth\RateLimiter;
 use Turysta\Auth\Session;
 use Turysta\Game\AnnouncementService;
+use Turysta\Game\UpdateService;
 use Turysta\Http\ApiException;
 use Turysta\Http\Request;
 use Turysta\Support\BugReportService;
@@ -25,6 +26,7 @@ final class AdminController
     private AdminLogService $logs;
     private AdminStatsService $stats;
     private BugReportService $bugs;
+    private UpdateService $updates;
 
     public function __construct(private PDO $pdo)
     {
@@ -34,6 +36,7 @@ final class AdminController
         $this->logs = new AdminLogService($pdo);
         $this->stats = new AdminStatsService($pdo);
         $this->bugs = new BugReportService($pdo, new RateLimiter($pdo));
+        $this->updates = new UpdateService($pdo);
     }
 
     // ---- statystyki ----
@@ -227,6 +230,49 @@ final class AdminController
         $this->announcements->delete($id);
         AdminAudit::log($this->pdo, (int) $admin['id'], 'announcement.delete', null, ['id' => $id], $r->ip());
         return [200, ['message' => 'Ogłoszenie usunięto.']];
+    }
+
+    // ---- aktualizacje gry ----
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function updates(Request $r): array
+    {
+        Session::requireAdmin($r);
+        return [200, ['updates' => $this->updates->all()]];
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function createUpdate(Request $r): array
+    {
+        $admin = Session::requireAdmin($r);
+        $u = $this->updates->create((int) $admin['id'], $r->body);
+        AdminAudit::log($this->pdo, (int) $admin['id'], 'update.create', null, ['id' => $u['id'], 'title' => $u['title']], $r->ip());
+        return [201, ['update' => $u]];
+    }
+
+    /**
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
+    public function saveUpdate(Request $r, array $params = []): array
+    {
+        $admin = Session::requireAdmin($r);
+        $u = $this->updates->update($this->id($params), $r->body);
+        AdminAudit::log($this->pdo, (int) $admin['id'], 'update.update', null, ['id' => $u['id'], 'title' => $u['title']], $r->ip());
+        return [200, ['update' => $u]];
+    }
+
+    /**
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
+    public function deleteUpdate(Request $r, array $params = []): array
+    {
+        $admin = Session::requireAdmin($r);
+        $id = $this->id($params);
+        $this->updates->delete($id);
+        AdminAudit::log($this->pdo, (int) $admin['id'], 'update.delete', null, ['id' => $id], $r->ip());
+        return [200, ['message' => 'Aktualizację usunięto.']];
     }
 
     // ---- zgloszenia bledow ----

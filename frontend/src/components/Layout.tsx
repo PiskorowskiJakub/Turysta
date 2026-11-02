@@ -86,6 +86,12 @@ export default function Layout() {
       .catch(() => setFact(null));
   }, []);
 
+  // Na telefonie dolne menu przewija sie poziomo: aktywna pozycja ma byc widoczna.
+  useEffect(() => {
+    if (!window.matchMedia('(max-width: 900px)').matches) return;
+    document.querySelector('.menu-item.active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+  }, [location.pathname, status]);
+
   useEffect(() => {
     if (status !== 'authed') return;
     api<{ avatars: Avatar[] }>('GET', '/avatars')
@@ -196,6 +202,7 @@ export default function Layout() {
       <footer className="site-footer">
         <span>{t('footer')}</span>
         <nav className="footer-links" aria-label={t('footerLinks.terms')}>
+          <Link to="/aktualizacje">{t('footerLinks.updates')}</Link>
           <Link to="/regulamin">{t('footerLinks.terms')}</Link>
           <Link to="/polityka-prywatnosci">{t('footerLinks.privacy')}</Link>
           {authed && <Link to="/zglos-blad" state={{ from: location.pathname }}>{t('footerLinks.bug')}</Link>}

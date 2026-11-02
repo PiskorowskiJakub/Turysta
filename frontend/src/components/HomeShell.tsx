@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import type { Announcement } from '../api/types';
@@ -21,6 +21,7 @@ function AnnouncementArchive() {
   return (
     <section className="panel">
       <h2>{t('home.board.title')}</h2>
+      <p><Link to="/aktualizacje">{t('home.board.allUpdates')}</Link></p>
       {items === null ? <p className="muted">{t('loading')}</p> : <AnnouncementList items={items} />}
     </section>
   );

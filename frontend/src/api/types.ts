@@ -269,6 +269,17 @@ export interface Announcement {
   body: string;
   published: boolean;
   pinned: boolean;
+  update_id: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpdateEntry {
+  id: number;
+  title: string;
+  body: string;
+  released_on: string;
+  published: boolean;
   created_at: string;
   updated_at: string;
 }

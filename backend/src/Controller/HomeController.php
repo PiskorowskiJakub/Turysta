@@ -45,6 +45,12 @@ final class HomeController
         return [200, ['announcements' => (new AnnouncementService($this->pdo))->published(50)]];
     }
 
+    /** Dziennik zmian w grze; dostepny dla wszystkich, takze bez logowania. @return array{0:int,1:array<string,mixed>} */
+    public function updates(Request $r): array
+    {
+        return [200, ['updates' => (new \Turysta\Game\UpdateService($this->pdo))->published(50)]];
+    }
+
     /** @return array{0:int,1:array<string,mixed>} */
     public function claimDaily(Request $r): array
     {
