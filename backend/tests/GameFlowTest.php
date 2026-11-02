@@ -394,6 +394,31 @@ final class GameFlowTest extends TestCase
         $this->assertSame(self::START_CENTS, $this->coins());
     }
 
+    public function testCancelledLongJobLocksOnlyThatJob(): void
+    {
+        $this->jobs->start($this->userId, $this->jobId('hostel'));
+        $this->jobs->stop($this->userId, true);
+
+        $list = $this->jobs->list($this->userId);
+        $this->assertNull($list['available_at']);
+        $byCode = [];
+        foreach ($list['jobs'] as $j) {
+            $byCode[$j['code']] = $j;
+        }
+        $this->assertNotNull($byCode['hostel']['locked_until']);
+        $this->assertNull($byCode['expedition']['locked_until']);
+
+        try {
+            $this->jobs->start($this->userId, $this->jobId('hostel'));
+            $this->fail('Przerwana praca powinna byc zablokowana');
+        } catch (ApiException $e) {
+            $this->assertSame('job_locked', $e->errorCode);
+        }
+
+        $this->jobs->start($this->userId, $this->jobId('expedition'));
+        $this->assertNotNull($this->jobs->active($this->userId));
+    }
+
     public function testFinishedJobIsPaidInFullOnRead(): void
     {
         $this->jobs->start($this->userId, $this->jobId('market'));

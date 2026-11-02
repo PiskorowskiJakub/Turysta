@@ -4,9 +4,14 @@ backups/
 backend/vendor/
 
 frontend/_to_delete/
+frontend/dist/
+frontend/dist-ssr/
 
 # Zrzuty bazy zawieraja dane graczy (e-maile, hasze hasel) - nigdy do repozytorium
 backup.sql
 *.sql.gz
 *.dump
 
+
+# Tymczasowe pliki systemu plikow (powstaja przy nadpisywaniu otwartych plikow)
+.fuse_hidden*

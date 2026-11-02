@@ -564,6 +564,7 @@
     "not_last_of_skill": "Najpierw usuń późniejsze szkolenia tej umiejętności.",
     "job_active": "Już pracujesz. Dokończ lub przerwij obecną pracę.",
     "job_cooldown": "Musisz odpocząć przed kolejną pracą.",
+    "job_locked": "Tę pracę przerwałeś niedawno. Zacznij ją ponownie później lub wybierz inną.",
     "no_active_job": "Nie masz aktywnej pracy.",
     "not_found": "Nie znaleziono.",
     "job_cancel_forfeit": "Jeśli przerwiesz tę pracę, nie dostaniesz nic.",
@@ -631,6 +632,7 @@
     "tradeBonus": "Bonus Handlu (poziom {{level}}): wypłaty większe o {{percent}}%.",
     "stopped": "Praca przerwana. Wypłata: {{amount}} dk",
     "cooldown": "Musisz odpocząć. Kolejna praca za {{time}}.",
+    "locked": "Przerwałeś tę pracę. Możesz ją zacząć ponownie za {{time}}. Inne prace są dostępne.",
     "policyProportional": "można przerwać w każdej chwili (wypłata proporcjonalna)",
     "policyNone": "przerwanie = brak wypłaty",
     "names": {

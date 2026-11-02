@@ -92,6 +92,8 @@ export default function JobsPage() {
     let earnCents = reward;
     let progress = 0;
     let noStop = false;
+    const lockLeft = !isActive && j.locked_until ? Math.max(0, (Date.parse(j.locked_until) - now) / 1000) : 0;
+    const locked = lockLeft > 0;
 
     if (isActive && active) {
       const start = Date.parse(active.started_at);
@@ -122,11 +124,12 @@ export default function JobsPage() {
               {j.cancel_policy === 'none' ? t('jobs.stopForfeit') : t('jobs.stop')}
             </button>
           ) : (
-            <button type="button" className="btn" disabled={busy || !!active || onBreak} onClick={() => void onStart(j)}>
+            <button type="button" className="btn" disabled={busy || !!active || onBreak || locked} onClick={() => void onStart(j)}>
               {t('jobs.start')}
             </button>
           )}
         </div>
+        {locked && <p className="form-notice">{t('jobs.locked', { time: formatDuration(lockLeft) })}</p>}
         {isActive && <ProgressBar value={progress} />}
       </article>
     );

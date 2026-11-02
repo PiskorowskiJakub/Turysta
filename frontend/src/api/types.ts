@@ -117,6 +117,7 @@ export interface JobInfo {
   base_reward_cents: number;
   cooldown_seconds: number;
   cancel_policy: CancelPolicy;
+  locked_until?: string | null;
 }
 
 export interface ActiveJob {
