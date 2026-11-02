@@ -4,7 +4,7 @@ import type { Gender, LoginResponse, Me, RegisterInput } from '../api/types';
 
 type Status = 'loading' | 'anon' | 'authed';
 
-interface AuthState {
+export interface AuthState {
   status: Status;
   me: Me | null;
   login: (email: string, password: string) => Promise<LoginResponse['user']>;
@@ -19,10 +19,39 @@ interface AuthState {
   deleteAccount: (currentPassword: string) => Promise<void>;
 }
 
-const AuthContext = createContext<AuthState | null>(null);
+export const AuthContext = createContext<AuthState | null>(null);
+
+const SESSION_HINT = 'dd_session';
+
+/** Podpowiedz "ta przegladarka miala sesje"; pozwala od razu pokazac wlasciwy ekran startowy. Nie jest zadnym zabezpieczeniem. */
+function setSessionHint(on: boolean): void {
+  try {
+    if (on) localStorage.setItem(SESSION_HINT, '1');
+    else localStorage.removeItem(SESSION_HINT);
+  } catch {
+    // Brak dostepu do localStorage (tryb prywatny) - nic sie nie dzieje.
+  }
+}
+
+function hasSessionHint(): boolean {
+  try {
+    return localStorage.getItem(SESSION_HINT) === '1';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Na stronie glownej (jest prerenderowana jako wersja dla niezalogowanych) zaczynamy od 'anon', zeby nie bylo migniecia
+ * ekranem ladowania. Wszedzie indziej i u osob z zapamietana sesja czekamy na odpowiedz serwera.
+ */
+function initialStatus(): Status {
+  if (typeof window !== 'undefined' && window.location.pathname === '/' && !hasSessionHint()) return 'anon';
+  return 'loading';
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<Status>('loading');
+  const [status, setStatus] = useState<Status>(initialStatus);
   const [me, setMe] = useState<Me | null>(null);
 
   const refresh = useCallback(async () => {
@@ -30,9 +59,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await api<Me>('GET', '/me');
       setMe(data);
       setStatus('authed');
+      setSessionHint(true);
     } catch (e) {
       setMe(null);
       setStatus('anon');
+      setSessionHint(false);
       if (!(e instanceof ApiError && e.status === 401)) console.error(e);
     }
   }, []);
@@ -62,6 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setCsrfToken(null);
       setMe(null);
       setStatus('anon');
+      setSessionHint(false);
     }
   }, []);
 
@@ -91,6 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCsrfToken(null);
     setMe(null);
     setStatus('anon');
+    setSessionHint(false);
   }, []);
 
   const value = useMemo<AuthState>(

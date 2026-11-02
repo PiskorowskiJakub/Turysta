@@ -32,6 +32,10 @@ TLS (Let's Encrypt) dojdzie przy wdrozeniu na VPS.
 
 Na serwerze za istniejącym Traefikiem: [DEPLOY.md](DEPLOY.md) (`docker-compose.prod.yml`, `.env.prod.example`).
 
+## Strona główna i SEO
+
+Build frontendu (`npm run build`, w Dockerze robi to obraz `turysta-web`) poza aplikacją przygotowuje `dist/landing.html`: wyrenderowaną na sztywno stronę główną dla niezalogowanych (treść, tytuł, opis, Open Graph, JSON-LD). nginx podaje ją pod adresem `/`, a pozostałe adresy dostają zwykłą powłokę aplikacji `index.html` z nagłówkiem `X-Robots-Tag: noindex`. Teksty SEO są w `frontend/src/locales/pl.json` (`seo.*`), adres domeny w `frontend/scripts/prerender.mjs` (zmienna `SITE_URL`, domyślnie `https://dwadukaty.pl`) oraz w `public/robots.txt` i `public/sitemap.xml`. Obrazek do udostępniania to `frontend/public/img/og.png` (1200x630).
+
 ## Panel administratora
 
 Dostępny pod `/admin` tylko dla roli `admin` (serwer sprawdza rolę przy każdym żądaniu). Karty i podkarty:
