@@ -171,6 +171,7 @@ export default function Layout() {
                 <MenuLink to="/praca" icon="job" label={t('nav.jobs')} />
                 <MenuLink to="/odznaki" icon="medal" label={t('nav.badges')} />
                 <MenuLink to="/ranking" icon="points" label={t('nav.ranking')} />
+                <MenuLink to="/wiki" icon="book" label={t('nav.wiki')} />
                 {me?.user.role === 'admin' && <MenuLink to="/admin" icon="admin" label={t('nav.admin')} />}
                 <li>
                   <span className="menu-item disabled" aria-disabled="true" title={t('nav.soon')}>
@@ -190,6 +191,7 @@ export default function Layout() {
               <>
                 <MenuLink to="/logowanie" icon="login" label={t('nav.login')} />
                 <MenuLink to="/rejestracja" icon="register" label={t('nav.register')} />
+                <MenuLink to="/wiki" icon="book" label={t('nav.wiki')} />
               </>
             ) : null}
           </ul>
@@ -203,6 +205,7 @@ export default function Layout() {
       <footer className="site-footer">
         <span>{t('footer')}</span>
         <nav className="footer-links" aria-label={t('footerLinks.terms')}>
+          <Link to="/wiki">{t('footerLinks.wiki')}</Link>
           <Link to="/aktualizacje">{t('footerLinks.updates')}</Link>
           <Link to="/regulamin">{t('footerLinks.terms')}</Link>
           <Link to="/polityka-prywatnosci">{t('footerLinks.privacy')}</Link>

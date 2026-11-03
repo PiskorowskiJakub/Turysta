@@ -13,7 +13,8 @@
     "skills": "Umiejętności",
     "badges": "Odznaki",
     "ranking": "Ranking",
-    "admin": "Panel admina"
+    "admin": "Panel admina",
+    "wiki": "Wiki gry"
   },
   "footer": "Copyright © 2026 Jakub Piskorowski",
   "tagline": "Dwa Dukaty – gra o podróżowaniu",
@@ -857,7 +858,8 @@
     "terms": "Regulamin",
     "privacy": "Polityka prywatności",
     "bug": "Zgłoś błąd",
-    "updates": "Aktualizacje"
+    "updates": "Aktualizacje",
+    "wiki": "Wiki gry"
   },
   "bugReport": {
     "title": "Zgłoś błąd",
@@ -1119,5 +1121,8 @@
     "left": "Dziś możesz jeszcze podarować: {{left}} z {{max}}.",
     "goToList": "Podaruj prezenty",
     "how": "Prezent możesz też wysłać z listy znajomych (Profil, Znajomi): kliknij „Podaruj” przy wybranej osobie i potwierdź."
+  },
+  "wiki": {
+    "title": "Wiki gry"
   }
 }

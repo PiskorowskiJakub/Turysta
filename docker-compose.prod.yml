@@ -14,7 +14,10 @@ services:
   # Uwaga: usługi w sieci Traefika (web) mają unikalne nazwy (turysta-web, turysta-api), bo druga strona na tym serwerze
   # ma kontenery o nazwach frontend/backend i DNS Dockera nie moze ich pomylic.
   turysta-web:
-    build: ./frontend
+    # Kontekst = katalog glowny repo, bo wiki gry buduje sie z docs/README.md (patrz frontend/Dockerfile).
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
     restart: unless-stopped
     logging: *logging
     networks: [default, proxy]

@@ -9,6 +9,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    // Wiki gry importuje ../docs/README.md spoza katalogu frontendu (w kontenerze dev: /docs).
+    fs: { allow: ['.', '../docs', '/docs'] },
     watch: { usePolling: process.env.VITE_POLLING === 'true' },
     proxy: { '/api': { target: apiTarget, changeOrigin: true } },
   },

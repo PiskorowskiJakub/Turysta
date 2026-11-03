@@ -15,7 +15,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   frontend:
-    build: ./frontend
+    # Kontekst = katalog glowny repo, bo wiki gry buduje sie z docs/README.md (patrz frontend/Dockerfile).
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
     restart: unless-stopped
     labels:
       - traefik.enable=true
@@ -37,6 +40,7 @@ services:
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/index.html:/app/index.html
+      - ./docs:/docs:ro
     depends_on:
       - backend
 
