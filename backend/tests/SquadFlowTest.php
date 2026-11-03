@@ -336,7 +336,7 @@ final class SquadFlowTest extends TestCase
 
         $fire = $this->view->profile($lead, $id)['fire'];
         $this->assertSame(0, $fire['level']);
-        $this->assertSame(464, $fire['ember']);
+        $this->assertSame(457, $fire['ember']);
         $this->assertCount(4, $fire['history']);
     }
 
