@@ -14,6 +14,7 @@ export interface Me {
     email_verification_deadline: string | null;
     tutorial_done: boolean;
     share_activity: boolean;
+    show_squad_title: boolean;
   };
   wallet: { coins_cents: number; tickets: number; points: number };
   skills: { code: string; name: string; level: number }[];
@@ -241,6 +242,7 @@ export interface PlayerProfile {
   badges: EarnedBadge[];
   featured: string[];
   friendship: FriendshipState;
+  squad: { id: number; display_name: string; title: string | null } | null;
 }
 
 export type FriendshipState = 'self' | 'none' | 'friends' | 'outgoing' | 'incoming';
@@ -541,4 +543,175 @@ export interface AdminStats {
   worlds: { world: number; players: number }[];
   registrations: DayCount[];
   logins: DayCount[];
+}
+
+// ---- Oddzialy ----
+
+export type SquadJoinMode = 'open' | 'request' | 'invite';
+export type SquadRole = 'leader' | 'deputy' | 'guide' | 'quartermaster' | 'chronicler' | 'recruiter' | 'member';
+
+export interface SquadSpec {
+  code: string;
+  group: string;
+  label: string;
+}
+
+export interface SquadMeta {
+  specializations: SquadSpec[];
+  roles: SquadRole[];
+  assignable_roles: SquadRole[];
+  kick_reasons: string[];
+  report_reasons: string[];
+  limits: {
+    max_members: number;
+    min_account_days: number;
+    rejoin_cooldown_days: number;
+    name_min: number;
+    name_max: number;
+    name_change_days: number;
+    spec_change_days: number;
+    recruit_days: number;
+    fire_threshold_percent: number;
+    fire_min_active: number;
+    flame_streaks: number[];
+  };
+}
+
+export interface SquadCard {
+  id: number;
+  name: string;
+  display_name: string;
+  specialization: string;
+  join_mode: SquadJoinMode;
+  members: number;
+  max_members: number;
+  flame_level: number;
+}
+
+export interface SquadMember {
+  id: number;
+  name: string;
+  avatar_url: string | null;
+  title: SquadRole | null;
+  joined_at: string;
+  recruit: boolean;
+  /** Pola tylko dla czlonkow oddzialu. */
+  role?: SquadRole;
+  online?: boolean;
+  title_hidden?: boolean;
+}
+
+export interface SquadEligibility {
+  ok: boolean;
+  reason: 'already_member' | 'email_unverified' | 'account_too_young' | 'squad_cooldown' | null;
+  until: string | null;
+}
+
+export interface SquadFireState {
+  level: number;
+  streak: number;
+  best_streak: number;
+  lit_days: number;
+  ember: number;
+  next_level: { level: number; in_days: number } | null;
+  today: { day: string; members: number; active: number; needed: number; lit: boolean };
+  history: { day: string; members: number; active: number; needed: number; lit: boolean; ember: number }[];
+}
+
+export interface SquadChronicleEntry {
+  id: number;
+  type: string;
+  created_at: string;
+  user?: { id: number | null; name: string | null };
+  target?: { id: number | null; name: string | null };
+  payload: Record<string, string | number | boolean>;
+}
+
+export interface SquadPerson {
+  id: number;
+  name: string;
+  created_at: string;
+}
+
+export interface SquadProfile extends SquadCard {
+  created_at: string;
+  name_locked: boolean;
+  name_forced: boolean;
+  badges: unknown[];
+  member_list: SquadMember[];
+  me: {
+    is_member: boolean;
+    role: SquadRole | null;
+    can_manage: boolean;
+    can_recruit: boolean;
+    is_leader: boolean;
+    eligibility: SquadEligibility | null;
+    pending: 'request' | 'invite' | null;
+  };
+  name_change_available_at?: string | null;
+  spec_change_available_at?: string | null;
+  fire?: SquadFireState;
+  chronicle?: SquadChronicleEntry[];
+  requests?: { requests: SquadPerson[]; invites: SquadPerson[] };
+}
+
+export interface SquadMine {
+  squad: SquadProfile | null;
+  invites: SquadCard[];
+  requests: SquadCard[];
+  eligibility: SquadEligibility;
+  meta: SquadMeta;
+}
+
+export interface SquadCatalog {
+  squads: SquadCard[];
+  total: number;
+  page: number;
+  pages: number;
+  meta: SquadMeta;
+}
+
+export interface AdminSquadRow {
+  id: number;
+  name: string;
+  display_name: string;
+  specialization: string;
+  members: number;
+  ember: number;
+  flame_level: number;
+  reports: number;
+  name_locked: boolean;
+  name_forced: boolean;
+  archived: boolean;
+  created_at: string;
+}
+
+export interface AdminSquadReport {
+  id: number;
+  squad_id: number;
+  reported_name: string;
+  current_name: string;
+  display_name: string;
+  archived: boolean;
+  reason: string;
+  reporter: string;
+  status: 'new' | 'resolved' | 'dismissed';
+  created_at: string;
+}
+
+export interface AdminSquadDetail {
+  id: number;
+  name: string;
+  display_name: string;
+  specialization: string;
+  join_mode: SquadJoinMode;
+  ember: number;
+  flame_streak: number;
+  name_locked: boolean;
+  name_forced: boolean;
+  archived: boolean;
+  created_at: string;
+  members: { id: number; name: string; role: SquadRole; joined_at: string }[];
+  name_history: { id: number; name: string; by: string | null; created_at: string }[];
+  reports: AdminSquadReport[];
 }

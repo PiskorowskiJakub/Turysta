@@ -12,6 +12,7 @@ Dokumentacja zasad gry.
 - [Odznaki](#odznaki)
 - [Znajomi i prezenty](#znajomi-i-prezenty)
 - [Polecenia](#polecenia)
+- [Oddziały](#oddziały)
 
 ## Światy
 
@@ -203,3 +204,42 @@ Każdy gracz ma link polecający i kod, który nowa osoba wpisuje w polu „Kod 
 
 Nagrody trafiają na konto przy Twojej najbliższej aktywności w grze.
 
+## Oddziały
+
+Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Na razie oddziały mają skład, role, kronikę i ognisko; wspólne umiejętności i szlaki pojawią się później.
+
+### Zakładanie i dołączanie
+
+- **Wiek konta.** Oddział można założyć i dołączyć do niego od 3. dnia gry po rejestracji (dzień rejestracji liczy się jako pierwszy). Trzeba też mieć potwierdzony e-mail.
+- **Limit.** W oddziale może być do 30 członków, a gracz należy naraz tylko do jednego oddziału.
+- **Nazwa.** Ma od 3 do 40 znaków i musi być unikalna (wielkość liter i polskie znaki nie mają znaczenia). Nazwy wulgarne, obraźliwe lub podszywające się pod inne osoby są zabronione; można je zgłosić administratorowi, który może wymusić zmianę nazwy. Wyświetla się jako „Oddział <nazwa> – <specjalizacja>”, a przy specjalizacji „ogólna” bez dopisku.
+- **Specjalizacja.** Jedyna kategoria oddziału (np. piesza, górska, rowerowa, kajakowa, historyczna, kulinarna lub ogólna). Ma charakter informacyjny. Nazwę oddziału można zmienić raz na 30 dni, a specjalizację raz na 90 dni.
+- **Tryby przyjmowania.** Oddział jest otwarty (każdy uprawniony dołącza od razu), na prośbę (prośbę zatwierdza przywódca, zastępca lub rekruter) albo tylko na zaproszenie. Zaproszenie może dostać każdy gracz, nie musi być znajomym.
+- **Karencja.** Po opuszczeniu oddziału albo usunięciu z niego nie dołączysz do kolejnego przez 3 dni.
+- **Rekrut.** Przez tydzień od dołączenia przy nazwie gracza na liście członków widać odznakę „Rekrut”. Lista członków jest publiczna i pokazuje datę dołączenia; członkostwa nie można ukryć.
+
+### Role
+
+| Rola | Liczba osób | Uprawnienia |
+| --- | --- | --- |
+| Przywódca | 1 | Wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału |
+| Zastępca | 1 | Wszystko poza przekazaniem przywództwa i rozwiązaniem oddziału |
+| Rekruter | do 2 | Przyjmowanie próśb i zapraszanie graczy |
+| Przewodnik, Kwatermistrz, Kronikarz | do 2 każda | Na razie tylko tytuł |
+
+Gracz ma jedną rolę. Tytuł roli widać na liście członków i w profilu, ale można go ukryć w Edycji profilu. Przywódca nie może po prostu odejść: przekazuje przywództwo albo rozwiązuje oddział.
+
+**Automatyczna sukcesja.** Gdy przywódca jest nieaktywny przez 14 dni, przywództwo przejmuje zastępca, a bez zastępcy najaktywniejszy członek z ostatnich 30 dni. Oddział, w którym nikt nie był aktywny przez 30 dni, jest archiwizowany, a jego nazwa wraca do puli.
+
+### Ognisko
+
+Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (zaokrąglone w górę, minimum 2 osoby). Aktywny to gracz, który tego dnia coś zrobił w grze.
+
+- **Żar** za dzień z płonącym ogniskiem to 100 × mnożnik dnia × premia serii.
+- **Mnożnik dnia:** ×1,0 przy 30% aktywnych, ×1,25 przy 50% i ×1,5 przy 70%.
+- **Seria** to kolejne dni z płonącym ogniskiem. Premia serii: +0% (poniżej 3 dni), +5% (3 dni), +10% (7 dni), +15% (14 dni), +20% (30 dni).
+- **Poziomy:** Brak ogniska, Żar, Płomyk, Ognisko, Wielkie ognisko (progi serii 0, 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera.
+
+### Kronika
+
+Kronika dostępna jest tylko dla członków i zapisuje się sama: założenie oddziału, dołączenia i odejścia, usunięcia, zmiany ról i przywództwa, zmiany nazwy i specjalizacji oraz awanse i spadki ogniska. Gracze, którzy w ustawieniach prywatności ukryli swoją aktywność, są w kronice anonimowi.

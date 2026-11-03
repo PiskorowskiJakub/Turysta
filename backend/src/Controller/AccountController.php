@@ -25,7 +25,7 @@ final class AccountController
     public function updatePrivacy(Request $r): array
     {
         $user = Session::requireUser($r);
-        $this->account->setPrivacy($user, $r->body['share_activity'] ?? null);
+        $this->account->setPrivacy($user, $r->body);
         return $this->me->show($r);
     }
 

@@ -83,7 +83,11 @@ export default function EditProfilePage() {
   };
 
   const onShareActivity = (checked: boolean) => {
-    void run(setPrivacy, () => updatePrivacy(checked), t('editProfile.savedPrivacy'));
+    void run(setPrivacy, () => updatePrivacy({ share_activity: checked }), t('editProfile.savedPrivacy'));
+  };
+
+  const onShowSquadTitle = (checked: boolean) => {
+    void run(setPrivacy, () => updatePrivacy({ show_squad_title: checked }), t('editProfile.savedPrivacy'));
   };
 
   const onEmail = (e: FormEvent) => {
@@ -193,6 +197,11 @@ export default function EditProfilePage() {
           <span>{t('editProfile.shareActivity')}</span>
         </label>
         <p className="field-hint">{t('editProfile.shareActivityHint')}</p>
+        <label className="check">
+          <input type="checkbox" checked={me.user.show_squad_title} disabled={busy} onChange={(e) => onShowSquadTitle(e.target.checked)} />
+          <span>{t('editProfile.showSquadTitle')}</span>
+        </label>
+        <p className="field-hint">{t('editProfile.showSquadTitleHint')}</p>
       </section>
 
       <form className="panel edit-section" onSubmit={onEmail} noValidate>

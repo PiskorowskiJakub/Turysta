@@ -15,6 +15,7 @@ import JobsPage from './pages/JobsPage';
 import BadgesPage from './pages/BadgesPage';
 import RankingPage from './pages/RankingPage';
 import PlayerPage from './pages/PlayerPage';
+import SquadPage from './pages/SquadPage';
 import HomeShell from './components/HomeShell';
 import AdminPage from './pages/AdminPage';
 import { PrivacyPage, TermsPage } from './pages/LegalPages';
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="odznaki" element={<BadgesPage />} />
           <Route path="ranking" element={<RankingPage />} />
           <Route path="admin/*" element={<AdminPage />} />
+          <Route path="oddzial/*" element={<SquadPage />} />
           <Route path="gracz/:id" element={<PlayerPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />

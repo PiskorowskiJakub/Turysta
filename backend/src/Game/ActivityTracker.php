@@ -21,6 +21,8 @@ final class ActivityTracker
                 return;
             }
             $pdo->prepare('INSERT IGNORE INTO user_stats (user_id) VALUES (?)')->execute([$userId]);
+            // Dzien aktywnosci zapisujemy osobno (oddzialy licza, ilu czlonkow bylo aktywnych danego dnia).
+            $pdo->prepare('INSERT IGNORE INTO user_active_days (user_id, day) VALUES (?, ?)')->execute([$userId, $day]);
             // MySQL wykonuje przypisania od lewej: seria liczona z poprzedniego last_active_day, ten zmieniamy na koncu.
             $pdo->prepare(
                 'UPDATE user_stats SET

@@ -18,6 +18,8 @@ use Turysta\Controller\GameController;
 use Turysta\Controller\HomeController;
 use Turysta\Controller\MeController;
 use Turysta\Controller\PasswordResetController;
+use Turysta\Controller\SquadAdminController;
+use Turysta\Controller\SquadController;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
 use Turysta\Game\TrainingService;
@@ -27,6 +29,9 @@ use Turysta\Http\Router;
 use Turysta\Social\CompareService;
 use Turysta\Social\FriendService;
 use Turysta\Social\GiftService;
+use Turysta\Squad\SquadAdminService;
+use Turysta\Squad\SquadService;
+use Turysta\Squad\SquadView;
 use Turysta\Support\BugReportService;
 
 final class App
@@ -47,6 +52,9 @@ final class App
         $friendService = new FriendService($pdo, new RateLimiter($pdo));
         $friends = new FriendController($friendService, new CompareService($pdo, $friendService), new GiftService($pdo, $friendService), $pdo);
         $game = new GameController($pdo, $settler, $training, $jobs);
+        $squadService = new SquadService($pdo, new RateLimiter($pdo));
+        $squads = new SquadController($squadService, new SquadView($pdo, $squadService));
+        $squadAdmin = new SquadAdminController(new SquadAdminService($pdo), $pdo);
 
         $router = new Router();
         $health = function (): array {
@@ -90,10 +98,39 @@ final class App
         $router->post('/v1/friends/{id}/accept', [$friends, 'accept']);
         $router->delete('/v1/friends/{id}', [$friends, 'remove']);
 
+        // Wazne: stale sciezki (mine, leave) przed {id}, bo router bierze pierwsze dopasowanie.
+        $router->get('/v1/squads', [$squads, 'catalog']);
+        $router->get('/v1/squads/mine', [$squads, 'mine']);
+        $router->post('/v1/squads/leave', [$squads, 'leave']);
+        $router->post('/v1/squads', [$squads, 'create']);
+        $router->get('/v1/squads/{id}', [$squads, 'show']);
+        $router->patch('/v1/squads/{id}', [$squads, 'update']);
+        $router->delete('/v1/squads/{id}', [$squads, 'disband']);
+        $router->post('/v1/squads/{id}/join', [$squads, 'join']);
+        $router->delete('/v1/squads/{id}/request', [$squads, 'dropRequest']);
+        $router->post('/v1/squads/{id}/invitation/accept', [$squads, 'acceptInvite']);
+        $router->post('/v1/squads/{id}/invite', [$squads, 'invite']);
+        $router->post('/v1/squads/{id}/requests/{uid}/approve', [$squads, 'approve']);
+        $router->delete('/v1/squads/{id}/requests/{uid}', [$squads, 'dismiss']);
+        $router->put('/v1/squads/{id}/members/{uid}/role', [$squads, 'setRole']);
+        $router->post('/v1/squads/{id}/members/{uid}/kick', [$squads, 'kick']);
+        $router->post('/v1/squads/{id}/transfer', [$squads, 'transfer']);
+        $router->post('/v1/squads/{id}/report', [$squads, 'report']);
+
         $router->get('/v1/home', [$home, 'show']);
         $router->get('/v1/announcements', [$home, 'announcements']);
         $router->get('/v1/updates', [$home, 'updates']);
         $router->post('/v1/daily-reward/claim', [$home, 'claimDaily']);
+
+        $router->get('/v1/admin/squads', [$squadAdmin, 'list']);
+        $router->get('/v1/admin/squads/{id}', [$squadAdmin, 'show']);
+        $router->post('/v1/admin/squads/{id}/force-name', [$squadAdmin, 'forceName']);
+        $router->post('/v1/admin/squads/{id}/lock-name', [$squadAdmin, 'lockName']);
+        $router->get('/v1/admin/squad-reports', [$squadAdmin, 'reports']);
+        $router->patch('/v1/admin/squad-reports/{id}', [$squadAdmin, 'setReportStatus']);
+        $router->get('/v1/admin/banned-words', [$squadAdmin, 'bannedWords']);
+        $router->post('/v1/admin/banned-words', [$squadAdmin, 'addBannedWord']);
+        $router->delete('/v1/admin/banned-words/{id}', [$squadAdmin, 'deleteBannedWord']);
 
         $router->get('/v1/admin/stats', [$admin, 'stats']);
         $router->get('/v1/admin/users', [$admin, 'users']);

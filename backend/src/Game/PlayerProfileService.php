@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace Turysta\Game;
 
 use PDO;
+use Turysta\Auth\RateLimiter;
 use Turysta\Http\ApiException;
+use Turysta\Squad\SquadService;
+use Turysta\Squad\SquadView;
 
 /** Publiczny profil gracza (to, co widzi inny zalogowany gracz): karta i ksiazeczka odznak, bez szczegolowych statystyk. */
 final class PlayerProfileService
@@ -71,6 +74,7 @@ final class PlayerProfileService
             'skill_levels' => $skillLevels,
             'badges' => BadgeService::earned($this->pdo, $playerId),
             'featured' => BadgeService::featured($this->pdo, $playerId),
+            'squad' => (new SquadView($this->pdo, new SquadService($this->pdo, new RateLimiter($this->pdo))))->badgeFor($playerId),
         ];
     }
 }
