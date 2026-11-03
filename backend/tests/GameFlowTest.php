@@ -219,6 +219,23 @@ final class GameFlowTest extends TestCase
         $this->assertNotNull($again['active']);
     }
 
+    public function testJobsHaveNoBreakAfterCompletion(): void
+    {
+        foreach (['market', 'hostel', 'expedition'] as $code) {
+            $this->jobs->start($this->userId, $this->jobId($code));
+            $this->pdo->exec(
+                "UPDATE job_runs SET started_at = UTC_TIMESTAMP() - INTERVAL 25 HOUR, ends_at = UTC_TIMESTAMP() - INTERVAL 1 HOUR
+                 WHERE user_id = {$this->userId} AND status = 'active'"
+            );
+            // Ukonczona praca (rozliczona przy starcie nastepnej): mozna od razu zaczac kolejna, bez przerwy.
+            $next = $this->jobs->start($this->userId, $this->jobId('market'));
+            $this->assertNotNull($next['active']);
+            $this->assertNull($next['available_at']);
+            // Rynek przerywamy bez konsekwencji (wyplata proporcjonalna, brak blokady pracy).
+            $this->jobs->stop($this->userId, false);
+        }
+    }
+
     public function testTradeLevelRaisesJobRewardAndIsFrozenAtStart(): void
     {
         $this->pdo->prepare('INSERT INTO user_skills (user_id, skill_id, level) VALUES (?, ?, 120)

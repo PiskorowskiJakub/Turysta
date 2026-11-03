@@ -15,3 +15,7 @@ backup.sql
 
 # Tymczasowe pliki systemu plikow (powstaja przy nadpisywaniu otwartych plikow)
 .fuse_hidden*
+
+# Python
+__pycache__/
+*.pyc

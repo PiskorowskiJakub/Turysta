@@ -32,9 +32,9 @@ def chapter_points(g):
     """Punkty za awans numer g (1-49; 10, 20, 30, 40 to wejscie do nowego swiata)."""
     return POINTS_TRANSITION if g % 10 == 0 else POINTS_CHAPTER_PER_WORLD * (1 + g // 10)
 JOBS = {  # kod: (czas s, wyplata grosze, przerwa s, proporcjonalna)
-    'market': (8 * 3600, 24700, 3600, True),
-    'hostel': (12 * 3600, 42000, 7200, False),
-    'expedition': (24 * 3600, 90000, 14400, False),
+    'market': (8 * 3600, 24700, 0, True),            # bez przerwy po ukonczeniu (migracja 032)
+    'hostel': (12 * 3600, 42000, 0, False),        # po ukonczeniu bez przerwy (migracja 032)
+    'expedition': (24 * 3600, 90000, 0, False),
 }
 BONUS_MAX, BONUS_HALF = 1.2, 120   # bonus handlu: +BONUS_MAX * L / (L + BONUS_HALF)  (asymptota +120%)
 
