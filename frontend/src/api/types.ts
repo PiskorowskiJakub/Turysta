@@ -317,7 +317,7 @@ export interface ActivityEvent {
   id: number;
   type: 'badge' | 'world';
   user: { id: number; name: string };
-  payload: { group?: string | null; tier?: string; world?: number | null };
+  payload: { group?: string | null; tier?: string; world?: number | null; badge_name?: string };
   created_at: string;
 }
 

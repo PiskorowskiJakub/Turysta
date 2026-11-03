@@ -1097,14 +1097,14 @@
     "title": "Aktywność znajomych",
     "empty": "Gdy Twoi znajomi dotrą do nowego świata albo zdobędą cenną odznakę, zobaczysz to tutaj.",
     "world": "{{name}} dotarł(a) do świata {{world}}.",
-    "badge": "{{name}} zdobył(a) {{tier}} odznakę „{{badge}}”.",
-    "badgeWorld": "{{name}} zdobył(a) {{tier}} odznakę ze świata {{world}}.",
+    "badge": "{{name}} zdobył(a) odznakę: {{tier}} – {{badge}}.",
+    "badgeWorld": "{{name}} zdobył(a) odznakę ze świata {{world}}: {{tier}}.",
     "tier": {
-      "bronze": "brązową",
-      "silver": "srebrną",
-      "gold": "złotą",
-      "diamond": "diamentową",
-      "ruby": "rubinową"
+      "bronze": "Brąz",
+      "silver": "Srebro",
+      "gold": "Złoto",
+      "diamond": "Diament",
+      "ruby": "Rubin"
     },
     "friends": "Znajomi"
   },

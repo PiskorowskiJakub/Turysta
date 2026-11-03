@@ -58,6 +58,7 @@ final class ActivityFeed
         );
         $stmt->execute([$userId, $userId, $userId]);
 
+        $names = $pdo->query('SELECT code, name FROM skill_definitions')->fetchAll(PDO::FETCH_KEY_PAIR);
         $events = [];
         foreach ($stmt->fetchAll() as $r) {
             $payload = json_decode((string) $r['payload'], true);
@@ -65,6 +66,10 @@ final class ActivityFeed
             // Nie zdradzamy umiejetnosci ze swiatow, do ktorych gracz jeszcze nie dotarl: zostaje sam numer swiata.
             if (isset($payload['world']) && (int) $payload['world'] > $myWorld) {
                 $payload['group'] = null;
+            }
+            // Czytelna nazwa umiejetnosci (odznaki specjalne tlumaczy frontend).
+            if (is_string($payload['group'] ?? null) && isset($names[$payload['group']])) {
+                $payload['badge_name'] = (string) $names[$payload['group']];
             }
             $events[] = [
                 'id' => (int) $r['id'],
