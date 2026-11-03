@@ -9,7 +9,7 @@ import BadgeBook from '../components/BadgeBook';
 import { useBadges } from '../hooks/useBadges';
 import { Icon, Sprout } from '../components/icons';
 import Coins from '../components/Coins';
-import { formatDays } from '../format';
+import { formatDays, formatGameDay } from '../format';
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -87,7 +87,7 @@ export default function ProfilePage() {
         <section className="stat-group">
           <h3><span className="stat-ico"><Icon name="points" /></span>{t('profile.activity')}</h3>
           <ul className="stats">
-            <li><span>{t('stats.accountAge')}</span><strong>{me.stats.account_days === 0 ? t('stats.today') : formatDays(me.stats.account_days)}</strong></li>
+            <li><span>{t('stats.accountAge')}</span><strong>{formatGameDay(me.stats.account_days)}</strong></li>
             <li><span>{t('stats.activeDays')}</span><strong>{formatDays(me.stats.active_days)}</strong></li>
             <li><span>{t('stats.streak')}</span><strong>{formatDays(me.stats.current_streak)}</strong></li>
           </ul>

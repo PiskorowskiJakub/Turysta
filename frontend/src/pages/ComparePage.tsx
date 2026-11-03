@@ -6,7 +6,7 @@ import type { CompareResponse, ComparePerson } from '../api/types';
 import Coins from '../components/Coins';
 import PlayerAvatar from '../components/PlayerAvatar';
 import Points from '../components/Points';
-import { formatDays } from '../format';
+import { formatDays, formatGameDay } from '../format';
 
 interface Row {
   key: string;
@@ -70,7 +70,7 @@ export default function ComparePage() {
     { key: 'activeDays', label: t('stats.activeDays'), a: me.active_days, b: friend.active_days, showA: formatDays(me.active_days), showB: formatDays(friend.active_days) },
     { key: 'streak', label: t('stats.streak'), a: me.current_streak, b: friend.current_streak, showA: formatDays(me.current_streak), showB: formatDays(friend.current_streak) },
     { key: 'longest', label: t('compare.rows.longestStreak'), a: me.longest_streak, b: friend.longest_streak, showA: formatDays(me.longest_streak), showB: formatDays(friend.longest_streak) },
-    { key: 'age', label: t('stats.accountAge'), a: me.account_days, b: friend.account_days, neutral: true, showA: me.account_days === 0 ? t('stats.today') : formatDays(me.account_days), showB: friend.account_days === 0 ? t('stats.today') : formatDays(friend.account_days) },
+    { key: 'age', label: t('stats.accountAge'), a: me.account_days, b: friend.account_days, neutral: true, showA: formatGameDay(me.account_days), showB: formatGameDay(friend.account_days) },
   ];
   const earnings: Row[] = [
     ...data.jobs.map((j) => ({ key: j.code, label: t(`jobs.names.${j.code}`, { defaultValue: j.name }), a: j.me, b: j.friend, showA: <Coins cents={j.me} />, showB: <Coins cents={j.friend} /> })),

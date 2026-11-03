@@ -295,7 +295,7 @@ final class GameFlowTest extends TestCase
         $this->assertSame(4, $s['active_days']);
         $this->assertSame(1, $s['current_streak']);
         $this->assertSame(3, $s['longest_streak']);
-        $this->assertSame(0, $s['account_days']);
+        $this->assertSame(1, $s['account_days']);
     }
 
     public function testWorldSkillsAreLockedUntilTheWorldIsReached(): void

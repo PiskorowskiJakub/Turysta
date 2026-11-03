@@ -72,6 +72,11 @@ export function formatEndTime(endMs: number, nowMs: number): string {
 }
 
 /** "1 dzień", "5 dni". */
+/** Numer dnia gry liczony od dnia zalozenia konta, np. "4. dzień gry". */
+export function formatGameDay(n: number): string {
+  return `${n}. dzień gry`;
+}
+
 export function formatDays(n: number): string {
   return `${n} ${n === 1 ? 'dzień' : 'dni'}`;
 }
