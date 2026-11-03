@@ -7,6 +7,7 @@ import AdminBugReportsPage from './admin/AdminBugReportsPage';
 import AdminAnnouncementsPage from './admin/AdminAnnouncementsPage';
 import AdminFactsPage from './admin/AdminFactsPage';
 import { AdminAuditPage, AdminLoginsPage } from './admin/AdminLogsPages';
+import { AdminBannedWordsPage, AdminSquadListPage, AdminSquadReportsPage } from './admin/AdminSquadsPage';
 import AdminStatsPage from './admin/AdminStatsPage';
 import AdminUserPage from './admin/AdminUserPage';
 import AdminUsersPage from './admin/AdminUsersPage';
@@ -28,6 +29,15 @@ export default function AdminPage() {
         { path: 'ogloszenia', label: t('admin.tabs.announcements') },
         { path: 'aktualizacje', label: t('admin.tabs.updates') },
         { path: 'ciekawostki', label: t('admin.tabs.facts') },
+      ],
+    },
+    {
+      path: 'oddzialy',
+      label: t('admin.tabs.squads'),
+      children: [
+        { path: 'lista', label: t('admin.tabs.squadList') },
+        { path: 'zgloszenia', label: t('admin.tabs.squadReports') },
+        { path: 'slowa', label: t('admin.tabs.bannedWords') },
       ],
     },
     { path: 'zgloszenia', label: t('admin.tabs.bugs') },
@@ -54,6 +64,10 @@ export default function AdminPage() {
         <Route path="tresci/ogloszenia" element={<AdminAnnouncementsPage />} />
         <Route path="tresci/aktualizacje" element={<AdminUpdatesPage />} />
         <Route path="tresci/ciekawostki" element={<AdminFactsPage />} />
+        <Route path="oddzialy" element={<Navigate to="lista" replace />} />
+        <Route path="oddzialy/lista" element={<AdminSquadListPage />} />
+        <Route path="oddzialy/zgloszenia" element={<AdminSquadReportsPage />} />
+        <Route path="oddzialy/slowa" element={<AdminBannedWordsPage />} />
         <Route path="zgloszenia" element={<AdminBugReportsPage />} />
         <Route path="logi" element={<Navigate to="logowania" replace />} />
         <Route path="logi/logowania" element={<AdminLoginsPage />} />

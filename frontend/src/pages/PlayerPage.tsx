@@ -93,6 +93,12 @@ export default function PlayerPage() {
         {friendship === 'friends' && <span className="muted">{t('friends.isFriend')} <Link className="button small" to={`/profil/znajomi/porownaj/${playerId}`}>{t('friends.compare')}</Link> <button type="button" className="button small secondary" onClick={() => void onFriend('remove')}>{t('friends.remove')}</button></span>}
         {friendMsg && <span className="form-error" role="alert"> {friendMsg.text}</span>}
       </p>
+      {player.squad && (
+        <p className="player-squad">
+          {t('squad.player.member')} <Link to={`/oddzial/${player.squad.id}`}>{player.squad.display_name}</Link>
+          {player.squad.title && <span className="muted"> · {t(`squad.roles.${player.squad.title}`)}</span>}
+        </p>
+      )}
       <ProfileCard
         data={{
           name: player.name,

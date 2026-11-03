@@ -26,6 +26,13 @@ foreach ($ids as $id) {
     }
 }
 
+// Oddzialy: rozliczenie ognisk po polnocy oraz (raz na dobe) zastepczosc przywodcow i archiwizacja nieaktywnych.
+try {
+    \Turysta\Squad\SquadMaintenance::run($pdo);
+} catch (Throwable $e) {
+    error_log('tick: squads: ' . $e->getMessage());
+}
+
 // Porzadki: stare limity zadan i wygasle sesje.
 $pdo->exec('DELETE FROM rate_limits WHERE window_start < UTC_TIMESTAMP() - INTERVAL 1 DAY');
 $pdo->exec('DELETE FROM sessions WHERE last_activity < UTC_TIMESTAMP() - INTERVAL 14 DAY');

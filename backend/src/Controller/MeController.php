@@ -137,6 +137,7 @@ final class MeController
                     : null,
                 'tutorial_done' => $user['tutorial_done_at'] !== null,
                 'share_activity' => (int) ($user['share_activity'] ?? 1) === 1,
+                'show_squad_title' => (int) ($user['show_squad_title'] ?? 1) === 1,
             ],
             'wallet' => [
                 'coins_cents' => (int) $wallet['coins_cents'],

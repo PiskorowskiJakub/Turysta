@@ -13,7 +13,7 @@ export interface AuthState {
   refresh: () => Promise<void>;
   saveProfile: (gender: Gender, avatarId: number) => Promise<void>;
   updateAccountProfile: (gender: Gender, avatarId: number) => Promise<void>;
-  updatePrivacy: (shareActivity: boolean) => Promise<void>;
+  updatePrivacy: (patch: { share_activity?: boolean; show_squad_title?: boolean }) => Promise<void>;
   changeEmail: (email: string, currentPassword: string) => Promise<void>;
   changePassword: (currentPassword: string, password: string, passwordConfirm: string) => Promise<void>;
   resendVerification: () => Promise<void>;
@@ -107,8 +107,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setMe(await api<Me>('PATCH', '/account/profile', { gender, avatar_id: avatarId }));
   }, []);
 
-  const updatePrivacy = useCallback(async (shareActivity: boolean) => {
-    setMe(await api<Me>('PATCH', '/account/privacy', { share_activity: shareActivity }));
+  const updatePrivacy = useCallback(async (patch: { share_activity?: boolean; show_squad_title?: boolean }) => {
+    setMe(await api<Me>('PATCH', '/account/privacy', patch));
   }, []);
 
   const changeEmail = useCallback(async (email: string, currentPassword: string) => {

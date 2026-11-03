@@ -231,7 +231,11 @@
       "logins": "Logowania",
       "audit": "Działania administratorów",
       "bugs": "Zgłoszenia błędów",
-      "updates": "Aktualizacje"
+      "updates": "Aktualizacje",
+      "squads": "Oddziały",
+      "squadList": "Lista",
+      "squadReports": "Zgłoszenia nazw",
+      "bannedWords": "Słowa zakazane"
     },
     "cols": {
       "player": "Gracz",
@@ -293,7 +297,12 @@
       "bugreport_delete": "Usunięcie zgłoszenia",
       "update_create": "Nowa aktualizacja",
       "update_update": "Edycja aktualizacji",
-      "update_delete": "Usunięcie aktualizacji"
+      "update_delete": "Usunięcie aktualizacji",
+      "squad_force_name": "Wymuszenie nazwy oddziału",
+      "squad_lock_name": "Blokada nazwy oddziału",
+      "squad_report_status": "Status zgłoszenia nazwy",
+      "bannedword_add": "Nowe słowo zakazane",
+      "bannedword_delete": "Usunięcie słowa zakazanego"
     },
     "users": {
       "title": "Gracze",
@@ -459,6 +468,55 @@
       "empty": "Nie ma jeszcze aktualizacji.",
       "created": "Aktualizacja dodana.",
       "deleted": "Aktualizacja usunięta."
+    },
+    "squads": {
+      "title": "Oddziały",
+      "search": "Szukaj po nazwie lub ID",
+      "state": "Stan",
+      "stateActive": "Aktywne",
+      "stateArchived": "Zarchiwizowane",
+      "stateAll": "Wszystkie",
+      "archived": "zarchiwizowany",
+      "details": "Szczegóły",
+      "hide": "Ukryj",
+      "cols": {
+        "name": "Nazwa",
+        "members": "Czł.",
+        "ember": "Żar",
+        "reports": "Zgł.",
+        "created": "Założony"
+      },
+      "detail": {
+        "summary": "Członków: {{members}}, żar: {{ember}}, seria: {{streak}}, założony {{date}}",
+        "forced": "nazwa wymuszona",
+        "force": "Wymuś zmianę nazwy",
+        "forceConfirm": "Na pewno wymusić",
+        "lock": "Zablokuj zmianę nazwy",
+        "unlock": "Odblokuj zmianę nazwy",
+        "members": "Członkowie",
+        "history": "Historia nazw",
+        "reports": "Zgłoszenia nazwy",
+        "system": "system"
+      },
+      "reportsTitle": "Zgłoszenia nazw oddziałów",
+      "status": {
+        "new": "Nowe",
+        "resolved": "Załatwione",
+        "dismissed": "Odrzucone",
+        "all": "Wszystkie"
+      },
+      "reportCols": {
+        "name": "Zgłoszona nazwa",
+        "reason": "Powód",
+        "reporter": "Zgłaszający",
+        "date": "Data"
+      },
+      "resolve": "Załatwione",
+      "dismiss": "Odrzuć",
+      "reopen": "Otwórz ponownie",
+      "wordsTitle": "Słowa zakazane w nazwach oddziałów",
+      "wordLabel": "Nowe słowo",
+      "wordHint": "Słowo jest normalizowane (bez wielkości liter, polskich znaków i typowych podmian cyfr). Nazwy zawierające je zostaną odrzucone."
     }
   },
   "register": {
@@ -603,7 +661,9 @@
     "privacySection": "Prywatność",
     "shareActivity": "Pokazuj moją aktywność znajomym",
     "shareActivityHint": "Znajomi zobaczą na stronie głównej, że dotarłeś do nowego świata albo zdobyłeś cenną odznakę. Po wyłączeniu ukrywasz swoją aktywność, ale sam też nie widzisz aktywności znajomych.",
-    "savedPrivacy": "Ustawienia prywatności zapisane."
+    "savedPrivacy": "Ustawienia prywatności zapisane.",
+    "showSquadTitle": "Pokazuj mój tytuł w oddziale",
+    "showSquadTitleHint": "Tytuł (np. Zastępca, Przewodnik) będzie widoczny na liście członków i w Twoim profilu. Samo członkostwo w oddziale jest zawsze publiczne."
   },
   "verify": {
     "title": "Twoje konto nie zostało jeszcze potwierdzone.",
@@ -664,7 +724,24 @@
     "gift_too_early": "Prezenty można wysyłać dopiero po 24 godzinach od zostania znajomymi.",
     "gift_limit": "Wysłałeś dziś już maksymalną liczbę prezentów.",
     "gift_recipient_limit": "Ten gracz dostał dziś już wiele prezentów. Spróbuj jutro.",
-    "gift_already_sent": "Temu znajomemu wysłałeś już dziś prezent."
+    "gift_already_sent": "Temu znajomemu wysłałeś już dziś prezent.",
+    "squad_not_found": "Nie znaleziono takiego oddziału.",
+    "not_member": "Nie należysz do tego oddziału.",
+    "leader_cannot_leave": "Przywódca nie może opuścić oddziału. Przekaż przywództwo albo rozwiąż oddział.",
+    "role_full": "Ta rola jest już obsadzona w maksymalnej liczbie osób.",
+    "squad_full": "Oddział jest pełny.",
+    "invite_only": "Do tego oddziału dołącza się tylko na zaproszenie.",
+    "request_limit": "Masz zbyt wiele oczekujących próśb o dołączenie.",
+    "invite_pending": "Ten gracz ma już oczekujące zaproszenie.",
+    "invite_limit": "Oddział ma zbyt wiele oczekujących zaproszeń.",
+    "account_too_young": "Twoje konto jest jeszcze zbyt młode, by dołączyć do oddziału.",
+    "email_unverified": "Najpierw potwierdź adres e-mail.",
+    "squad_cooldown": "Niedawno opuściłeś oddział. Poczekaj, zanim dołączysz do kolejnego.",
+    "already_member": "Należysz już do oddziału.",
+    "name_locked": "Administrator zablokował zmianę nazwy tego oddziału.",
+    "already_reported": "Już zgłosiłeś nazwę tego oddziału.",
+    "already_exists": "Taki wpis już istnieje.",
+    "validation_failed": "Popraw zaznaczone pola."
   },
   "training": {
     "title": "Szkolenia",
@@ -754,7 +831,14 @@
     "friend_accepted": "{{name}} przyjął(-ęła) Twoje zaproszenie do znajomych.",
     "friend_gift": "{{name}} podarował(a) Ci {{amount}} dk. Dziękujemy za bycie znajomym!",
     "referral_badge": "Odznaka „Polecenia”: masz już {{referrals}} aktywnych poleconych graczy. Nagroda: {{amount}} dk.",
-    "referral_person": "Polecony gracz {{name}} jest już aktywny. Premia za polecenie: {{amount}} dk."
+    "referral_person": "Polecony gracz {{name}} jest już aktywny. Premia za polecenie: {{amount}} dk.",
+    "squad_invite": "Oddział „{{squad}}” zaprasza Cię do siebie. Odpowiedz w zakładce Oddział.",
+    "squad_request": "Gracz {{name}} prosi o przyjęcie do oddziału „{{squad}}”.",
+    "squad_request_accepted": "Zostałeś przyjęty do oddziału „{{squad}}”.",
+    "squad_request_declined": "Oddział „{{squad}}” odrzucił Twoją prośbę o dołączenie.",
+    "squad_kicked": "Usunięto Cię z oddziału „{{squad}}”.",
+    "squad_role": "W oddziale „{{squad}}” otrzymałeś rolę: {{role}}.",
+    "squad_name_forced": "Nazwa Twojego oddziału została zmieniona przez administratora na „{{name}}”. Ustaw nową nazwę zgodną z regulaminem."
   },
   "fact": "Ciekawostka",
   "world": {
@@ -1123,5 +1207,205 @@
   },
   "wiki": {
     "title": "Wiki gry"
+  },
+  "squad": {
+    "title": "Oddział",
+    "someone": "ktoś",
+    "cancel": "Anuluj",
+    "tabs": {
+      "mine": "Mój oddział",
+      "catalog": "Katalog"
+    },
+    "player": {
+      "member": "Oddział:"
+    },
+    "fields": {
+      "name": "Nazwa oddziału",
+      "namePlaceholder": "np. Wędrowcy z Beskidów",
+      "nameHint": "Od {{min}} do {{max}} znaków. Nazwa musi być unikalna.",
+      "specialization": "Specjalizacja",
+      "specializationHint": "Specjalizacja jest informacją dla innych graczy i nadaje oddziałowi charakter.",
+      "joinMode": "Przyjmowanie nowych członków"
+    },
+    "groups": {
+      "movement": "Ruch",
+      "water": "Woda",
+      "travel": "Podróże",
+      "sightseeing": "Zwiedzanie",
+      "other": "Inne",
+      "general": "Ogólne"
+    },
+    "modes": {
+      "open": "Otwarty",
+      "request": "Na prośbę",
+      "invite": "Tylko na zaproszenie"
+    },
+    "modeHints": {
+      "open": "Każdy uprawniony gracz może dołączyć od razu.",
+      "request": "Gracz wysyła prośbę, a przywódca, zastępca lub rekruter ją zatwierdza.",
+      "invite": "Do oddziału można dołączyć tylko po zaproszeniu."
+    },
+    "roles": {
+      "leader": "Przywódca",
+      "deputy": "Zastępca",
+      "guide": "Przewodnik",
+      "quartermaster": "Kwatermistrz",
+      "chronicler": "Kronikarz",
+      "recruiter": "Rekruter",
+      "member": "Członek"
+    },
+    "flame": {
+      "0": "Brak ogniska",
+      "1": "Żar",
+      "2": "Płomyk",
+      "3": "Ognisko",
+      "4": "Wielkie ognisko"
+    },
+    "kickReasons": {
+      "inactive": "nieaktywność",
+      "rules": "naruszenie zasad",
+      "other": "inny powód"
+    },
+    "reportReasons": {
+      "vulgar": "wulgarna nazwa",
+      "offensive": "obraźliwa nazwa",
+      "impersonation": "podszywanie się",
+      "other": "inny powód"
+    },
+    "eligibility": {
+      "already_member": "Należysz już do oddziału.",
+      "email_unverified": "Potwierdź adres e-mail, aby założyć lub dołączyć do oddziału.",
+      "account_too_young": "Oddział można założyć lub dołączyć do niego od {{days}}. dnia gry po rejestracji.",
+      "squad_cooldown": "Po opuszczeniu oddziału obowiązuje krótka karencja. Do kolejnego dołączysz od {{until}}."
+    },
+    "onboarding": {
+      "title": "Nie należysz do żadnego oddziału",
+      "intro": "Oddział to drużyna do {{max}} podróżników. Wspólnie rozpalacie ognisko: wystarczy, że co dzień aktywna będzie część członków.",
+      "browse": "Przeglądaj katalog oddziałów",
+      "invites": "Zaproszenia ({{n}})",
+      "requests": "Wysłane prośby ({{n}})",
+      "declineInvite": "Odrzuć"
+    },
+    "create": {
+      "title": "Załóż własny oddział",
+      "submit": "Załóż oddział",
+      "hint": "Zostaniesz przywódcą. Nazwę zmienisz raz na 30 dni, a specjalizację raz na 90 dni."
+    },
+    "catalog": {
+      "title": "Katalog oddziałów",
+      "search": "Szukaj po nazwie",
+      "searchButton": "Szukaj",
+      "allSpecs": "Wszystkie specjalizacje",
+      "empty": "Nie znaleziono oddziałów.",
+      "name": "Oddział",
+      "members": "Członkowie",
+      "fire": "Ognisko"
+    },
+    "public": {
+      "join": "Dołącz",
+      "askToJoin": "Poproś o przyjęcie",
+      "acceptInvite": "Przyjmij zaproszenie",
+      "dropRequest": "Wycofaj prośbę",
+      "requestSent": "Prośba wysłana.",
+      "requestDropped": "Prośba wycofana.",
+      "joined": "Dołączyłeś do oddziału!",
+      "inviteOnly": "Tylko na zaproszenie.",
+      "full": "Oddział jest pełny.",
+      "openMine": "Przejdź do swojego oddziału"
+    },
+    "report": {
+      "open": "Zgłoś nazwę oddziału",
+      "reason": "Powód zgłoszenia",
+      "send": "Wyślij zgłoszenie",
+      "sent": "Dziękujemy! Zgłoszenie trafiło do administratora."
+    },
+    "head": {
+      "members": "Członkowie: {{n}}/{{max}}",
+      "founded": "Założony {{date}}",
+      "nameForced": "Administrator zmienił nazwę oddziału. Ustaw nową nazwę w ustawieniach.",
+      "leave": "Opuść oddział",
+      "leaveConfirm": "Opuść (karencja {{days}} dni)",
+      "disband": "Rozwiąż oddział",
+      "disbandConfirm": "Rozwiąż na stałe",
+      "leaderHint": "Jako przywódca nie możesz po prostu odejść: przekaż przywództwo wybranemu członkowi albo rozwiąż oddział."
+    },
+    "settings": {
+      "edit": "Ustawienia",
+      "title": "Ustawienia oddziału",
+      "save": "Zapisz",
+      "saved": "Ustawienia zapisane.",
+      "nameRule": "Nazwę można zmienić raz na {{days}} dni.",
+      "nameLater": "Kolejna zmiana nazwy możliwa od {{date}}.",
+      "nameLocked": "Zmiana nazwy jest zablokowana przez administratora.",
+      "specRule": "Specjalizację można zmienić raz na {{days}} dni.",
+      "specLater": "Kolejna zmiana specjalizacji możliwa od {{date}}."
+    },
+    "fire": {
+      "title": "Ognisko",
+      "streak": "Seria: {{n}} dni",
+      "todayLabel": "Aktywni dziś",
+      "litToday": "Ognisko płonie! Aktywnych dziś: {{active}} z {{members}}.",
+      "todayProgress": "Aktywnych dziś: {{active}} z {{needed}} potrzebnych (członków: {{members}}).",
+      "ember": "żar łącznie",
+      "best": "najlepsza seria",
+      "litDays": "dni z ogniskiem",
+      "next": "Kolejny poziom ({{level}}) za {{days}} dni serii.",
+      "rule": "Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej {{percent}}% członków (minimum {{min}} osoby).",
+      "history": "Ostatnie dni",
+      "dayTitle": "{{day}}: aktywnych {{active}} z {{needed}}, żar {{ember}}"
+    },
+    "members": {
+      "title": "Członkowie ({{n}}/{{max}})",
+      "player": "Gracz",
+      "role": "Rola",
+      "joined": "Dołączył",
+      "recruit": "Rekrut",
+      "titleHidden": "tytuł ukryty",
+      "hint": "Odznaka „Rekrut” widnieje przez {{days}} dni od dołączenia. Członkostwo w oddziale jest publiczne.",
+      "roleFor": "Rola gracza {{name}}",
+      "roleSaved": "Rola zapisana.",
+      "kick": "Usuń",
+      "kickReason": "Powód usunięcia",
+      "kickConfirm": "Usuń z oddziału",
+      "kicked": "{{name}} został usunięty z oddziału.",
+      "transfer": "Przekaż przywództwo",
+      "transferConfirm": "Przekaż przywództwo graczowi {{name}}",
+      "transferred": "Przywództwo przekazane: {{name}}."
+    },
+    "recruit": {
+      "title": "Rekrutacja",
+      "inviteLabel": "Nazwa gracza do zaproszenia",
+      "invite": "Zaproś",
+      "hint": "Do zaproszenia nie trzeba być znajomymi.",
+      "requests": "Prośby o przyjęcie ({{n}})",
+      "invites": "Wysłane zaproszenia ({{n}})",
+      "approve": "Przyjmij",
+      "decline": "Odrzuć",
+      "withdraw": "Wycofaj",
+      "approved": "{{name}} dołączył do oddziału.",
+      "declined": "Prośba gracza {{name}} odrzucona.",
+      "withdrawn": "Zaproszenie dla {{name}} wycofane."
+    },
+    "invite": {
+      "sent": "Zaproszenie dla {{name}} wysłane.",
+      "joined": "{{name}} dołączył do oddziału."
+    },
+    "chronicle": {
+      "title": "Kronika oddziału",
+      "empty": "Kronika jest jeszcze pusta.",
+      "hint": "Wpisy powstają automatycznie. Gracze, którzy ukryli swoją aktywność, są w kronice anonimowi.",
+      "created": "{{who}} założył(a) oddział.",
+      "joined": "{{who}} dołączył(a) do oddziału.",
+      "left": "{{who}} opuścił(a) oddział.",
+      "kicked": "{{target}} został(a) usunięty(-a) z oddziału (powód: {{reason}}).",
+      "role": "{{target}} otrzymał(a) rolę: {{role}}.",
+      "leader": "{{target}} został(a) nowym przywódcą.",
+      "leaderSuccession": "Przywódca był nieaktywny, więc przywództwo przejął(-ęła) {{target}}.",
+      "name": "Oddział zmienił nazwę na „{{name}}”.",
+      "nameForced": "Administrator zmienił nazwę oddziału na „{{name}}”.",
+      "spec": "Oddział zmienił specjalizację na: {{spec}}.",
+      "fireLevel": "Ognisko osiągnęło poziom: {{level}} (seria {{days}} dni).",
+      "fireDim": "Seria ogniska przerwana, poziom spada do: {{level}}."
+    }
   }
 }

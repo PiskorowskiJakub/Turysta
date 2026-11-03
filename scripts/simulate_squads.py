@@ -35,7 +35,10 @@ P = dict(
     rooms=['kuchnia', 'spizarnia', 'izba_chorych', 'mapownia', 'izba_pamieci'],
     room_ember=dict(base=2400, growth=1.5), room_stamps=dict(base=8, growth=1.5), room_dk=dict(base=90, growth=1.5),   # dk: na aktywnego czlonka
     kitchen_job_bonus_per_level=0.006,     # +0,6% wyplat z prac za poziom Kuchni (max +3%)
-    mapping_stamps_per_level=0.05,         # Mapownia: +5% piecza tek ze szlakow za poziom
+    mapping_stamps_per_level=0.05,         # Mapownia: +5% pieczatek ze szlakow za poziom
+    # rotacja czlonkow: dzienna szansa odejscia wg regularnosci gracza (ok. 1,5% / 3% / 6% / 12% miesiecznie)
+    churn=dict(aktywny=0.0005, zwykly=0.001, okazjonalny=0.002, rzadki=0.004),
+    refill_per_vacancy=0.05,   # dzienna szansa zajecia jednego wolnego miejsca (ok. 20 dni na rekrutacje)
 )
 
 PROFILES = {'aktywny': 0.95, 'zwykly': 0.80, 'okazjonalny': 0.45, 'rzadki': 0.12}
@@ -82,7 +85,13 @@ def build_squad(size, mix, rng, focus):
     return members
 
 
-def run(size, mix, days, rng, focus=None):
+def new_member(mix, rng, focus, day):
+    kind = rng.choices(list(mix), weights=list(mix.values()), k=1)[0]
+    order = focus[:] if focus else rng.sample(SKILLS, len(SKILLS))
+    return dict(kind=kind, p=PROFILES[kind], lv={s: 0 for s in SKILLS}, prog=0.0, order=order, last=day, week_days=0, hist=[])
+
+
+def run(size, mix, days, rng, focus=None, rotation=True):
     members = build_squad(size, mix, rng, focus)
     for m in members:
         m['last'] = 0
@@ -93,8 +102,19 @@ def run(size, mix, days, rng, focus=None):
                weeks=0, stamps_total=0.0, levels_day={}, eff_at={}, prog=0.0, shield_used=0, flame_days=[0] * 5)
     week_pts = 0.0
     shields = 0
+    log_extra = dict(joins=0, leaves=0, member_days=0)
     for day in range(days):
+        if rotation:
+            for m in members[:]:
+                if len(members) > 1 and rng.random() < P['churn'][m['kind']]:
+                    members.remove(m)
+                    log_extra['leaves'] += 1
+            for _ in range(max(0, size - len(members))):
+                if rng.random() < P['refill_per_vacancy']:
+                    members.append(new_member(mix, rng, focus, day))
+                    log_extra['joins'] += 1
         n = len(members)
+        log_extra['member_days'] += n
         act = [m for m in members if rng.random() < m['p']]
         actset = set(id(m) for m in act)
         for m in members:
@@ -207,6 +227,7 @@ def run(size, mix, days, rng, focus=None):
                 skill_avg=avg['rozpalanie'], cap=cap, flame=flame, bonus_pct=P['kitchen_job_bonus_per_level'] * rooms['kuchnia'])
     log['rooms'] = rooms
     log['n'] = len(members)
+    log.update(log_extra)
     return log
 
 
@@ -215,11 +236,11 @@ def mean(vals):
     return statistics.fmean(vals) if vals else None
 
 
-def simulate(runs, days, seed, focus):
+def simulate(runs, days, seed, focus, rotation=True):
     rng = random.Random(seed)
     out = {}
     for name, (size, mix) in SQUADS.items():
-        logs = [run(size, mix, days, rng, focus) for _ in range(runs)]
+        logs = [run(size, mix, days, rng, focus, rotation) for _ in range(runs)]
         out[name] = logs
     return out
 
@@ -262,12 +283,15 @@ def report(out, days, md):
             f"{mean([l['eff_at'][d]['cap'] for l in out[n] if d in l['eff_at']]):.0f}"]
            for n in names for d in (90, 365) if d <= days])
 
+    table('Rotacja czlonkow (srednio na oddzial w ciagu okresu)', ['Oddzial', 'Dolaczylo', 'Odeszlo', 'Sr. liczba czlonkow'],
+          [[n, f"{mean([l['joins'] for l in out[n]]):.1f}", f"{mean([l['leaves'] for l in out[n]]):.1f}",
+            f"{mean([l['member_days'] / days for l in out[n]]):.1f}"] for n in names])
+
     rows = []
     for n in names:
-        size = out[n][0]['n']
-        dep = mean([l['deposits'] for l in out[n]]) / size / days
-        sk = mean([l['skill_dk'] for l in out[n]]) / size / days
-        bo = mean([l['bonus_dk'] for l in out[n]]) / size / days
+        dep = mean([l['deposits'] / l['member_days'] for l in out[n]])
+        sk = mean([l['skill_dk'] / l['member_days'] for l in out[n]])
+        bo = mean([l['bonus_dk'] / l['member_days'] for l in out[n]])
         inc = P['income_dk_day']
         rows.append([n, f'{dep:.1f}', f'{sk:.1f}', f'{bo:.1f}', f'{dep + sk - bo:+.1f}', f'{100 * (dep + sk) / inc:.1f}%', f'{100 * bo / inc:.2f}%'])
     table(f'Bilans dukatow na czlonka (dk/dzien, srednia z {days} dni; przychod gracza ok. {P["income_dk_day"]} dk/dzien)',
@@ -281,13 +305,14 @@ def main():
     ap.add_argument('--seed', type=int, default=1)
     ap.add_argument('--markdown', action='store_true')
     ap.add_argument('--rozproszone', action='store_true', help='kazdy czlonek trenuje losowa kolejnosc umiejetnosci (domyslnie wspolna: rozpalanie, pierwsza pomoc, przewodnictwo, zaopatrzenie, kartografia)')
+    ap.add_argument('--bez-rotacji', action='store_true', help='staly sklad oddzialu (domyslnie czlonkowie odchodza i dochodza)')
     ap.add_argument('--prog', type=float, help='nadpisz prog ogniska (np. 0.2)')
     a = ap.parse_args()
     if a.prog:
         P['threshold'] = a.prog
     focus = None if a.rozproszone else ['rozpalanie', 'pierwsza_pomoc', 'przewodnictwo', 'zaopatrzenie', 'kartografia']
-    out = simulate(a.runs, a.days, a.seed, focus)
-    print(f'Symulacja oddzialow: {a.runs} przebiegow x {a.days} dni, prog ogniska {int(P["threshold"] * 100)}%, szkolenia: {"rozproszone" if a.rozproszone else "wspolna kolejnosc"}')
+    out = simulate(a.runs, a.days, a.seed, focus, not a.bez_rotacji)
+    print(f'Symulacja oddzialow: {a.runs} przebiegow x {a.days} dni, prog ogniska {int(P["threshold"] * 100)}%, szkolenia: {"rozproszone" if a.rozproszone else "wspolna kolejnosc"}, rotacja czlonkow: {"nie" if a.bez_rotacji else "tak"}')
     report(out, a.days, a.markdown)
 
 

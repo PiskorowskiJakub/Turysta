@@ -30,13 +30,37 @@ final class AccountService
         return Clock::parse($changedAt)->modify('+' . self::GENDER_COOLDOWN_DAYS . ' days')->format('Y-m-d H:i:s');
     }
 
-    /** Ustawienia prywatnosci: czy pokazywac aktywnosc znajomym (i ich aktywnosc u siebie). @param array<string,mixed> $user wiersz users */
-    public function setPrivacy(array $user, mixed $shareActivity): void
+    /**
+     * Ustawienia prywatnosci: czy pokazywac aktywnosc znajomym (i ich aktywnosc u siebie) oraz czy pokazywac tytul roli w oddziale.
+     * Kazde pole jest opcjonalne, ale trzeba podac przynajmniej jedno.
+     *
+     * @param array<string,mixed> $user wiersz users
+     * @param array<string,mixed> $in share_activity i/lub show_squad_title
+     */
+    public function setPrivacy(array $user, array $in): void
     {
-        if (!is_bool($shareActivity)) {
-            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', ['share_activity' => 'Wybierz tak lub nie.']);
+        $errors = [];
+        $sets = [];
+        $params = [];
+        foreach (['share_activity', 'show_squad_title'] as $field) {
+            if (!array_key_exists($field, $in)) {
+                continue;
+            }
+            if (!is_bool($in[$field])) {
+                $errors[$field] = 'Wybierz tak lub nie.';
+                continue;
+            }
+            $sets[] = "$field = ?";
+            $params[] = $in[$field] ? 1 : 0;
         }
-        $this->pdo->prepare('UPDATE users SET share_activity = ? WHERE id = ?')->execute([$shareActivity ? 1 : 0, (int) $user['id']]);
+        if (!$sets && !$errors) {
+            $errors['share_activity'] = 'Wybierz tak lub nie.';
+        }
+        if ($errors) {
+            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', $errors);
+        }
+        $params[] = (int) $user['id'];
+        $this->pdo->prepare('UPDATE users SET ' . implode(', ', $sets) . ' WHERE id = ?')->execute($params);
     }
 
     /** @param array<string,mixed> $user wiersz users */

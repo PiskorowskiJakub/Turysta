@@ -38,6 +38,8 @@ export default function Notifications() {
       level: p.level,
       job: p.job,
       name: p.name,
+      squad: p.squad,
+      role: typeof p.role === 'string' ? t(`squad.roles.${p.role}`, { defaultValue: p.role }) : '',
       chapter: p.chapter,
       referrals: p.count,
       amount: typeof p.payout_cents === 'number' ? formatCoins(p.payout_cents) : typeof p.cents === 'number' ? formatCoins(p.cents) : '',
