@@ -15,6 +15,7 @@ import DailyReward from './DailyReward';
 import FriendActivity from './FriendActivity';
 import GiftQuick from './GiftQuick';
 import { Icon } from './icons';
+import InfoHint from './InfoHint';
 import Points from './Points';
 import ProfileCard from './ProfileCard';
 
@@ -140,8 +141,9 @@ export default function Dashboard() {
 
         {home?.referral_code && (
           <section className="panel">
+            <InfoHint text={t('home.invite.hint')} label={t('badges.moreInfo')} wide />
             <h2>{t('home.invite.title')}</h2>
-            <p className="muted">{t('home.invite.lead')}</p>
+            <p className="muted invite-code-label">{t('home.invite.lead')}</p>
             <div className="invite-row">
               <input readOnly value={inviteLink} aria-label={t('home.invite.title')} onFocus={(e) => e.currentTarget.select()} />
               <button type="button" className="button small" onClick={() => void copy('link')}>{copied === 'link' ? t('home.invite.copied') : t('home.invite.copy')}</button>
@@ -151,7 +153,6 @@ export default function Dashboard() {
               <input readOnly value={home.referral_code} aria-label={t('home.invite.codeLabel')} onFocus={(e) => e.currentTarget.select()} />
               <button type="button" className="button small" onClick={() => void copy('code')}>{copied === 'code' ? t('home.invite.copied') : t('home.invite.copyCode')}</button>
             </div>
-            <p className="muted">{t('home.invite.badgeHint')}</p>
             {home.referrals && (
               <dl className="admin-tiles invite-stats">
                 <div className="admin-tile"><dt>{t('home.invite.registered')}</dt><dd>{home.referrals.registered}</dd></div>

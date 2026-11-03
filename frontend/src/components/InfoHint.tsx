@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Icon } from './icons';
 
 /** Ikona znaku zapytania w prawym gornym rogu sekcji: po najechaniu, fokusie lub kliknieciu pokazuje wyjasnienie. */
-export default function InfoHint({ text, label }: { text: string; label: string }) {
+export default function InfoHint({ text, label, wide = false }: { text: string; label: string; wide?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <span className="info-hint">
@@ -16,7 +16,7 @@ export default function InfoHint({ text, label }: { text: string; label: string 
       >
         <Icon name="help" />
       </button>
-      <span role="tooltip" className={'info-hint-text' + (open ? ' open' : '')}>{text}</span>
+      <span role="tooltip" className={'info-hint-text' + (wide ? ' wide' : '') + (open ? ' open' : '')}>{text}</span>
     </span>
   );
 }

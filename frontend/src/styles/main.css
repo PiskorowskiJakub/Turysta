@@ -307,8 +307,9 @@ h1, h2, h3 { font-weight: 600; }
 .info-hint-text {
   position: absolute; top: calc(100% + 6px); right: 0; width: min(280px, 70vw); padding: 8px 12px; border-radius: 10px;
   background: #0a110d; color: var(--cream); border: 1.5px solid var(--line); font-size: 13px; line-height: 1.4;
-  opacity: 0; pointer-events: none; transition: opacity 0.12s;
+  opacity: 0; pointer-events: none; transition: opacity 0.12s; white-space: pre-line;
 }
+.info-hint-text.wide { width: min(380px, 78vw); }
 .info-hint:hover .info-hint-text, .info-hint-btn:focus-visible + .info-hint-text, .info-hint-text.open { opacity: 1; }
 
 /* ---------- Ksiazeczka odznak ---------- */
