@@ -7,7 +7,7 @@ interface Props {
   group: string;
   badge: Highest;
   name: string;
-  unit: 'level' | 'days' | 'friends' | 'rivals';
+  unit: 'level' | 'days' | 'friends' | 'referrals';
   onClick?: () => void;
   selected?: boolean;
 }

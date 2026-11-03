@@ -63,11 +63,13 @@ export const SPECIAL_BADGES: SpecialBadge[] = [
     ],
   },
   {
-    code: 'special_rival',
+    code: 'special_referrals',
     tiers: [
       { name: 'bronze', min: 1 },
       { name: 'silver', min: 3 },
-      { name: 'gold', min: 10 },
+      { name: 'gold', min: 5 },
+      { name: 'diamond', min: 10 },
+      { name: 'ruby', min: 25 },
     ],
   },
 ];

@@ -93,7 +93,7 @@
     "none": "Jeszcze nie masz tu żadnej odznaki.",
     "count": "Zdobyte: {{got}} z {{total}}",
     "special": "Odznaki specjalne",
-    "specialInfo": "Nagrody za wyjątkowe osiągnięcia, które nie wynikają z poziomu umiejętności: serie dni, aktywność, znajomi i rywalizacja z nimi.",
+    "specialInfo": "Nagrody za wyjątkowe osiągnięcia, które nie wynikają z poziomu umiejętności: serie dni, aktywność, znajomi i polecenia. Za każdy stopień odznaki „Polecenia” dostajesz też dukaty.",
     "featured": "Wyróżnione odznaki",
     "featuredNone": "Nie wyróżniłeś jeszcze żadnych odznak.",
     "pickFeatured": "Wybierz wyróżnione odznaki",
@@ -110,15 +110,15 @@
     "soon": "Wkrótce.",
     "worldLocked": "Ten świat jeszcze przed Tobą. Odznaki z jego umiejętności zdobędziesz po dotarciu do niego.",
     "special_friends": "Znajomi",
-    "special_rival": "Rywalizacja",
     "tier_friends_one": "{{count}} znajomy",
     "tier_friends_few": "{{count}} znajomych",
     "tier_friends_many": "{{count}} znajomych",
     "tier_friends_other": "{{count}} znajomych",
-    "tier_rivals_one": "Wyprzedzony {{count}} znajomy",
-    "tier_rivals_few": "Wyprzedzonych {{count}} znajomych",
-    "tier_rivals_many": "Wyprzedzonych {{count}} znajomych",
-    "tier_rivals_other": "Wyprzedzonych {{count}} znajomych"
+    "special_referrals": "Polecenia",
+    "tier_referrals_one": "{{count}} aktywny polecony gracz",
+    "tier_referrals_few": "{{count}} aktywnych poleconych graczy",
+    "tier_referrals_many": "{{count}} aktywnych poleconych graczy",
+    "tier_referrals_other": "{{count}} aktywnych poleconych graczy"
   },
   "skills": {
     "fitness": "Kondycja",
@@ -168,7 +168,8 @@
       "active": "Z tego ze stażem {{n}}+ dni aktywności",
       "codeLead": "Albo podaj sam kod. Nowy gracz wpisze go w polu „Kod polecający” przy zakładaniu konta.",
       "codeLabel": "Kod polecający",
-      "copyCode": "Kopiuj kod"
+      "copyCode": "Kopiuj kod",
+      "badgeHint": "Za 1, 3, 5, 10 i 25 aktywnych poleconych graczy (z potwierdzonym e-mailem i co najmniej 7 dniami aktywności) dostajesz kolejne stopnie odznaki „Polecenia” oraz dukaty."
     },
     "log": {
       "title": "Dziennik wyprawy",
@@ -266,7 +267,11 @@
       "tickets": "Bilety"
     },
     "reasons": {
-      "admin_adjust": "Korekta administratora"
+      "admin_adjust": "Korekta administratora",
+      "gift_sent": "Prezent dla znajomego",
+      "gift_received": "Prezent od znajomego",
+      "gift_bonus": "Bonus za prezent",
+      "referral_badge": "Nagroda za odznakę Polecenia"
     },
     "action": {
       "user_update": "Edycja konta",
@@ -746,7 +751,8 @@
     "chapter_finished": "Awansowałeś na stopień: {{chapter}}.",
     "friend_request": "{{name}} zaprasza Cię do znajomych. Odpowiedz w zakładce Profil, Znajomi.",
     "friend_accepted": "{{name}} przyjął(-ęła) Twoje zaproszenie do znajomych.",
-    "friend_gift": "{{name}} podarował(a) Ci {{amount}} dk. Dziękujemy za bycie znajomym!"
+    "friend_gift": "{{name}} podarował(a) Ci {{amount}} dk. Dziękujemy za bycie znajomym!",
+    "referral_badge": "Odznaka „Polecenia”: masz już {{count}} aktywnych poleconych graczy. Nagroda: {{amount}} dk."
   },
   "fact": "Ciekawostka",
   "world": {

@@ -84,6 +84,17 @@ final class Economy
         return intdiv($coins + 5, 10) * 10;
     }
 
+    /**
+     * Nagroda w dukatach za stopien odznaki za polecenia: wielokrotnosc dukatow z 7. dnia codziennej nagrody (czyli skala postepu gracza).
+     * Mnozniki: braz 1, srebro 2, zloto 3, diament 5, rubin 10 (lacznie 21 x).
+     */
+    public const REFERRAL_BADGE_MULTIPLIERS = ['bronze' => 1, 'silver' => 2, 'gold' => 3, 'diamond' => 5, 'ruby' => 10];
+
+    public static function referralBadgeCoins(string $tier, int $referenceCostCents): int
+    {
+        return self::dailyCoins(7, $referenceCostCents) * (self::REFERRAL_BADGE_MULTIPLIERS[$tier] ?? 0);
+    }
+
     /** Punkty za ukonczone szkolenie umiejetnosci: proporcjonalne do jego czasu, minimum 1. */
     public static function trainingPoints(int $durationSeconds): int
     {
