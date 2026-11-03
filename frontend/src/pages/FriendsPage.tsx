@@ -201,8 +201,8 @@ export default function FriendsPage() {
                       </span>
                     </td>
                     <td><span className={`online-dot${f.online ? ' on' : ''}`} aria-hidden="true" />{f.online ? t('friends.online') : t('friends.offline')}</td>
-                    <td className="num"><Coins cents={f.coins_cents} /> {t('wallet.coinsShort')}</td>
-                    <td className="num"><Points value={f.points} /></td>
+                    <td className="num" data-label={t('friends.cols.coins')}><Coins cents={f.coins_cents} /> {t('wallet.coinsShort')}</td>
+                    <td className="num" data-label={t('friends.cols.points')}><Points value={f.points} /></td>
                     <td className="num">
                       {giftId === f.id && data.gifts.per_friend[String(f.id)]?.status === 'ok' ? (
                         <div className="gift-confirm" role="group" aria-label={t('friends.giftConfirmTitle', { name: f.name })}>
