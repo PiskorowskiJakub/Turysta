@@ -206,8 +206,12 @@ final class FriendFlowTest extends TestCase
         $this->pdo->exec("UPDATE user_stats SET active_days = 7 WHERE user_id = {$bob['id']}");
         \Turysta\Game\BadgeService::sync($this->pdo, (int) $ala['id'], $now);
         $this->assertSame('bronze', $earned()['special_referrals']);
-        $reward = \Turysta\Game\Economy::referralBadgeCoins('bronze', (new \Turysta\Game\DailyRewardService($this->pdo))->referenceCost((int) $ala['id']));
+        $reference = (new \Turysta\Game\DailyRewardService($this->pdo))->referenceCost((int) $ala['id']);
+        // Odznaka (braz) oraz premia za pierwszego aktywnego poleconego.
+        $reward = \Turysta\Game\Economy::referralBadgeCoins('bronze', $reference) + \Turysta\Game\Economy::referralPersonCoins($reference);
+        $this->assertGreaterThan(0, \Turysta\Game\Economy::referralPersonCoins($reference));
         $this->assertGreaterThan(0, $reward);
+        $this->assertSame(1, (int) $this->pdo->query("SELECT COUNT(*) FROM notifications WHERE user_id = {$ala['id']} AND type = 'referral_person'")->fetchColumn());
         $this->assertSame($before + $reward, $this->coins($ala));
         $this->assertSame(1, (int) $this->pdo->query("SELECT COUNT(*) FROM notifications WHERE user_id = {$ala['id']} AND type = 'referral_badge'")->fetchColumn());
 
@@ -372,5 +376,36 @@ final class FriendFlowTest extends TestCase
         $off = ActivityFeed::forUser($this->pdo, (int) $ala['id']);
         $this->assertFalse($off['enabled']);
         $this->assertSame([], $off['events']);
+    }
+
+    public function testGiftMultiplierGrowsWithActiveReferrals(): void
+    {
+        $m = fn(int $n): int => \Turysta\Game\Economy::giftMultiplierPermille($n);
+        $this->assertSame(1000, $m(0));
+        $this->assertSame(1250, $m(1));
+        $this->assertSame(3500, $m(10));
+        $this->assertSame(3600, $m(11));
+        $this->assertSame(5500, $m(30));
+        $this->assertSame(5500, $m(80));
+
+        // Kwota prezentu rosnie razem z liczba aktywnych poleconych, a bonus nadawcy zostaje liczony od kwoty bazowej.
+        $gifts = new GiftService($this->pdo, $this->friends);
+        $ala = $this->user('Ala');
+        $base = $gifts->giftCents((int) $ala['id']);
+        $this->assertSame($base, $gifts->baseCents((int) $ala['id']));
+        for ($i = 0; $i < 2; $i++) {
+            $ref = $this->user('Pol' . $i);
+            $this->pdo->exec("INSERT INTO referrals (referrer_id, referred_id) VALUES ({$ala['id']}, {$ref['id']})");
+            $this->pdo->exec("UPDATE users SET email_verified_at = UTC_TIMESTAMP() WHERE id = {$ref['id']}");
+            $this->pdo->exec("INSERT IGNORE INTO user_stats (user_id) VALUES ({$ref['id']})");
+            $this->pdo->exec("UPDATE user_stats SET active_days = 7 WHERE user_id = {$ref['id']}");
+        }
+        $state = $gifts->state((int) $ala['id']);
+        $this->assertSame(2, $state['active_referrals']);
+        $this->assertSame(1500, $state['multiplier_permille']);
+        $this->assertSame($base, $state['base_cents']);
+        $this->assertSame(intdiv(intdiv($base * 1500, 1000) + 5, 10) * 10, $state['cents']);
+        $this->assertGreaterThan($base, $state['cents']);
+        $this->assertSame(GiftService::bonusCents($base), $state['bonus_cents']);
     }
 }

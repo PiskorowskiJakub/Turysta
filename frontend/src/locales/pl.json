@@ -169,7 +169,7 @@
       "codeLead": "Albo podaj sam kod. Nowy gracz wpisze go w polu „Kod polecający” przy zakładaniu konta.",
       "codeLabel": "Kod polecający",
       "copyCode": "Kopiuj kod",
-      "badgeHint": "Za 1, 3, 5, 10 i 25 aktywnych poleconych graczy (z potwierdzonym e-mailem i co najmniej 7 dniami aktywności) dostajesz kolejne stopnie odznaki „Polecenia” oraz dukaty."
+      "badgeHint": "Za 1, 3, 5, 10 i 25 aktywnych poleconych graczy (z potwierdzonym e-mailem i co najmniej 7 dniami aktywności) dostajesz kolejne stopnie odznaki „Polecenia” i dukaty. Dodatkowo każdy aktywny polecony to premia w dukatach (do 100 osób), a Twoje prezenty dla znajomych rosną: +25% za każdą z pierwszych 10 osób (×3,5), potem +10% za każdą do 30 osób (×5,5)."
     },
     "log": {
       "title": "Dziennik wyprawy",
@@ -271,7 +271,8 @@
       "gift_sent": "Prezent dla znajomego",
       "gift_received": "Prezent od znajomego",
       "gift_bonus": "Bonus za prezent",
-      "referral_badge": "Nagroda za odznakę Polecenia"
+      "referral_badge": "Nagroda za odznakę Polecenia",
+      "referral_bonus": "Premia za aktywnego poleconego"
     },
     "action": {
       "user_update": "Edycja konta",
@@ -752,7 +753,8 @@
     "friend_request": "{{name}} zaprasza Cię do znajomych. Odpowiedz w zakładce Profil, Znajomi.",
     "friend_accepted": "{{name}} przyjął(-ęła) Twoje zaproszenie do znajomych.",
     "friend_gift": "{{name}} podarował(a) Ci {{amount}} dk. Dziękujemy za bycie znajomym!",
-    "referral_badge": "Odznaka „Polecenia”: masz już {{count}} aktywnych poleconych graczy. Nagroda: {{amount}} dk."
+    "referral_badge": "Odznaka „Polecenia”: masz już {{count}} aktywnych poleconych graczy. Nagroda: {{amount}} dk.",
+    "referral_person": "Polecony gracz {{name}} jest już aktywny. Premia za polecenie: {{amount}} dk."
   },
   "fact": "Ciekawostka",
   "world": {
@@ -1057,10 +1059,11 @@
     "giftEarly": "Prezenty można wysyłać po {{hours}} godzinach od zostania znajomymi.",
     "giftLimit": "Dzienny limit prezentów wyczerpany.",
     "giftAlready": "Dziś już obdarowano tego znajomego.",
-    "giftInfo": "Prezent: {{amount}} dk dla znajomego, a Ty dostajesz bonus {{bonus}} dk. Raz dziennie dla każdej osoby, dziś zostało {{left}} z {{max}}. Kwota rośnie wraz z Twoim postępem.",
+    "giftInfo": "Prezent: {{amount}} dk dla znajomego, a Ty dostajesz bonus {{bonus}} dk. Raz dziennie dla każdej osoby, dziś zostało {{left}} z {{max}}. Kwota rośnie wraz z Twoim postępem i liczbą aktywnych poleconych graczy.",
     "giftConfirmTitle": "Potwierdź prezent dla {{name}}",
     "giftConfirm": "Podarujesz {{amount}} dk graczowi {{name}}. Ta kwota zostanie odjęta z Twojego konta i przekazana znajomemu. W zamian dostaniesz bonus {{bonus}} dk.",
-    "giftConfirmYes": "Przekaż {{amount}} dk"
+    "giftConfirmYes": "Przekaż {{amount}} dk",
+    "giftMultiplier": "Mnożnik prezentu za polecenia: ×{{mult}} (aktywnych poleconych: {{n}})."
   },
   "updates": {
     "title": "Aktualizacje gry",

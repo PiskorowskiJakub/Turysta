@@ -58,6 +58,7 @@ final class BadgeService
                        WHERE r.referrer_id = ?)"
             )->execute([$userId, $when, ReferralService::ACTIVE_DAYS, $userId]);
             self::awardReferralRewards($pdo, $userId);
+            self::awardReferralPersons($pdo, $userId);
             // Zdarzenie dla znajomych: nowo zdobyta odznaka od zlotej wzwyz (INSERT IGNORE pilnuje, zeby nie dublowac).
             $pdo->prepare(
                 "INSERT IGNORE INTO activity_events (user_id, type, ref_key, payload, created_at)
@@ -96,6 +97,34 @@ final class BadgeService
             $cents = Economy::referralBadgeCoins((string) $t['tier'], $reference);
             Wallet::apply($pdo, $userId, 'coins', $cents, 'referral_badge', 'badge', (int) $t['id'], $key);
             Notifier::add($pdo, $userId, 'referral_badge', ['count' => (int) $t['threshold'], 'cents' => $cents]);
+        }
+    }
+
+    /** Premia za kazdego aktywnego poleconego (do Economy::MAX_REFERRAL_PERSONS osob), raz za osobe. */
+    private static function awardReferralPersons(PDO $pdo, int $userId): void
+    {
+        $stmt = $pdo->prepare(
+            'SELECT u.id, u.character_name FROM referrals r
+             JOIN users u ON u.id = r.referred_id AND u.email_verified_at IS NOT NULL
+             JOIN user_stats st ON st.user_id = u.id AND st.active_days >= ?
+             WHERE r.referrer_id = ? ORDER BY r.id LIMIT ' . Economy::MAX_REFERRAL_PERSONS
+        );
+        $stmt->execute([ReferralService::ACTIVE_DAYS, $userId]);
+        $people = $stmt->fetchAll();
+        if (!$people) {
+            return;
+        }
+        $reference = (new DailyRewardService($pdo))->referenceCost($userId);
+        $cents = Economy::referralPersonCoins($reference);
+        $exists = $pdo->prepare('SELECT 1 FROM ledger_entries WHERE user_id = ? AND idempotency_key = ?');
+        foreach ($people as $p) {
+            $key = 'refperson:' . (int) $p['id'];
+            $exists->execute([$userId, $key]);
+            if ($exists->fetchColumn()) {
+                continue;
+            }
+            Wallet::apply($pdo, $userId, 'coins', $cents, 'referral_bonus', 'referral', (int) $p['id'], $key);
+            Notifier::add($pdo, $userId, 'referral_person', ['name' => (string) $p['character_name'], 'cents' => $cents]);
         }
     }
 

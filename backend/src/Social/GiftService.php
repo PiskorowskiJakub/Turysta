@@ -9,13 +9,14 @@ use Turysta\Game\Clock;
 use Turysta\Game\DailyRewardService;
 use Turysta\Game\Economy;
 use Turysta\Game\Notifier;
+use Turysta\Game\ReferralService;
 use Turysta\Game\Wallet;
 use Turysta\Http\ApiException;
 
 /**
  * Prezenty dla znajomych: raz dziennie dla danej osoby, do MAX_SENT dziennie lacznie, a odbiorca przyjmuje najwyzej
- * MAX_RECEIVED dziennie. Nadawca placi cala kwote, ale dostaje maly bonus (BONUS_PERCENT). Kwota rosnie z postepem nadawcy
- * (jak dzien 4 codziennej nagrody). Prezent mozna wyslac dopiero po MIN_FRIEND_HOURS od przyjecia zaproszenia (przeciw multikontom).
+ * MAX_RECEIVED dziennie. Nadawca placi cala kwote, ale dostaje maly bonus (BONUS_PERCENT kwoty bazowej). Kwota bazowa rosnie z postepem nadawcy
+ * (jak dzien 4 codziennej nagrody), a mnoznik rosnie z liczba aktywnych poleconych graczy (Economy::giftMultiplierPermille). Prezent mozna wyslac dopiero po MIN_FRIEND_HOURS od przyjecia zaproszenia (przeciw multikontom).
  */
 final class GiftService
 {
@@ -29,10 +30,23 @@ final class GiftService
     {
     }
 
-    public function giftCents(int $senderId): int
+    /** Kwota bazowa (bez mnoznika za polecenia): jak dzien 4 codziennej nagrody. */
+    public function baseCents(int $senderId): int
     {
         $reference = (new DailyRewardService($this->pdo))->referenceCost($senderId);
         return Economy::dailyCoins(self::GIFT_DAY, $reference);
+    }
+
+    /** Kwota prezentu: baza razy mnoznik za aktywnych poleconych, zaokraglona do 0,10 dk. */
+    public function giftCents(int $senderId): int
+    {
+        $multiplier = Economy::giftMultiplierPermille($this->activeReferrals($senderId));
+        return intdiv(intdiv($this->baseCents($senderId) * $multiplier, 1000) + 5, 10) * 10;
+    }
+
+    private function activeReferrals(int $userId): int
+    {
+        return (new ReferralService($this->pdo))->stats($userId)['active'];
     }
 
     public static function bonusCents(int $giftCents): int
@@ -50,7 +64,10 @@ final class GiftService
     {
         $now = Clock::now($this->pdo);
         $day = Clock::gameDay($now);
-        $cents = $this->giftCents($userId);
+        $active = $this->activeReferrals($userId);
+        $base = $this->baseCents($userId);
+        $multiplier = Economy::giftMultiplierPermille($active);
+        $cents = intdiv(intdiv($base * $multiplier, 1000) + 5, 10) * 10;
 
         $stmt = $this->pdo->prepare('SELECT recipient_id FROM friend_gifts WHERE sender_id = ? AND game_day = ?');
         $stmt->execute([$userId, $day]);
@@ -92,7 +109,10 @@ final class GiftService
 
         return [
             'cents' => $cents,
-            'bonus_cents' => self::bonusCents($cents),
+            'base_cents' => $base,
+            'multiplier_permille' => $multiplier,
+            'active_referrals' => $active,
+            'bonus_cents' => self::bonusCents($base),
             'totals' => [
                 'sent_count' => (int) $sent['n'],
                 'sent_cents' => (int) $sent['c'],
@@ -151,7 +171,7 @@ final class GiftService
             }
 
             $cents = $this->giftCents($me);
-            $bonus = self::bonusCents($cents);
+            $bonus = self::bonusCents($this->baseCents($me));
             $this->pdo->prepare('INSERT INTO friend_gifts (sender_id, recipient_id, cents, bonus_cents, game_day) VALUES (?, ?, ?, ?, ?)')
                 ->execute([$me, $recipientId, $cents, $bonus, $day]);
             $giftId = (int) $this->pdo->lastInsertId();

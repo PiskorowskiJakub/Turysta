@@ -287,6 +287,9 @@ export type GiftStatus = 'ok' | 'sent' | 'early' | 'limit';
 
 export interface GiftState {
   cents: number;
+  base_cents: number;
+  multiplier_permille: number;
+  active_referrals: number;
   bonus_cents: number;
   totals: { sent_count: number; sent_cents: number; received_count: number; received_cents: number };
   sent_left: number;
