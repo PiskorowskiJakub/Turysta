@@ -757,7 +757,13 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
   .friends-table tbody tr { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 10px 0; border-bottom: 1px solid var(--line); background: none; }
   .friends-table td { display: block; padding: 0; border: 0; width: auto; text-align: left; }
   .friends-table td:first-child { flex-basis: 100%; }
-  .friends-table td:last-child { margin-left: auto; }
+  .friends-table td.num { width: auto; text-align: left; }
+  .friends-table td[data-label]::before { content: attr(data-label) ': '; color: var(--muted); font-weight: 400; }
+  .friends-table td:last-child { flex-basis: 100%; margin-left: 0; white-space: normal; min-width: 0; }
+  .friends-table td:last-child .actions { width: 100%; flex-wrap: wrap; }
+  .friends-table td:last-child .actions .button { flex: 1 1 auto; text-align: center; }
+  .friends-table .gift-confirm { width: 100%; max-width: none; margin-left: 0; align-items: stretch; text-align: left; }
+  .friends-table .gift-confirm .actions .button { flex: 1 1 0; }
   .admin-list li .actions { width: 100%; }
   .admin-list li .actions .button, .admin-list li .actions select { flex: 1 1 auto; }
 
