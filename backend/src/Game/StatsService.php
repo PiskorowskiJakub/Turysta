@@ -20,7 +20,8 @@ final class StatsService
         $stmt->execute([$userId]);
         $createdAt = (string) $stmt->fetchColumn();
         $now = Clock::now($this->pdo);
-        $accountDays = (int) (new DateTimeImmutable(Clock::gameDay(Clock::parse($createdAt))))
+        // Numer dnia gry liczony wlacznie z dniem zalozenia konta (pierwszy dzien = 1), tak jak "Dni aktywnosci".
+        $accountDays = 1 + (int) (new DateTimeImmutable(Clock::gameDay(Clock::parse($createdAt))))
             ->diff(new DateTimeImmutable(Clock::gameDay($now)))->days;
 
         $stmt = $this->pdo->prepare('SELECT active_days, current_streak, longest_streak FROM user_stats WHERE user_id = ?');

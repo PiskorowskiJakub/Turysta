@@ -4,7 +4,7 @@ Monorepo:
 
 - `frontend/` React + TypeScript + Vite
 - `backend/` PHP 8.3 + Apache, REST pod `/api`
-- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii)
+- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii), simulate_squads.py (symulacja ekonomii oddziałów)
 - `docker-compose.yml` wspolny stos
 
 ## Uruchomienie calosci
