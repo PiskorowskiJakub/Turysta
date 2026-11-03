@@ -1,6 +1,6 @@
 # Dwa Dukaty – wiki gry
 
-Dokumentacja zasad gry. Szczegóły ekonomii i symulacji znajdziesz w [głównym README](../README.md#ekonomia-i-symulacja-gry-30-dni-i-rok).
+Dokumentacja zasad gry.
 
 ## Spis treści
 
