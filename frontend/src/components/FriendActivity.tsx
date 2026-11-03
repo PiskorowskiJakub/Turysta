@@ -31,7 +31,7 @@ export default function FriendActivity() {
     const tier = t(`feed.tier.${e.payload.tier ?? 'gold'}`);
     const group = e.payload.group;
     if (!group) return t('feed.badgeWorld', { name, tier, world: e.payload.world });
-    const badge = group.startsWith('special_') ? t(`badges.${group}`) : t(`skills.${group}`, { defaultValue: group });
+    const badge = group.startsWith('special_') ? t(`badges.${group}`) : t(`skills.${group}`, { defaultValue: e.payload.badge_name ?? group });
     return t('feed.badge', { name, tier, badge });
   };
 
