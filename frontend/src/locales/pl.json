@@ -753,7 +753,7 @@
     "friend_request": "{{name}} zaprasza Cię do znajomych. Odpowiedz w zakładce Profil, Znajomi.",
     "friend_accepted": "{{name}} przyjął(-ęła) Twoje zaproszenie do znajomych.",
     "friend_gift": "{{name}} podarował(a) Ci {{amount}} dk. Dziękujemy za bycie znajomym!",
-    "referral_badge": "Odznaka „Polecenia”: masz już {{count}} aktywnych poleconych graczy. Nagroda: {{amount}} dk.",
+    "referral_badge": "Odznaka „Polecenia”: masz już {{referrals}} aktywnych poleconych graczy. Nagroda: {{amount}} dk.",
     "referral_person": "Polecony gracz {{name}} jest już aktywny. Premia za polecenie: {{amount}} dk."
   },
   "fact": "Ciekawostka",
