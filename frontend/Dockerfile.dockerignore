@@ -1,0 +1,13 @@
+# Kontekst budowania frontendu = katalog glowny repozytorium; wpuszczamy tylko frontend i docs (wiki gry).
+*
+!frontend
+!docs
+frontend/node_modules
+frontend/dist
+frontend/dist-ssr
+frontend/coverage
+frontend/_to_delete
+frontend/.env
+frontend/.env.*
+**/.DS_Store
+**/.fuse_hidden*

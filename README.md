@@ -207,3 +207,7 @@ Wypłata jest zapisywana przy starcie pracy (`job_runs.reward_snapshot_cents`), 
 - Każdy świat to nowy zestaw 6 umiejętności o trudności dostosowanej do etapu gry, wymagany do dalszych awansów.
 - Awans do nowego świata to wydarzenie: 2,4 do 10,4 dnia i 5-22 tys. dk.
 - Do ustalenia później: efekty umiejętności światów, ujścia dla nadwyżki dukatów, dodatkowe miejsca w kolejce za rangi (poprawiłyby tempo okazjonalnych graczy).
+
+## Wiki gry na stronie
+
+Podstrona `/wiki` jest renderowana bezpośrednio z `docs/README.md` (import `?raw` w `frontend/src/pages/WikiPage.tsx`), więc zasady gry opisujemy tylko w jednym miejscu. Dlatego obraz frontendu jest budowany z katalogu głównego repozytorium (`frontend/Dockerfile`, `frontend/Dockerfile.dockerignore`).

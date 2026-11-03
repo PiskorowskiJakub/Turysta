@@ -190,6 +190,7 @@ export default function Layout() {
               <>
                 <MenuLink to="/logowanie" icon="login" label={t('nav.login')} />
                 <MenuLink to="/rejestracja" icon="register" label={t('nav.register')} />
+                <MenuLink to="/wiki" icon="book" label={t('nav.wiki')} />
               </>
             ) : null}
           </ul>
@@ -203,6 +204,7 @@ export default function Layout() {
       <footer className="site-footer">
         <span>{t('footer')}</span>
         <nav className="footer-links" aria-label={t('footerLinks.terms')}>
+          <Link to="/wiki">{t('footerLinks.wiki')}</Link>
           <Link to="/aktualizacje">{t('footerLinks.updates')}</Link>
           <Link to="/regulamin">{t('footerLinks.terms')}</Link>
           <Link to="/polityka-prywatnosci">{t('footerLinks.privacy')}</Link>

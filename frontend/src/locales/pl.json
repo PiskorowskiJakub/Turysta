@@ -13,7 +13,8 @@
     "skills": "Umiejętności",
     "badges": "Odznaki",
     "ranking": "Ranking",
-    "admin": "Panel admina"
+    "admin": "Panel admina",
+    "wiki": "Wiki gry"
   },
   "footer": "Copyright © 2026 Jakub Piskorowski",
   "tagline": "Dwa Dukaty – gra o podróżowaniu",
@@ -161,15 +162,15 @@
     },
     "invite": {
       "title": "Twój link polecający",
-      "lead": "Podaj ten link znajomym, aby mogli założyć konto w grze. Dzięki niemu zliczamy, ile osób zaprosiłeś. Osoba liczy się po potwierdzeniu adresu e-mail. Za zaproszenia będą odznaki i nagrody.",
+      "lead": "Link dla znajomych:",
       "copy": "Kopiuj",
       "copied": "Skopiowano",
       "registered": "Założyło konto",
       "active": "Z tego ze stażem {{n}}+ dni aktywności",
-      "codeLead": "Albo podaj sam kod. Nowy gracz wpisze go w polu „Kod polecający” przy zakładaniu konta.",
+      "codeLead": "Albo sam kod (wpisują go przy zakładaniu konta):",
       "codeLabel": "Kod polecający",
       "copyCode": "Kopiuj kod",
-      "badgeHint": "Za 1, 3, 5, 10 i 25 aktywnych poleconych graczy (z potwierdzonym e-mailem i co najmniej 7 dniami aktywności) dostajesz kolejne stopnie odznaki „Polecenia” i dukaty. Dodatkowo każdy aktywny polecony to premia w dukatach (do 100 osób), a Twoje prezenty dla znajomych rosną: +25% za każdą z pierwszych 10 osób (×3,5), potem +10% za każdą do 30 osób (×5,5)."
+      "hint": "Podaj znajomym link albo sam kod (wpiszą go w polu „Kod polecający” przy zakładaniu konta). Polecony gracz liczy się po potwierdzeniu e-maila, a jako aktywny po 7 dniach aktywności.\nOdznaka „Polecenia”: 1, 3, 5, 10 i 25 aktywnych poleconych dają brąz, srebro, złoto, diament i rubin oraz dukaty (jednorazowo za każdy stopień).\nPremia: każdy aktywny polecony to dodatkowe dukaty (do 100 osób).\nPrezenty: im więcej aktywnych poleconych, tym większe prezenty dla znajomych: +25% za każdą z pierwszych 10 osób (do ×3,5), potem +10% za każdą do 30 osób (×5,5)."
     },
     "log": {
       "title": "Dziennik wyprawy",
@@ -857,7 +858,8 @@
     "terms": "Regulamin",
     "privacy": "Polityka prywatności",
     "bug": "Zgłoś błąd",
-    "updates": "Aktualizacje"
+    "updates": "Aktualizacje",
+    "wiki": "Wiki gry"
   },
   "bugReport": {
     "title": "Zgłoś błąd",
@@ -1119,5 +1121,8 @@
     "left": "Dziś możesz jeszcze podarować: {{left}} z {{max}}.",
     "goToList": "Podaruj prezenty",
     "how": "Prezent możesz też wysłać z listy znajomych (Profil, Znajomi): kliknij „Podaruj” przy wybranej osobie i potwierdź."
+  },
+  "wiki": {
+    "title": "Wiki gry"
   }
 }

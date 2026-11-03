@@ -1,9 +1,10 @@
 export type IconName =
   | 'home' | 'profile' | 'skills' | 'job' | 'logout' | 'login' | 'register'
   | 'coins' | 'ticket' | 'points' | 'fitness' | 'orientation' | 'trade'
-  | 'sprout' | 'rank' | 'medal' | 'market' | 'hostel' | 'expedition' | 'lock' | 'team' | 'check' | 'help' | 'gift' | 'admin' | 'eye' | 'eyeOff';
+  | 'sprout' | 'rank' | 'medal' | 'market' | 'hostel' | 'expedition' | 'lock' | 'team' | 'check' | 'help' | 'gift' | 'admin' | 'eye' | 'eyeOff' | 'book';
 
 const PATHS: Record<IconName, string> = {
+  book: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5',
   home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
   profile: 'M3 6h18v12H3zM8 11a2 2 0 1 0 0.01 0M14 10h4M14 14h4',
   skills: 'M9 3h6M10 3v6L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-10V3',

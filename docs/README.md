@@ -1,6 +1,6 @@
 # Dwa Dukaty – wiki gry
 
-Dokumentacja zasad gry. Szczegóły ekonomii i symulacji znajdziesz w [głównym README](../README.md#ekonomia-i-symulacja-gry-30-dni-i-rok).
+Dokumentacja zasad gry.
 
 ## Spis treści
 
@@ -10,6 +10,8 @@ Dokumentacja zasad gry. Szczegóły ekonomii i symulacji znajdziesz w [głównym
 - [Punkty (ranking i prestiż)](#punkty-ranking-i-prestiż)
 - [Codzienna nagroda](#codzienna-nagroda)
 - [Odznaki](#odznaki)
+- [Znajomi i prezenty](#znajomi-i-prezenty)
+- [Polecenia](#polecenia)
 
 ## Światy
 
@@ -145,9 +147,59 @@ Odznaki trafiają do „Książeczki odznak”. Zdobyte zostają na stałe, a ni
 |---|---:|---:|---:|---:|---:|
 | Seria dni (najdłuższa seria kolejnych dni aktywności) | 7 dni | 14 dni | 30 dni | 60 dni | 90 dni |
 | Dni aktywności (suma wszystkich dni z aktywnością) | 30 dni | 100 dni | 365 dni | – | – |
+| Znajomi (liczba znajomych) | 1 | 5 | 10 | 25 | 50 |
+| Polecenia (aktywni polecani gracze, patrz [Polecenia](#polecenia)) | 1 | 3 | 5 | 10 | 25 |
 
 Seria liczy się według najdłuższej serii w historii konta, więc przerwanie serii nie odbiera zdobytej odznaki. Dzień aktywności to dzień (czasu polskiego), w którym gracz wszedł do gry.
 
 ### Odznaki sezonowe
 
 Odznaki za wydarzenia: cykliczne (np. świąteczne, wracają co roku) i jednorazowe. Wkrótce.
+
+## Znajomi i prezenty
+
+- **Znajomi.** Zaproszenie wysyłasz po nazwie postaci albo z profilu gracza. Po przyjęciu oboje widzicie swój status online (aktywność w ciągu ostatnich 5 minut), dukaty i punkty. Znajomych możesz mieć do 100, a niezaakceptowanych zaproszeń wysłanych do 20. Znajomego usuwasz w każdej chwili.
+- **Porównanie kont.** Przy znajomym jest przycisk „Porównaj”: tabela statystyk obu kont wraz z poziomami umiejętności, a lepszy wynik jest na zielono. Umiejętności światów, do których jeszcze nie dotarłeś, są ukryte.
+- **Ranking znajomych.** W rankingu jest zakładka „Tylko znajomi”: punkty zdobyte w tym tygodniu (od poniedziałku), w tym miesiącu albo łącznie.
+- **Aktywność znajomych.** Na stronie głównej widzisz, kiedy znajomi dotarli do nowego świata albo zdobyli złotą, diamentową lub rubinową odznakę. W Edycji profilu możesz to wyłączyć, ale wtedy sam też nie widzisz aktywności znajomych.
+
+### Prezenty
+
+Możesz podarować znajomemu dukaty. Kwota zostaje odjęta z Twojego konta i trafia do znajomego, a Ty dostajesz mały bonus (20% kwoty bazowej).
+
+- Kwota bazowa równa się nagrodzie z 4. dnia codziennej nagrody, więc rośnie wraz z Twoim postępem (na starcie gry 0,50 dk, przy rozdziale za 50 dk około 1,50 dk).
+- Kwotę mnoży liczba aktywnych poleconych graczy (tabela niżej).
+- Limity: 1 prezent dziennie dla jednej osoby, 3 wysłane i 5 odebrane dziennie. Prezent można wysłać dopiero po 24 godzinach od zostania znajomymi.
+- Doba liczona jest w czasie polskim, od północy.
+
+| Aktywni polecani | Mnożnik prezentu |
+|---:|---:|
+| 0 | ×1,0 |
+| 1 | ×1,25 |
+| 5 | ×2,25 |
+| 10 | ×3,5 |
+| 20 | ×4,5 |
+| 30 i więcej | ×5,5 |
+
+Do 10 osób każda daje +25%, od 11. do 30. osoby +10% za każdą.
+
+## Polecenia
+
+Każdy gracz ma link polecający i kod, który nowa osoba wpisuje w polu „Kod polecający” przy zakładaniu konta. Polecony gracz **liczy się po potwierdzeniu adresu e-mail**, a jako **aktywny**, gdy ma co najmniej **7 dni aktywności**. Nagrody dotyczą tylko aktywnych poleconych.
+
+**Odznaka „Polecenia”** (jednorazowa nagroda w dukatach za każdy stopień). Nagroda to wielokrotność dukatów z 7. dnia codziennej nagrody, więc rośnie z Twoim postępem:
+
+| Stopień | Aktywni polecani | Mnożnik | Nagroda na starcie gry | Nagroda przy rozdziale za 50 dk |
+|---|---:|---:|---:|---:|
+| Brąz | 1 | 1× | 2,00 dk | 5,90 dk |
+| Srebro | 3 | 2× | 4,00 dk | 11,80 dk |
+| Złoto | 5 | 3× | 6,00 dk | 17,70 dk |
+| Diament | 10 | 5× | 10,00 dk | 29,50 dk |
+| Rubin | 25 | 10× | 20,00 dk | 59,00 dk |
+
+**Premia za osobę.** Za każdego aktywnego poleconego dostajesz dodatkowo połowę dukatów z 7. dnia codziennej nagrody (na starcie gry 1,00 dk, przy rozdziale za 50 dk około 2,90 dk), raz za osobę, do 100 osób.
+
+**Większe prezenty.** Liczba aktywnych poleconych zwiększa też kwotę prezentów dla znajomych (patrz [Prezenty](#prezenty)).
+
+Nagrody trafiają na konto przy Twojej najbliższej aktywności w grze.
+

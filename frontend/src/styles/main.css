@@ -307,8 +307,9 @@ h1, h2, h3 { font-weight: 600; }
 .info-hint-text {
   position: absolute; top: calc(100% + 6px); right: 0; width: min(280px, 70vw); padding: 8px 12px; border-radius: 10px;
   background: #0a110d; color: var(--cream); border: 1.5px solid var(--line); font-size: 13px; line-height: 1.4;
-  opacity: 0; pointer-events: none; transition: opacity 0.12s;
+  opacity: 0; pointer-events: none; transition: opacity 0.12s; white-space: pre-line;
 }
+.info-hint-text.wide { width: min(380px, 78vw); }
 .info-hint:hover .info-hint-text, .info-hint-btn:focus-visible + .info-hint-text, .info-hint-text.open { opacity: 1; }
 
 /* ---------- Ksiazeczka odznak ---------- */
@@ -804,3 +805,17 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .feed time { flex: none; font-size: 12px; color: var(--muted); }
 .gift-confirm { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; text-align: left; max-width: 340px; margin-left: auto; padding: 10px 12px; border-radius: 10px; background: rgba(0, 0, 0, 0.18); border: 1.5px dashed var(--orange); }
 .gift-confirm p { margin: 0; font-size: 14px; }
+
+/* Wiki gry (docs/README.md) */
+.wiki { max-width: 960px; margin-inline: auto; line-height: 1.55; }
+.wiki h1 { margin-top: 0; }
+.wiki h2, .wiki h3 { margin-top: 1.6em; scroll-margin-top: 80px; }
+.wiki h1 { scroll-margin-top: 80px; }
+.wiki p, .wiki ul, .wiki ol { margin: 0.7em 0; }
+.wiki ul, .wiki ol { padding-left: 1.4em; }
+.wiki li { margin: 0.25em 0; }
+.wiki a { color: var(--orange); }
+.wiki code { padding: 1px 6px; border-radius: 6px; background: rgba(0, 0, 0, 0.3); font-size: 0.9em; overflow-wrap: anywhere; }
+.wiki pre { overflow-x: auto; padding: 10px 12px; border-radius: 10px; background: rgba(0, 0, 0, 0.3); }
+.wiki .table-scroll { margin: 0.8em 0; }
+.wiki-table th, .wiki-table td { white-space: nowrap; }
