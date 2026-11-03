@@ -45,7 +45,7 @@ function alignOf(sep: string): Align {
   return s.endsWith(':') ? 'right' : 'left';
 }
 
-const isTableSep = (line: string | undefined): boolean => line !== undefined && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(line) && line.includes('|');
+const isTableSep = (line: string | undefined): boolean => line !== undefined && /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/.test(line) && line.includes('|');
 
 export function parseMarkdown(source: string): ReactNode[] {
   const lines = source.replace(/\r\n/g, '\n').split('\n');
@@ -129,14 +129,11 @@ export function parseMarkdown(source: string): ReactNode[] {
     }
 
     // Akapit: kolejne niepuste linie, ktore nie zaczynaja innego bloku.
-    const para: string[] = [];
+    const para: string[] = [line.trim()];
+    i += 1;
     while (i < lines.length && lines[i].trim() !== '' && !/^(#{1,3}\s|```)/.test(lines[i]) && !lines[i].trim().startsWith('|') && !unordered.test(lines[i]) && !ordered.test(lines[i])) {
       para.push(lines[i].trim());
       i += 1;
-    }
-    if (para.length === 0) {
-      i += 1;
-      continue;
     }
     const pk = key();
     out.push(<p key={pk}>{inline(para.join(' '), pk)}</p>);
