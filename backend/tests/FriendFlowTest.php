@@ -170,13 +170,54 @@ final class FriendFlowTest extends TestCase
         $this->assertSame('bronze', $codes($ids[0])['special_friends']);
         $this->assertSame('bronze', $codes($ids[1])['special_friends']);
 
-        // Wyprzedzenie znajomego liczy sie, gdy ma on juz jakies punkty, a gracz wiecej.
-        $this->pdo->exec("UPDATE wallets SET points = 10 WHERE user_id = {$ids[1]}");
-        $this->pdo->exec("UPDATE wallets SET points = 25 WHERE user_id = {$ids[0]}");
-        \Turysta\Game\BadgeService::sync($this->pdo, $ids[0], \Turysta\Game\Clock::now($this->pdo));
-        \Turysta\Game\BadgeService::sync($this->pdo, $ids[1], \Turysta\Game\Clock::now($this->pdo));
-        $this->assertSame('bronze', $codes($ids[0])['special_rival']);
-        $this->assertArrayNotHasKey('special_rival', $codes($ids[1]));
+        // Odznaki za wyprzedzanie znajomych juz nie ma.
+        $this->assertSame(0, (int) $this->pdo->query("SELECT COUNT(*) FROM badge_definitions WHERE code LIKE 'special\\_rival.%'")->fetchColumn());
+    }
+
+    public function testReferralBadgeAwardsCoinsOncePerTier(): void
+    {
+        $ala = $this->user('Ala');
+        $codeStmt = $this->pdo->query("SELECT code FROM referral_codes WHERE user_id = {$ala['id']}");
+        $code = (string) $codeStmt->fetchColumn();
+        $this->assertNotSame('', $code);
+
+        $bob = $this->auth->register([
+            'character_name' => 'Pol' . $this->suffix,
+            'email' => "pol{$this->suffix}@example.com",
+            'password' => 'bardzo-dlugie-haslo',
+            'password_confirm' => 'bardzo-dlugie-haslo',
+            'accept_terms' => true,
+            'referral_code' => $code,
+        ], '10.8.' . random_int(1, 250) . '.' . random_int(1, 250));
+        $now = \Turysta\Game\Clock::now($this->pdo);
+        $earned = fn(): array => array_column(\Turysta\Game\BadgeService::earned($this->pdo, (int) $ala['id']), 'tier', 'group');
+
+        // Polecony bez potwierdzonego e-maila i bez dni aktywnosci sie nie liczy.
+        \Turysta\Game\BadgeService::sync($this->pdo, (int) $ala['id'], $now);
+        $this->assertArrayNotHasKey('special_referrals', $earned());
+
+        $this->pdo->exec("UPDATE users SET email_verified_at = UTC_TIMESTAMP() WHERE id = {$bob['id']}");
+        $this->pdo->exec("INSERT IGNORE INTO user_stats (user_id) VALUES ({$bob['id']})");
+        $this->pdo->exec("UPDATE user_stats SET active_days = 6 WHERE user_id = {$bob['id']}");
+        \Turysta\Game\BadgeService::sync($this->pdo, (int) $ala['id'], $now);
+        $this->assertArrayNotHasKey('special_referrals', $earned());
+
+        $before = $this->coins($ala);
+        $this->pdo->exec("UPDATE user_stats SET active_days = 7 WHERE user_id = {$bob['id']}");
+        \Turysta\Game\BadgeService::sync($this->pdo, (int) $ala['id'], $now);
+        $this->assertSame('bronze', $earned()['special_referrals']);
+        $reference = (new \Turysta\Game\DailyRewardService($this->pdo))->referenceCost((int) $ala['id']);
+        // Odznaka (braz) oraz premia za pierwszego aktywnego poleconego.
+        $reward = \Turysta\Game\Economy::referralBadgeCoins('bronze', $reference) + \Turysta\Game\Economy::referralPersonCoins($reference);
+        $this->assertGreaterThan(0, \Turysta\Game\Economy::referralPersonCoins($reference));
+        $this->assertGreaterThan(0, $reward);
+        $this->assertSame(1, (int) $this->pdo->query("SELECT COUNT(*) FROM notifications WHERE user_id = {$ala['id']} AND type = 'referral_person'")->fetchColumn());
+        $this->assertSame($before + $reward, $this->coins($ala));
+        $this->assertSame(1, (int) $this->pdo->query("SELECT COUNT(*) FROM notifications WHERE user_id = {$ala['id']} AND type = 'referral_badge'")->fetchColumn());
+
+        // Ponowna synchronizacja nie wyplaca drugi raz.
+        \Turysta\Game\BadgeService::sync($this->pdo, (int) $ala['id'], $now);
+        $this->assertSame($before + $reward, $this->coins($ala));
     }
 
     /** Robi z dwoch graczy znajomych od dawna (prezenty wymagaja 24 godzin znajomosci). */
@@ -335,5 +376,36 @@ final class FriendFlowTest extends TestCase
         $off = ActivityFeed::forUser($this->pdo, (int) $ala['id']);
         $this->assertFalse($off['enabled']);
         $this->assertSame([], $off['events']);
+    }
+
+    public function testGiftMultiplierGrowsWithActiveReferrals(): void
+    {
+        $m = fn(int $n): int => \Turysta\Game\Economy::giftMultiplierPermille($n);
+        $this->assertSame(1000, $m(0));
+        $this->assertSame(1250, $m(1));
+        $this->assertSame(3500, $m(10));
+        $this->assertSame(3600, $m(11));
+        $this->assertSame(5500, $m(30));
+        $this->assertSame(5500, $m(80));
+
+        // Kwota prezentu rosnie razem z liczba aktywnych poleconych, a bonus nadawcy zostaje liczony od kwoty bazowej.
+        $gifts = new GiftService($this->pdo, $this->friends);
+        $ala = $this->user('Ala');
+        $base = $gifts->giftCents((int) $ala['id']);
+        $this->assertSame($base, $gifts->baseCents((int) $ala['id']));
+        for ($i = 0; $i < 2; $i++) {
+            $ref = $this->user('Pol' . $i);
+            $this->pdo->exec("INSERT INTO referrals (referrer_id, referred_id) VALUES ({$ala['id']}, {$ref['id']})");
+            $this->pdo->exec("UPDATE users SET email_verified_at = UTC_TIMESTAMP() WHERE id = {$ref['id']}");
+            $this->pdo->exec("INSERT IGNORE INTO user_stats (user_id) VALUES ({$ref['id']})");
+            $this->pdo->exec("UPDATE user_stats SET active_days = 7 WHERE user_id = {$ref['id']}");
+        }
+        $state = $gifts->state((int) $ala['id']);
+        $this->assertSame(2, $state['active_referrals']);
+        $this->assertSame(1500, $state['multiplier_permille']);
+        $this->assertSame($base, $state['base_cents']);
+        $this->assertSame(intdiv(intdiv($base * 1500, 1000) + 5, 10) * 10, $state['cents']);
+        $this->assertGreaterThan($base, $state['cents']);
+        $this->assertSame(GiftService::bonusCents($base), $state['bonus_cents']);
     }
 }

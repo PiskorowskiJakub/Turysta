@@ -232,6 +232,7 @@ export default function FriendsPage() {
           </div>
           </>
         )}
+        {data.gifts.multiplier_permille > 1000 && <p className="muted">{t('friends.giftMultiplier', { mult: data.gifts.multiplier_permille / 1000, n: data.gifts.active_referrals })}</p>}
         {data.friends.length > 0 && <p className="muted">{t('friends.giftInfo', { amount: formatCoins(data.gifts.cents), bonus: formatCoins(data.gifts.bonus_cents), left: data.gifts.sent_left, max: data.gifts.max_per_day })}</p>}
         <p className="muted">{t('friends.onlineHint', { minutes: data.limits.online_minutes })}</p>
       </section>

@@ -46,18 +46,19 @@ final class BadgeService
                  WHERE b.condition_type = 'friends_count'
                    AND b.threshold <= (SELECT COUNT(*) FROM friendships WHERE status = 'accepted' AND (user_a = ? OR user_b = ?))"
             )->execute([$userId, $when, $userId, $userId]);
-            // Wyprzedzeni znajomi: maja wiecej niz 0 punktow, a mniej od gracza.
+            // Polecenia: aktywni polecani gracze (potwierdzony e-mail i min. ReferralService::ACTIVE_DAYS dni aktywnosci).
             $pdo->prepare(
                 "INSERT IGNORE INTO user_badges (user_id, badge_id, earned_at)
                  SELECT ?, b.id, ? FROM badge_definitions b
-                 WHERE b.condition_type = 'friends_beaten'
+                 WHERE b.condition_type = 'referrals_active'
                    AND b.threshold <= (
-                       SELECT COUNT(*) FROM friendships f
-                       JOIN wallets fw ON fw.user_id = IF(f.user_a = ?, f.user_b, f.user_a)
-                       JOIN wallets mw ON mw.user_id = ?
-                       WHERE f.status = 'accepted' AND (f.user_a = ? OR f.user_b = ?)
-                         AND fw.points > 0 AND fw.points < mw.points)"
-            )->execute([$userId, $when, $userId, $userId, $userId, $userId]);
+                       SELECT COUNT(*) FROM referrals r
+                       JOIN users u ON u.id = r.referred_id AND u.email_verified_at IS NOT NULL
+                       JOIN user_stats st ON st.user_id = u.id AND st.active_days >= ?
+                       WHERE r.referrer_id = ?)"
+            )->execute([$userId, $when, ReferralService::ACTIVE_DAYS, $userId]);
+            self::awardReferralRewards($pdo, $userId);
+            self::awardReferralPersons($pdo, $userId);
             // Zdarzenie dla znajomych: nowo zdobyta odznaka od zlotej wzwyz (INSERT IGNORE pilnuje, zeby nie dublowac).
             $pdo->prepare(
                 "INSERT IGNORE INTO activity_events (user_id, type, ref_key, payload, created_at)
@@ -70,6 +71,60 @@ final class BadgeService
             )->execute([$userId, $when]);
         } catch (Throwable $e) {
             error_log('BadgeService: ' . $e->getMessage());
+        }
+    }
+
+    /** Jednorazowa nagroda w dukatach za kazdy zdobyty stopien odznaki za polecenia (klucz w ksiedze pilnuje, zeby nie dublowac). */
+    private static function awardReferralRewards(PDO $pdo, int $userId): void
+    {
+        $stmt = $pdo->prepare(
+            "SELECT b.id, b.tier, b.threshold FROM user_badges ub JOIN badge_definitions b ON b.id = ub.badge_id
+             WHERE ub.user_id = ? AND b.condition_type = 'referrals_active' ORDER BY b.threshold"
+        );
+        $stmt->execute([$userId]);
+        $tiers = $stmt->fetchAll();
+        if (!$tiers) {
+            return;
+        }
+        $reference = (new DailyRewardService($pdo))->referenceCost($userId);
+        $exists = $pdo->prepare('SELECT 1 FROM ledger_entries WHERE user_id = ? AND idempotency_key = ?');
+        foreach ($tiers as $t) {
+            $key = 'refbadge:' . (int) $t['id'];
+            $exists->execute([$userId, $key]);
+            if ($exists->fetchColumn()) {
+                continue;
+            }
+            $cents = Economy::referralBadgeCoins((string) $t['tier'], $reference);
+            Wallet::apply($pdo, $userId, 'coins', $cents, 'referral_badge', 'badge', (int) $t['id'], $key);
+            Notifier::add($pdo, $userId, 'referral_badge', ['count' => (int) $t['threshold'], 'cents' => $cents]);
+        }
+    }
+
+    /** Premia za kazdego aktywnego poleconego (do Economy::MAX_REFERRAL_PERSONS osob), raz za osobe. */
+    private static function awardReferralPersons(PDO $pdo, int $userId): void
+    {
+        $stmt = $pdo->prepare(
+            'SELECT u.id, u.character_name FROM referrals r
+             JOIN users u ON u.id = r.referred_id AND u.email_verified_at IS NOT NULL
+             JOIN user_stats st ON st.user_id = u.id AND st.active_days >= ?
+             WHERE r.referrer_id = ? ORDER BY r.id LIMIT ' . Economy::MAX_REFERRAL_PERSONS
+        );
+        $stmt->execute([ReferralService::ACTIVE_DAYS, $userId]);
+        $people = $stmt->fetchAll();
+        if (!$people) {
+            return;
+        }
+        $reference = (new DailyRewardService($pdo))->referenceCost($userId);
+        $cents = Economy::referralPersonCoins($reference);
+        $exists = $pdo->prepare('SELECT 1 FROM ledger_entries WHERE user_id = ? AND idempotency_key = ?');
+        foreach ($people as $p) {
+            $key = 'refperson:' . (int) $p['id'];
+            $exists->execute([$userId, $key]);
+            if ($exists->fetchColumn()) {
+                continue;
+            }
+            Wallet::apply($pdo, $userId, 'coins', $cents, 'referral_bonus', 'referral', (int) $p['id'], $key);
+            Notifier::add($pdo, $userId, 'referral_person', ['name' => (string) $p['character_name'], 'cents' => $cents]);
         }
     }
 

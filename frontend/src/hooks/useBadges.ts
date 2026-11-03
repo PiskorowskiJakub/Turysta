@@ -32,10 +32,10 @@ export function useBadgeView(skills: SkillsResponse | null, earned: EarnedBadge[
 
   /** Nazwa i rodzaj progu (poziom umiejetnosci albo liczba dni) odznaki o danej grupie. */
   const meta = useCallback(
-    (group: string): { name: string; unit: 'level' | 'days' | 'friends' | 'rivals' } => {
+    (group: string): { name: string; unit: 'level' | 'days' | 'friends' | 'referrals' } => {
       const sk = skills?.skills.find((x) => x.code === group);
       if (sk) return { name: t(`skills.${sk.code}`, { defaultValue: sk.name }), unit: 'level' };
-      const unit = group === 'special_friends' ? 'friends' : group === 'special_rival' ? 'rivals' : 'days';
+      const unit = group === 'special_friends' ? 'friends' : group === 'special_referrals' ? 'referrals' : 'days';
       return { name: t(`badges.${group}`), unit };
     },
     [skills, t],

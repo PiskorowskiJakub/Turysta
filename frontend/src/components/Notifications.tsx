@@ -39,7 +39,8 @@ export default function Notifications() {
       job: p.job,
       name: p.name,
       chapter: p.chapter,
-      amount: typeof p.payout_cents === 'number' ? formatCoins(p.payout_cents) : '',
+      referrals: p.count,
+      amount: typeof p.payout_cents === 'number' ? formatCoins(p.payout_cents) : typeof p.cents === 'number' ? formatCoins(p.cents) : '',
     });
   };
 
