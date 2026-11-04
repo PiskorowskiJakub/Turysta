@@ -133,6 +133,7 @@ final class App
         $router->delete('/v1/admin/banned-words/{id}', [$squadAdmin, 'deleteBannedWord']);
 
         $router->get('/v1/admin/stats', [$admin, 'stats']);
+        $router->get('/v1/admin/activity', [$admin, 'activity']);
         $router->get('/v1/admin/users', [$admin, 'users']);
         $router->get('/v1/admin/users/{id}', [$admin, 'user']);
         $router->patch('/v1/admin/users/{id}', [$admin, 'updateUser']);

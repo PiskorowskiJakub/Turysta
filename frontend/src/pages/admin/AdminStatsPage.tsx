@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { AdminStats, DayCount } from '../../api/types';
+import ActivityChart from '../../components/admin/ActivityChart';
 import Coins from '../../components/Coins';
 import Points from '../../components/Points';
 import { useAdminData } from '../../hooks/useAdminData';
@@ -81,7 +82,10 @@ export default function AdminStatsPage() {
           <Tile label={t('admin.stats.claimsToday')} value={s.activity.daily_claims_today} />
           <Tile label={t('admin.stats.claimsTotal')} value={s.activity.daily_claims_total} />
         </dl>
-        <Bars title={t('admin.stats.logins30')} data={s.logins} />
+        <h3>{t('admin.stats.chart.hourlyTitle')}</h3>
+        <ActivityChart view="hours" spans={[24, 48, 72, 168]} defaultSpan={24} />
+        <h3>{t('admin.stats.chart.dailyTitle')}</h3>
+        <ActivityChart view="days" spans={[7, 30, 90, 180, 365]} defaultSpan={30} />
       </section>
 
       <section className="panel">

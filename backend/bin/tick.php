@@ -39,6 +39,7 @@ $pdo->exec('DELETE FROM sessions WHERE last_activity < UTC_TIMESTAMP() - INTERVA
 
 // Raz na godzine: konta, ktorych adres e-mail nie zostal potwierdzony w ciagu 30 dni.
 if ((int) gmdate('i') === 7) {
+    $pdo->exec('DELETE FROM user_active_hours WHERE hour < UTC_TIMESTAMP() - INTERVAL 120 DAY');
     $removed = (new \Turysta\Auth\UnverifiedCleaner($pdo))->run();
     if ($removed > 0) {
         echo gmdate('c'), " tick: usunieto niepotwierdzone konta: $removed\n";

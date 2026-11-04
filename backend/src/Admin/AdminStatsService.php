@@ -96,15 +96,15 @@ final class AdminStatsService
      *
      * @return list<array{day:string,count:int}>
      */
-    private function series(string $table, string $column): array
+    private function series(string $table, string $column, int $span = self::SERIES_DAYS): array
     {
         $tz = new DateTimeZone(Clock::GAME_TZ);
         $days = [];
         $end = new DateTimeImmutable('today', $tz);
-        for ($i = self::SERIES_DAYS - 1; $i >= 0; $i--) {
+        for ($i = $span - 1; $i >= 0; $i--) {
             $days[$end->modify("-$i days")->format('Y-m-d')] = 0;
         }
-        $from = $end->modify('-' . (self::SERIES_DAYS - 1) . ' days')->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
+        $from = $end->modify('-' . ($span - 1) . ' days')->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
 
         $stmt = $this->pdo->prepare("SELECT $column AS t FROM $table WHERE $column >= ?");
         $stmt->execute([$from]);
@@ -119,5 +119,116 @@ final class AdminStatsService
             $out[] = ['day' => $day, 'count' => $count];
         }
         return $out;
+    }
+
+    public const HOUR_SPANS = [24, 48, 72, 168];
+    public const DAY_SPANS = [7, 30, 90, 180, 365];
+
+    /**
+     * Szereg czasowy aktywnosci: co godzine (ostatnie 24-168 h, klucze to poczatek godziny UTC) albo co dobe
+     * (ostatnie 7-365 dni wg czasu gry). Kazdy punkt ma liczbe aktywnych graczy, logowan i nowych kont.
+     *
+     * @return array<string,mixed>
+     */
+    public function activity(string $view, int $span, string $group = 'day'): array
+    {
+        if ($view === 'hours') {
+            $span = in_array($span, self::HOUR_SPANS, true) ? $span : 24;
+            return $this->hourly($span);
+        }
+        $span = in_array($span, self::DAY_SPANS, true) ? $span : 30;
+        return $this->daily($span, in_array($group, ['day', 'week', 'month'], true) ? $group : 'day');
+    }
+
+    /** @return array<string,mixed> */
+    private function hourly(int $hours): array
+    {
+        $end = new DateTimeImmutable(gmdate('Y-m-d H:00:00'), new DateTimeZone('UTC'));
+        $keys = [];
+        for ($i = $hours - 1; $i >= 0; $i--) {
+            $keys[$end->modify("-$i hours")->format('Y-m-d H:00:00')] = ['active' => 0, 'logins' => 0, 'registrations' => 0];
+        }
+        $from = array_key_first($keys);
+
+        $fill = function (string $sql, string $field) use (&$keys, $from): void {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$from]);
+            foreach ($stmt->fetchAll() as $r) {
+                if (isset($keys[$r['h']])) {
+                    $keys[$r['h']][$field] = (int) $r['c'];
+                }
+            }
+        };
+        $fill('SELECT hour AS h, COUNT(*) AS c FROM user_active_hours WHERE hour >= ? GROUP BY hour', 'active');
+        $fill("SELECT DATE_FORMAT(logged_in_at, '%Y-%m-%d %H:00:00') AS h, COUNT(*) AS c FROM login_events WHERE logged_in_at >= ? GROUP BY h", 'logins');
+        $fill("SELECT DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00') AS h, COUNT(*) AS c FROM users WHERE created_at >= ? GROUP BY h", 'registrations');
+
+        $since = $this->pdo->query('SELECT MIN(hour) FROM user_active_hours')->fetchColumn();
+        $points = [];
+        foreach ($keys as $h => $v) {
+            $points[] = ['key' => Clock::iso($h)] + $v;
+        }
+        return [
+            'view' => 'hours',
+            'span' => $hours,
+            'tracking_since' => $since ? Clock::iso((string) $since) : null,
+            'points' => $points,
+        ];
+    }
+
+    /**
+     * Szereg dzienny; przy $group = week lub month punkty to tygodnie (od poniedzialku) albo miesiace.
+     * Aktywni gracze w grupie to unikalni gracze, a logowania i nowe konta sa sumowane.
+     *
+     * @return array<string,mixed>
+     */
+    private function daily(int $days, string $group): array
+    {
+        $tz = new DateTimeZone(Clock::GAME_TZ);
+        $end = new DateTimeImmutable('today', $tz);
+        $bucket = static function (string $day) use ($group): string {
+            $d = new DateTimeImmutable($day);
+            if ($group === 'week') {
+                return $d->modify('monday this week')->format('Y-m-d');
+            }
+            return $group === 'month' ? $d->format('Y-m-01') : $day;
+        };
+        $keys = [];
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $keys[$bucket($end->modify("-$i days")->format('Y-m-d'))] = ['active' => 0, 'logins' => 0, 'registrations' => 0];
+        }
+        $from = $end->modify('-' . ($days - 1) . ' days')->format('Y-m-d');
+        $sqlBucket = match ($group) {
+            'week' => 'DATE_SUB(day, INTERVAL WEEKDAY(day) DAY)',
+            'month' => "DATE_FORMAT(day, '%Y-%m-01')",
+            default => 'day',
+        };
+        $stmt = $this->pdo->prepare("SELECT $sqlBucket AS b, COUNT(DISTINCT user_id) AS c FROM user_active_days WHERE day >= ? GROUP BY b");
+        $stmt->execute([$from]);
+        foreach ($stmt->fetchAll() as $r) {
+            if (isset($keys[$r['b']])) {
+                $keys[$r['b']]['active'] = (int) $r['c'];
+            }
+        }
+        foreach (['logins' => ['login_events', 'logged_in_at'], 'registrations' => ['users', 'created_at']] as $field => [$table, $column]) {
+            foreach ($this->series($table, $column, $days) as $d) {
+                $k = $bucket($d['day']);
+                if (isset($keys[$k])) {
+                    $keys[$k][$field] += $d['count'];
+                }
+            }
+        }
+        $since = $this->pdo->query('SELECT MIN(day) FROM user_active_days')->fetchColumn();
+        $points = [];
+        foreach ($keys as $day => $v) {
+            $points[] = ['key' => (string) $day] + $v;
+        }
+        return [
+            'view' => 'days',
+            'span' => $days,
+            'group' => $group,
+            'tracking_since' => $since ? (string) $since : null,
+            'points' => $points,
+        ];
     }
 }

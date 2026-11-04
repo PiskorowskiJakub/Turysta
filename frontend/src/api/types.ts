@@ -501,6 +501,20 @@ export interface DayCount {
   count: number;
 }
 
+export interface ActivityPoint {
+  key: string;
+  active: number;
+  logins: number;
+  registrations: number;
+}
+
+export interface ActivitySeries {
+  view: 'hours' | 'days';
+  span: number;
+  tracking_since: string | null;
+  points: ActivityPoint[];
+}
+
 export interface AdminStats {
   generated_at: string;
   accounts: {

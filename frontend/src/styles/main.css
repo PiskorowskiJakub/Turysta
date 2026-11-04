@@ -848,3 +848,18 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .cookie-banner a { color: var(--khaki); }
 .link-button { background: none; border: 0; padding: 0; font: inherit; color: var(--khaki); cursor: pointer; text-decoration: underline; }
 .link-button:hover { color: var(--orange); }
+.activity-chart { margin: 0 0 18px; }
+.activity-controls { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 8px; }
+.segmented { display: inline-flex; border: 2px solid var(--line); border-radius: 10px; overflow: hidden; }
+.segmented .seg { background: var(--bg2); color: var(--cream); border: 0; padding: 5px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+.segmented .seg + .seg { border-left: 1px solid var(--line); }
+.segmented .seg.active { background: var(--orange); color: #1b1208; font-weight: 600; }
+.activity-summary { margin: 4px 0 6px; font-size: 14px; min-height: 1.4em; }
+.activity-plot { display: flex; gap: 6px; }
+.activity-yaxis { display: flex; flex-direction: column; justify-content: space-between; font-size: 11px; color: var(--muted); text-align: right; min-width: 28px; padding: 4px 0; }
+.activity-bars { flex: 1 1 auto; min-width: 0; overflow: hidden; display: flex; align-items: flex-end; gap: 2px; height: 150px; padding: 4px; background: repeating-linear-gradient(to top, transparent 0, transparent calc(50% - 1px), rgba(214, 196, 140, 0.15) calc(50% - 1px), rgba(214, 196, 140, 0.15) 50%), rgba(0, 0, 0, 0.14); border-radius: 10px; }
+.activity-col { flex: 1 1 0; min-width: 0; height: 100%; display: flex; align-items: flex-end; }
+.activity-col .chart-bar { display: block; width: 100%; flex: none; }
+.activity-col .chart-bar.hot { background: var(--cream); }
+.activity-xaxis { padding-left: 34px; }
+

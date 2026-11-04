@@ -48,6 +48,14 @@ final class AdminController
         return [200, $this->stats->overview()];
     }
 
+    /** @return array{0:int,1:array<string,mixed>} */
+    public function activity(Request $r): array
+    {
+        Session::requireAdmin($r);
+        $view = ($r->query['view'] ?? '') === 'hours' ? 'hours' : 'days';
+        return [200, $this->stats->activity($view, (int) ($r->query['span'] ?? 0), is_string($r->query['group'] ?? null) ? $r->query['group'] : 'day')];
+    }
+
     // ---- gracze ----
 
     /** @return array{0:int,1:array<string,mixed>} */
