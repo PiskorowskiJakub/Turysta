@@ -11,10 +11,18 @@ declare global {
   }
 }
 
+function today(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Zgoda jest zapamietana na stale; odmowa tylko do konca dnia, potem pytamy ponownie. */
 export function getConsent(): Consent {
   try {
     const v = window.localStorage.getItem(KEY);
-    return v === 'granted' || v === 'denied' ? v : null;
+    if (v === 'granted') return 'granted';
+    if (v === `denied:${today()}`) return 'denied';
+    return null;
   } catch {
     return null;
   }
@@ -22,7 +30,7 @@ export function getConsent(): Consent {
 
 export function setConsent(value: Exclude<Consent, null>): void {
   try {
-    window.localStorage.setItem(KEY, value);
+    window.localStorage.setItem(KEY, value === 'granted' ? 'granted' : `denied:${today()}`);
   } catch {
     /* brak dostepu do pamieci przegladarki - zgoda dziala tylko do konca karty */
   }
