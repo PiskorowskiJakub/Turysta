@@ -9,7 +9,8 @@ use Turysta\Http\ApiException;
 /** Ciekawostki dnia (pasek u gory strony): lista, dodawanie, edycja, wlaczanie i usuwanie. */
 final class FactService
 {
-    public const TEXT_MAX = 500;
+    /** Tyle znakow miesci sie w pasku (2 linie na komputerze); dluzsze tresci blokuje formularz i API. */
+    public const TEXT_MAX = 160;
 
     public function __construct(private PDO $pdo)
     {
@@ -39,6 +40,11 @@ final class FactService
     public function update(int $id, array $in): array
     {
         $this->find($id);
+        if (!array_key_exists('text', $in)) {
+            // Samo wlaczanie/wylaczanie nie rusza tresci, wiec dziala tez dla starych, zbyt dlugich ciekawostek.
+            $this->pdo->prepare('UPDATE daily_facts SET active = ? WHERE id = ?')->execute([empty($in['active']) ? 0 : 1, $id]);
+            return $this->find($id);
+        }
         [$text, $active] = $this->validated($in);
         $this->pdo->prepare('UPDATE daily_facts SET text = ?, active = ? WHERE id = ?')->execute([$text, $active, $id]);
         return $this->find($id);
@@ -70,7 +76,7 @@ final class FactService
     {
         $text = trim((string) ($in['text'] ?? ''));
         if ($text === '' || mb_strlen($text) > self::TEXT_MAX) {
-            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', ['text' => 'Treść musi mieć od 1 do ' . self::TEXT_MAX . ' znaków.']);
+            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', ['text' => 'Treść musi mieć od 1 do ' . self::TEXT_MAX . ' znaków, żeby zmieściła się w pasku.']);
         }
         return [$text, empty($in['active']) ? 0 : 1];
     }
@@ -81,6 +87,11 @@ final class FactService
      */
     private function view(array $r): array
     {
-        return ['id' => (int) $r['id'], 'text' => (string) $r['text'], 'active' => (bool) $r['active']];
+        return [
+            'id' => (int) $r['id'],
+            'text' => (string) $r['text'],
+            'active' => (bool) $r['active'],
+            'too_long' => mb_strlen((string) $r['text']) > self::TEXT_MAX,
+        ];
     }
 }

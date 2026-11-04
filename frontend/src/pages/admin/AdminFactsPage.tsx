@@ -9,6 +9,9 @@ interface Draft {
   active: boolean;
 }
 
+/** Zgodne z FactService::TEXT_MAX: tyle znakow miesci sie w pasku z ciekawostka. */
+const TEXT_MAX = 160;
+
 const EMPTY: Draft = { id: null, text: '', active: true };
 
 /** Ciekawostki dnia (pasek u gory strony): dodawanie, edycja, wlaczanie i usuwanie. */
@@ -68,7 +71,7 @@ export default function AdminFactsPage() {
     setBusy(true);
     setMessage(null);
     try {
-      await api('PUT', `/admin/facts/${f.id}`, { text: f.text, active: !f.active });
+      await api('PUT', `/admin/facts/${f.id}`, { active: !f.active });
       await load();
     } catch (err) {
       fail(err);
@@ -101,14 +104,15 @@ export default function AdminFactsPage() {
         <h2>{draft.id === null ? t('admin.facts.new') : t('admin.facts.edit')}</h2>
         <div className="field">
           <label htmlFor="fact-text">{t('admin.facts.text')}</label>
-          <textarea id="fact-text" rows={3} value={draft.text} maxLength={500} onChange={(e) => setDraft({ ...draft, text: e.target.value })} aria-invalid={fields.text ? true : undefined} />
+          <textarea id="fact-text" rows={3} value={draft.text} maxLength={TEXT_MAX} onChange={(e) => setDraft({ ...draft, text: e.target.value })} aria-invalid={fields.text ? true : undefined} />
+          <p className={'field-hint' + (draft.text.length >= TEXT_MAX ? ' form-error' : '')}>{t('admin.facts.counter', { n: draft.text.length, max: TEXT_MAX })}</p>
           {fields.text && <p className="field-error">{fields.text}</p>}
         </div>
         <p className="check-row">
           <label><input type="checkbox" checked={draft.active} onChange={(e) => setDraft({ ...draft, active: e.target.checked })} /> {t('admin.facts.active')}</label>
         </p>
         <div className="actions">
-          <button className="button" type="submit" disabled={busy}>{draft.id === null ? t('admin.facts.add') : t('admin.save')}</button>
+          <button className="button" type="submit" disabled={busy || draft.text.trim() === ''}>{draft.id === null ? t('admin.facts.add') : t('admin.save')}</button>
           {draft.id !== null && (
             <button className="button secondary" type="button" onClick={() => { setDraft(EMPTY); setFields({}); }}>{t('admin.cancel')}</button>
           )}
@@ -123,7 +127,7 @@ export default function AdminFactsPage() {
             <li key={f.id}>
               <div className="admin-list-main">
                 <strong>{f.text}</strong>
-                <small>{f.active ? t('admin.facts.on') : t('admin.facts.off')}</small>
+                <small>{f.active ? t('admin.facts.on') : t('admin.facts.off')}{f.too_long && <span className="form-error"> · {t('admin.facts.tooLong', { max: TEXT_MAX })}</span>}</small>
               </div>
               <div className="actions">
                 <button type="button" className="button small secondary" disabled={busy} onClick={() => void toggle(f)}>{f.active ? t('admin.facts.disable') : t('admin.facts.enable')}</button>

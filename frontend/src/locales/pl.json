@@ -487,7 +487,9 @@
       "on": "włączona",
       "off": "wyłączona",
       "disable": "Wyłącz",
-      "enable": "Włącz"
+      "enable": "Włącz",
+      "counter": "{{n}} / {{max}} znaków",
+      "tooLong": "za długa (limit {{max}} znaków), skróć ją przy najbliższej edycji"
     },
     "bugs": {
       "title": "Zgłoszenia błędów",

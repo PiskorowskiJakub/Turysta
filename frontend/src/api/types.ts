@@ -501,6 +501,7 @@ export interface Fact {
   id: number;
   text: string;
   active: boolean;
+  too_long: boolean;
 }
 
 export interface DayCount {

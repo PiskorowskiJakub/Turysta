@@ -62,7 +62,14 @@ h1, h2, h3 { font-weight: 600; }
   font-size: 13px; color: var(--muted); line-height: 1.3;
 }
 .fact b { flex: none; color: var(--orange); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
-.fact span { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.fact { background: none; font-family: inherit; text-align: left; cursor: pointer; }
+.fact:hover { border-color: var(--orange); }
+.fact-text { flex: 1; min-width: 0; overflow: hidden; }
+.fact-inner { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.fact i { flex: none; color: var(--orange); font-style: normal; }
+.fact.open { align-items: flex-start; border-radius: 18px; border-style: solid; }
+.fact.open b { padding-top: 2px; }
+.fact.open .fact-inner { display: block; -webkit-line-clamp: unset; overflow: visible; }
 
 /* Plakietka gracza: awatar, nazwa i zasoby w jednej karcie */
 .plaque {
@@ -709,7 +716,8 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
   .topbar-inner { padding: 8px 12px; gap: 8px; }
   .brand-mark { width: 30px; height: 30px; }
   .fact { padding: 4px 12px; font-size: 12px; }
-  .fact span { -webkit-line-clamp: 1; }
+  .fact-inner { -webkit-line-clamp: 1; }
+  .fact.open .fact-inner { -webkit-line-clamp: unset; }
 
   /* Dolne menu: gdy pozycji jest wiecej niz miesci sie w szerokosci, przewija sie palcem */
   .menu ul { justify-content: flex-start; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
@@ -895,3 +903,4 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .trail-banner { border-left: 4px solid var(--orange); }
 .trail-banner p { margin: 0; }
 .period-nav { margin: 8px 0 12px; }
+
