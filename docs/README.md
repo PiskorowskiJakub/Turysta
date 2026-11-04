@@ -13,6 +13,11 @@ Dokumentacja zasad gry.
 - [Znajomi i prezenty](#znajomi-i-prezenty)
 - [Polecenia](#polecenia)
 - [Oddziały](#oddziały)
+  - [Zakładanie i dołączanie](#zakładanie-i-dołączanie)
+  - [Role](#role)
+  - [Ognisko](#ognisko)
+  - [Szlaki (wyprawy oddziału)](#szlaki-wyprawy-oddziału)
+  - [Kronika](#kronika)
 
 ## Światy
 
@@ -207,7 +212,7 @@ Nagrody trafiają na konto przy Twojej najbliższej aktywności w grze.
 
 ## Oddziały
 
-Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Oddziały mają skład, role, kronikę, ognisko i cotygodniowe szlaki; wspólne umiejętności pojawią się później.
+Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Menu „Oddział” ma zakładki: Mój oddział (przegląd, członkowie, rekrutacja, ustawienia, kronika), Szlaki (wyprawa i historia) oraz Katalog. Oddziały mają skład, role, kronikę, ognisko i cotygodniowe szlaki; wspólne umiejętności pojawią się później.
 
 ### Zakładanie i dołączanie
 
@@ -235,7 +240,9 @@ Gracz ma jedną rolę. Tytuł roli zawsze widać na liście członków oddziału
 
 ### Ognisko
 
-Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (zaokrąglone w górę, minimum 2 osoby). Aktywny to gracz, który tego dnia coś zrobił w grze.
+Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (zaokrąglone w górę, minimum 2 osoby). Aktywny to gracz, który tego dnia coś zrobił w grze (dzień liczy się według czasu polskiego).
+
+- **Rozliczenie.** Dzień rozlicza się po północy: wtedy dochodzi seria i żar. Gdy wymagania są spełnione już dziś, ognisko pokazuje „Ognisko płonie”, choć seria zwiększy się dopiero po północy.
 
 - **Żar** za dzień z płonącym ogniskiem to 100 × mnożnik dnia × premia serii.
 - **Mnożnik dnia:** ×1,0 przy 30% aktywnych, ×1,25 przy 50% i ×1,5 przy 70%.
