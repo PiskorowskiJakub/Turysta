@@ -229,7 +229,7 @@ Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Oddziały
 | Przewodnik | do 2 | Wybiera trudność tygodniowej wyprawy (szlaki) |
 | Kwatermistrz, Kronikarz | do 2 każda | Na razie tylko tytuł |
 
-Gracz ma jedną rolę. Tytuł roli widać na liście członków i w profilu, ale można go ukryć w Edycji profilu. Przywódca nie może po prostu odejść: przekazuje przywództwo albo rozwiązuje oddział.
+Gracz ma jedną rolę. Tytuł roli zawsze widać na liście członków oddziału. W swoim profilu publicznym gracz może go ukryć w Edycji profilu. Przywódca nie może po prostu odejść: przekazuje przywództwo albo rozwiązuje oddział.
 
 **Automatyczna sukcesja.** Gdy przywódca jest nieaktywny przez 14 dni, przywództwo przejmuje zastępca, a bez zastępcy najaktywniejszy członek z ostatnich 30 dni. Oddział, w którym nikt nie był aktywny przez 30 dni, jest archiwizowany, a jego nazwa wraca do puli.
 

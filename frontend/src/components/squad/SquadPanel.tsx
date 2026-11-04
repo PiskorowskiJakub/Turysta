@@ -302,7 +302,6 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
                   </td>
                   <td data-label={t('squad.members.role')}>
                     {t(`squad.roles.${m.role ?? 'member'}`)}
-                    {m.title_hidden && m.role !== 'member' && <small className="muted"> ({t('squad.members.titleHidden')})</small>}
                   </td>
                   <td data-label={t('squad.members.joined')}>{formatDate(m.joined_at)}</td>
                   {(me.can_manage || me.is_leader) && <td className="num">{memberActions(m)}</td>}

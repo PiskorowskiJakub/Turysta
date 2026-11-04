@@ -161,7 +161,7 @@ final class SquadView
     private function members(int $squadId, bool $viewerIsMember): array
     {
         $stmt = $this->pdo->prepare(
-            "SELECT m.user_id, m.role, m.joined_at, u.character_name, u.show_squad_title, av.image_url, st.last_active_day,
+            "SELECT m.user_id, m.role, m.joined_at, u.character_name, av.image_url, st.last_active_day,
                     EXISTS(SELECT 1 FROM sessions s WHERE s.user_id = u.id AND s.last_activity > UTC_TIMESTAMP() - INTERVAL 5 MINUTE) AS online
              FROM squad_members m
              JOIN users u ON u.id = m.user_id
@@ -178,19 +178,17 @@ final class SquadView
         $out = [];
         foreach ($rows as $r) {
             $joined = Clock::parse((string) $r['joined_at']);
-            $titleVisible = (int) $r['show_squad_title'] === 1;
             $entry = [
                 'id' => (int) $r['user_id'],
                 'name' => (string) $r['character_name'],
                 'avatar_url' => $r['image_url'],
-                'title' => ($titleVisible || $viewerIsMember) && $r['role'] !== 'member' ? (string) $r['role'] : null,
+                'title' => $r['role'] !== 'member' ? (string) $r['role'] : null,
                 'joined_at' => Clock::iso((string) $r['joined_at']),
                 'recruit' => $joined->modify('+' . SquadRules::RECRUIT_DAYS . ' days') > $now,
             ];
             if ($viewerIsMember) {
                 $entry['role'] = (string) $r['role'];
                 $entry['online'] = (bool) $r['online'];
-                $entry['title_hidden'] = !$titleVisible;
             }
             $out[] = $entry;
         }

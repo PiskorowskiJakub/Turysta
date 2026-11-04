@@ -612,7 +612,6 @@ export interface SquadMember {
   /** Pola tylko dla czlonkow oddzialu. */
   role?: SquadRole;
   online?: boolean;
-  title_hidden?: boolean;
 }
 
 export interface SquadEligibility {

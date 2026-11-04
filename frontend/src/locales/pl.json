@@ -692,8 +692,8 @@
     "shareActivity": "Pokazuj moją aktywność znajomym",
     "shareActivityHint": "Znajomi zobaczą na stronie głównej, że dotarłeś do nowego świata albo zdobyłeś cenną odznakę. Po wyłączeniu ukrywasz swoją aktywność, ale sam też nie widzisz aktywności znajomych.",
     "savedPrivacy": "Ustawienia prywatności zapisane.",
-    "showSquadTitle": "Pokazuj mój tytuł w oddziale",
-    "showSquadTitleHint": "Tytuł (np. Zastępca, Przewodnik) będzie widoczny na liście członków i w Twoim profilu. Samo członkostwo w oddziale jest zawsze publiczne."
+    "showSquadTitle": "Pokazuj mój tytuł w moim profilu",
+    "showSquadTitleHint": "Dotyczy tylko Twojego profilu publicznego. Na liście członków oddziału tytuł (np. Zastępca, Przewodnik) jest zawsze widoczny. Samo członkostwo w oddziale jest publiczne."
   },
   "verify": {
     "title": "Twoje konto nie zostało jeszcze potwierdzone.",
@@ -1410,7 +1410,6 @@
       "role": "Rola",
       "joined": "Dołączył",
       "recruit": "Rekrut",
-      "titleHidden": "tytuł ukryty",
       "hint": "Odznaka „Rekrut” widnieje przez {{days}} dni od dołączenia. Członkostwo w oddziale jest publiczne.",
       "roleFor": "Rola gracza {{name}}",
       "roleSaved": "Rola zapisana.",
@@ -1421,7 +1420,7 @@
       "transfer": "Przekaż przywództwo",
       "transferConfirm": "Przekaż przywództwo graczowi {{name}}",
       "transferred": "Przywództwo przekazane: {{name}}.",
-      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz i Kronikarz (po 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł widać na liście członków i w profilu, ale można go ukryć w Edycji profilu."
+      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz i Kronikarz (po 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału."
     },
     "recruit": {
       "title": "Rekrutacja",
