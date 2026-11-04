@@ -14,9 +14,17 @@ final class ActivityTracker
     {
         try {
             $day ??= Clock::gameDay(Clock::now($pdo));
-            $stmt = $pdo->prepare('SELECT last_active_day FROM user_stats WHERE user_id = ?');
+            $stmt = $pdo->prepare('SELECT last_active_day, last_active_hour FROM user_stats WHERE user_id = ?');
             $stmt->execute([$userId]);
-            $last = $stmt->fetchColumn();
+            $row = $stmt->fetch();
+            $last = $row ? $row['last_active_day'] : false;
+            // Godzina aktywnosci (UTC) do wykresow admina: zapis raz na godzine na gracza, nie przy kazdym zadaniu.
+            $hour = substr(Clock::fmt(Clock::now($pdo)), 0, 13) . ':00:00';
+            if (!$row || $row['last_active_hour'] !== $hour) {
+                $pdo->prepare('INSERT IGNORE INTO user_stats (user_id) VALUES (?)')->execute([$userId]);
+                $pdo->prepare('INSERT IGNORE INTO user_active_hours (user_id, hour) VALUES (?, ?)')->execute([$userId, $hour]);
+                $pdo->prepare('UPDATE user_stats SET last_active_hour = ? WHERE user_id = ?')->execute([$hour, $userId]);
+            }
             if ($last === $day) {
                 return;
             }

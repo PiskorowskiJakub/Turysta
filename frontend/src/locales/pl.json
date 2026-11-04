@@ -424,7 +424,24 @@
       "giftsTotal": "Prezenty (razem)",
       "gifts24": "Prezenty (24 h)",
       "giftsCoins": "Dukaty w prezentach",
-      "giftsHint": "Prezenty między znajomymi. Dukaty z prezentów tylko przechodzą między graczami, a nadawca dostaje dodatkowo mały bonus."
+      "giftsHint": "Prezenty między znajomymi. Dukaty z prezentów tylko przechodzą między graczami, a nadawca dostaje dodatkowo mały bonus.",
+      "chart": {
+        "hourlyTitle": "Aktywni gracze w ostatnich godzinach",
+        "dailyTitle": "Aktywni gracze każdego dnia",
+        "range": "Zakres",
+        "metric": "Miara",
+        "hours": "{{n}} godz.",
+        "days": "{{n}} dni",
+        "metrics": {
+          "active": "Aktywni gracze",
+          "logins": "Logowania",
+          "registrations": "Nowe konta"
+        },
+        "sum": "suma: {{n}}",
+        "avg": "średnio: {{n}}",
+        "max": "maks.: {{n}}",
+        "since": "Dane o aktywności graczy są zbierane od {{date}}, wcześniejszy okres pokazuje zera."
+      }
     },
     "facts": {
       "created": "Ciekawostka dodana.",
