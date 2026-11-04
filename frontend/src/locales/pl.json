@@ -692,8 +692,8 @@
     "shareActivity": "Pokazuj moją aktywność znajomym",
     "shareActivityHint": "Znajomi zobaczą na stronie głównej, że dotarłeś do nowego świata albo zdobyłeś cenną odznakę. Po wyłączeniu ukrywasz swoją aktywność, ale sam też nie widzisz aktywności znajomych.",
     "savedPrivacy": "Ustawienia prywatności zapisane.",
-    "showSquadTitle": "Pokazuj mój tytuł w oddziale",
-    "showSquadTitleHint": "Tytuł (np. Zastępca, Przewodnik) będzie widoczny na liście członków i w Twoim profilu. Samo członkostwo w oddziale jest zawsze publiczne."
+    "showSquadTitle": "Pokazuj mój tytuł w moim profilu",
+    "showSquadTitleHint": "Dotyczy tylko Twojego profilu publicznego. Na liście członków oddziału tytuł (np. Zastępca, Przewodnik) jest zawsze widoczny. Samo członkostwo w oddziale jest publiczne."
   },
   "verify": {
     "title": "Twoje konto nie zostało jeszcze potwierdzone.",
@@ -1402,7 +1402,9 @@
       "next": "Kolejny poziom ({{level}}) za {{days}} dni serii.",
       "history": "Ostatnie dni",
       "dayTitle": "{{day}}: aktywnych {{active}} z {{needed}}, żar {{ember}}",
-      "info": "Ognisko to wspólny cel oddziału. Płonie danego dnia gry, gdy aktywnych jest co najmniej {{percent}}% członków (zaokrąglone w górę, minimum {{min}} osoby); aktywny to gracz, który tego dnia coś zrobił w grze. Za każdy dzień z płonącym ogniskiem oddział dostaje żar: 100 × mnożnik dnia (×1,0 przy 30% aktywnych, ×1,25 przy 50%, ×1,5 przy 70%) × premia serii (+5% od 3 dni, +10% od 7, +15% od 14, +20% od 30 dni z rzędu). Poziomy ogniska: Żar, Płomyk, Ognisko i Wielkie ognisko (progi serii 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera."
+      "info": "Ognisko to wspólny cel oddziału. Płonie danego dnia gry, gdy aktywnych jest co najmniej {{percent}}% członków (zaokrąglone w górę, minimum {{min}} osoby); aktywny to gracz, który tego dnia coś zrobił w grze. Za każdy dzień z płonącym ogniskiem oddział dostaje żar: 100 × mnożnik dnia (×1,0 przy 30% aktywnych, ×1,25 przy 50%, ×1,5 przy 70%) × premia serii (+5% od 3 dni, +10% od 7, +15% od 14, +20% od 30 dni z rzędu). Poziomy ogniska: Żar, Płomyk, Ognisko i Wielkie ognisko (progi serii 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera.",
+      "burning": "Ognisko płonie",
+      "streakPending": "(dzisiejszy dzień doliczy się do serii po północy)"
     },
     "members": {
       "title": "Członkowie ({{n}}/{{max}})",
@@ -1410,7 +1412,6 @@
       "role": "Rola",
       "joined": "Dołączył",
       "recruit": "Rekrut",
-      "titleHidden": "tytuł ukryty",
       "hint": "Odznaka „Rekrut” widnieje przez {{days}} dni od dołączenia. Członkostwo w oddziale jest publiczne.",
       "roleFor": "Rola gracza {{name}}",
       "roleSaved": "Rola zapisana.",
@@ -1420,7 +1421,8 @@
       "kicked": "{{name}} został usunięty z oddziału.",
       "transfer": "Przekaż przywództwo",
       "transferConfirm": "Przekaż przywództwo graczowi {{name}}",
-      "transferred": "Przywództwo przekazane: {{name}}."
+      "transferred": "Przywództwo przekazane: {{name}}.",
+      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz i Kronikarz (po 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału."
     },
     "recruit": {
       "title": "Rekrutacja",

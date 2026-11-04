@@ -1,7 +1,7 @@
 import { Fragment, type ReactNode } from 'react';
 
 /**
- * Maly renderer Markdownu dla wiki gry (docs/README.md): naglowki #-###, akapity, listy (- i 1.), tabele z wyrownaniem,
+ * Maly renderer Markdownu dla wiki gry (docs/README.md): naglowki #-###, akapity, listy (- i 1., takze zagniezdzone wcieciem), tabele z wyrownaniem,
  * pogrubienie, kod w odwrotnych apostrofach i linki. Buduje elementy Reacta (bez HTML z tekstu), wiec jest bezpieczny.
  * Linki wzgledne do plikow repozytorium (np. ../README.md) pokazujemy jako zwykly tekst.
  */
@@ -46,6 +46,27 @@ function alignOf(sep: string): Align {
 }
 
 const isTableSep = (line: string | undefined): boolean => line !== undefined && /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/.test(line) && line.includes('|');
+
+const unordered = /^\s*[-*]\s+/;
+const ordered = /^\s*\d+\.\s+/;
+
+interface ListItem {
+  indent: number;
+  ordered: boolean;
+  text: string;
+  children: ListItem[];
+}
+
+/** Lista z zagniezdzeniem (wciecie podpunktow); rodzaj listy (punktowana/numerowana) wynika z pierwszego elementu. */
+function renderList(items: ListItem[], keyBase: string): ReactNode {
+  const li = items.map((it, k) => (
+    <li key={k}>
+      {inline(it.text, `${keyBase}i${k}`)}
+      {it.children.length > 0 && renderList(it.children, `${keyBase}i${k}c`)}
+    </li>
+  ));
+  return items[0].ordered ? <ol key={keyBase}>{li}</ol> : <ul key={keyBase}>{li}</ul>;
+}
 
 export function parseMarkdown(source: string): ReactNode[] {
   const lines = source.replace(/\r\n/g, '\n').split('\n');
@@ -112,19 +133,20 @@ export function parseMarkdown(source: string): ReactNode[] {
       continue;
     }
 
-    const unordered = /^\s*[-*]\s+/;
-    const ordered = /^\s*\d+\.\s+/;
     if (unordered.test(line) || ordered.test(line)) {
-      const isOrdered = ordered.test(line);
-      const re = isOrdered ? ordered : unordered;
-      const items: string[] = [];
-      while (i < lines.length && re.test(lines[i])) {
-        items.push(lines[i].replace(re, ''));
+      const roots: ListItem[] = [];
+      const stack: ListItem[] = [];
+      while (i < lines.length && (unordered.test(lines[i]) || ordered.test(lines[i]))) {
+        const raw = lines[i];
+        const isOrdered = ordered.test(raw);
+        const item: ListItem = { indent: raw.length - raw.trimStart().length, ordered: isOrdered, text: raw.replace(isOrdered ? ordered : unordered, ''), children: [] };
+        while (stack.length > 0 && stack[stack.length - 1].indent >= item.indent) stack.pop();
+        if (stack.length > 0) stack[stack.length - 1].children.push(item);
+        else roots.push(item);
+        stack.push(item);
         i += 1;
       }
-      const lk = key();
-      const li = items.map((it, k) => <li key={k}>{inline(it, `${lk}i${k}`)}</li>);
-      out.push(isOrdered ? <ol key={lk}>{li}</ol> : <ul key={lk}>{li}</ul>);
+      out.push(renderList(roots, key()));
       continue;
     }
 

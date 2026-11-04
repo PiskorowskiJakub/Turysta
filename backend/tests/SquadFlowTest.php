@@ -361,10 +361,11 @@ final class SquadFlowTest extends TestCase
         $this->assertTrue($byId[(int) $mem['id']]['recruit']);
         $this->assertNotEmpty($byId[(int) $mem['id']]['joined_at']);
 
-        // Wylaczony tytul znika dla obcych; czlonkowie dalej widza role.
+        // Wylaczenie tytulu dotyczy tylko profilu gracza: na liscie czlonkow oddzialu tytul zawsze widac.
         $this->pdo->prepare('UPDATE users SET show_squad_title = 0 WHERE id = ?')->execute([$mem['id']]);
         $byId = array_column($this->view->profile($outsider, $id)['member_list'], null, 'id');
-        $this->assertNull($byId[(int) $mem['id']]['title']);
+        $this->assertSame('chronicler', $byId[(int) $mem['id']]['title']);
+        $this->assertNull($this->view->badgeFor((int) $mem['id'])['title']);
         $inside = array_column($this->view->profile($lead, $id)['member_list'], null, 'id');
         $this->assertSame('chronicler', $inside[(int) $mem['id']]['role']);
 

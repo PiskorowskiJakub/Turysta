@@ -13,6 +13,11 @@ Dokumentacja zasad gry.
 - [Znajomi i prezenty](#znajomi-i-prezenty)
 - [Polecenia](#polecenia)
 - [Oddziały](#oddziały)
+  - [Zakładanie i dołączanie](#zakładanie-i-dołączanie)
+  - [Role](#role)
+  - [Ognisko](#ognisko)
+  - [Szlaki (wyprawy oddziału)](#szlaki-wyprawy-oddziału)
+  - [Kronika](#kronika)
 
 ## Światy
 
@@ -207,7 +212,7 @@ Nagrody trafiają na konto przy Twojej najbliższej aktywności w grze.
 
 ## Oddziały
 
-Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Oddziały mają skład, role, kronikę, ognisko i cotygodniowe szlaki; wspólne umiejętności pojawią się później.
+Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Menu „Oddział” ma zakładki: Mój oddział (przegląd, członkowie, rekrutacja, ustawienia, kronika), Szlaki (wyprawa i historia) oraz Katalog. Oddziały mają skład, role, kronikę, ognisko i cotygodniowe szlaki; wspólne umiejętności pojawią się później.
 
 ### Zakładanie i dołączanie
 
@@ -226,15 +231,18 @@ Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Oddziały
 | Przywódca | 1 | Wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału |
 | Zastępca | 1 | Wszystko poza przekazaniem przywództwa i rozwiązaniem oddziału |
 | Rekruter | do 2 | Przyjmowanie próśb i zapraszanie graczy |
-| Przewodnik, Kwatermistrz, Kronikarz | do 2 każda | Na razie tylko tytuł |
+| Przewodnik | do 2 | Wybiera trudność tygodniowej wyprawy (szlaki) |
+| Kwatermistrz, Kronikarz | do 2 każda | Na razie tylko tytuł |
 
-Gracz ma jedną rolę. Tytuł roli widać na liście członków i w profilu, ale można go ukryć w Edycji profilu. Przywódca nie może po prostu odejść: przekazuje przywództwo albo rozwiązuje oddział.
+Gracz ma jedną rolę. Tytuł roli zawsze widać na liście członków oddziału. W swoim profilu publicznym gracz może go ukryć w Edycji profilu. Przywódca nie może po prostu odejść: przekazuje przywództwo albo rozwiązuje oddział.
 
 **Automatyczna sukcesja.** Gdy przywódca jest nieaktywny przez 14 dni, przywództwo przejmuje zastępca, a bez zastępcy najaktywniejszy członek z ostatnich 30 dni. Oddział, w którym nikt nie był aktywny przez 30 dni, jest archiwizowany, a jego nazwa wraca do puli.
 
 ### Ognisko
 
-Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (zaokrąglone w górę, minimum 2 osoby). Aktywny to gracz, który tego dnia coś zrobił w grze.
+Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (zaokrąglone w górę, minimum 2 osoby). Aktywny to gracz, który tego dnia coś zrobił w grze (dzień liczy się według czasu polskiego).
+
+- **Rozliczenie.** Dzień rozlicza się po północy: wtedy dochodzi seria i żar. Gdy wymagania są spełnione już dziś, ognisko pokazuje „Ognisko płonie”, choć seria zwiększy się dopiero po północy.
 
 - **Żar** za dzień z płonącym ogniskiem to 100 × mnożnik dnia × premia serii.
 - **Mnożnik dnia:** ×1,0 przy 30% aktywnych, ×1,25 przy 50% i ×1,5 przy 70%.

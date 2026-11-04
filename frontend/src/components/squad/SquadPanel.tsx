@@ -187,7 +187,10 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
     );
   };
 
-  const flameName = t(`squad.flame.${fire?.level ?? squad.flame_level}`);
+  // Poziom plomienia liczy sie z rozliczonych dni, wiec dzisiejsze spelnienie wymagan pokazujemy osobno, zeby nie wygladalo na brak ogniska.
+  const litToday = fire?.today.lit === true;
+  const flameLevel = fire?.level ?? squad.flame_level;
+  const flameName = litToday && flameLevel === 0 ? t('squad.fire.burning') : t(`squad.flame.${flameLevel}`);
   const progress = fire ? Math.min(100, Math.round((fire.today.active / Math.max(1, fire.today.needed)) * 100)) : 0;
 
   return (
@@ -251,7 +254,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
         <section className="panel squad-fire">
           <InfoHint wide text={t('squad.fire.info', { percent: meta.limits.fire_threshold_percent, min: meta.limits.fire_min_active })} label={t('badges.moreInfo')} />
           <h2>{t('squad.fire.title')}</h2>
-          <p className="squad-flame"><span className={`flame-badge level-${fire.level}`}>{flameName}</span> {t('squad.fire.streak', { n: fire.streak })}</p>
+          <p className="squad-flame"><span className={`flame-badge level-${litToday ? Math.max(1, fire.level) : fire.level}`}>{flameName}</span> {t('squad.fire.streak', { n: fire.streak })}{litToday && <small className="muted"> {t('squad.fire.streakPending')}</small>}</p>
           <div className="progress" role="progressbar" aria-valuemin={0} aria-valuemax={fire.today.needed} aria-valuenow={Math.min(fire.today.active, fire.today.needed)} aria-label={t('squad.fire.todayLabel')}>
             <div className="progress-bar" style={{ width: `${progress}%` }} />
           </div>
@@ -277,6 +280,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
 
       {section === 'czlonkowie' && (
       <section className="panel">
+        <InfoHint wide text={t('squad.members.rolesInfo')} label={t('badges.moreInfo')} />
         <h2>{t('squad.members.title', { n: squad.member_list.length, max: squad.max_members })}</h2>
         <div className="table-scroll">
           <table className="ranking-table">
@@ -301,7 +305,6 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
                   </td>
                   <td data-label={t('squad.members.role')}>
                     {t(`squad.roles.${m.role ?? 'member'}`)}
-                    {m.title_hidden && m.role !== 'member' && <small className="muted"> ({t('squad.members.titleHidden')})</small>}
                   </td>
                   <td data-label={t('squad.members.joined')}>{formatDate(m.joined_at)}</td>
                   {(me.can_manage || me.is_leader) && <td className="num">{memberActions(m)}</td>}
