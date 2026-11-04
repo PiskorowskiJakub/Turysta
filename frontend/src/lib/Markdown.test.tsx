@@ -15,6 +15,12 @@ describe('Markdown (wiki)', () => {
     expect(out).toContain('<li><strong>Brąz</strong> i <code>kod</code></li>');
   });
 
+  it('renderuje listy zagniezdzone', () => {
+    const out = html('- Oddziały\n  - Role\n  - Ognisko\n- Kronika\n');
+    expect(out).toContain('<li>Oddziały<ul><li>Role</li><li>Ognisko</li></ul></li>');
+    expect(out).toContain('<li>Kronika</li>');
+  });
+
   it('renderuje tabele z wyrownaniem', () => {
     const out = html('| A | B |\n|---|--:|\n| x | 5 |\n');
     expect(out).toContain('<th style="text-align:left">A</th>');
