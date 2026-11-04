@@ -14,6 +14,7 @@ export interface AuthState {
   saveProfile: (gender: Gender, avatarId: number) => Promise<void>;
   updateAccountProfile: (gender: Gender, avatarId: number) => Promise<void>;
   updatePrivacy: (patch: { share_activity?: boolean; show_squad_title?: boolean }) => Promise<void>;
+  changeName: (characterName: string, currentPassword: string) => Promise<void>;
   changeEmail: (email: string, currentPassword: string) => Promise<void>;
   changePassword: (currentPassword: string, password: string, passwordConfirm: string) => Promise<void>;
   resendVerification: () => Promise<void>;
@@ -111,6 +112,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setMe(await api<Me>('PATCH', '/account/privacy', patch));
   }, []);
 
+  const changeName = useCallback(async (characterName: string, currentPassword: string) => {
+    setMe(await api<Me>('PUT', '/account/name', { character_name: characterName, current_password: currentPassword }));
+  }, []);
+
   const changeEmail = useCallback(async (email: string, currentPassword: string) => {
     setMe(await api<Me>('PUT', '/account/email', { email, current_password: currentPassword }));
   }, []);
@@ -132,8 +137,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<AuthState>(
-    () => ({ status, me, login, register, logout, refresh, saveProfile, updateAccountProfile, updatePrivacy, changeEmail, changePassword, resendVerification, deleteAccount }),
-    [status, me, login, register, logout, refresh, saveProfile, updateAccountProfile, updatePrivacy, changeEmail, changePassword, resendVerification, deleteAccount],
+    () => ({ status, me, login, register, logout, refresh, saveProfile, updateAccountProfile, updatePrivacy, changeName, changeEmail, changePassword, resendVerification, deleteAccount }),
+    [status, me, login, register, logout, refresh, saveProfile, updateAccountProfile, updatePrivacy, changeName, changeEmail, changePassword, resendVerification, deleteAccount],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

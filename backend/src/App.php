@@ -86,6 +86,7 @@ final class App
 
         $router->patch('/v1/account/profile', [$account, 'updateProfile']);
         $router->patch('/v1/account/privacy', [$account, 'updatePrivacy']);
+        $router->put('/v1/account/name', [$account, 'changeName']);
         $router->put('/v1/account/email', [$account, 'changeEmail']);
         $router->put('/v1/account/password', [$account, 'changePassword']);
         $router->post('/v1/account/resend-verification', [$account, 'resendVerification']);

@@ -18,6 +18,7 @@ Dokumentacja zasad gry.
   - [Ognisko](#ognisko)
   - [Szlaki (wyprawy oddziału)](#szlaki-wyprawy-oddziału)
   - [Kronika](#kronika)
+- [Nazwa postaci](#nazwa-postaci)
 
 ## Światy
 
@@ -263,3 +264,7 @@ Co tydzień (od poniedziałku do niedzieli, czas polski) oddział wyrusza na wsp
 ### Kronika
 
 Kronika dostępna jest tylko dla członków i zapisuje się sama: założenie oddziału, dołączenia i odejścia, usunięcia, zmiany ról i przywództwa, zmiany nazwy i specjalizacji, awanse i spadki ogniska oraz zakończone wyprawy. Gracze, którzy w ustawieniach prywatności ukryli swoją aktywność, są w kronice anonimowi.
+
+## Nazwa postaci
+
+Nazwę postaci możesz zmienić w Edycji profilu, ale bardzo rzadko: raz na 180 dni (pół roku), po podaniu hasła. Nowa nazwa ma te same zasady co przy rejestracji (3–20 znaków), musi być wolna i nie może zawierać zakazanych słów. Po zmianie stara nazwa jest przez 90 dni zarezerwowana i nikt inny jej nie przejmie. Nowa nazwa pojawia się od razu w rankingach, oddziałach (także na listach członków i w kronice) i u znajomych.

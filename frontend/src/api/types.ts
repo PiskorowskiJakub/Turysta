@@ -9,6 +9,7 @@ export interface Me {
     avatar_id: number | null;
     gender: Gender | null;
     gender_change_available_at: string | null;
+    name_change_available_at: string | null;
     role: string;
     email_verified: boolean;
     email_verification_deadline: string | null;

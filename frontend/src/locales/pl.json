@@ -682,7 +682,7 @@
     "back": "Wróć do profilu",
     "characterSection": "Postać",
     "characterName": "Nazwa postaci",
-    "nameLocked": "Nazwy postaci nie można zmienić.",
+    "nameLocked": "Nazwę postaci zmienisz w sekcji „Nazwa postaci” poniżej.",
     "gender": "Płeć",
     "genderLocked": "Płeć możesz zmienić raz na 30 dni. Następna zmiana będzie możliwa {{date}}.",
     "genderRule": "Płeć możesz zmienić raz na 30 dni. Zmiana awatara na inny z tej samej płci jest bez ograniczeń.",
@@ -711,7 +711,14 @@
     "shareActivityHint": "Znajomi zobaczą na stronie głównej, że dotarłeś do nowego świata albo zdobyłeś cenną odznakę. Po wyłączeniu ukrywasz swoją aktywność, ale sam też nie widzisz aktywności znajomych.",
     "savedPrivacy": "Ustawienia prywatności zapisane.",
     "showSquadTitle": "Pokazuj mój tytuł w moim profilu",
-    "showSquadTitleHint": "Dotyczy tylko Twojego profilu publicznego. Na liście członków oddziału tytuł (np. Zastępca, Przewodnik) jest zawsze widoczny. Samo członkostwo w oddziale jest publiczne."
+    "showSquadTitleHint": "Dotyczy tylko Twojego profilu publicznego. Na liście członków oddziału tytuł (np. Zastępca, Przewodnik) jest zawsze widoczny. Samo członkostwo w oddziale jest publiczne.",
+    "nameSection": "Nazwa postaci",
+    "currentName": "Obecna nazwa: {{name}}",
+    "newName": "Nowa nazwa postaci",
+    "nameInfo": "Nazwę możesz zmienić raz na pół roku (180 dni). Stara nazwa jest przez 3 miesiące zarezerwowana i nikt inny jej nie przejmie. Zmiana jest widoczna wszędzie w grze: w rankingach, oddziałach i u znajomych.",
+    "saveName": "Zmień nazwę",
+    "savedName": "Nazwa postaci zmieniona.",
+    "nameLockedUntil": "Nazwę postaci możesz zmienić raz na 180 dni. Następna zmiana będzie możliwa {{date}}."
   },
   "verify": {
     "title": "Twoje konto nie zostało jeszcze potwierdzone.",
@@ -795,7 +802,8 @@
     "march_done": "Dzisiejszy Marsz został już wykonany.",
     "not_participant": "Najpierw dołącz do wyprawy.",
     "difficulty_locked": "Trudność trasy można zmieniać tylko w poniedziałek.",
-    "invalid_difficulty": "Wybierz poziom trudności."
+    "invalid_difficulty": "Wybierz poziom trudności.",
+    "name_cooldown": "Nazwę postaci możesz zmienić raz na 180 dni."
   },
   "training": {
     "title": "Szkolenia",

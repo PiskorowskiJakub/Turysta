@@ -30,6 +30,14 @@ final class AccountController
     }
 
     /** @return array{0:int,1:array<string,mixed>} */
+    public function changeName(Request $r): array
+    {
+        $user = Session::requireUser($r);
+        $this->account->changeName($user, $r->input('current_password'), $r->input('character_name'), $r->ip());
+        return $this->me->show($r);
+    }
+
+    /** @return array{0:int,1:array<string,mixed>} */
     public function changeEmail(Request $r): array
     {
         $user = Session::requireUser($r);
