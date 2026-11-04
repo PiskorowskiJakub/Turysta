@@ -143,17 +143,22 @@ final class SquadFlowTest extends TestCase
             $this->assertArrayHasKey('name', $e->fields);
         }
 
-        $word = 'zakaz' . substr($this->suffix, 0, 3);
+        // Cale 6 znakow losowego sufiksu i sprzatanie po tescie: zakazane slowa zostaja w bazie, wiec krotki sufiks z czasem sie powtarza.
+        $word = 'zakaz' . $this->suffix;
         $admin = new SquadAdminService($this->pdo);
         $adminUser = $this->user('Adm');
-        $admin->addBannedWord($word, (int) $adminUser['id']);
+        $key = $admin->addBannedWord($word, (int) $adminUser['id']);
         try {
-            $this->squads->create($b, ['name' => "Mega Z4kaz" . substr($this->suffix, 0, 3) . ' Team', 'specialization' => 'piesza'], $this->ip());
-            $this->fail('Slowo zakazane (z podmiana znakow) powinno byc wykryte.');
-        } catch (ApiException $e) {
-            $this->assertArrayHasKey('name', $e->fields);
+            try {
+                $this->squads->create($b, ['name' => 'Mega Z4kaz' . $this->suffix . ' Team', 'specialization' => 'piesza'], $this->ip());
+                $this->fail('Slowo zakazane (z podmiana znakow) powinno byc wykryte.');
+            } catch (ApiException $e) {
+                $this->assertArrayHasKey('name', $e->fields);
+            }
+            $this->assertTrue(NameFilter::isBanned($this->pdo, "xx{$word}yy"));
+        } finally {
+            $this->pdo->prepare('DELETE FROM banned_words WHERE word_key = ?')->execute([$key]);
         }
-        $this->assertTrue(NameFilter::isBanned($this->pdo, "xx{$word}yy"));
     }
 
     public function testJoinModes(): void
