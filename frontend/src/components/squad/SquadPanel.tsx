@@ -6,6 +6,7 @@ import { api, ApiError } from '../../api/client';
 import type { SquadChronicleEntry, SquadMember, SquadMeta, SquadMine, SquadProfile } from '../../api/types';
 import PlayerAvatar from '../PlayerAvatar';
 import { formatDate, formatDateTime } from '../../format';
+import InfoHint from '../InfoHint';
 import SquadFields, { type SquadDraft } from './SquadFields';
 
 export type SquadSection = 'przeglad' | 'czlonkowie' | 'zaproszeni' | 'oczekujacy' | 'ustawienia' | 'kronika';
@@ -243,6 +244,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
 
       {section === 'przeglad' && fire && (
         <section className="panel squad-fire">
+          <InfoHint wide text={t('squad.fire.info', { percent: meta.limits.fire_threshold_percent, min: meta.limits.fire_min_active })} label={t('badges.moreInfo')} />
           <h2>{t('squad.fire.title')}</h2>
           <p className="squad-flame"><span className={`flame-badge level-${fire.level}`}>{flameName}</span> {t('squad.fire.streak', { n: fire.streak })}</p>
           <div className="progress" role="progressbar" aria-valuemin={0} aria-valuemax={fire.today.needed} aria-valuenow={Math.min(fire.today.active, fire.today.needed)} aria-label={t('squad.fire.todayLabel')}>
@@ -255,7 +257,6 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
             <li><b>{fire.lit_days}</b><small>{t('squad.fire.litDays')}</small></li>
           </ul>
           {fire.next_level && <p className="muted">{t('squad.fire.next', { level: t(`squad.flame.${fire.next_level.level}`), days: fire.next_level.in_days })}</p>}
-          <p className="field-hint">{t('squad.fire.rule', { percent: meta.limits.fire_threshold_percent, min: meta.limits.fire_min_active })}</p>
           {fire.history.length > 0 && (
             <ul className="fire-history" aria-label={t('squad.fire.history')}>
               {[...fire.history].reverse().map((d) => (
