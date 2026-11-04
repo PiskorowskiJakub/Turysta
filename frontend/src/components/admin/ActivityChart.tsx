@@ -5,6 +5,7 @@ import type { ActivitySeries } from '../../api/types';
 import { formatDate } from '../../format';
 
 type Metric = 'active' | 'logins' | 'registrations';
+type Group = 'day' | 'week' | 'month';
 
 interface Props {
   /** hours: co godzine, days: co dobe. */
@@ -14,11 +15,16 @@ interface Props {
 }
 
 const METRICS: Metric[] = ['active', 'logins', 'registrations'];
+const GROUPS: Group[] = ['day', 'week', 'month'];
+
+/** Domyslne grupowanie: przy duzych zakresach tygodnie, zeby wykres byl czytelny. */
+const defaultGroup = (span: number): Group => (span >= 180 ? 'week' : 'day');
 
 /** Interaktywny wykres slupkowy aktywnosci: wybor zakresu i miary, linie siatki, podsumowanie oraz podpowiedz po najechaniu. */
 export default function ActivityChart({ view, spans, defaultSpan }: Props) {
   const { t } = useTranslation();
   const [span, setSpan] = useState(defaultSpan);
+  const [group, setGroup] = useState<Group>(defaultGroup(defaultSpan));
   const [metric, setMetric] = useState<Metric>('active');
   const [data, setData] = useState<ActivitySeries | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,16 +33,20 @@ export default function ActivityChart({ view, spans, defaultSpan }: Props) {
   useEffect(() => {
     let alive = true;
     setError(null);
-    api<ActivitySeries>('GET', `/admin/activity?view=${view}&span=${span}`)
+    api<ActivitySeries>('GET', `/admin/activity?view=${view}&span=${span}${view === 'days' ? `&group=${group}` : ''}`)
       .then((d) => alive && setData(d))
       .catch((e) => alive && setError(e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network')));
     return () => {
       alive = false;
     };
-  }, [view, span, t]);
+  }, [view, span, group, t]);
 
   const label = (key: string, long: boolean): string => {
-    if (view === 'days') return long ? formatDate(key) : key.slice(5);
+    if (view === 'days') {
+      if (group === 'month') return key.slice(0, 7);
+      if (group === 'week') return long ? t('admin.stats.chart.weekFrom', { date: formatDate(key) }) : key.slice(5);
+      return long ? formatDate(key) : key.slice(5);
+    }
     const d = new Date(key);
     const time = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
     return long ? `${d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' })} ${time}` : time;
@@ -64,9 +74,16 @@ export default function ActivityChart({ view, spans, defaultSpan }: Props) {
       <div className="activity-controls">
         <div className="segmented" role="group" aria-label={t('admin.stats.chart.range')}>
           {spans.map((n) => (
-            <button key={n} type="button" className={'seg' + (n === span ? ' active' : '')} aria-pressed={n === span} onClick={() => setSpan(n)}>{spanLabel(n)}</button>
+            <button key={n} type="button" className={'seg' + (n === span ? ' active' : '')} aria-pressed={n === span} onClick={() => { setSpan(n); setGroup(defaultGroup(n)); }}>{spanLabel(n)}</button>
           ))}
         </div>
+        {view === 'days' && (
+          <div className="segmented" role="group" aria-label={t('admin.stats.chart.group')}>
+            {GROUPS.map((g) => (
+              <button key={g} type="button" className={'seg' + (g === group ? ' active' : '')} aria-pressed={g === group} onClick={() => setGroup(g)}>{t(`admin.stats.chart.groups.${g}`)}</button>
+            ))}
+          </div>
+        )}
         <div className="segmented" role="group" aria-label={t('admin.stats.chart.metric')}>
           {METRICS.map((m) => (
             <button key={m} type="button" className={'seg' + (m === metric ? ' active' : '')} aria-pressed={m === metric} onClick={() => setMetric(m)}>{t(`admin.stats.chart.metrics.${m}`)}</button>
@@ -89,7 +106,7 @@ export default function ActivityChart({ view, spans, defaultSpan }: Props) {
             <div className="activity-yaxis" aria-hidden="true">
               {ticks.map((f) => <span key={f}>{Math.round(stats.max * f)}</span>)}
             </div>
-            <div className="activity-bars" role="img" aria-label={`${t(`admin.stats.chart.metrics.${metric}`)}: ${stats.total}`} onMouseLeave={() => setHover(null)}>
+            <div className="activity-bars" style={{ gap: data.points.length > 120 ? 0 : data.points.length > 60 ? 1 : undefined }} role="img" aria-label={`${t(`admin.stats.chart.metrics.${metric}`)}: ${stats.total}`} onMouseLeave={() => setHover(null)}>
               {data.points.map((p, i) => (
                 <span
                   key={p.key}

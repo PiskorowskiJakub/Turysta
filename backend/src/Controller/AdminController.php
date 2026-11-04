@@ -53,7 +53,7 @@ final class AdminController
     {
         Session::requireAdmin($r);
         $view = ($r->query['view'] ?? '') === 'hours' ? 'hours' : 'days';
-        return [200, $this->stats->activity($view, (int) ($r->query['span'] ?? 0))];
+        return [200, $this->stats->activity($view, (int) ($r->query['span'] ?? 0), is_string($r->query['group'] ?? null) ? $r->query['group'] : 'day')];
     }
 
     // ---- gracze ----

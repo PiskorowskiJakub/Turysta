@@ -440,7 +440,14 @@
         "sum": "suma: {{n}}",
         "avg": "średnio: {{n}}",
         "max": "maks.: {{n}}",
-        "since": "Dane o aktywności graczy są zbierane od {{date}}, wcześniejszy okres pokazuje zera."
+        "since": "Dane o aktywności graczy są zbierane od {{date}}, wcześniejszy okres pokazuje zera.",
+        "group": "Grupowanie",
+        "groups": {
+          "day": "Dni",
+          "week": "Tygodnie",
+          "month": "Miesiące"
+        },
+        "weekFrom": "tydzień od {{date}}"
       }
     },
     "facts": {

@@ -130,14 +130,14 @@ final class AdminStatsService
      *
      * @return array<string,mixed>
      */
-    public function activity(string $view, int $span): array
+    public function activity(string $view, int $span, string $group = 'day'): array
     {
         if ($view === 'hours') {
             $span = in_array($span, self::HOUR_SPANS, true) ? $span : 24;
             return $this->hourly($span);
         }
         $span = in_array($span, self::DAY_SPANS, true) ? $span : 30;
-        return $this->daily($span);
+        return $this->daily($span, in_array($group, ['day', 'week', 'month'], true) ? $group : 'day');
     }
 
     /** @return array<string,mixed> */
@@ -176,27 +176,45 @@ final class AdminStatsService
         ];
     }
 
-    /** @return array<string,mixed> */
-    private function daily(int $days): array
+    /**
+     * Szereg dzienny; przy $group = week lub month punkty to tygodnie (od poniedzialku) albo miesiace.
+     * Aktywni gracze w grupie to unikalni gracze, a logowania i nowe konta sa sumowane.
+     *
+     * @return array<string,mixed>
+     */
+    private function daily(int $days, string $group): array
     {
         $tz = new DateTimeZone(Clock::GAME_TZ);
         $end = new DateTimeImmutable('today', $tz);
+        $bucket = static function (string $day) use ($group): string {
+            $d = new DateTimeImmutable($day);
+            if ($group === 'week') {
+                return $d->modify('monday this week')->format('Y-m-d');
+            }
+            return $group === 'month' ? $d->format('Y-m-01') : $day;
+        };
         $keys = [];
         for ($i = $days - 1; $i >= 0; $i--) {
-            $keys[$end->modify("-$i days")->format('Y-m-d')] = ['active' => 0, 'logins' => 0, 'registrations' => 0];
+            $keys[$bucket($end->modify("-$i days")->format('Y-m-d'))] = ['active' => 0, 'logins' => 0, 'registrations' => 0];
         }
-        $from = array_key_first($keys);
-        $stmt = $this->pdo->prepare('SELECT day, COUNT(*) AS c FROM user_active_days WHERE day >= ? GROUP BY day');
+        $from = $end->modify('-' . ($days - 1) . ' days')->format('Y-m-d');
+        $sqlBucket = match ($group) {
+            'week' => 'DATE_SUB(day, INTERVAL WEEKDAY(day) DAY)',
+            'month' => "DATE_FORMAT(day, '%Y-%m-01')",
+            default => 'day',
+        };
+        $stmt = $this->pdo->prepare("SELECT $sqlBucket AS b, COUNT(DISTINCT user_id) AS c FROM user_active_days WHERE day >= ? GROUP BY b");
         $stmt->execute([$from]);
         foreach ($stmt->fetchAll() as $r) {
-            if (isset($keys[$r['day']])) {
-                $keys[$r['day']]['active'] = (int) $r['c'];
+            if (isset($keys[$r['b']])) {
+                $keys[$r['b']]['active'] = (int) $r['c'];
             }
         }
         foreach (['logins' => ['login_events', 'logged_in_at'], 'registrations' => ['users', 'created_at']] as $field => [$table, $column]) {
             foreach ($this->series($table, $column, $days) as $d) {
-                if (isset($keys[$d['day']])) {
-                    $keys[$d['day']][$field] = $d['count'];
+                $k = $bucket($d['day']);
+                if (isset($keys[$k])) {
+                    $keys[$k][$field] += $d['count'];
                 }
             }
         }
@@ -208,6 +226,7 @@ final class AdminStatsService
         return [
             'view' => 'days',
             'span' => $days,
+            'group' => $group,
             'tracking_since' => $since ? (string) $since : null,
             'points' => $points,
         ];

@@ -73,6 +73,15 @@ final class AdminActivityTest extends TestCase
         $this->assertCount(30, $days['points']);
         $this->assertGreaterThanOrEqual(2, $days['points'][29]['active']);
 
+        $weeks = $svc->activity('days', 90, 'week');
+        $this->assertSame('week', $weeks['group']);
+        $this->assertLessThanOrEqual(14, count($weeks['points']));
+        $this->assertSame(0, (int) (new \DateTimeImmutable($weeks['points'][0]['key']))->format('N') - 1);
+        $this->assertGreaterThanOrEqual(2, $weeks['points'][count($weeks['points']) - 1]['active']);
+        $months = $svc->activity('days', 365, 'month');
+        $this->assertLessThanOrEqual(13, count($months['points']));
+        $this->assertGreaterThanOrEqual(2, $months['points'][count($months['points']) - 1]['active']);
+
         // Niedozwolony zakres wraca do domyslnego.
         $this->assertCount(24, $svc->activity('hours', 5)['points']);
         $this->assertCount(30, $svc->activity('days', 5)['points']);
