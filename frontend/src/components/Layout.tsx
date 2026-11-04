@@ -7,6 +7,7 @@ import { useAuth } from '../auth/AuthContext';
 import Coins from './Coins';
 import Points from './Points';
 import PlayerAvatar from './PlayerAvatar';
+import FactBar from './FactBar';
 import CookieBanner, { OPEN_COOKIE_SETTINGS } from './CookieBanner';
 import { formatDate } from '../format';
 import { Icon, type IconName } from './icons';
@@ -117,10 +118,7 @@ export default function Layout() {
             <BrandMark />
             <span className="brand-name">Dwa Dukaty</span>
           </NavLink>
-          <div className="fact">
-            <b>{t('fact')}</b>
-            <span>{fact ?? t('tagline')}</span>
-          </div>
+          <FactBar label={t('fact')} text={fact ?? t('tagline')} />
           {status === 'anon' && (
             <div className="topbar-cta">
               <Link className="button small secondary" to="/logowanie">{t('nav.login')}</Link>

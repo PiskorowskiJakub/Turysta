@@ -78,6 +78,16 @@ final class MeController
     }
 
     /** @param array<string,mixed> $user */
+    private function nameChangeAt(array $user): ?string
+    {
+        $next = AccountService::nameChangeAvailableAt($user['name_changed_at'] ?? null);
+        if ($next === null || Clock::parse($next) <= Clock::now($this->pdo)) {
+            return null;
+        }
+        return Clock::iso($next);
+    }
+
+    /** @param array<string,mixed> $user */
     private function genderChangeAt(array $user): ?string
     {
         $next = AccountService::genderChangeAvailableAt($user['gender_changed_at'] ?? null);
@@ -127,6 +137,7 @@ final class MeController
                 'id' => $uid,
                 'email' => $user['email'],
                 'character_name' => $user['character_name'],
+                'name_change_available_at' => $this->nameChangeAt($user),
                 'avatar_id' => $user['avatar_id'] !== null ? (int) $user['avatar_id'] : null,
                 'gender' => $user['gender'],
                 'gender_change_available_at' => $this->genderChangeAt($user),

@@ -7,12 +7,17 @@ use PDO;
 use Turysta\Game\Clock;
 use Turysta\Http\ApiException;
 use Turysta\Mailer;
+use Turysta\Squad\NameFilter;
 use Turysta\MailTemplate;
 
-/** Edycja konta przez zalogowanego gracza: plec i awatar, e-mail, haslo. Nazwy postaci zmienic nie mozna. */
+/** Edycja konta przez zalogowanego gracza: plec i awatar, e-mail, haslo. Nazwe postaci mozna zmienic bardzo rzadko. */
 final class AccountService
 {
     public const GENDER_COOLDOWN_DAYS = 30;
+    /** Nazwe postaci mozna zmienic raz na pol roku. */
+    public const NAME_COOLDOWN_DAYS = 180;
+    /** Przez tyle dni po zmianie nikt inny nie moze wziac porzuconej nazwy (ochrona przed podszywaniem sie). */
+    public const NAME_RESERVE_DAYS = 90;
 
     public function __construct(
         private PDO $pdo,
@@ -28,6 +33,69 @@ final class AccountService
             return null;
         }
         return Clock::parse($changedAt)->modify('+' . self::GENDER_COOLDOWN_DAYS . ' days')->format('Y-m-d H:i:s');
+    }
+
+    /** Kiedy (UTC, 'Y-m-d H:i:s') nazwe postaci mozna znowu zmienic; null = mozna teraz. */
+    public static function nameChangeAvailableAt(?string $changedAt): ?string
+    {
+        if ($changedAt === null) {
+            return null;
+        }
+        return Clock::parse($changedAt)->modify('+' . self::NAME_COOLDOWN_DAYS . ' days')->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Zmiana nazwy postaci (wymaga hasla). Nowa nazwa musi byc wolna, nie moze byc zakazana ani niedawno porzucona przez kogos innego.
+     *
+     * @param array<string,mixed> $user wiersz users
+     */
+    public function changeName(array $user, string $currentPassword, string $newName, string $ip): void
+    {
+        $this->requirePassword($user, $currentPassword, $ip);
+        $name = trim($newName);
+        $errors = Validator::characterName($name);
+        if (!$errors && $name === (string) $user['character_name']) {
+            $errors['character_name'] = 'To jest już Twoja nazwa postaci.';
+        }
+        if ($errors) {
+            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', $errors);
+        }
+
+        $next = self::nameChangeAvailableAt($user['name_changed_at'] ?? null);
+        if ($next !== null && Clock::parse($next) > Clock::now($this->pdo)) {
+            $msg = 'Nazwę postaci możesz zmienić raz na ' . self::NAME_COOLDOWN_DAYS . ' dni. Następna zmiana będzie możliwa '
+                . Clock::parse($next)->setTimezone(new \DateTimeZone(Clock::GAME_TZ))->format('d.m.Y') . '.';
+            throw new ApiException(422, 'name_cooldown', $msg, ['character_name' => $msg]);
+        }
+
+        if (NameFilter::isBanned($this->pdo, $name)) {
+            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', ['character_name' => 'Ta nazwa jest niedozwolona.']);
+        }
+        $taken = $this->pdo->prepare(
+            'SELECT 1 FROM users WHERE character_name = ? AND id <> ?
+             UNION SELECT 1 FROM user_name_changes WHERE old_name = ? AND user_id <> ? AND changed_at > UTC_TIMESTAMP() - INTERVAL ' . self::NAME_RESERVE_DAYS . ' DAY'
+        );
+        $taken->execute([$name, $user['id'], $name, $user['id']]);
+        if ($taken->fetchColumn()) {
+            throw new ApiException(409, 'already_exists', 'Ta nazwa postaci jest już zajęta.', ['character_name' => 'Ta nazwa postaci jest już zajęta.']);
+        }
+
+        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->prepare('INSERT INTO user_name_changes (user_id, old_name, new_name) VALUES (?, ?, ?)')
+                ->execute([$user['id'], $user['character_name'], $name]);
+            $this->pdo->prepare('UPDATE users SET character_name = ?, name_changed_at = UTC_TIMESTAMP() WHERE id = ?')
+                ->execute([$name, $user['id']]);
+            $this->pdo->commit();
+        } catch (\PDOException $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            if ($e->getCode() === '23000') {
+                throw new ApiException(409, 'already_exists', 'Ta nazwa postaci jest już zajęta.', ['character_name' => 'Ta nazwa postaci jest już zajęta.']);
+            }
+            throw $e;
+        }
     }
 
     /**

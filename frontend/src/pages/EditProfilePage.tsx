@@ -19,13 +19,17 @@ const empty: Result = { fields: {} };
 
 export default function EditProfilePage() {
   const { t } = useTranslation();
-  const { me, updateAccountProfile, updatePrivacy, changeEmail, changePassword, deleteAccount } = useAuth();
+  const { me, updateAccountProfile, updatePrivacy, changeName, changeEmail, changePassword, deleteAccount } = useAuth();
   const navigate = useNavigate();
 
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [gender, setGender] = useState<Gender | null>(me?.user.gender ?? null);
   const [avatarId, setAvatarId] = useState<number | null>(me?.user.avatar_id ?? null);
   const [character, setCharacter] = useState<Result>(empty);
+
+  const [newName, setNewName] = useState('');
+  const [namePassword, setNamePassword] = useState('');
+  const [nameResult, setNameResult] = useState<Result>(empty);
 
   const [privacy, setPrivacy] = useState<Result>(empty);
 
@@ -80,6 +84,14 @@ export default function EditProfilePage() {
     e.preventDefault();
     if (!gender || avatarId === null) return;
     void run(setCharacter, () => updateAccountProfile(gender, avatarId), t('editProfile.savedCharacter'));
+  };
+
+  const onName = (e: FormEvent) => {
+    e.preventDefault();
+    void run(setNameResult, () => changeName(newName, namePassword), t('editProfile.savedName'), () => {
+      setNewName('');
+      setNamePassword('');
+    });
   };
 
   const onShareActivity = (checked: boolean) => {
@@ -203,6 +215,22 @@ export default function EditProfilePage() {
         </label>
         <p className="field-hint">{t('editProfile.showSquadTitleHint')}</p>
       </section>
+
+      <form className="panel edit-section" onSubmit={onName} noValidate>
+        <h2>{t('editProfile.nameSection')}</h2>
+        <p className="muted">{t('editProfile.currentName', { name: me.user.character_name })}</p>
+        {messages(nameResult)}
+        {me.user.name_change_available_at ? (
+          <p className="field-hint">{t('editProfile.nameLockedUntil', { date: formatDate(me.user.name_change_available_at) })}</p>
+        ) : (
+          <>
+            <FormField label={t('editProfile.newName')} name="new_character_name" value={newName} onChange={(e) => setNewName(e.target.value)} error={nameResult.fields.character_name} maxLength={20} autoComplete="off" required />
+            <FormField label={t('editProfile.currentPassword')} name="name_current_password" type="password" value={namePassword} onChange={(e) => setNamePassword(e.target.value)} error={nameResult.fields.current_password} autoComplete="current-password" required />
+            <p className="field-hint">{t('editProfile.nameInfo')}</p>
+            <button className="button" type="submit" disabled={busy || !newName.trim() || !namePassword}>{t('editProfile.saveName')}</button>
+          </>
+        )}
+      </form>
 
       <form className="panel edit-section" onSubmit={onEmail} noValidate>
         <h2>{t('editProfile.emailSection')}</h2>

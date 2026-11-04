@@ -71,13 +71,31 @@
       "week": "Ten tydzień",
       "month": "Ten miesiąc",
       "all": "Łącznie",
-      "gained": "Punkty w okresie",
-      "total": "Razem",
-      "sinceWeek": "Punkty zdobyte od poniedziałku, {{date}}.",
-      "sinceMonth": "Punkty zdobyte od początku miesiąca, {{date}}.",
-      "sinceAll": "Wszystkie zdobyte punkty.",
       "empty": "Dodaj znajomych w zakładce Profil, Znajomi, żeby ścigać się z nimi.",
-      "myPlace": "Twoje miejsce wśród znajomych: {{rank}} z {{n}}"
+      "myPlace": "Twoje miejsce wśród znajomych: {{rank}} z {{n}}",
+      "metric": "Ranking",
+      "metrics": {
+        "points": "Punkty",
+        "coins": "Dukaty"
+      },
+      "range": "{{from}} – {{to}}",
+      "current_week": "Ten tydzień",
+      "current_month": "Ten miesiąc",
+      "older_week": "‹ Poprzedni tydzień",
+      "older_month": "‹ Poprzedni miesiąc",
+      "newer_week": "Następny tydzień ›",
+      "newer_month": "Następny miesiąc ›",
+      "note_points_week": "Punkty zdobyte w tygodniu ({{range}}), bez korekt administratora.",
+      "note_points_month": "Punkty zdobyte w miesiącu ({{range}}), bez korekt administratora.",
+      "note_points_all": "Wszystkie zdobyte punkty.",
+      "note_coins_week": "Dukaty zarobione w tygodniu ({{range}}): praca, nagrody i polecenia. Nie liczą się prezenty od znajomych, zwroty ani korekty.",
+      "note_coins_month": "Dukaty zarobione w miesiącu ({{range}}): praca, nagrody i polecenia. Nie liczą się prezenty od znajomych, zwroty ani korekty.",
+      "note_coins_all": "Wszystkie zarobione dukaty: praca, nagrody i polecenia. Nie liczą się prezenty od znajomych, zwroty ani korekty.",
+      "gained_points": "Punkty w okresie",
+      "gained_points_all": "Punkty",
+      "gained_coins": "Dukaty zarobione",
+      "total_points": "Razem punktów",
+      "total_coins": "Saldo"
     }
   },
   "badges": {
@@ -469,7 +487,9 @@
       "on": "włączona",
       "off": "wyłączona",
       "disable": "Wyłącz",
-      "enable": "Włącz"
+      "enable": "Włącz",
+      "counter": "{{n}} / {{max}} znaków",
+      "tooLong": "za długa (limit {{max}} znaków), skróć ją przy najbliższej edycji"
     },
     "bugs": {
       "title": "Zgłoszenia błędów",
@@ -664,7 +684,7 @@
     "back": "Wróć do profilu",
     "characterSection": "Postać",
     "characterName": "Nazwa postaci",
-    "nameLocked": "Nazwy postaci nie można zmienić.",
+    "nameLocked": "Nazwę postaci zmienisz w sekcji „Nazwa postaci” poniżej.",
     "gender": "Płeć",
     "genderLocked": "Płeć możesz zmienić raz na 30 dni. Następna zmiana będzie możliwa {{date}}.",
     "genderRule": "Płeć możesz zmienić raz na 30 dni. Zmiana awatara na inny z tej samej płci jest bez ograniczeń.",
@@ -693,7 +713,14 @@
     "shareActivityHint": "Znajomi zobaczą na stronie głównej, że dotarłeś do nowego świata albo zdobyłeś cenną odznakę. Po wyłączeniu ukrywasz swoją aktywność, ale sam też nie widzisz aktywności znajomych.",
     "savedPrivacy": "Ustawienia prywatności zapisane.",
     "showSquadTitle": "Pokazuj mój tytuł w moim profilu",
-    "showSquadTitleHint": "Dotyczy tylko Twojego profilu publicznego. Na liście członków oddziału tytuł (np. Zastępca, Przewodnik) jest zawsze widoczny. Samo członkostwo w oddziale jest publiczne."
+    "showSquadTitleHint": "Dotyczy tylko Twojego profilu publicznego. Na liście członków oddziału tytuł (np. Zastępca, Przewodnik) jest zawsze widoczny. Samo członkostwo w oddziale jest publiczne.",
+    "nameSection": "Nazwa postaci",
+    "currentName": "Obecna nazwa: {{name}}",
+    "newName": "Nowa nazwa postaci",
+    "nameInfo": "Nazwę możesz zmienić raz na pół roku (180 dni). Stara nazwa jest przez 3 miesiące zarezerwowana i nikt inny jej nie przejmie. Zmiana jest widoczna wszędzie w grze: w rankingach, oddziałach i u znajomych.",
+    "saveName": "Zmień nazwę",
+    "savedName": "Nazwa postaci zmieniona.",
+    "nameLockedUntil": "Nazwę postaci możesz zmienić raz na 180 dni. Następna zmiana będzie możliwa {{date}}."
   },
   "verify": {
     "title": "Twoje konto nie zostało jeszcze potwierdzone.",
@@ -777,7 +804,8 @@
     "march_done": "Dzisiejszy Marsz został już wykonany.",
     "not_participant": "Najpierw dołącz do wyprawy.",
     "difficulty_locked": "Trudność trasy można zmieniać tylko w poniedziałek.",
-    "invalid_difficulty": "Wybierz poziom trudności."
+    "invalid_difficulty": "Wybierz poziom trudności.",
+    "name_cooldown": "Nazwę postaci możesz zmienić raz na 180 dni."
   },
   "training": {
     "title": "Szkolenia",
