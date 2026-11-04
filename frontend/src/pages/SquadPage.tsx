@@ -9,6 +9,7 @@ import Tabs, { type TabItem } from '../components/Tabs';
 import SquadFields, { type SquadDraft } from '../components/squad/SquadFields';
 import SquadPanel, { type SquadSection } from '../components/squad/SquadPanel';
 import SquadPublic from '../components/squad/SquadPublic';
+import SquadTrailPanel, { type TrailSection } from '../components/squad/SquadTrailPanel';
 import { formatDate } from '../format';
 
 function errText(t: TFunction, e: unknown): string {
@@ -65,12 +66,32 @@ export default function SquadPage() {
         base="/oddzial"
         items={[
           { path: 'moj', label: t('squad.tabs.mine'), children: mineChildren },
+          ...(squad
+            ? [{
+                path: 'szlaki',
+                label: t('squad.tabs.trails'),
+                children: [
+                  { path: 'wyprawa', label: t('squad.tabs.trailNow') },
+                  { path: 'historia', label: t('squad.tabs.trailHistory') },
+                ],
+              }]
+            : []),
           { path: 'katalog', label: t('squad.tabs.catalog') },
         ]}
       />
       <Routes>
         <Route index element={<Navigate to="moj" replace />} />
         <Route path="moj/*" element={<MineTab mine={mine} squad={squad} setSquad={setSquad} setMine={setMine} reload={reload} />} />
+        {squad ? (
+          <>
+            <Route path="szlaki" element={<Navigate to="wyprawa" replace />} />
+            {(['wyprawa', 'historia'] as TrailSection[]).map((s) => (
+              <Route key={s} path={`szlaki/${s}`} element={<SquadTrailPanel squadId={squad.id} section={s} />} />
+            ))}
+          </>
+        ) : (
+          <Route path="szlaki/*" element={<Navigate to="/oddzial/moj" replace />} />
+        )}
         <Route path="katalog" element={<CatalogTab meta={mine.meta} />} />
         <Route path=":id" element={<ProfileTab mine={mine} reload={reload} />} />
       </Routes>

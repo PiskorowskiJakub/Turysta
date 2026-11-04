@@ -729,3 +729,58 @@ export interface AdminSquadDetail {
   name_history: { id: number; name: string; by: string | null; created_at: string }[];
   reports: AdminSquadReport[];
 }
+
+export type TrailDifficulty = 'easy' | 'medium' | 'hard';
+
+export interface SquadTrailParticipant {
+  user_id: number;
+  name: string;
+  joined_day: string;
+  active_days: number;
+  march_days: number;
+  km: number;
+  eligible: boolean;
+  is_me: boolean;
+}
+
+export interface SquadTrail {
+  id: number;
+  week_start: string;
+  week_end: string;
+  join_until: string;
+  plan_until: string;
+  difficulty: TrailDifficulty;
+  theme: { code: string; name: string; description: string };
+  length_km: number;
+  percent: number;
+  km: number;
+  thresholds: number[];
+  max_stamps: number;
+  stamps_now: number;
+  min_eligible: number;
+  min_active_days: number;
+  fee_cents: number;
+  reward_per_stamp_cents: number;
+  joined: boolean;
+  can_join: boolean;
+  can_march: boolean;
+  marched_today: boolean;
+  can_plan: boolean;
+  participants: SquadTrailParticipant[];
+  squad_stamps: number;
+}
+
+export interface SquadTrailHistoryItem {
+  id: number;
+  week_start: string;
+  difficulty: TrailDifficulty;
+  theme: { code: string; name: string; description: string };
+  length_km: number;
+  percent: number;
+  stamps: number;
+  participants: number;
+  eligible: number;
+  joined: boolean;
+  my_reward_cents: number;
+  my_eligible: boolean;
+}

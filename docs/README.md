@@ -150,6 +150,7 @@ Odznaki trafiają do „Książeczki odznak”. Zdobyte zostają na stałe, a ni
 | Dni aktywności (suma wszystkich dni z aktywnością) | 30 dni | 100 dni | 365 dni | – | – |
 | Znajomi (liczba znajomych) | 1 | 5 | 10 | 25 | 50 |
 | Polecenia (aktywni polecani gracze, patrz [Polecenia](#polecenia)) | 1 | 3 | 5 | 10 | 25 |
+| Szlakowiec (ukończone wyprawy oddziału, patrz [Szlaki](#szlaki-wyprawy-oddziału)) | 4 | 12 | 26 | 52 | 104 |
 
 Seria liczy się według najdłuższej serii w historii konta, więc przerwanie serii nie odbiera zdobytej odznaki. Dzień aktywności to dzień (czasu polskiego), w którym gracz wszedł do gry.
 
@@ -206,7 +207,7 @@ Nagrody trafiają na konto przy Twojej najbliższej aktywności w grze.
 
 ## Oddziały
 
-Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Na razie oddziały mają skład, role, kronikę i ognisko; wspólne umiejętności i szlaki pojawią się później.
+Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Oddziały mają skład, role, kronikę, ognisko i cotygodniowe szlaki; wspólne umiejętności pojawią się później.
 
 ### Zakładanie i dołączanie
 
@@ -240,6 +241,17 @@ Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (
 - **Seria** to kolejne dni z płonącym ogniskiem. Premia serii: +0% (poniżej 3 dni), +5% (3 dni), +10% (7 dni), +15% (14 dni), +20% (30 dni).
 - **Poziomy:** Brak ogniska, Żar, Płomyk, Ognisko, Wielkie ognisko (progi serii 0, 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera.
 
+### Szlaki (wyprawy oddziału)
+
+Co tydzień (od poniedziałku do niedzieli, czas polski) oddział wyrusza na wspólną wyprawę. Zakładka „Szlaki” w menu oddziału pokazuje motyw i opis wyprawy, jej trudność, pasek postępu, uczestników i historię. Na Przeglądzie oddziału członek, który jeszcze nie dołączył, widzi zaproszenie do trwającej wyprawy.
+
+- **Motyw.** Losuje się go automatycznie spośród motywów ogólnych i motywów specjalizacji oddziału („ogólna” korzysta tylko z ogólnych). Motywy związane z porą roku wypadają tylko w swojej porze, a ten sam motyw nie wypada dwa tygodnie z rzędu.
+- **Trudność.** Łatwa (30 km), średnia (50 km) albo trudna (80 km). Wybiera ją przywódca, zastępca lub przewodnik, najpóźniej do końca poniedziałku; nowa wyprawa dziedziczy trudność poprzedniej. Im trudniejsza trasa, tym wyższe progi pieczątek, ale i więcej pieczątek do zdobycia (łatwa najwyżej 3, średnia 4, trudna 5).
+- **Dołączenie.** Wpisowe to 2 dk i znika z obiegu. Dołączyć można od poniedziałku do środy; kto wyjdzie z oddziału, przestaje się liczyć w wyprawie.
+- **Postęp.** Udział uczestnika to w połowie jego dni aktywności w grze, a w połowie codzienny, darmowy **Marsz** (przycisk, odnawia się o północy), oba liczone od dnia dołączenia do końca wyprawy. Postęp oddziału to średnia z uczestników, więc sama aktywność daje do 50% trasy. Punkty gracza nie mają na postęp żadnego wpływu.
+- **Pieczątki.** Pierwsza już od 40% (średnia trasa: kolejne od 65%, 80% i 92%; łatwa: 60%, 75%, 88%; trudna: 70%, 88%, 97%). Pieczątki trafiają do wspólnej puli oddziału i będą potrzebne w kolejnych etapach (schronisko). Oddział dostaje je, jeśli wyprawę zaliczyły co najmniej 2 osoby.
+- **Zaliczenie i nagroda.** Wyprawę zalicza uczestnik, który w jej trakcie miał co najmniej 3 dni aktywności. Po niedzieli dostaje 0,50 dk za każdą pieczątkę oddziału, a wyprawa liczy się do odznaki „Szlakowiec”. Wyprawa bez pieczątek nie daje ani nagrody, ani postępu odznaki.
+
 ### Kronika
 
-Kronika dostępna jest tylko dla członków i zapisuje się sama: założenie oddziału, dołączenia i odejścia, usunięcia, zmiany ról i przywództwa, zmiany nazwy i specjalizacji oraz awanse i spadki ogniska. Gracze, którzy w ustawieniach prywatności ukryli swoją aktywność, są w kronice anonimowi.
+Kronika dostępna jest tylko dla członków i zapisuje się sama: założenie oddziału, dołączenia i odejścia, usunięcia, zmiany ról i przywództwa, zmiany nazwy i specjalizacji, awanse i spadki ogniska oraz zakończone wyprawy. Gracze, którzy w ustawieniach prywatności ukryli swoją aktywność, są w kronice anonimowi.

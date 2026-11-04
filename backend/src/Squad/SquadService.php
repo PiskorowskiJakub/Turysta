@@ -540,7 +540,7 @@ final class SquadService
 
     /**
      * Sprawdza uprawnienie osoby wykonujacej akcje i zwraca jej role w oddziale.
-     * 'manage' i 'lead' = Przywodca i Zastepca (wywolujacy sam sprawdza, czy to musi byc Przywodca); 'recruit' = tez Rekruter.
+     * 'manage' i 'lead' = Przywodca i Zastepca (wywolujacy sam sprawdza, czy to musi byc Przywodca); 'recruit' = tez Rekruter; 'plan' = tez Przewodnik (planowanie wypraw).
      *
      * @param array<string,mixed> $actor
      */
@@ -554,6 +554,7 @@ final class SquadService
         $ok = match ($power) {
             'recruit' => in_array($role, ['leader', 'deputy', 'recruiter'], true),
             'manage', 'lead' => in_array($role, ['leader', 'deputy'], true),
+            'plan' => in_array($role, ['leader', 'deputy', 'guide'], true),
             default => false,
         };
         if (!$ok) {

@@ -1,14 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import type { AdminStats, DayCount } from '../../api/types';
+import InfoHint from '../../components/InfoHint';
 import ActivityChart from '../../components/admin/ActivityChart';
 import Coins from '../../components/Coins';
 import Points from '../../components/Points';
 import { useAdminData } from '../../hooks/useAdminData';
 import { formatDateTime } from '../../format';
 
-function Tile({ label, value, hint }: { label: string; value: React.ReactNode; hint?: string }) {
+function Tile({ label, value, hint, info }: { label: string; value: React.ReactNode; hint?: string; info?: string }) {
+  const { t } = useTranslation();
   return (
     <div className="admin-tile" title={hint}>
+      {info && <InfoHint text={info} label={t('badges.moreInfo')} />}
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>
@@ -72,7 +75,7 @@ export default function AdminStatsPage() {
       <section className="panel">
         <h2>{t('admin.stats.activity')}</h2>
         <dl className="admin-tiles">
-          <Tile label={t('admin.stats.online')} value={s.activity.online_now} hint={t('admin.stats.onlineHint')} />
+          <Tile label={t('admin.stats.online')} value={s.activity.online_now} info={t('admin.stats.onlineInfo')} />
           <Tile label="DAU" value={s.activity.dau} hint={t('admin.stats.dauHint')} />
           <Tile label="WAU" value={s.activity.wau} hint={t('admin.stats.wauHint')} />
           <Tile label="MAU" value={s.activity.mau} hint={t('admin.stats.mauHint')} />

@@ -48,6 +48,7 @@ const WORLD_SKILL_PATHS: Record<string, string> = {
   special_activity: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M9 15l2 2 4-4',
   special_friends: 'M4 20v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1M6.5 8a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0M16 4.3a3.5 3.5 0 0 1 0 7.4M20 20v-1a5 5 0 0 0-3-4.6',
   special_referrals: 'M15 20v-1a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v1M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 0 0 0 7zM19 8v6M16 11h6',
+  special_trails: 'M4 20c3-1 4-4 8-4s5-3 8-4M5 8l3-4 3 4M8 4v8M15 6h5l-2 2.5L20 11h-5z',
   w1_packing: 'M9 7V5a3 3 0 0 1 6 0v2M6 10a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v10a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zM9 15h6v4H9z',
   w1_campfire: 'M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-1.5.7-2.5 1.5-3.5.2 1 .8 1.6 1.5 1.8C11 7.5 11.5 5 12 3zM4 21l16-4M20 21L4 17',
   w1_trail_signs: 'M12 3v18M8 21h8M6 6h10l2 2-2 2H6zM18 13H8l-2 2 2 2h10z',
