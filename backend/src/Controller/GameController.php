@@ -199,7 +199,9 @@ final class GameController
         $uid = $this->uid($r);
         $this->settler->settleUser($uid);
         $period = is_string($r->query['period'] ?? null) ? $r->query['period'] : 'week';
-        return [200, (new RankingService($this->pdo))->friends($uid, $period)];
+        $metric = is_string($r->query['metric'] ?? null) ? $r->query['metric'] : 'points';
+        $offset = (int) ($r->query['offset'] ?? 0);
+        return [200, (new RankingService($this->pdo))->friends($uid, $period, $metric, $offset)];
     }
 
     private function uid(Request $r): int

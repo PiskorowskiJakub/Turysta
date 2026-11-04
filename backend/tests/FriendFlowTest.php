@@ -324,19 +324,33 @@ final class FriendFlowTest extends TestCase
         foreach (['week', 'month'] as $period) {
             $r = $ranking->friends((int) $ala['id'], $period);
             $this->assertSame([(int) $bob['id'], (int) $ala['id']], array_column($r['rows'], 'id'), $period);
-            $this->assertSame([50, 30], array_column($r['rows'], 'points'), $period);
+            $this->assertSame([50, 30], array_column($r['rows'], 'gained'), $period);
             $this->assertSame([1, 2], array_column($r['rows'], 'rank'));
-            $this->assertNotNull($r['since']);
+            $this->assertNotNull($r['from']);
         }
 
         // Lacznie: calkowite punkty (z korektami i starymi wpisami), obcy w ogole sie nie pojawia.
         $all = $ranking->friends((int) $ala['id'], 'all');
-        $this->assertNull($all['since']);
+        $this->assertNull($all['from']);
         $this->assertSame([(int) $ala['id'], (int) $bob['id']], array_column($all['rows'], 'id'));
         $this->assertNotContains((int) $obcy['id'], array_column($all['rows'], 'id'));
 
         // Nieznany okres to tydzien.
         $this->assertSame('week', $ranking->friends((int) $ala['id'], 'xyz')['period']);
+
+        // Poprzednie tygodnie: wpis sprzed tygodnia nalezy do offsetu 1, a nie do biezacego; dukaty licza tylko zarobek.
+        $this->pdo->exec("INSERT INTO ledger_entries (user_id, currency, amount, balance_after, reason, created_at) VALUES ({$ala['id']}, 'points', 77, 0, 'job_points', UTC_TIMESTAMP() - INTERVAL 7 DAY)");
+        $prev = $ranking->friends((int) $ala['id'], 'week', 'points', 1);
+        $this->assertSame(1, $prev['offset']);
+        $this->assertSame(77, array_column($prev['rows'], 'gained', 'id')[(int) $ala['id']]);
+        $this->assertSame(0, array_column($prev['rows'], 'gained', 'id')[(int) $bob['id']]);
+        \Turysta\Game\Wallet::apply($this->pdo, (int) $bob['id'], 'coins', 300, 'job_payout');
+        \Turysta\Game\Wallet::apply($this->pdo, (int) $bob['id'], 'coins', 900, 'gift_received');
+        $coins = $ranking->friends((int) $ala['id'], 'week', 'coins');
+        $this->assertSame('coins', $coins['metric']);
+        $this->assertSame((int) $bob['id'], $coins['rows'][0]['id']);
+        $this->assertSame(300, $coins['rows'][0]['gained']);
+        $this->assertSame(0, $ranking->friends((int) $ala['id'], 'all', 'points', 5)['offset']);
         $start = \Turysta\Game\RankingService::periodStart('week', \Turysta\Game\Clock::parse('2026-11-04 12:00:00'));
         $this->assertSame('2026-11-01 23:00:00', $start); // poniedzialek 2 listopada 00:00 w Warszawie (UTC+1)
     }

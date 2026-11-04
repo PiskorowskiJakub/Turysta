@@ -167,7 +167,7 @@ Odznaki za wydarzenia: cykliczne (np. świąteczne, wracają co roku) i jednoraz
 
 - **Znajomi.** Zaproszenie wysyłasz po nazwie postaci albo z profilu gracza. Po przyjęciu oboje widzicie swój status online (aktywność w ciągu ostatnich 5 minut), dukaty i punkty. Znajomych możesz mieć do 100, a niezaakceptowanych zaproszeń wysłanych do 20. Znajomego usuwasz w każdej chwili.
 - **Porównanie kont.** Przy znajomym jest przycisk „Porównaj”: tabela statystyk obu kont wraz z poziomami umiejętności, a lepszy wynik jest na zielono. Umiejętności światów, do których jeszcze nie dotarłeś, są ukryte.
-- **Ranking znajomych.** W rankingu jest zakładka „Tylko znajomi”: punkty zdobyte w tym tygodniu (od poniedziałku), w tym miesiącu albo łącznie.
+- **Ranking znajomych.** W rankingu jest zakładka „Tylko znajomi”: ranking punktów albo dukatów zdobytych w tygodniu (od poniedziałku), w miesiącu albo łącznie. Strzałkami przełączasz się na poprzednie tygodnie i miesiące (do 2 lat wstecz dla tygodni i 3 lat dla miesięcy). Do dukatów liczy się tylko zarobek (praca, nagrody, polecenia); prezenty od znajomych, zwroty i korekty administratora nie wliczają się, a do punktów korekty administratora też nie.
 - **Aktywność znajomych.** Na stronie głównej widzisz, kiedy znajomi dotarli do nowego świata albo zdobyli złotą, diamentową lub rubinową odznakę. W Edycji profilu możesz to wyłączyć, ale wtedy sam też nie widzisz aktywności znajomych.
 
 ### Prezenty

@@ -894,3 +894,4 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .trail-history li { padding: 10px 12px; border-radius: 10px; background: var(--tile); }
 .trail-banner { border-left: 4px solid var(--orange); }
 .trail-banner p { margin: 0; }
+.period-nav { margin: 8px 0 12px; }

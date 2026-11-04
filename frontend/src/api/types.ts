@@ -304,14 +304,20 @@ export interface FriendRankingRow {
   id: number;
   rank: number;
   name: string;
-  points: number;
+  /** Zdobyte w okresie (punkty albo setne dukata, zaleznie od miary). */
+  gained: number;
+  /** Aktualny stan (punkty albo setne dukata). */
   total: number;
   me: boolean;
 }
 
 export interface FriendRanking {
   period: 'week' | 'month' | 'all';
-  since: string | null;
+  metric: 'points' | 'coins';
+  offset: number;
+  max_offset: number;
+  from: string | null;
+  to: string | null;
   rows: FriendRankingRow[];
 }
 

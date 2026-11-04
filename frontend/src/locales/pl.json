@@ -71,13 +71,31 @@
       "week": "Ten tydzień",
       "month": "Ten miesiąc",
       "all": "Łącznie",
-      "gained": "Punkty w okresie",
-      "total": "Razem",
-      "sinceWeek": "Punkty zdobyte od poniedziałku, {{date}}.",
-      "sinceMonth": "Punkty zdobyte od początku miesiąca, {{date}}.",
-      "sinceAll": "Wszystkie zdobyte punkty.",
       "empty": "Dodaj znajomych w zakładce Profil, Znajomi, żeby ścigać się z nimi.",
-      "myPlace": "Twoje miejsce wśród znajomych: {{rank}} z {{n}}"
+      "myPlace": "Twoje miejsce wśród znajomych: {{rank}} z {{n}}",
+      "metric": "Ranking",
+      "metrics": {
+        "points": "Punkty",
+        "coins": "Dukaty"
+      },
+      "range": "{{from}} – {{to}}",
+      "current_week": "Ten tydzień",
+      "current_month": "Ten miesiąc",
+      "older_week": "‹ Poprzedni tydzień",
+      "older_month": "‹ Poprzedni miesiąc",
+      "newer_week": "Następny tydzień ›",
+      "newer_month": "Następny miesiąc ›",
+      "note_points_week": "Punkty zdobyte w tygodniu ({{range}}), bez korekt administratora.",
+      "note_points_month": "Punkty zdobyte w miesiącu ({{range}}), bez korekt administratora.",
+      "note_points_all": "Wszystkie zdobyte punkty.",
+      "note_coins_week": "Dukaty zarobione w tygodniu ({{range}}): praca, nagrody i polecenia. Nie liczą się prezenty od znajomych, zwroty ani korekty.",
+      "note_coins_month": "Dukaty zarobione w miesiącu ({{range}}): praca, nagrody i polecenia. Nie liczą się prezenty od znajomych, zwroty ani korekty.",
+      "note_coins_all": "Wszystkie zarobione dukaty: praca, nagrody i polecenia. Nie liczą się prezenty od znajomych, zwroty ani korekty.",
+      "gained_points": "Punkty w okresie",
+      "gained_points_all": "Punkty",
+      "gained_coins": "Dukaty zarobione",
+      "total_points": "Razem punktów",
+      "total_coins": "Saldo"
     }
   },
   "badges": {
