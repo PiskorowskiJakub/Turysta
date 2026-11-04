@@ -7,6 +7,7 @@ import { useAuth } from '../auth/AuthContext';
 import Coins from './Coins';
 import Points from './Points';
 import PlayerAvatar from './PlayerAvatar';
+import CookieBanner, { OPEN_COOKIE_SETTINGS } from './CookieBanner';
 import { formatDate } from '../format';
 import { Icon, type IconName } from './icons';
 
@@ -195,6 +196,8 @@ export default function Layout() {
         </main>
       </div>
 
+      <CookieBanner />
+
       <footer className="site-footer">
         <span>{t('footer')}</span>
         <nav className="footer-links" aria-label={t('footerLinks.terms')}>
@@ -202,6 +205,7 @@ export default function Layout() {
           <Link to="/aktualizacje">{t('footerLinks.updates')}</Link>
           <Link to="/regulamin">{t('footerLinks.terms')}</Link>
           <Link to="/polityka-prywatnosci">{t('footerLinks.privacy')}</Link>
+          <button type="button" className="link-button" onClick={() => window.dispatchEvent(new Event(OPEN_COOKIE_SETTINGS))}>{t('footerLinks.cookies')}</button>
           {authed && <Link to="/zglos-blad" state={{ from: location.pathname }}>{t('footerLinks.bug')}</Link>}
         </nav>
       </footer>
