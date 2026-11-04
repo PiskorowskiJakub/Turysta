@@ -942,7 +942,8 @@
     "privacy": "Polityka prywatności",
     "bug": "Zgłoś błąd",
     "updates": "Aktualizacje",
-    "wiki": "Wiki gry"
+    "wiki": "Wiki gry",
+    "cookies": "Ustawienia cookies"
   },
   "bugReport": {
     "title": "Zgłoś błąd",
@@ -1060,14 +1061,15 @@
         {
           "h": "3. Pliki cookie i pamięć przeglądarki",
           "p": [
-            "Używamy wyłącznie niezbędnych mechanizmów: pliku cookie sesji (turysta_sid), który utrzymuje Cię zalogowanym i chroni przed fałszowaniem żądań, oraz drobnej informacji w pamięci przeglądarki, która podpowiada, że wcześniej byłeś zalogowany.",
-            "Nie stosujemy cookies reklamowych, analitycznych ani śledzących."
+            "Niezbędne mechanizmy, które działają zawsze, to plik cookie sesji (turysta_sid), który utrzymuje Cię zalogowanym i chroni przed fałszowaniem żądań, oraz drobna informacja w pamięci przeglądarki, która podpowiada, że wcześniej byłeś zalogowany.",
+            "Nie stosujemy cookies reklamowych. Jeśli wyrazisz zgodę w banerze, używamy Google Analytics (Google Ireland Ltd.) do anonimowego mierzenia ruchu: zapisuje on pliki cookie _ga i _ga_*, a dane o odsłonach stron trafiają do Google. Bez zgody skrypt analityczny w ogóle się nie ładuje. Zgodę możesz w każdej chwili zmienić lub wycofać przyciskiem „Ustawienia cookies” w stopce."
           ]
         },
         {
           "h": "4. Komu powierzamy dane",
           "p": [
             "Dane nie są sprzedawane. Korzystamy z dostawców, którzy obsługują nas technicznie: usługodawcy serwera, na którym działa gra (Hetzner), oraz usługodawcy domeny i poczty (OVH). Przetwarzają dane wyłącznie w celu świadczenia swoich usług.",
+            "Jeśli wyrazisz zgodę na analitykę, dane o korzystaniu ze strony (m.in. odwiedzane strony, przybliżona lokalizacja, typ urządzenia) przetwarza także Google Ireland Ltd. w usłudze Google Analytics. Nie przekazujemy tam nazwy postaci ani adresu e-mail.",
             "Dane możemy też ujawnić organom publicznym, jeżeli wymaga tego prawo."
           ]
         },
@@ -1420,5 +1422,12 @@
       "fireLevel": "Ognisko osiągnęło poziom: {{level}} (seria {{days}} dni).",
       "fireDim": "Seria ogniska przerwana, poziom spada do: {{level}}."
     }
+  },
+  "cookies": {
+    "title": "Zgoda na analitykę",
+    "text": "Za Twoją zgodą używamy Google Analytics, aby anonimowo mierzyć ruch na stronie i ulepszać grę. Pliki cookie niezbędne do logowania działają zawsze.",
+    "more": "Polityka prywatności",
+    "accept": "Zgadzam się",
+    "reject": "Tylko niezbędne"
   }
 }

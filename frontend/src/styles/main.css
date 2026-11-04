@@ -843,3 +843,8 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .squad-chronicle li { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .squad-chronicle time { color: var(--muted); font-size: 13px; }
 .player-squad { margin: 6px 0 12px; }
+.cookie-banner { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 50; max-width: 720px; margin: 0 auto; padding: 14px 16px; background: var(--panel-hi); border: 2px solid var(--line); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
+.cookie-banner p { margin: 0 0 10px; font-size: 14px; }
+.cookie-banner a { color: var(--khaki); }
+.link-button { background: none; border: 0; padding: 0; font: inherit; color: var(--khaki); cursor: pointer; text-decoration: underline; }
+.link-button:hover { color: var(--orange); }
