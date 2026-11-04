@@ -277,6 +277,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
 
       {section === 'czlonkowie' && (
       <section className="panel">
+        <InfoHint wide text={t('squad.members.rolesInfo')} label={t('badges.moreInfo')} />
         <h2>{t('squad.members.title', { n: squad.member_list.length, max: squad.max_members })}</h2>
         <div className="table-scroll">
           <table className="ranking-table">

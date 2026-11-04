@@ -1420,7 +1420,8 @@
       "kicked": "{{name}} został usunięty z oddziału.",
       "transfer": "Przekaż przywództwo",
       "transferConfirm": "Przekaż przywództwo graczowi {{name}}",
-      "transferred": "Przywództwo przekazane: {{name}}."
+      "transferred": "Przywództwo przekazane: {{name}}.",
+      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz i Kronikarz (po 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł widać na liście członków i w profilu, ale można go ukryć w Edycji profilu."
     },
     "recruit": {
       "title": "Rekrutacja",
