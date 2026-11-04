@@ -862,4 +862,9 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .activity-col .chart-bar { display: block; width: 100%; flex: none; }
 .activity-col .chart-bar.hot { background: var(--cream); }
 .activity-xaxis { padding-left: 34px; }
+.admin-tile { position: relative; }
+.admin-tile .info-hint { position: static; }
+.admin-tile .info-hint-btn { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; }
+.admin-tile .info-hint-text { left: 0; right: auto; top: calc(100% + 4px); z-index: 6; width: min(260px, 70vw); }
+.admin-tile .info-hint-btn svg { width: 13px; height: 13px; }
 

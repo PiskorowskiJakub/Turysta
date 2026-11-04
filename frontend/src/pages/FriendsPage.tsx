@@ -5,6 +5,7 @@ import { api, ApiError } from '../api/client';
 import type { FriendsResponse } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import Coins from '../components/Coins';
+import InfoHint from '../components/InfoHint';
 import PlayerAvatar from '../components/PlayerAvatar';
 import Points from '../components/Points';
 import { formatCoins } from '../format';
@@ -170,6 +171,7 @@ export default function FriendsPage() {
       )}
 
       <section className="panel">
+        <InfoHint wide text={t('friends.listInfo', { minutes: data.limits.online_minutes, amount: formatCoins(data.gifts.cents), bonus: formatCoins(data.gifts.bonus_cents), max: data.gifts.max_per_day, hours: data.gifts.min_friend_hours })} label={t('badges.moreInfo')} />
         <h2>{t('friends.listTitle', { n: data.friends.length, max: data.limits.max_friends })}</h2>
         {data.friends.length === 0 ? (
           <p className="muted">{t('friends.empty')}</p>
@@ -233,8 +235,7 @@ export default function FriendsPage() {
           </>
         )}
         {data.gifts.multiplier_permille > 1000 && <p className="muted">{t('friends.giftMultiplier', { mult: data.gifts.multiplier_permille / 1000, n: data.gifts.active_referrals })}</p>}
-        {data.friends.length > 0 && <p className="muted">{t('friends.giftInfo', { amount: formatCoins(data.gifts.cents), bonus: formatCoins(data.gifts.bonus_cents), left: data.gifts.sent_left, max: data.gifts.max_per_day })}</p>}
-        <p className="muted">{t('friends.onlineHint', { minutes: data.limits.online_minutes })}</p>
+        {data.friends.length > 0 && <p className="muted">{t('friends.giftLeft', { left: data.gifts.sent_left, max: data.gifts.max_per_day })}</p>}
       </section>
 
       {data.outgoing.length > 0 && (

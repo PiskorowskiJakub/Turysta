@@ -448,7 +448,8 @@
           "month": "Miesiące"
         },
         "weekFrom": "tydzień od {{date}}"
-      }
+      },
+      "onlineInfo": "Liczba unikalnych zalogowanych graczy, którzy byli aktywni w grze w ciągu ostatnich 15 minut. Wartość jest z chwili ostatniego odświeżenia przeglądu (przycisk „Odśwież” u góry)."
     },
     "facts": {
       "created": "Ciekawostka dodana.",
@@ -1149,7 +1150,6 @@
     },
     "online": "online",
     "offline": "offline",
-    "onlineHint": "Online oznacza aktywność w grze w ciągu ostatnich {{minutes}} minut. Status odświeża się co pół minuty.",
     "remove": "Usuń",
     "confirmRemove": "Na pewno usuń",
     "removed": "{{name}} nie jest już na Twojej liście znajomych.",
@@ -1170,11 +1170,12 @@
     "giftEarly": "Prezenty można wysyłać po {{hours}} godzinach od zostania znajomymi.",
     "giftLimit": "Dzienny limit prezentów wyczerpany.",
     "giftAlready": "Dziś już obdarowano tego znajomego.",
-    "giftInfo": "Prezent: {{amount}} dk dla znajomego, a Ty dostajesz bonus {{bonus}} dk. Raz dziennie dla każdej osoby, dziś zostało {{left}} z {{max}}. Kwota rośnie wraz z Twoim postępem i liczbą aktywnych poleconych graczy.",
     "giftConfirmTitle": "Potwierdź prezent dla {{name}}",
     "giftConfirm": "Podarujesz {{amount}} dk graczowi {{name}}. Ta kwota zostanie odjęta z Twojego konta i przekazana znajomemu. W zamian dostaniesz bonus {{bonus}} dk.",
     "giftConfirmYes": "Przekaż {{amount}} dk",
-    "giftMultiplier": "Mnożnik prezentu za polecenia: ×{{mult}} (aktywnych poleconych: {{n}})."
+    "giftMultiplier": "Mnożnik prezentu za polecenia: ×{{mult}} (aktywnych poleconych: {{n}}).",
+    "listInfo": "Status online: znajomy jest online, jeśli był aktywny w grze w ciągu ostatnich {{minutes}} minut. Lista odświeża się sama co 30 sekund.\nPrezenty: możesz podarować znajomemu {{amount}} dk, a Ty dostajesz bonus {{bonus}} dk. Kwota rośnie wraz z Twoim postępem i liczbą aktywnych poleconych graczy. Jedna osoba dostaje od Ciebie najwyżej jeden prezent dziennie, a łącznie możesz wysłać {{max}} prezenty dziennie. Prezent można wysłać po {{hours}} godzinach od zostania znajomymi.",
+    "giftLeft": "Dziś możesz jeszcze wysłać prezentów: {{left}} z {{max}}."
   },
   "updates": {
     "title": "Aktualizacje gry",
