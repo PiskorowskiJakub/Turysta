@@ -61,7 +61,6 @@ export default function SquadPage() {
 
   return (
     <>
-      <h1>{t('squad.title')}</h1>
       <Tabs
         base="/oddzial"
         items={[
