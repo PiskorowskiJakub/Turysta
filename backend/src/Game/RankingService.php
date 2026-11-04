@@ -75,7 +75,6 @@ final class RankingService
 
         $coins = $metric === 'coins';
         $currency = $coins ? 'coins' : 'points';
-        $totalCol = $coins ? 'w.coins_cents' : 'w.points';
         $excluded = "'" . implode("','", $coins ? self::COINS_NOT_EARNED : self::POINTS_NOT_EARNED) . "'";
         $members = "(u.id = ? OR u.id IN (SELECT IF(user_a = ?, user_b, user_a) FROM friendships WHERE status = 'accepted' AND (user_a = ? OR user_b = ?)))";
 
@@ -95,12 +94,16 @@ final class RankingService
                 $on .= ' AND l.created_at < ?';
                 $params[] = $end;
             }
-            $sql = "SELECT u.id, u.character_name AS name, $totalCol AS total,
+            // Suma ("Razem"): punkty to stan konta, a dukaty to wszystko, co gracz kiedykolwiek zarobil (stan konta spada przy wydawaniu).
+            $total = $coins
+                ? "(SELECT COALESCE(SUM(t.amount), 0) FROM ledger_entries t WHERE t.user_id = u.id AND t.currency = 'coins' AND t.amount > 0 AND t.reason NOT IN ($excluded))"
+                : 'w.points';
+            $sql = "SELECT u.id, u.character_name AS name, $total AS total,
                            COALESCE(SUM(CASE WHEN l.amount > 0 AND l.reason NOT IN ($excluded) THEN l.amount END), 0) AS gained
                     FROM users u JOIN wallets w ON w.user_id = u.id
                     LEFT JOIN ledger_entries l ON $on
                     WHERE u.status = 'active' AND $members
-                    GROUP BY u.id, u.character_name, $totalCol";
+                    GROUP BY u.id, u.character_name, w.points";
             array_push($params, $userId, $userId, $userId, $userId);
         }
         $stmt = $this->pdo->prepare($sql . ' ORDER BY gained DESC, total DESC, u.id');

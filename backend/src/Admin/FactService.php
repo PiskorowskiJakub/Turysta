@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Turysta\Admin;
 
+use DateTimeImmutable;
 use PDO;
+use Turysta\Game\Clock;
 use Turysta\Http\ApiException;
 
 /** Ciekawostki dnia (pasek u gory strony): lista, dodawanie, edycja, wlaczanie i usuwanie. */
@@ -14,6 +16,34 @@ final class FactService
 
     public function __construct(private PDO $pdo)
     {
+    }
+
+    /**
+     * Ciekawostka na dzis: jedna na dobe gry (od polnocy czasu polskiego), taka sama dla wszystkich graczy.
+     * Wybor zapisujemy w daily_fact_picks przy pierwszym pytaniu danego dnia, wiec pozniejsze zmiany listy (dodanie, wylaczenie)
+     * go nie zmieniaja. Kolejne doby przechodza po wlaczonych ciekawostkach wg id; null, gdy zadnej nie ma.
+     */
+    public function today(?DateTimeImmutable $now = null): ?string
+    {
+        $now ??= Clock::now($this->pdo);
+        $day = Clock::gameDay($now);
+        $sel = $this->pdo->prepare('SELECT f.text FROM daily_fact_picks p JOIN daily_facts f ON f.id = p.fact_id WHERE p.day = ?');
+        $sel->execute([$day]);
+        $text = $sel->fetchColumn();
+        if ($text !== false) {
+            return (string) $text;
+        }
+
+        $ids = $this->pdo->query('SELECT id FROM daily_facts WHERE active = 1 ORDER BY id')->fetchAll(PDO::FETCH_COLUMN);
+        if (!$ids) {
+            return null;
+        }
+        $number = intdiv((new DateTimeImmutable($day . ' 00:00:00 UTC'))->getTimestamp(), 86400);
+        // INSERT IGNORE: gdy dwa zapytania wyscigna sie o ten sam dzien, wygrywa pierwsze, a drugie odczytuje jego wybor.
+        $this->pdo->prepare('INSERT IGNORE INTO daily_fact_picks (day, fact_id) VALUES (?, ?)')->execute([$day, (int) $ids[$number % count($ids)]]);
+        $sel->execute([$day]);
+        $text = $sel->fetchColumn();
+        return $text === false ? null : (string) $text;
     }
 
     /** @return list<array<string,mixed>> */

@@ -350,6 +350,7 @@ final class FriendFlowTest extends TestCase
         $this->assertSame('coins', $coins['metric']);
         $this->assertSame((int) $bob['id'], $coins['rows'][0]['id']);
         $this->assertSame(300, $coins['rows'][0]['gained']);
+        $this->assertSame(300, $coins['rows'][0]['total'], 'Razem = wszystkie zarobione dukaty (bez prezentu).');
         $this->assertSame(0, $ranking->friends((int) $ala['id'], 'all', 'points', 5)['offset']);
         $start = \Turysta\Game\RankingService::periodStart('week', \Turysta\Game\Clock::parse('2026-11-04 12:00:00'));
         $this->assertSame('2026-11-01 23:00:00', $start); // poniedzialek 2 listopada 00:00 w Warszawie (UTC+1)
