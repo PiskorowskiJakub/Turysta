@@ -169,10 +169,10 @@ export default function Layout() {
                 <MenuLink to="/profil" icon="profile" label={t('nav.profile')} />
                 <MenuLink to="/umiejetnosci" icon="skills" label={t('nav.skills')} />
                 <MenuLink to="/praca" icon="job" label={t('nav.jobs')} />
+                <MenuLink to="/oddzial" icon="team" label={t('nav.squad')} />
                 <MenuLink to="/odznaki" icon="medal" label={t('nav.badges')} />
                 <MenuLink to="/ranking" icon="points" label={t('nav.ranking')} />
                 {me?.user.role === 'admin' && <MenuLink to="/admin" icon="admin" label={t('nav.admin')} />}
-                <MenuLink to="/oddzial" icon="team" label={t('nav.squad')} />
                 <li>
                   <button type="button" className="menu-item" onClick={() => void onLogout()}>
                     <Icon name="logout" />

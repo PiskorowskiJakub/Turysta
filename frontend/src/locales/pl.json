@@ -1214,7 +1214,15 @@
     "cancel": "Anuluj",
     "tabs": {
       "mine": "Mój oddział",
-      "catalog": "Katalog"
+      "catalog": "Katalog",
+      "overview": "Przegląd",
+      "members": "Członkowie",
+      "recruitment": "Rekrutacja",
+      "invited": "Zaproszeni",
+      "waiting": "Oczekujący",
+      "waitingCount": "Oczekujący ({{n}})",
+      "settings": "Ustawienia",
+      "chronicle": "Kronika"
     },
     "player": {
       "member": "Oddział:"
@@ -1327,7 +1335,8 @@
       "leaveConfirm": "Opuść (karencja {{days}} dni)",
       "disband": "Rozwiąż oddział",
       "disbandConfirm": "Rozwiąż na stałe",
-      "leaderHint": "Jako przywódca nie możesz po prostu odejść: przekaż przywództwo wybranemu członkowi albo rozwiąż oddział."
+      "leaderHint": "Jako przywódca nie możesz po prostu odejść: przekaż przywództwo wybranemu członkowi albo rozwiąż oddział.",
+      "membership": "Członkostwo"
     },
     "settings": {
       "edit": "Ustawienia",
@@ -1384,7 +1393,11 @@
       "withdraw": "Wycofaj",
       "approved": "{{name}} dołączył do oddziału.",
       "declined": "Prośba gracza {{name}} odrzucona.",
-      "withdrawn": "Zaproszenie dla {{name}} wycofane."
+      "withdrawn": "Zaproszenie dla {{name}} wycofane.",
+      "invitedTitle": "Zaproszone osoby",
+      "waitingTitle": "Osoby oczekujące na przyjęcie",
+      "noInvites": "Nie ma wysłanych zaproszeń.",
+      "noRequests": "Nikt nie czeka na przyjęcie."
     },
     "invite": {
       "sent": "Zaproszenie dla {{name}} wysłane.",

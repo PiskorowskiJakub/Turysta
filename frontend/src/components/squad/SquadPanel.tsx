@@ -8,7 +8,10 @@ import PlayerAvatar from '../PlayerAvatar';
 import { formatDate, formatDateTime } from '../../format';
 import SquadFields, { type SquadDraft } from './SquadFields';
 
+export type SquadSection = 'przeglad' | 'czlonkowie' | 'zaproszeni' | 'oczekujacy' | 'ustawienia' | 'kronika';
+
 interface Props {
+  section: SquadSection;
   squad: SquadProfile;
   meta: SquadMeta;
   /** Nowy stan oddzialu po zmianie (zwrocony przez API). */
@@ -51,7 +54,7 @@ export function chronicleText(t: TFunction, e: SquadChronicleEntry, specLabel: (
 }
 
 /** Panel wlasnego oddzialu: ognisko, czlonkowie z rolami, zgloszenia i zaproszenia, ustawienia oraz kronika. */
-export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
+export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
@@ -61,7 +64,6 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
   const [kickReason, setKickReason] = useState('inactive');
   const [inviteName, setInviteName] = useState('');
   const [draft, setDraft] = useState<SquadDraft>({ name: squad.name, specialization: squad.specialization, join_mode: squad.join_mode });
-  const [editing, setEditing] = useState(false);
 
   const specLabel = (code: string) => meta.specializations.find((s) => s.code === code)?.label ?? code;
   const me = squad.me;
@@ -125,12 +127,8 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
     if (draft.name !== squad.name) body.name = draft.name;
     if (draft.specialization !== squad.specialization) body.specialization = draft.specialization;
     if (draft.join_mode !== squad.join_mode) body.join_mode = draft.join_mode;
-    if (Object.keys(body).length === 0) {
-      setEditing(false);
-      return;
-    }
-    const r = await run(() => api('PATCH', `/squads/${squad.id}`, body), t('squad.settings.saved'));
-    if (r) setEditing(false);
+    if (Object.keys(body).length === 0) return;
+    await run(() => api('PATCH', `/squads/${squad.id}`, body), t('squad.settings.saved'));
   };
 
   const canKick = (m: SquadMember): boolean => {
@@ -197,8 +195,31 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
         </p>
         {squad.name_forced && <p className="form-error" role="alert">{t('squad.head.nameForced')}</p>}
         {message && <p className={message.ok ? 'form-success' : 'form-error'} role={message.ok ? 'status' : 'alert'}>{message.text}</p>}
+      </section>
+
+      {section === 'ustawienia' && me.can_manage && (
+        <form className="panel" onSubmit={(e) => void onSaveSettings(e)} noValidate>
+          <h2>{t('squad.settings.title')}</h2>
+          <SquadFields
+            meta={meta}
+            value={draft}
+            onChange={setDraft}
+            errors={fields}
+            disabled={busy}
+            idPrefix="squad-edit"
+            nameHint={squad.name_locked ? t('squad.settings.nameLocked') : squad.name_change_available_at ? t('squad.settings.nameLater', { date: formatDate(squad.name_change_available_at) }) : t('squad.settings.nameRule', { days: meta.limits.name_change_days })}
+            specHint={squad.spec_change_available_at ? t('squad.settings.specLater', { date: formatDate(squad.spec_change_available_at) }) : t('squad.settings.specRule', { days: meta.limits.spec_change_days })}
+          />
+          <div className="actions">
+            <button className="button" type="submit" disabled={busy}>{t('squad.settings.save')}</button>
+          </div>
+        </form>
+      )}
+
+      {section === 'ustawienia' && (
+        <section className="panel">
+          <h2>{t('squad.head.membership')}</h2>
         <div className="actions">
-          {me.can_manage && <button type="button" className="button small" onClick={() => setEditing((v) => !v)}>{t('squad.settings.edit')}</button>}
           {confirm?.kind === 'leave' ? (
             <>
               <button type="button" className="button small" disabled={busy} onClick={() => void leaveOrDisband('leave')}>{t('squad.head.leaveConfirm', { days: meta.limits.rejoin_cooldown_days })}</button>
@@ -217,29 +238,10 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
           ))}
         </div>
         {me.is_leader && <p className="muted">{t('squad.head.leaderHint')}</p>}
-      </section>
-
-      {editing && me.can_manage && (
-        <form className="panel" onSubmit={(e) => void onSaveSettings(e)} noValidate>
-          <h2>{t('squad.settings.title')}</h2>
-          <SquadFields
-            meta={meta}
-            value={draft}
-            onChange={setDraft}
-            errors={fields}
-            disabled={busy}
-            idPrefix="squad-edit"
-            nameHint={squad.name_locked ? t('squad.settings.nameLocked') : squad.name_change_available_at ? t('squad.settings.nameLater', { date: formatDate(squad.name_change_available_at) }) : t('squad.settings.nameRule', { days: meta.limits.name_change_days })}
-            specHint={squad.spec_change_available_at ? t('squad.settings.specLater', { date: formatDate(squad.spec_change_available_at) }) : t('squad.settings.specRule', { days: meta.limits.spec_change_days })}
-          />
-          <div className="actions">
-            <button className="button" type="submit" disabled={busy}>{t('squad.settings.save')}</button>
-            <button className="button secondary" type="button" onClick={() => { setEditing(false); setDraft({ name: squad.name, specialization: squad.specialization, join_mode: squad.join_mode }); }}>{t('squad.cancel')}</button>
-          </div>
-        </form>
+        </section>
       )}
 
-      {fire && (
+      {section === 'przeglad' && fire && (
         <section className="panel squad-fire">
           <h2>{t('squad.fire.title')}</h2>
           <p className="squad-flame"><span className={`flame-badge level-${fire.level}`}>{flameName}</span> {t('squad.fire.streak', { n: fire.streak })}</p>
@@ -267,6 +269,7 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
         </section>
       )}
 
+      {section === 'czlonkowie' && (
       <section className="panel">
         <h2>{t('squad.members.title', { n: squad.member_list.length, max: squad.max_members })}</h2>
         <div className="table-scroll">
@@ -303,10 +306,11 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
         </div>
         <p className="field-hint">{t('squad.members.hint', { days: meta.limits.recruit_days })}</p>
       </section>
+      )}
 
-      {me.can_recruit && (
+      {section === 'zaproszeni' && me.can_recruit && (
         <section className="panel">
-          <h2>{t('squad.recruit.title')}</h2>
+          <h2>{t('squad.recruit.invitedTitle')}</h2>
           <form onSubmit={(e) => void onInvite(e)} noValidate>
             <div className="field">
               <label htmlFor="squad-invite">{t('squad.recruit.inviteLabel')}</label>
@@ -316,6 +320,26 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
             <button className="button" type="submit" disabled={busy || inviteName.trim() === ''}>{t('squad.recruit.invite')}</button>
             <p className="field-hint">{t('squad.recruit.hint')}</p>
           </form>
+          {squad.requests && squad.requests.invites.length > 0 && (
+            <>
+              <h3>{t('squad.recruit.invites', { n: squad.requests.invites.length })}</h3>
+              <ul className="admin-list">
+                {squad.requests.invites.map((p) => (
+                  <li key={p.id}>
+                    <Link to={`/gracz/${p.id}`}>{p.name}</Link>
+                    <button type="button" className="button small secondary" disabled={busy} onClick={() => void run(() => api('DELETE', `/squads/${squad.id}/requests/${p.id}`), t('squad.recruit.withdrawn', { name: p.name }))}>{t('squad.recruit.withdraw')}</button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {(!squad.requests || squad.requests.invites.length === 0) && <p className="muted">{t('squad.recruit.noInvites')}</p>}
+        </section>
+      )}
+
+      {section === 'oczekujacy' && me.can_recruit && (
+        <section className="panel">
+          <h2>{t('squad.recruit.waitingTitle')}</h2>
           {squad.requests && squad.requests.requests.length > 0 && (
             <>
               <h3>{t('squad.recruit.requests', { n: squad.requests.requests.length })}</h3>
@@ -332,22 +356,11 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
               </ul>
             </>
           )}
-          {squad.requests && squad.requests.invites.length > 0 && (
-            <>
-              <h3>{t('squad.recruit.invites', { n: squad.requests.invites.length })}</h3>
-              <ul className="admin-list">
-                {squad.requests.invites.map((p) => (
-                  <li key={p.id}>
-                    <Link to={`/gracz/${p.id}`}>{p.name}</Link>
-                    <button type="button" className="button small secondary" disabled={busy} onClick={() => void run(() => api('DELETE', `/squads/${squad.id}/requests/${p.id}`), t('squad.recruit.withdrawn', { name: p.name }))}>{t('squad.recruit.withdraw')}</button>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
+          {(!squad.requests || squad.requests.requests.length === 0) && <p className="muted">{t('squad.recruit.noRequests')}</p>}
         </section>
       )}
 
+      {section === 'kronika' && (
       <section className="panel">
         <h2>{t('squad.chronicle.title')}</h2>
         {!squad.chronicle || squad.chronicle.length === 0 ? (
@@ -364,6 +377,7 @@ export default function SquadPanel({ squad, meta, onSquad, onMine }: Props) {
         )}
         <p className="field-hint">{t('squad.chronicle.hint')}</p>
       </section>
+      )}
     </>
   );
 }
