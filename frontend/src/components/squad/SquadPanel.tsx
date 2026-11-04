@@ -8,6 +8,7 @@ import PlayerAvatar from '../PlayerAvatar';
 import { formatDate, formatDateTime } from '../../format';
 import InfoHint from '../InfoHint';
 import SquadFields, { type SquadDraft } from './SquadFields';
+import { SquadTrailBanner } from './SquadTrailPanel';
 
 export type SquadSection = 'przeglad' | 'czlonkowie' | 'zaproszeni' | 'oczekujacy' | 'ustawienia' | 'kronika';
 
@@ -49,6 +50,8 @@ export function chronicleText(t: TFunction, e: SquadChronicleEntry, specLabel: (
       return t('squad.chronicle.fireLevel', { level: t(`squad.flame.${Number(p.level)}`), days: Number(p.streak) });
     case 'fire_dim':
       return t('squad.chronicle.fireDim', { level: t(`squad.flame.${Number(p.level)}`) });
+    case 'trail_done':
+      return t('squad.chronicle.trailDone', { theme: String(p.theme_name ?? ''), percent: Number(p.percent), count: Number(p.stamps) });
     default:
       return e.type;
   }
@@ -241,6 +244,8 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
         {me.is_leader && <p className="muted">{t('squad.head.leaderHint')}</p>}
         </section>
       )}
+
+      {section === 'przeglad' && <SquadTrailBanner squadId={squad.id} />}
 
       {section === 'przeglad' && fire && (
         <section className="panel squad-fire">

@@ -868,3 +868,29 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .admin-tile .info-hint-text { left: 0; right: auto; top: calc(100% + 4px); z-index: 6; width: min(260px, 70vw); }
 .admin-tile .info-hint-btn svg { width: 13px; height: 13px; }
 
+
+/* Szlaki oddzialu */
+.trail-card { position: relative; }
+.trail-kicker { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.trail-card h2 { margin: 2px 0 4px; }
+.trail-desc { margin: 0 0 10px; font-style: italic; color: var(--muted); }
+.trail-diff { margin: 6px 0; }
+.trail-chip { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--tile); }
+.trail-chip.diff-easy { color: #4caf7a; }
+.trail-chip.diff-medium { color: var(--orange); }
+.trail-chip.diff-hard { color: #e0584f; }
+.trail-chip.ok { color: #4caf7a; margin-left: 8px; }
+.trail-plan { margin: 6px 0 10px; }
+.trail-bar { position: relative; height: 14px; margin: 30px 8px 18px; border-radius: 999px; background: var(--bg2); }
+.trail-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--orange-dk), var(--orange)); transition: width 0.3s; }
+.trail-mark { position: absolute; top: -22px; width: 0; }
+.trail-mark i { position: absolute; left: -10px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; background: var(--tile); color: var(--muted); border: 2px solid var(--bg2); }
+.trail-mark::after { content: ''; position: absolute; left: -1px; top: 0; width: 2px; height: 36px; background: rgba(214, 196, 140, 0.45); }
+.trail-mark.reached i { background: var(--orange); color: #1b1408; }
+.trail-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 8px; }
+.trail-people, .trail-history { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+.trail-people li { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 8px 12px; border-radius: 10px; background: var(--tile); }
+.trail-people li.me { outline: 1px solid var(--orange); }
+.trail-history li { padding: 10px 12px; border-radius: 10px; background: var(--tile); }
+.trail-banner { border-left: 4px solid var(--orange); }
+.trail-banner p { margin: 0; }

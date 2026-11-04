@@ -20,6 +20,7 @@ use Turysta\Controller\MeController;
 use Turysta\Controller\PasswordResetController;
 use Turysta\Controller\SquadAdminController;
 use Turysta\Controller\SquadController;
+use Turysta\Controller\SquadTrailController;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
 use Turysta\Game\TrainingService;
@@ -31,6 +32,7 @@ use Turysta\Social\FriendService;
 use Turysta\Social\GiftService;
 use Turysta\Squad\SquadAdminService;
 use Turysta\Squad\SquadService;
+use Turysta\Squad\SquadTrail;
 use Turysta\Squad\SquadView;
 use Turysta\Support\BugReportService;
 
@@ -54,6 +56,7 @@ final class App
         $game = new GameController($pdo, $settler, $training, $jobs);
         $squadService = new SquadService($pdo, new RateLimiter($pdo));
         $squads = new SquadController($squadService, new SquadView($pdo, $squadService));
+        $squadTrails = new SquadTrailController(new SquadTrail($pdo, $squadService));
         $squadAdmin = new SquadAdminController(new SquadAdminService($pdo), $pdo);
 
         $router = new Router();
@@ -116,6 +119,11 @@ final class App
         $router->post('/v1/squads/{id}/members/{uid}/kick', [$squads, 'kick']);
         $router->post('/v1/squads/{id}/transfer', [$squads, 'transfer']);
         $router->post('/v1/squads/{id}/report', [$squads, 'report']);
+        $router->get('/v1/squads/{id}/trail', [$squadTrails, 'show']);
+        $router->get('/v1/squads/{id}/trail/history', [$squadTrails, 'history']);
+        $router->post('/v1/squads/{id}/trail/join', [$squadTrails, 'join']);
+        $router->post('/v1/squads/{id}/trail/march', [$squadTrails, 'march']);
+        $router->put('/v1/squads/{id}/trail/difficulty', [$squadTrails, 'difficulty']);
 
         $router->get('/v1/home', [$home, 'show']);
         $router->get('/v1/announcements', [$home, 'announcements']);

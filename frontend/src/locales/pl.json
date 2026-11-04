@@ -94,7 +94,7 @@
     "none": "Jeszcze nie masz tu żadnej odznaki.",
     "count": "Zdobyte: {{got}} z {{total}}",
     "special": "Odznaki specjalne",
-    "specialInfo": "Nagrody za wyjątkowe osiągnięcia, które nie wynikają z poziomu umiejętności: serie dni, aktywność, znajomi i polecenia. Za każdy stopień odznaki „Polecenia” dostajesz też dukaty.",
+    "specialInfo": "Nagrody za wyjątkowe osiągnięcia, które nie wynikają z poziomu umiejętności: serie dni, aktywność, znajomi, polecenia i ukończone wyprawy oddziału. Za każdy stopień odznaki „Polecenia” dostajesz też dukaty.",
     "featured": "Wyróżnione odznaki",
     "featuredNone": "Nie wyróżniłeś jeszcze żadnych odznak.",
     "pickFeatured": "Wybierz wyróżnione odznaki",
@@ -119,7 +119,12 @@
     "tier_referrals_one": "{{count}} aktywny polecony gracz",
     "tier_referrals_few": "{{count}} aktywnych poleconych graczy",
     "tier_referrals_many": "{{count}} aktywnych poleconych graczy",
-    "tier_referrals_other": "{{count}} aktywnych poleconych graczy"
+    "tier_referrals_other": "{{count}} aktywnych poleconych graczy",
+    "special_trails": "Szlakowiec",
+    "tier_trails_one": "{{count}} ukończona wyprawa",
+    "tier_trails_few": "{{count}} ukończone wyprawy",
+    "tier_trails_many": "{{count}} ukończonych wypraw",
+    "tier_trails_other": "{{count}} ukończonych wypraw"
   },
   "skills": {
     "fitness": "Kondycja",
@@ -766,7 +771,13 @@
     "name_locked": "Administrator zablokował zmianę nazwy tego oddziału.",
     "already_reported": "Już zgłosiłeś nazwę tego oddziału.",
     "already_exists": "Taki wpis już istnieje.",
-    "validation_failed": "Popraw zaznaczone pola."
+    "validation_failed": "Popraw zaznaczone pola.",
+    "trail_closed": "Na tę wyprawę nie można już dołączyć.",
+    "already_joined": "Już bierzesz udział w tej wyprawie.",
+    "march_done": "Dzisiejszy Marsz został już wykonany.",
+    "not_participant": "Najpierw dołącz do wyprawy.",
+    "difficulty_locked": "Trudność trasy można zmieniać tylko w poniedziałek.",
+    "invalid_difficulty": "Wybierz poziom trudności."
   },
   "training": {
     "title": "Szkolenia",
@@ -1249,7 +1260,10 @@
       "waiting": "Oczekujący",
       "waitingCount": "Oczekujący ({{n}})",
       "settings": "Ustawienia",
-      "chronicle": "Kronika"
+      "chronicle": "Kronika",
+      "trails": "Szlaki",
+      "trailNow": "Wyprawa",
+      "trailHistory": "Historia"
     },
     "player": {
       "member": "Oddział:"
@@ -1445,7 +1459,50 @@
       "nameForced": "Administrator zmienił nazwę oddziału na „{{name}}”.",
       "spec": "Oddział zmienił specjalizację na: {{spec}}.",
       "fireLevel": "Ognisko osiągnęło poziom: {{level}} (seria {{days}} dni).",
-      "fireDim": "Seria ogniska przerwana, poziom spada do: {{level}}."
+      "fireDim": "Seria ogniska przerwana, poziom spada do: {{level}}.",
+      "trailDone_one": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątkę.",
+      "trailDone_few": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątki.",
+      "trailDone_many": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątek.",
+      "trailDone_other": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątek."
+    },
+    "trail": {
+      "info": "Co tydzień (od poniedziałku do niedzieli) oddział wyrusza na nową wyprawę. Wpisowe wynosi {{fee}} dk i znika z obiegu; dołączyć można do środy. Twój udział w trasie to 50% dni aktywności w grze i 50% codziennego, darmowego Marszu, liczone od dnia dołączenia do końca wyprawy. Postęp oddziału to średnia ze wszystkich uczestników, a punkty gracza nie mają na niego wpływu. Cyfry na pasku to progi pieczątek. Po niedzieli oddział dostaje pieczątki do wspólnej puli, a każdy uczestnik z co najmniej {{days}} dniami aktywności dostaje {{perStamp}} dk za każdą pieczątkę i zalicza wyprawę do odznaki „Szlakowiec”. Pieczątki dostaje oddział, w którym wyprawę zaliczyło minimum {{min}} osoby.",
+      "week": "Wyprawa {{from}} – {{to}}",
+      "length": "trasa {{km}} km",
+      "difficulty": {
+        "easy": "Łatwa",
+        "medium": "Średnia",
+        "hard": "Trudna"
+      },
+      "planLabel": "Trudność trasy",
+      "planHint": "Trudność trasy ustawia przywódca, zastępca lub przewodnik, najpóźniej do końca dnia {{date}}.",
+      "progress": "Postęp wyprawy",
+      "stampAt": "Pieczątka {{n}} od {{percent}}%",
+      "km": "km trasy",
+      "percent": "postęp",
+      "stampsNow": "pieczątki (obecnie)",
+      "pool": "pieczątki oddziału",
+      "rewardNow": "Przy obecnym wyniku: {{count}} pieczątek dla oddziału i {{reward}} dk dla każdego zaliczonego uczestnika.",
+      "rewardNone": "Pierwsza pieczątka od {{percent}}% postępu.",
+      "join": "Dołącz do wyprawy ({{fee}} dk)",
+      "joinHint": "Wpisowe przepada, a dołączyć można do końca dnia {{date}}. Im wcześniej, tym więcej dni, w które możesz się wykazać.",
+      "closed": "Na tę wyprawę nie można już dołączyć (zapisy trwały do {{date}}). Zapraszamy na następną.",
+      "march": "Marsz",
+      "marched": "Marsz wykonany dziś",
+      "marchHint": "Marsz jest darmowy i odnawia się o północy. Codzienny Marsz daje drugą połowę Twojego udziału w trasie.",
+      "participants": "Uczestnicy ({{n}})",
+      "noParticipants": "Nikt jeszcze nie dołączył do tej wyprawy.",
+      "personLine": "aktywność: {{active}} dni · Marsz: {{march}} dni · {{km}} km",
+      "counted": "zaliczona",
+      "historyTitle": "Historia wypraw",
+      "historyEmpty": "Oddział nie ukończył jeszcze żadnej wyprawy.",
+      "historyLine": "Wynik {{percent}}% · pieczątki: {{count}} · zaliczyło {{people}} z {{total}} uczestników",
+      "historyMine": "Twoja nagroda: {{reward}} dk",
+      "historyMissed": "nie zaliczona (za mało dni aktywności)",
+      "bannerJoin": "Trwa wyprawa „{{name}}”. Dołącz za {{fee}} dk do {{date}}.",
+      "bannerMarch": "Wyprawa „{{name}}”: nie zapomnij o dzisiejszym Marszu.",
+      "bannerOn": "Wyprawa „{{name}}” trwa, postęp {{percent}}%.",
+      "bannerGo": "Przejdź do wyprawy"
     }
   },
   "cookies": {

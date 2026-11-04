@@ -72,6 +72,16 @@ export const SPECIAL_BADGES: SpecialBadge[] = [
       { name: 'ruby', min: 25 },
     ],
   },
+  {
+    code: 'special_trails',
+    tiers: [
+      { name: 'bronze', min: 4 },
+      { name: 'silver', min: 12 },
+      { name: 'gold', min: 26 },
+      { name: 'diamond', min: 52 },
+      { name: 'ruby', min: 104 },
+    ],
+  },
 ];
 
 /** Kolejnosc stopni od najnizszego; sluzy do wyboru najwyzszej zdobytej odznaki. */

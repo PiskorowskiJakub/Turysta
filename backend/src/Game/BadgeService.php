@@ -57,6 +57,15 @@ final class BadgeService
                        JOIN user_stats st ON st.user_id = u.id AND st.active_days >= ?
                        WHERE r.referrer_id = ?)"
             )->execute([$userId, $when, ReferralService::ACTIVE_DAYS, $userId]);
+            $pdo->prepare(
+                "INSERT IGNORE INTO user_badges (user_id, badge_id, earned_at)
+                 SELECT ?, b.id, ? FROM badge_definitions b
+                 WHERE b.condition_type = 'squad_trails'
+                   AND b.threshold <= (
+                       SELECT COUNT(*) FROM squad_trail_members m
+                       JOIN squad_trails t ON t.id = m.trail_id AND t.stamps > 0
+                       WHERE m.user_id = ? AND m.eligible = 1)"
+            )->execute([$userId, $when, $userId]);
             self::awardReferralRewards($pdo, $userId);
             self::awardReferralPersons($pdo, $userId);
             // Zdarzenie dla znajomych: nowo zdobyta odznaka od zlotej wzwyz (INSERT IGNORE pilnuje, zeby nie dublowac).

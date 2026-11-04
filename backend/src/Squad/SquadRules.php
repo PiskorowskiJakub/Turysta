@@ -30,6 +30,31 @@ final class SquadRules
     /** Premia serii w procentach dla poziomow plomienia. */
     public const FLAME_BONUS_PERCENT = [0, 5, 10, 15, 20];
 
+    // Szlaki (tygodniowe wyprawy)
+    /** Wpisowe do wyprawy w setnych dukata (2 dk). Znika z obiegu. */
+    public const TRAIL_FEE_CENTS = 200;
+    /** Dolaczyc mozna od poniedzialku do srody wlacznie (indeks dnia tygodnia 0 = poniedzialek). */
+    public const TRAIL_JOIN_LAST_DAY = 2;
+    /** Poziom trudnosci mozna zmieniac do konca poniedzialku. */
+    public const TRAIL_PLAN_LAST_DAY = 0;
+    public const TRAIL_MIN_ACTIVE_DAYS = 3;
+    /** Minimum uprawnionych uczestnikow, zeby oddzial dostal pieczatki. */
+    public const TRAIL_MIN_ELIGIBLE = 2;
+    /** Dlugosc trasy w km wg trudnosci. */
+    public const TRAIL_LENGTH_KM = ['easy' => 30, 'medium' => 50, 'hard' => 80];
+    /** Progi postepu (%) kolejnych pieczatek wg trudnosci. */
+    public const TRAIL_THRESHOLDS = [
+        'easy' => [40, 60, 75, 88],
+        'medium' => [40, 65, 80, 92],
+        'hard' => [40, 70, 88, 97],
+    ];
+    /** Maksimum pieczatek wg trudnosci (trudna trasa daje piata za ostatni prog). */
+    public const TRAIL_MAX_STAMPS = ['easy' => 3, 'medium' => 4, 'hard' => 5];
+    /** Nagroda gracza za kazda pieczatke oddzialu (w setnych dukata): 0,50 dk. */
+    public const TRAIL_REWARD_PER_STAMP_CENTS = 50;
+    public const TRAIL_DIFFICULTIES = ['easy', 'medium', 'hard'];
+    public const TRAIL_HISTORY = 12;
+
     // Zastepczosc
     public const ROLE_INACTIVE_DAYS = 7;
     public const LEADER_INACTIVE_DAYS = 14;
