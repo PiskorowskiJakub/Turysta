@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Turysta\Controller;
 
 use PDO;
+use Turysta\Admin\FactService;
 use Turysta\Auth\Session;
 use Turysta\Game\BadgeService;
 use Turysta\Game\ChapterService;
@@ -26,17 +27,10 @@ final class GameController
     ) {
     }
 
-    /** Ciekawostka dnia: ta sama dla wszystkich w danej dobie UTC. @return array{0:int,1:array<string,mixed>} */
+    /** Ciekawostka dnia: ta sama dla wszystkich w danej dobie czasu polskiego. @return array{0:int,1:array<string,mixed>} */
     public function todayFact(Request $r): array
     {
-        $ids = $this->pdo->query('SELECT id FROM daily_facts WHERE active = 1 ORDER BY id')->fetchAll(\PDO::FETCH_COLUMN);
-        if (!$ids) {
-            return [200, ['text' => null]];
-        }
-        $id = (int) $ids[intdiv(time(), 86400) % count($ids)];
-        $stmt = $this->pdo->prepare('SELECT text FROM daily_facts WHERE id = ?');
-        $stmt->execute([$id]);
-        return [200, ['text' => (string) $stmt->fetchColumn()]];
+        return [200, ['text' => (new FactService($this->pdo))->today()]];
     }
 
     /** @return array{0:int,1:array<string,mixed>} */
