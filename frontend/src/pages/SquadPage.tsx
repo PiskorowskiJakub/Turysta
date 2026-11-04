@@ -5,9 +5,9 @@ import type { TFunction } from 'i18next';
 import { api, ApiError } from '../api/client';
 import type { SquadCard, SquadCatalog, SquadMeta, SquadMine, SquadProfile } from '../api/types';
 import Pager from '../components/Pager';
-import Tabs from '../components/Tabs';
+import Tabs, { type TabItem } from '../components/Tabs';
 import SquadFields, { type SquadDraft } from '../components/squad/SquadFields';
-import SquadPanel from '../components/squad/SquadPanel';
+import SquadPanel, { type SquadSection } from '../components/squad/SquadPanel';
 import SquadPublic from '../components/squad/SquadPublic';
 import { formatDate } from '../format';
 
@@ -19,6 +19,7 @@ function errText(t: TFunction, e: unknown): string {
 export default function SquadPage() {
   const { t } = useTranslation();
   const [mine, setMine] = useState<SquadMine | null>(null);
+  const [squad, setSquad] = useState<SquadProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
@@ -34,21 +35,42 @@ export default function SquadPage() {
     void reload();
   }, [reload]);
 
+  useEffect(() => setSquad(mine?.squad ?? null), [mine]);
+
   if (!mine) return <p className="panel page-message">{error ?? t('loading')}</p>;
+
+  const waiting = squad?.requests?.requests.length ?? 0;
+  const mineChildren: TabItem[] | undefined = squad
+    ? [
+        { path: 'przeglad', label: t('squad.tabs.overview') },
+        { path: 'czlonkowie', label: t('squad.tabs.members') },
+        ...(squad.me.can_recruit
+          ? [{
+              path: 'rekrutacja',
+              label: t('squad.tabs.recruitment'),
+              children: [
+                { path: 'zaproszeni', label: t('squad.tabs.invited') },
+                { path: 'oczekujacy', label: waiting > 0 ? t('squad.tabs.waitingCount', { n: waiting }) : t('squad.tabs.waiting') },
+              ],
+            }]
+          : []),
+        { path: 'ustawienia', label: t('squad.tabs.settings') },
+        { path: 'kronika', label: t('squad.tabs.chronicle') },
+      ]
+    : undefined;
 
   return (
     <>
-      <h1>{t('squad.title')}</h1>
       <Tabs
         base="/oddzial"
         items={[
-          { path: 'moj', label: t('squad.tabs.mine') },
+          { path: 'moj', label: t('squad.tabs.mine'), children: mineChildren },
           { path: 'katalog', label: t('squad.tabs.catalog') },
         ]}
       />
       <Routes>
         <Route index element={<Navigate to="moj" replace />} />
-        <Route path="moj" element={<MineTab mine={mine} setMine={setMine} reload={reload} />} />
+        <Route path="moj/*" element={<MineTab mine={mine} squad={squad} setSquad={setSquad} setMine={setMine} reload={reload} />} />
         <Route path="katalog" element={<CatalogTab meta={mine.meta} />} />
         <Route path=":id" element={<ProfileTab mine={mine} reload={reload} />} />
       </Routes>
@@ -56,15 +78,28 @@ export default function SquadPage() {
   );
 }
 
-function MineTab({ mine, setMine, reload }: { mine: SquadMine; setMine: (m: SquadMine) => void; reload: () => Promise<void> }) {
+function MineTab({ mine, squad, setSquad, setMine, reload }: { mine: SquadMine; squad: SquadProfile | null; setSquad: (s: SquadProfile) => void; setMine: (m: SquadMine) => void; reload: () => Promise<void> }) {
   const { t } = useTranslation();
-  const [squad, setSquad] = useState<SquadProfile | null>(mine.squad);
-  useEffect(() => setSquad(mine.squad), [mine.squad]);
+  if (!squad) return <Onboarding mine={mine} reload={reload} title={t('squad.onboarding.title')} />;
 
-  if (squad) {
-    return <SquadPanel squad={squad} meta={mine.meta} onSquad={setSquad} onMine={setMine} />;
-  }
-  return <Onboarding mine={mine} reload={reload} title={t('squad.onboarding.title')} />;
+  const panel = (section: SquadSection) => <SquadPanel section={section} squad={squad} meta={mine.meta} onSquad={setSquad} onMine={setMine} />;
+  return (
+    <Routes>
+      <Route index element={<Navigate to="przeglad" replace />} />
+      <Route path="przeglad" element={panel('przeglad')} />
+      <Route path="czlonkowie" element={panel('czlonkowie')} />
+      {squad.me.can_recruit ? (
+        <>
+          <Route path="rekrutacja" element={<Navigate to="zaproszeni" replace />} />
+          <Route path="rekrutacja/zaproszeni" element={panel('zaproszeni')} />
+          <Route path="rekrutacja/oczekujacy" element={panel('oczekujacy')} />
+        </>
+      ) : null}
+      <Route path="ustawienia" element={panel('ustawienia')} />
+      <Route path="kronika" element={panel('kronika')} />
+      <Route path="*" element={<Navigate to="/oddzial/moj/przeglad" replace />} />
+    </Routes>
+  );
 }
 
 /** Gracz bez oddzialu: zaproszenia, wlasne prosby i formularz zalozenia. */

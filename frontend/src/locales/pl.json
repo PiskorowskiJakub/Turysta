@@ -1214,7 +1214,15 @@
     "cancel": "Anuluj",
     "tabs": {
       "mine": "Mój oddział",
-      "catalog": "Katalog"
+      "catalog": "Katalog",
+      "overview": "Przegląd",
+      "members": "Członkowie",
+      "recruitment": "Rekrutacja",
+      "invited": "Zaproszeni",
+      "waiting": "Oczekujący",
+      "waitingCount": "Oczekujący ({{n}})",
+      "settings": "Ustawienia",
+      "chronicle": "Kronika"
     },
     "player": {
       "member": "Oddział:"
@@ -1327,7 +1335,8 @@
       "leaveConfirm": "Opuść (karencja {{days}} dni)",
       "disband": "Rozwiąż oddział",
       "disbandConfirm": "Rozwiąż na stałe",
-      "leaderHint": "Jako przywódca nie możesz po prostu odejść: przekaż przywództwo wybranemu członkowi albo rozwiąż oddział."
+      "leaderHint": "Jako przywódca nie możesz po prostu odejść: przekaż przywództwo wybranemu członkowi albo rozwiąż oddział.",
+      "membership": "Członkostwo"
     },
     "settings": {
       "edit": "Ustawienia",
@@ -1350,9 +1359,9 @@
       "best": "najlepsza seria",
       "litDays": "dni z ogniskiem",
       "next": "Kolejny poziom ({{level}}) za {{days}} dni serii.",
-      "rule": "Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej {{percent}}% członków (minimum {{min}} osoby).",
       "history": "Ostatnie dni",
-      "dayTitle": "{{day}}: aktywnych {{active}} z {{needed}}, żar {{ember}}"
+      "dayTitle": "{{day}}: aktywnych {{active}} z {{needed}}, żar {{ember}}",
+      "info": "Ognisko to wspólny cel oddziału. Płonie danego dnia gry, gdy aktywnych jest co najmniej {{percent}}% członków (zaokrąglone w górę, minimum {{min}} osoby); aktywny to gracz, który tego dnia coś zrobił w grze. Za każdy dzień z płonącym ogniskiem oddział dostaje żar: 100 × mnożnik dnia (×1,0 przy 30% aktywnych, ×1,25 przy 50%, ×1,5 przy 70%) × premia serii (+5% od 3 dni, +10% od 7, +15% od 14, +20% od 30 dni z rzędu). Poziomy ogniska: Żar, Płomyk, Ognisko i Wielkie ognisko (progi serii 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera."
     },
     "members": {
       "title": "Członkowie ({{n}}/{{max}})",
@@ -1384,7 +1393,11 @@
       "withdraw": "Wycofaj",
       "approved": "{{name}} dołączył do oddziału.",
       "declined": "Prośba gracza {{name}} odrzucona.",
-      "withdrawn": "Zaproszenie dla {{name}} wycofane."
+      "withdrawn": "Zaproszenie dla {{name}} wycofane.",
+      "invitedTitle": "Zaproszone osoby",
+      "waitingTitle": "Osoby oczekujące na przyjęcie",
+      "noInvites": "Nie ma wysłanych zaproszeń.",
+      "noRequests": "Nikt nie czeka na przyjęcie."
     },
     "invite": {
       "sent": "Zaproszenie dla {{name}} wysłane.",
