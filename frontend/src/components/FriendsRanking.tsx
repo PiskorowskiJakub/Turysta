@@ -49,19 +49,21 @@ export default function FriendsRanking() {
 
   return (
     <>
-      <div className="friends-sort" role="group" aria-label={t('ranking.friends.metric')}>
-        {METRICS.map((m) => (
-          <button key={m} type="button" className={`sort-btn${metric === m ? ' active' : ''}`} aria-pressed={metric === m} onClick={() => setMetric(m)}>
-            {t(`ranking.friends.metrics.${m}`)}
-          </button>
-        ))}
-      </div>
-      <div className="friends-sort" role="group" aria-label={t('ranking.friends.period')}>
-        {PERIODS.map((p) => (
-          <button key={p} type="button" className={`sort-btn${period === p ? ' active' : ''}`} aria-pressed={period === p} onClick={() => choosePeriod(p)}>
-            {t(`ranking.friends.${p}`)}
-          </button>
-        ))}
+      <div className="activity-controls">
+        <div className="segmented" role="group" aria-label={t('ranking.friends.metric')}>
+          {METRICS.map((m) => (
+            <button key={m} type="button" className={'seg' + (metric === m ? ' active' : '')} aria-pressed={metric === m} onClick={() => setMetric(m)}>
+              {t(`ranking.friends.metrics.${m}`)}
+            </button>
+          ))}
+        </div>
+        <div className="segmented" role="group" aria-label={t('ranking.friends.period')}>
+          {PERIODS.map((p) => (
+            <button key={p} type="button" className={'seg' + (period === p ? ' active' : '')} aria-pressed={period === p} onClick={() => choosePeriod(p)}>
+              {t(`ranking.friends.${p}`)}
+            </button>
+          ))}
+        </div>
       </div>
       {period !== 'all' && (
         <div className="ranking-pager period-nav">
