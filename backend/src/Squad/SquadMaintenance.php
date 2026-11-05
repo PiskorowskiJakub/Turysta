@@ -21,6 +21,7 @@ final class SquadMaintenance
         SquadFire::processPending($pdo);
         // Wyprawy z minionych tygodni rozliczamy zaraz po polnocy (rozliczone leniwie przy wejsciu gracza tez sa bezpieczne).
         SquadTrail::finalizeDue($pdo, Clock::now($pdo));
+        SquadShelter::finalizeDue($pdo, Clock::now($pdo));
 
         // Zastepczosc i archiwizacja raz na dobe: o 00:11 czasu gry (po rozliczeniu ognisk).
         $now = Clock::now($pdo);

@@ -233,7 +233,8 @@ Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Menu „O
 | Zastępca | 1 | Wszystko poza przekazaniem przywództwa i rozwiązaniem oddziału |
 | Rekruter | do 2 | Przyjmowanie próśb i zapraszanie graczy |
 | Przewodnik | do 2 | Wybiera trudność tygodniowej wyprawy (szlaki) |
-| Kwatermistrz, Kronikarz | do 2 każda | Na razie tylko tytuł |
+| Kwatermistrz | do 2 | Rozpoczyna rozbudowę pomieszczeń w schronisku (jak Przywódca i Zastępca) |
+| Kronikarz | do 2 | Na razie tylko tytuł |
 
 Gracz ma jedną rolę. Tytuł roli zawsze widać na liście członków oddziału. W swoim profilu publicznym gracz może go ukryć w Edycji profilu. Przywódca nie może po prostu odejść: przekazuje przywództwo albo rozwiązuje oddział.
 
@@ -261,9 +262,20 @@ Co tydzień (od poniedziałku do niedzieli, czas polski) oddział wyrusza na wsp
 - **Pieczątki.** Pierwsza już od 40% (średnia trasa: kolejne od 65%, 80% i 92%; łatwa: 60%, 75%, 88%; trudna: 70%, 88%, 97%). Pieczątki trafiają do wspólnej puli oddziału i będą potrzebne w kolejnych etapach (schronisko). Oddział dostaje je, jeśli wyprawę zaliczyły co najmniej 2 osoby.
 - **Zaliczenie i nagroda.** Wyprawę zalicza uczestnik, który w jej trakcie miał co najmniej 3 dni aktywności. Po niedzieli dostaje 0,50 dk za każdą pieczątkę oddziału, a wyprawa liczy się do odznaki „Szlakowiec”. Wyprawa bez pieczątek nie daje ani nagrody, ani postępu odznaki.
 
+### Schronisko
+
+Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i pięciu pomieszczeń.
+
+- **Magazyn** nie ma limitu i zbiera trzy składniki: **żar** z ogniska, **pieczątki** ze szlaków i **dukaty** z wpłat członków. Żar pokazany w panelu ogniska to suma zdobyta w całej historii, a w magazynie widać to, co zostało po rozbudowach.
+- **Pomieszczenia:** Kuchnia, Spiżarnia, Izba chorych, Mapownia i Izba pamięci. Nie mają maksymalnego poziomu: każdy kolejny poziom kosztuje więcej żaru, pieczątek i dukatów (koszt poziomu n to koszt poziomu 1 razy n do potęgi 1,2, a dla pieczątek 1,1) i dłużej się buduje (12 godzin razy numer poziomu). Poziom 1 kosztuje 240 żaru, 6 pieczątek i 600 dk (Izba pamięci 60% tej ceny).
+- **Rozbudowa.** Rozpoczyna ją Przywódca, Zastępca albo Kwatermistrz. Składniki schodzą z magazynu od razu, ale poziom, a z nim jego efekt, przybywa dopiero po zakończeniu budowy. Oddział buduje jedno pomieszczenie naraz.
+- **Wpłaty.** Każdy członek może wpłacać całe dukaty do magazynu. Dzienny limit na osobę jest proporcjonalny do cen rozbudów (na początku 9 dk) i rośnie razem z nimi. Magazyn nie przyjmuje więcej dukatów, niż kosztuje najdroższa kolejna rozbudowa, żeby nie zalegały. Wpłacone dukaty zostają w oddziale także po odejściu członka.
+- **Efekty (maleją, nigdy nie osiągają maksimum):** Kuchnia dodaje członkom oddziału do 5% do wypłat z prac (poziom 1 to ok. 0,6%, poziom 10 ok. 2,9%), a Mapownia dokłada oddziałowi do 25% dodatkowych pieczątek z każdej wyprawy (ułamki sumują się między wyprawami; nagrody graczy dotyczą tylko pieczątek z trasy). Efekty Spiżarni, Izby chorych i Izby pamięci pojawią się w kolejnych etapach, ale pomieszczenia można już rozbudowywać.
+- **Kronika** zapisuje rozpoczęcie i ukończenie rozbudowy oraz rekord dziennych wpłat oddziału (od 50 dk).
+
 ### Kronika
 
-Kronika dostępna jest tylko dla członków i zapisuje się sama: założenie oddziału, dołączenia i odejścia, usunięcia, zmiany ról i przywództwa, zmiany nazwy i specjalizacji, awanse i spadki ogniska oraz zakończone wyprawy. Gracze, którzy w ustawieniach prywatności ukryli swoją aktywność, są w kronice anonimowi.
+Kronika dostępna jest tylko dla członków i zapisuje się sama: założenie oddziału, dołączenia i odejścia, usunięcia, zmiany ról i przywództwa, zmiany nazwy i specjalizacji, awanse i spadki ogniska, zakończone wyprawy oraz rozbudowy schroniska i rekordy wpłat. Gracze, którzy w ustawieniach prywatności ukryli swoją aktywność, są w kronice anonimowi.
 
 ## Nazwa postaci
 

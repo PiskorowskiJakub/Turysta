@@ -20,6 +20,7 @@ use Turysta\Controller\MeController;
 use Turysta\Controller\PasswordResetController;
 use Turysta\Controller\SquadAdminController;
 use Turysta\Controller\SquadController;
+use Turysta\Controller\SquadShelterController;
 use Turysta\Controller\SquadTrailController;
 use Turysta\Game\JobService;
 use Turysta\Game\Settler;
@@ -57,6 +58,7 @@ final class App
         $squadService = new SquadService($pdo, new RateLimiter($pdo));
         $squads = new SquadController($squadService, new SquadView($pdo, $squadService));
         $squadTrails = new SquadTrailController(new SquadTrail($pdo, $squadService));
+        $squadShelter = new SquadShelterController(new SquadShelter($pdo, $squadService));
         $squadAdmin = new SquadAdminController(new SquadAdminService($pdo), $pdo);
 
         $router = new Router();
@@ -125,6 +127,9 @@ final class App
         $router->post('/v1/squads/{id}/trail/join', [$squadTrails, 'join']);
         $router->post('/v1/squads/{id}/trail/march', [$squadTrails, 'march']);
         $router->put('/v1/squads/{id}/trail/difficulty', [$squadTrails, 'difficulty']);
+        $router->get('/v1/squads/{id}/shelter', [$squadShelter, 'show']);
+        $router->post('/v1/squads/{id}/shelter/deposit', [$squadShelter, 'deposit']);
+        $router->post('/v1/squads/{id}/shelter/upgrade', [$squadShelter, 'upgrade']);
 
         $router->get('/v1/home', [$home, 'show']);
         $router->get('/v1/announcements', [$home, 'announcements']);

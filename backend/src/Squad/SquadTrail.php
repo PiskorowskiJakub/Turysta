@@ -310,9 +310,12 @@ final class SquadTrail
                     $badgeUsers[] = $r['user_id'];
                 }
             }
+            $bonusStamps = 0;
             if ($stamps > 0) {
+                // Mapownia dokłada oddziałowi dodatkowe pieczątki do puli (gracze dostają nagrodę tylko za pieczątki z trasy).
+                $bonusStamps = SquadShelter::mappingExtraStamps($pdo, (int) $trail['squad_id'], $stamps);
                 $pdo->prepare('UPDATE squads SET stamps = stamps + ?, trails_done = trails_done + 1 WHERE id = ?')
-                    ->execute([$stamps, $trail['squad_id']]);
+                    ->execute([$stamps + $bonusStamps, $trail['squad_id']]);
             }
             $pdo->prepare(
                 "UPDATE squad_trails SET status = 'done', percent = ?, stamps = ?, participants = ?, eligible = ?, finalized_at = ? WHERE id = ?"
@@ -323,6 +326,7 @@ final class SquadTrail
                     'theme_name' => SquadTrailThemes::get((string) $trail['theme'])['name'] ?? (string) $trail['theme'],
                     'percent' => round($calc['percent'], 1),
                     'stamps' => $stamps,
+                    'bonus_stamps' => $bonusStamps,
                     'difficulty' => $difficulty,
                 ]);
             }

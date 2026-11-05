@@ -55,6 +55,28 @@ final class SquadRules
     public const TRAIL_DIFFICULTIES = ['easy', 'medium', 'hard'];
     public const TRAIL_HISTORY = 12;
 
+    // Schronisko (magazyn i pomieszczenia bez maksymalnego poziomu)
+    /** Pomieszczenia: kod => mnoznik ceny (Izba pamieci kosztuje 60%). */
+    public const ROOMS = ['kitchen' => 1.0, 'pantry' => 1.0, 'infirmary' => 1.0, 'mapping' => 1.0, 'memory' => 0.6];
+    /** Koszt poziomu 1 (zar, pieczatki, dukaty) i wykladniki wzrostu kosztu: koszt poziomu n = baza x n^wykladnik. */
+    public const ROOM_BASE_EMBER = 240;
+    public const ROOM_BASE_STAMPS = 6;
+    public const ROOM_BASE_COINS = 600;
+    public const ROOM_EXPONENT = 1.2;
+    public const ROOM_STAMPS_EXPONENT = 1.1;
+    /** Budowa poziomu n trwa n x 12 godzin. */
+    public const ROOM_HOURS_PER_LEVEL = 12;
+    /** Dzienny limit wplat na osobe = srednia cena dukatowa kolejnych poziomow / ten dzielnik (min. ROOM_DEPOSIT_MIN_COINS dk). */
+    public const DEPOSIT_DIVISOR = 60;
+    public const DEPOSIT_MIN_COINS = 5;
+    /** Rekord wplat oddzialu trafia do kroniki dopiero od tej kwoty w ciagu dnia (w setnych dukata: 50 dk). */
+    public const DEPOSIT_RECORD_MIN_CENTS = 5000;
+    /** Efekty maleja asymptotycznie: maksimum x L / (L + polowa). Kuchnia: wyplaty z prac, Mapownia: pieczatki z wypraw. */
+    public const KITCHEN_MAX_PERCENT = 5.0;
+    public const KITCHEN_HALF = 7;
+    public const MAPPING_MAX_PERCENT = 25.0;
+    public const MAPPING_HALF = 10;
+
     // Zastepczosc
     public const ROLE_INACTIVE_DAYS = 7;
     public const LEADER_INACTIVE_DAYS = 14;
