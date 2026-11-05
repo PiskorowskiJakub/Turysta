@@ -17,6 +17,8 @@ Dokumentacja zasad gry.
   - [Role](#role)
   - [Ognisko](#ognisko)
   - [Szlaki (wyprawy oddziału)](#szlaki-wyprawy-oddziału)
+  - [Schronisko](#schronisko)
+  - [Powiadomienia oddziału](#powiadomienia-oddziału)
   - [Kronika](#kronika)
 - [Nazwa postaci](#nazwa-postaci)
 
@@ -213,7 +215,18 @@ Nagrody trafiają na konto przy Twojej najbliższej aktywności w grze.
 
 ## Oddziały
 
-Oddział to drużyna podróżników, która wspólnie rozpala ognisko. Menu „Oddział” ma zakładki: Mój oddział (przegląd, członkowie, rekrutacja, ustawienia, kronika), Szlaki (wyprawa i historia) oraz Katalog. Oddziały mają skład, role, kronikę, ognisko i cotygodniowe szlaki; wspólne umiejętności pojawią się później.
+Oddział to drużyna podróżników, która wspólnie rozpala ognisko, chodzi na szlaki i rozbudowuje schronisko. Menu „Oddział” ma zakładki: Mój oddział (przegląd, członkowie, rekrutacja, ustawienia, kronika), Szlaki (wyprawa i historia), Schronisko oraz Katalog. Wspólne umiejętności oddziału pojawią się w kolejnym etapie.
+
+**Jak to wszystko działa razem.** Trzy mechaniki dostarczają trzech składników, a schronisko zamienia je w trwałe bonusy:
+
+| Skala | Mechanika | Co daje oddziałowi |
+| --- | --- | --- |
+| Dzień | Ognisko | **Żar** (i poziom płomienia) |
+| Tydzień | Szlak (wyprawa) | **Pieczątki** (i nagrody dla graczy) |
+| Na bieżąco | Wpłaty członków | **Dukaty** do magazynu |
+| Bez końca | Schronisko | Pomieszczenia: małe bonusy do wypłat z prac i do pieczątek |
+
+Żaden z tych składników nie wymaga bycia lepszym od innych oddziałów: liczy się regularność. Oddział nie ma czatu, a wszystko, co się w nim dzieje, zapisuje się w kronice.
 
 ### Zakładanie i dołączanie
 
@@ -242,14 +255,14 @@ Gracz ma jedną rolę. Tytuł roli zawsze widać na liście członków oddziału
 
 ### Ognisko
 
-Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (zaokrąglone w górę, minimum 2 osoby). Aktywny to gracz, który tego dnia coś zrobił w grze (dzień liczy się według czasu polskiego).
+Ognisko to codzienny nawyk oddziału. Płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (zaokrąglone w górę, minimum 2 osoby). Aktywny to gracz, który tego dnia coś zrobił w grze; dzień liczy się według czasu polskiego. Przykład: w oddziale 10-osobowym trzeba 3 aktywnych, w 30-osobowym 9, a w 2–6-osobowym zawsze co najmniej 2.
 
-- **Rozliczenie.** Dzień rozlicza się po północy: wtedy dochodzi seria i żar. Gdy wymagania są spełnione już dziś, ognisko pokazuje „Ognisko płonie”, choć seria zwiększy się dopiero po północy.
-
-- **Żar** za dzień z płonącym ogniskiem to 10 × mnożnik dnia × premia serii (zaokrąglone do całości), czyli od 10 do 18 dziennie. W panelu ogniska widać sumę żaru i przyrost z ostatniego rozliczonego dnia, np. „46 +16”.
+- **Rozliczenie.** Dzień rozlicza się po północy: wtedy dochodzi seria i żar. Gdy wymagania są spełnione już dziś, panel pokazuje „Ognisko płonie”, choć seria i żar zwiększą się dopiero po północy.
+- **Żar** za dzień z płonącym ogniskiem to 10 × mnożnik dnia × premia serii (zaokrąglone do całości), czyli od 10 do 18 dziennie. Nie zależy od liczby członków, więc mały i duży oddział zbierają żar w podobnym tempie.
 - **Mnożnik dnia:** ×1,0 przy 30% aktywnych, ×1,25 przy 50% i ×1,5 przy 70%.
 - **Seria** to kolejne dni z płonącym ogniskiem. Premia serii: +0% (poniżej 3 dni), +5% (3 dni), +10% (7 dni), +15% (14 dni), +20% (30 dni).
-- **Poziomy:** Brak ogniska, Żar, Płomyk, Ognisko, Wielkie ognisko (progi serii 0, 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera.
+- **Poziomy płomienia:** Brak ogniska, Żar, Płomyk, Ognisko, Wielkie ognisko (progi serii 0, 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera.
+- **Panel ogniska** pokazuje dzisiejszych aktywnych, serię, **żar łącznie** (suma z całej historii) z przyrostem z ostatniego rozliczonego dnia (np. „46 +16”), najlepszą serię, liczbę dni z ogniskiem i historię ostatnich dni. Żar jest składnikiem rozbudowy schroniska, więc to, co zostało po rozbudowach, widać w magazynie schroniska.
 
 ### Szlaki (wyprawy oddziału)
 
@@ -258,20 +271,65 @@ Co tydzień (od poniedziałku do niedzieli, czas polski) oddział wyrusza na wsp
 - **Motyw.** Losuje się go automatycznie spośród motywów ogólnych i motywów specjalizacji oddziału („ogólna” korzysta tylko z ogólnych). Motywy związane z porą roku wypadają tylko w swojej porze, a ten sam motyw nie wypada dwa tygodnie z rzędu.
 - **Trudność.** Łatwa (30 km na uczestnika), średnia (50 km) albo trudna (80 km). Wybiera ją przywódca, zastępca lub przewodnik, najpóźniej do końca poniedziałku; nowa wyprawa dziedziczy trudność poprzedniej. Im trudniejsza trasa, tym wyższe progi pieczątek, ale i więcej pieczątek do zdobycia (łatwa najwyżej 3, średnia 4, trudna 5).
 - **Dołączenie.** Wpisowe to 2 dk i znika z obiegu. Dołączyć można od poniedziałku do środy; kto wyjdzie z oddziału, przestaje się liczyć w wyprawie.
-- **Postęp.** Udział uczestnika to w połowie jego dni aktywności w grze, a w połowie codzienny, darmowy **Marsz** (przycisk, odnawia się o północy), oba liczone od dnia dołączenia do końca wyprawy. Kilometry oddziału to suma kilometrów uczestników, a cel to długość trasy razy liczba uczestników (każdy nowy uczestnik zwiększa cel o całą trasę); pasek i progi pieczątek liczą się w procentach, czyli jako średnia z uczestników. Sama aktywność daje do 50% trasy. Punkty gracza nie mają na postęp żadnego wpływu.
-- **Pieczątki.** Pierwsza już od 40% (średnia trasa: kolejne od 65%, 80% i 92%; łatwa: 60%, 75%, 88%; trudna: 70%, 88%, 97%). Pieczątki trafiają do wspólnej puli oddziału i będą potrzebne w kolejnych etapach (schronisko). Oddział dostaje je, jeśli wyprawę zaliczyły co najmniej 2 osoby.
-- **Zaliczenie i nagroda.** Wyprawę zalicza uczestnik, który w jej trakcie miał co najmniej 3 dni aktywności. Po niedzieli dostaje 0,50 dk za każdą pieczątkę oddziału, a wyprawa liczy się do odznaki „Szlakowiec”. Wyprawa bez pieczątek nie daje ani nagrody, ani postępu odznaki.
+- **Twój udział.** To w połowie Twoje dni aktywności w grze, a w połowie codzienny, darmowy **Marsz** (przycisk, odnawia się o północy), oba liczone od dnia dołączenia do końca wyprawy. Sama aktywność daje więc do 50% trasy. Punkty gracza nie mają na postęp żadnego wpływu.
+- **Pasek i kilometry.** Kilometry oddziału to suma kilometrów wszystkich uczestników, a cel to długość trasy razy liczba uczestników: każdy nowy uczestnik zwiększa cel o całą trasę. Pod paskiem widać też Twój wkład („Ty: 20 / 50 km, zostało 30 km”). Pasek i progi pieczątek liczą się w procentach, czyli jako średnia z uczestników; cyfry na pasku to progi kolejnych pieczątek. Przykład: pięć osób na trasie średniej ma cel 250 km, a przy łącznie 80 km pasek stoi na 32%.
+- **Pieczątki.** Pierwsza już od 40% (średnia trasa: kolejne od 65%, 80% i 92%; łatwa: 60%, 75%, 88%; trudna: 70%, 88%, 97%). Pieczątki trafiają do magazynu schroniska, gdzie razem z żarem i dukatami wystarczają na rozbudowę pomieszczeń. Oddział dostaje je, jeśli wyprawę zaliczyły co najmniej 2 osoby. Mapownia w schronisku dokłada oddziałowi dodatkowe pieczątki (patrz niżej).
+- **Zaliczenie i nagroda.** Wyprawę zalicza uczestnik, który w jej trakcie miał co najmniej 3 dni aktywności. Po niedzieli dostaje 0,50 dk za każdą pieczątkę zdobytą na trasie, a wyprawa liczy się do odznaki „Szlakowiec”. Wyprawa bez pieczątek nie daje ani nagrody, ani postępu odznaki.
 
 ### Schronisko
 
-Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i pięciu pomieszczeń.
+Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i pięciu pomieszczeń. Widzą ją wszyscy członkowie (skrót z magazynem i poziomami jest też na Przeglądzie oddziału), ale rozbudowę zaczynają tylko wybrane role.
 
-- **Magazyn** nie ma limitu i zbiera trzy składniki: **żar** z ogniska, **pieczątki** ze szlaków i **dukaty** z wpłat członków. Żar pokazany w panelu ogniska to suma zdobyta w całej historii, a w magazynie widać to, co zostało po rozbudowach.
-- **Pomieszczenia:** Kuchnia, Spiżarnia, Izba chorych, Mapownia i Izba pamięci. Nie mają maksymalnego poziomu: każdy kolejny poziom kosztuje więcej żaru, pieczątek i dukatów (koszt poziomu n to koszt poziomu 1 razy n do potęgi 1,2, a dla pieczątek 1,1) i dłużej się buduje (12 godzin razy numer poziomu). Poziom 1 kosztuje 240 żaru, 6 pieczątek i 600 dk (Izba pamięci 60% tej ceny).
-- **Rozbudowa.** Rozpoczyna ją Przywódca, Zastępca albo Kwatermistrz. Składniki schodzą z magazynu od razu, ale poziom, a z nim jego efekt, przybywa dopiero po zakończeniu budowy. Oddział buduje jedno pomieszczenie naraz.
-- **Wpłaty.** Każdy członek może wpłacać całe dukaty do magazynu. Dzienny limit na osobę jest proporcjonalny do cen rozbudów (na początku 9 dk) i rośnie razem z nimi. Pojemność magazynu jest nieograniczona, więc dukaty mogą w nim zalegać. Wpłacone dukaty zostają w oddziale także po odejściu członka.
-- **Efekty (maleją, nigdy nie osiągają maksimum):** Kuchnia dodaje członkom oddziału do 5% do wypłat z prac (poziom 1 to ok. 0,6%, poziom 10 ok. 2,9%), a Mapownia dokłada oddziałowi do 25% dodatkowych pieczątek z każdej wyprawy (ułamki sumują się między wyprawami; nagrody graczy dotyczą tylko pieczątek z trasy). Efekty Spiżarni, Izby chorych i Izby pamięci pojawią się w kolejnych etapach, ale pomieszczenia można już rozbudowywać.
-- **Kronika** zapisuje rozpoczęcie i ukończenie rozbudowy oraz rekord dziennych wpłat oddziału (od 50 dk).
+**Magazyn** ma nieograniczoną pojemność i zbiera trzy składniki:
+
+- **Żar** z ogniska (to, co zostało po rozbudowach; w panelu ogniska widać sumę z całej historii).
+- **Pieczątki** ze szlaków (także dodatkowe z Mapowni).
+- **Dukaty** z wpłat członków.
+
+**Wpłaty.** Każdy członek może wpłacać do magazynu całe dukaty (od 1 dk). Dzienny limit na osobę (czas polski) jest proporcjonalny do cen rozbudów: to średnia cena dukatowa kolejnych poziomów wszystkich pomieszczeń podzielona przez 60, nie mniej niż 5 dk. Na starcie wynosi 9 dk i rośnie wraz z poziomami (przy wszystkich pomieszczeniach na poziomie 5 to ok. 79 dk). Dukaty zostają w oddziale także po odejściu wpłacającego. Za rekord dziennych wpłat oddziału (od 50 dk) pojawia się wpis w kronice.
+
+**Pomieszczenia:** Kuchnia, Spiżarnia, Izba chorych, Mapownia i Izba pamięci. Nie mają maksymalnego poziomu, a każdy kolejny poziom kosztuje więcej i dłużej się buduje:
+
+- koszt poziomu n to koszt poziomu 1 razy n do potęgi 1,2 (żar i dukaty) albo 1,1 (pieczątki); Izba pamięci kosztuje 60% ceny;
+- czas budowy poziomu n to 12 godzin razy n;
+- cena dukatowa jest stała dla danego poziomu, niezależna od liczby członków.
+
+| Poziom | Żar | Pieczątki | Dukaty | Budowa |
+| --- | --- | --- | --- | --- |
+| 1 | 240 | 6 | 600 dk | 12 godz. |
+| 2 | 551 | 13 | 1 378 dk | 1 dzień |
+| 3 | 897 | 21 | 2 242 dk | 1,5 dnia |
+| 5 | 1 656 | 36 | 4 139 dk | 2,5 dnia |
+| 10 | 3 804 | 76 | 9 509 dk | 5 dni |
+
+**Rozbudowa.** Rozpoczyna ją Przywódca, Zastępca albo Kwatermistrz. Przed startem trzeba potwierdzić rozbudowę: składniki schodzą z magazynu od razu, a budowy **nie można anulować** ani odzyskać składników. Poziom, a z nim jego efekt, przybywa dopiero po zakończeniu budowy. Oddział buduje jedno pomieszczenie naraz. Kronika zapisuje rozpoczęcie i ukończenie rozbudowy.
+
+**Efekty.** Maleją z poziomem (maksimum × L / (L + połowa)), więc nigdy nie osiągają sufitu, a bonusy dukatowe pozostają małe:
+
+| Pomieszczenie | Efekt | Poziom 1 | Poziom 5 | Poziom 10 |
+| --- | --- | --- | --- | --- |
+| Kuchnia | do +5% do wypłat z prac wszystkich członków | +0,6% | +2,1% | +2,9% |
+| Mapownia | do +25% dodatkowych pieczątek z wypraw (ułamki sumują się między wyprawami; nagrody graczy dotyczą tylko pieczątek z trasy) | +2,3% | +8,3% | +12,5% |
+| Spiżarnia | podniesie limit umiejętności oddziałowych | wkrótce | wkrótce | wkrótce |
+| Izba chorych | wzmocni tarczę ogniska | wkrótce | wkrótce | wkrótce |
+| Izba pamięci | kosmetyka oddziału i widok zdobytych odznak | wkrótce | wkrótce | wkrótce |
+
+Pomieszczenia z efektem „wkrótce” można już rozbudowywać, a ich poziomy zachowają się, gdy efekty pojawią się w kolejnych etapach. Gracz bez oddziału nie traci nic: bonusy są małe, a wpłaty dobrowolne.
+
+**Poziomy pomieszczeń są publiczne.** Widać je na profilu oddziału w katalogu, jako element prestiżu. Stan magazynu i koszty widzą tylko członkowie.
+
+**Rozwiązanie oddziału.** Gdy oddział zostanie rozwiązany albo zarchiwizowany, dukaty z magazynu **znikają** (nie wracają do wpłacających), podobnie jak żar i pieczątki. Dukaty wydane na wpłaty i rozbudowy są ujściem z obiegu gry.
+
+### Powiadomienia oddziału
+
+Członkowie oddziału dostają powiadomienia (dzwonek na stronie głównej) o ważnych zdarzeniach oddziału:
+
+- rozpoczęcie i ukończenie rozbudowy pomieszczenia w schronisku, a przy Kuchni i Mapowni także nowa wartość premii (np. „Twoje wypłaty z prac rosną o 0,6%”);
+- rekord dziennych wpłat oddziału (od 50 dk, jedno powiadomienie na dzień);
+- zakończenie wyprawy z jej wynikiem i liczbą pieczątek;
+- awans ogniska na wyższy poziom płomienia i spadek poziomu po przerwanej serii.
+
+Gdy oddział ma Kuchnię, powiadomienie o zakończonej pracy podaje też, ile premii z Kuchni dodano do wypłaty. Zaproszenia, prośby o przyjęcie, usunięcie z oddziału i zmiana roli mają osobne powiadomienia dla zainteresowanych.
 
 ### Kronika
 

@@ -244,11 +244,17 @@ final class SquadShelter
             $total = (int) $sum->fetchColumn();
             if ($total > (int) $row['deposit_record_cents'] && $total >= SquadRules::DEPOSIT_RECORD_MIN_CENTS) {
                 $this->pdo->prepare('UPDATE squads SET deposit_record_cents = ? WHERE id = ?')->execute([$total, $squadId]);
-                // Jeden wpis na dzien; kolejne rekordy tego samego dnia aktualizuja kwote.
+                // Jeden wpis i jedno powiadomienie na dzien; kolejne rekordy tego samego dnia aktualizuja tylko kwote w kronice.
+                $known = $this->pdo->prepare("SELECT 1 FROM squad_events WHERE squad_id = ? AND type = 'deposit_record' AND ref_key = ?");
+                $known->execute([$squadId, 'deposit_record:' . $day]);
+                $first = !$known->fetchColumn();
                 $this->pdo->prepare(
                     'INSERT INTO squad_events (squad_id, type, ref_key, payload) VALUES (?, ?, ?, ?)
                      ON DUPLICATE KEY UPDATE payload = VALUES(payload)'
                 )->execute([$squadId, 'deposit_record', 'deposit_record:' . $day, json_encode(['cents' => $total, 'day' => $day], JSON_UNESCAPED_UNICODE)]);
+                if ($first) {
+                    SquadNotifier::toMembers($this->pdo, $squadId, 'squad_deposit_record', ['cents' => $total]);
+                }
             }
             $this->pdo->commit();
         } catch (Throwable $e) {
@@ -299,6 +305,7 @@ final class SquadShelter
             SquadChronicle::record($this->pdo, $squadId, 'shelter_start', 'build_start:' . $room . ':' . $level, [
                 'room' => $room, 'level' => $level, 'user' => $uid, 'finish_at' => Clock::iso(Clock::fmt($finish)),
             ]);
+            SquadNotifier::toMembers($this->pdo, $squadId, 'squad_shelter_start', ['room' => $room, 'level' => $level]);
             $this->pdo->commit();
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
@@ -346,6 +353,17 @@ final class SquadShelter
             $pdo->prepare('UPDATE squad_builds SET active = NULL, finished_at = ? WHERE id = ?')->execute([$b['finish_at'], $buildId]);
             SquadChronicle::record($pdo, (int) $b['squad_id'], 'shelter_done', 'build_done:' . $b['room'] . ':' . $b['level'], [
                 'room' => (string) $b['room'], 'level' => (int) $b['level'],
+            ]);
+            // Kuchnia i Mapownia maja wlasne powiadomienia z nowa wartoscia premii.
+            $type = match ((string) $b['room']) {
+                'kitchen' => 'squad_kitchen_bonus',
+                'mapping' => 'squad_mapping_bonus',
+                default => 'squad_shelter_done',
+            };
+            SquadNotifier::toMembers($pdo, (int) $b['squad_id'], $type, [
+                'room' => (string) $b['room'],
+                'level' => (int) $b['level'],
+                'pct' => self::effectPercent((string) $b['room'], (int) $b['level']),
             ]);
             $pdo->commit();
             return true;

@@ -104,7 +104,7 @@ final class Settler
         $this->pdo->prepare("UPDATE job_runs SET status = 'done', finished_at = ends_at, payout_cents = ? WHERE id = ?")
             ->execute([$payout, $run['id']]);
         Wallet::earn($this->pdo, $userId, 'job:' . $run['job_code'], $payout, 'job_payout', 'job_run', (int) $run['id']);
-        SquadShelter::payKitchenBonus($this->pdo, $userId, $payout, (int) $run['id']);
+        $kitchen = SquadShelter::payKitchenBonus($this->pdo, $userId, $payout, (int) $run['id']);
         $points = Economy::jobPoints($payout);
         if ($points > 0) {
             Wallet::apply($this->pdo, $userId, 'points', $points, 'job_points', 'job_run', (int) $run['id']);
@@ -112,6 +112,6 @@ final class Settler
         Notifier::add($this->pdo, $userId, 'job_finished', [
             'job' => $run['job_name'],
             'payout_cents' => $payout,
-        ]);
+        ] + ($kitchen > 0 ? ['kitchen_cents' => $kitchen] : []));
     }
 }

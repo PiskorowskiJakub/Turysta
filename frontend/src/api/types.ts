@@ -660,6 +660,7 @@ export interface SquadProfile extends SquadCard {
   name_locked: boolean;
   name_forced: boolean;
   badges: unknown[];
+  shelter_levels: Record<ShelterRoomCode, number>;
   member_list: SquadMember[];
   me: {
     is_member: boolean;
@@ -756,6 +757,7 @@ export interface SquadTrail {
   week_start: string;
   week_end: string;
   join_until: string;
+  next_week_start: string;
   plan_until: string;
   difficulty: TrailDifficulty;
   theme: { code: string; name: string; description: string };

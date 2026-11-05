@@ -4,7 +4,7 @@ Monorepo:
 
 - `frontend/` React + TypeScript + Vite
 - `backend/` PHP 8.3 + Apache, REST pod `/api`
-- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii), simulate_squads.py (symulacja ekonomii oddziałów)
+- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii), simulate_squads.py (symulacja ekonomii oddziałów), simulate_shelter.py (tempo rozbudowy schroniska), dev-grant-squad.sh (lokalnie: `make squad-grant SQUAD=1 EMBER=5000 STAMPS=50 COINS=20000` dosypuje oddziałowi składniki schroniska)
 - `docker-compose.yml` wspolny stos
 
 ## Uruchomienie calosci
@@ -207,6 +207,34 @@ Wypłata jest zapisywana przy starcie pracy (`job_runs.reward_snapshot_cents`), 
 - Każdy świat to nowy zestaw 6 umiejętności o trudności dostosowanej do etapu gry, wymagany do dalszych awansów.
 - Awans do nowego świata to wydarzenie: 2,4 do 10,4 dnia i 5-22 tys. dk.
 - Do ustalenia później: efekty umiejętności światów, ujścia dla nadwyżki dukatów, dodatkowe miejsca w kolejce za rangi (poprawiłyby tempo okazjonalnych graczy).
+
+## Symulacja schroniska oddziału
+
+Skrypt `scripts/simulate_shelter.py` (`python scripts/simulate_shelter.py --markdown`) liczy, jak szybko oddział dojdzie do kolejnych poziomów pomieszczeń. Jest to szybki model, nie pełna symulacja Monte Carlo (tę dla pozostałych mechanik oddziałów daje `scripts/simulate_squads.py`, liczony wg starszych zasad: żar od 100 i koszt ×1,5 na poziom).
+
+### Zasady zastosowane w modelu
+
+- Koszt poziomu n pomieszczenia: żar 240 × n^1,2, pieczątki 6 × n^1,1, dukaty 600 × n^1,2 dk (Izba pamięci 60%). Poziomów nie ma końca. Budowa poziomu n trwa 12 godzin × n.
+- Dzienny limit wpłat na osobę to średnia cena dukatowa kolejnych poziomów / 60 (minimum 5 dk): 9 dk na starcie, ok. 79 dk przy wszystkich pomieszczeniach na poziomie 5.
+- Oddział rozbudowuje po kolei pomieszczenie o najniższym poziomie. Składniki zbierają się równolegle, więc czas jednej rozbudowy to czas zebrania najwolniejszego z nich.
+- Tempo zbierania: żar dziennie (2 osoby: 12, bo ognisko pali się tylko gdy obie są aktywne; 4 osoby: 19; 8 osób: 20; 15 osób: 17; 30 osób: 15), pieczątki tygodniowo (3 / 4 / 4,5 / 4 / 3,8) i liczba osób wpłacających codziennie do limitu (1,2 / 2 / 3 / 4,5 / 9).
+
+### Wyniki: dzień, w którym wszystkie pięć pomieszczeń osiąga poziom
+
+| Oddział | Poziom 1 | Poziom 2 | Poziom 3 | Poziom 4 | Poziom 5 | Wąskie gardło (żar/pieczątki/dukaty) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2 osoby | 177 dni (6 mies.) | 399 dni (13 mies.) | 743 dni (2,0 roku) | 1229 dni (3,4 roku) | 1864 dni (5,1 roku) | 18/0/7 |
+| 4 osoby | 106 dni (4 mies.) | 244 dni (8 mies.) | 461 dni (15 mies.) | 768 dni (2,1 roku) | 1168 dni (3,2 roku) | 19/0/6 |
+| 8 osób | 72 dni (2,4 mies.) | 199 dni (7 mies.) | 405 dni (14 mies.) | 697 dni (23 mies.) | 1078 dni (3,0 roku) | 22/0/3 |
+| 15 osób | 66 dni (2,2 mies.) | 215 dni (7 mies.) | 457 dni (15 mies.) | 800 dni (2,2 roku) | 1248 dni (3,4 roku) | 24/0/1 |
+| 30 osób | 74 dni (2,5 mies.) | 243 dni (8 mies.) | 518 dni (17 mies.) | 906 dni (2,5 roku) | 1414 dni (3,9 roku) | 25/0/0 |
+
+### Wnioski
+
+- Prawie zawsze wąskim gardłem jest żar, potem pieczątki (zbierane równolegle, więc nigdy nie wyznaczają tempa). Dukaty ograniczają tempo tylko w najmniejszych oddziałach i na pierwszych poziomach.
+- Od 4 osób w górę tempo jest zbliżone: żar nie zależy od liczby członków, a duże oddziały nadrabiają wpłatami.
+- Oddział 2-osobowy jest wyraźnie wolniejszy (poziom 1 po ok. 6 miesiącach), bo ognisko często nie pali się, a dwie osoby wpłacają niewiele dukatów.
+- Do ustalenia: łagodniejszy start dla oddziałów 2–3-osobowych (wyższy limit wpłat albo niższy koszt dukatowy poziomów 1–2) oraz ewentualne spowolnienie wzrostu kosztów (wykładnik 1,1 zamiast 1,2).
 
 ## Wiki gry na stronie
 

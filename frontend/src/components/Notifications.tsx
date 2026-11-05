@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import type { NotificationItem } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
-import { formatCoins, formatDate } from '../format';
+import { formatCoins, formatDate, formatPercent } from '../format';
 
 /** Widok powiadomien na stronie glownej: ostatnie zdarzenia z gry i oznaczanie ich jako przeczytane. */
 export default function Notifications() {
@@ -32,7 +32,7 @@ export default function Notifications() {
 
   const text = (n: NotificationItem): string => {
     const p = n.payload;
-    return t(`notifications.${n.type}`, {
+    const base = t(`notifications.${n.type}`, {
       defaultValue: n.type,
       skill: p.skill,
       level: p.level,
@@ -43,7 +43,19 @@ export default function Notifications() {
       chapter: p.chapter,
       referrals: p.count,
       amount: typeof p.payout_cents === 'number' ? formatCoins(p.payout_cents) : typeof p.cents === 'number' ? formatCoins(p.cents) : '',
+      room: typeof p.room === 'string' ? t(`squad.shelter.rooms.${p.room}`, { defaultValue: p.room }) : '',
+      pct: typeof p.pct === 'number' ? formatPercent(p.pct) : '',
+      theme: p.theme_name,
+      percent: p.percent,
+      stamps: p.stamps,
+      days: p.streak,
+      flame: typeof p.flame === 'number' ? t(`squad.flame.${p.flame}`) : '',
     });
+    // Premia z Kuchni oddzialu dopisana do wyplaty z pracy.
+    if (n.type === 'job_finished' && typeof p.kitchen_cents === 'number' && p.kitchen_cents > 0) {
+      return `${base} ${t('notifications.job_kitchen', { kitchen: formatCoins(p.kitchen_cents) })}`;
+    }
+    return base;
   };
 
   if (items === null) return <p className="muted">{t('loading')}</p>;

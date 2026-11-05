@@ -77,6 +77,7 @@ final class SquadTrail
             'week_start' => $weekStart->format('Y-m-d'),
             'week_end' => $weekStart->modify('+6 days')->format('Y-m-d'),
             'join_until' => $weekStart->modify('+' . SquadRules::TRAIL_JOIN_LAST_DAY . ' days')->format('Y-m-d'),
+            'next_week_start' => $weekStart->modify('+7 days')->format('Y-m-d'),
             'plan_until' => $weekStart->modify('+' . SquadRules::TRAIL_PLAN_LAST_DAY . ' days')->format('Y-m-d'),
             'difficulty' => $difficulty,
             'theme' => $theme ?? ['code' => (string) $trail['theme'], 'name' => (string) $trail['theme'], 'description' => ''],
@@ -328,6 +329,11 @@ final class SquadTrail
                     'stamps' => $stamps,
                     'bonus_stamps' => $bonusStamps,
                     'difficulty' => $difficulty,
+                ]);
+                SquadNotifier::toMembers($pdo, (int) $trail['squad_id'], 'squad_trail_done', [
+                    'theme_name' => SquadTrailThemes::get((string) $trail['theme'])['name'] ?? (string) $trail['theme'],
+                    'percent' => round($calc['percent'], 1),
+                    'stamps' => $stamps + $bonusStamps,
                 ]);
             }
             $pdo->commit();

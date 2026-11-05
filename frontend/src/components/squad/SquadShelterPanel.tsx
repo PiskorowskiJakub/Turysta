@@ -1,13 +1,53 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { api, ApiError } from '../../api/client';
 import type { SquadShelter, SquadShelterRoom } from '../../api/types';
-import { formatCoins, formatDateTime } from '../../format';
+import { formatCoins, formatDateTime, formatDuration, formatPercent } from '../../format';
 import InfoHint from '../InfoHint';
+import ProgressBar from '../ProgressBar';
 
 function errText(t: TFunction, e: unknown): string {
   return e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network');
+}
+
+type Build = NonNullable<SquadShelter['build']>;
+
+/** Pasek postepu trwajacej rozbudowy (liczony po stronie przegladarki z czasu startu i konca budowy). Po zakonczeniu woła onDone. */
+function BuildProgress({ build, onDone }: { build: Build; onDone?: () => void }) {
+  const { t } = useTranslation();
+  const [now, setNow] = useState(() => Date.now());
+  const start = new Date(build.started_at).getTime();
+  const end = new Date(build.finish_at).getTime();
+  const finished = now >= end;
+  const percent = Math.min(100, Math.max(0, ((now - start) / Math.max(1, end - start)) * 100));
+
+  useEffect(() => {
+    if (finished) return undefined;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [finished]);
+
+  // Po zakonczeniu budowy odswiezamy dane raz (z krotkim opoznieniem, zeby serwer zdazyl zakonczyc budowe).
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
+  const notified = useRef(false);
+  useEffect(() => {
+    if (!finished || notified.current) return undefined;
+    notified.current = true;
+    window.setTimeout(() => doneRef.current?.(), 1500);
+    return undefined;
+  }, [finished]);
+
+  return (
+    <>
+      <ProgressBar value={percent / 100} />
+      <p className="muted">
+        {finished ? t('squad.shelter.buildFinished') : t('squad.shelter.buildRemaining', { percent: Math.floor(percent), time: formatDuration((end - now) / 1000) })}
+      </p>
+    </>
+  );
 }
 
 /** Czas budowy w godzinach jako "12 godz." albo "2 dni 12 godz.". */
@@ -20,7 +60,7 @@ function hoursLabel(t: TFunction, hours: number): string {
 
 function effectText(t: TFunction, room: SquadShelterRoom): string {
   if (room.effect_soon) return t('squad.shelter.effectSoon');
-  return t(`squad.shelter.effect.${room.code}`, { pct: room.effect_percent ?? 0 });
+  return t(`squad.shelter.effect.${room.code}`, { pct: formatPercent(room.effect_percent ?? 0) });
 }
 
 /** Schronisko oddzialu: magazyn skladnikow, wplaty dukatow i rozbudowa pomieszczen bez maksymalnego poziomu. */
@@ -30,6 +70,7 @@ export default function SquadShelterPanel({ squadId }: { squadId: number }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [coins, setCoins] = useState('');
+  const [confirm, setConfirm] = useState<SquadShelterRoom['code'] | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -103,6 +144,7 @@ export default function SquadShelterPanel({ squadId }: { squadId: number }) {
         <section className="panel shelter-build">
           <h2>{t('squad.shelter.building')}</h2>
           <p>{t('squad.shelter.buildingLine', { room: t(`squad.shelter.rooms.${shelter.build.room}`), level: shelter.build.level, until: formatDateTime(shelter.build.finish_at) })}</p>
+          <BuildProgress build={shelter.build} onDone={() => void load()} />
         </section>
       )}
 
@@ -131,12 +173,30 @@ export default function SquadShelterPanel({ squadId }: { squadId: number }) {
                   <span className="muted">{t('squad.shelter.buildTime', { time: hoursLabel(t, room.next.hours) })}</span>
                 </p>
                 {!room.effect_soon && room.next_effect_percent !== null && (
-                  <p className="field-hint">{t('squad.shelter.nextEffect', { pct: room.next_effect_percent })}</p>
+                  <p className="field-hint">{t('squad.shelter.nextEffect', { pct: formatPercent(room.next_effect_percent) })}</p>
                 )}
-                {shelter.can_build && (
-                  <button type="button" className="btn" disabled={busy || !room.affordable || shelter.build !== null} onClick={() => void act('upgrade', { room: room.code })}>
+                {shelter.can_build && confirm !== room.code && (
+                  <button type="button" className="btn" disabled={busy || !room.affordable || shelter.build !== null} onClick={() => setConfirm(room.code)}>
                     {t('squad.shelter.upgrade', { n: room.next.level })}
                   </button>
+                )}
+                {shelter.can_build && confirm === room.code && (
+                  <div className="shelter-confirm" role="alertdialog" aria-label={t('squad.shelter.confirmTitle')}>
+                    <p>
+                      {t('squad.shelter.confirmText', {
+                        room: t(`squad.shelter.rooms.${room.code}`),
+                        n: room.next.level,
+                        ember: room.next.ember,
+                        stamps: room.next.stamps,
+                        coins: formatCoins(room.next.cents),
+                        time: hoursLabel(t, room.next.hours),
+                      })}
+                    </p>
+                    <div className="trail-actions">
+                      <button type="button" className="btn" disabled={busy} onClick={() => void act('upgrade', { room: room.code }).then(() => setConfirm(null))}>{t('squad.shelter.confirmYes')}</button>
+                      <button type="button" className="btn ghost" disabled={busy} onClick={() => setConfirm(null)}>{t('squad.shelter.confirmNo')}</button>
+                    </div>
+                  </div>
                 )}
               </li>
             );
@@ -145,5 +205,44 @@ export default function SquadShelterPanel({ squadId }: { squadId: number }) {
         {!shelter.can_build && <p className="field-hint">{t('squad.shelter.noPower')}</p>}
       </section>
     </>
+  );
+}
+
+/** Skrot schroniska na Przegladzie oddzialu: stan magazynu, trwajaca budowa i poziomy pomieszczen. */
+export function SquadShelterTile({ squadId }: { squadId: number }) {
+  const { t } = useTranslation();
+  const [shelter, setShelter] = useState<SquadShelter | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    api<{ shelter: SquadShelter }>('GET', `/squads/${squadId}/shelter`)
+      .then((r) => {
+        if (alive) setShelter(r.shelter);
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [squadId]);
+
+  if (!shelter) return null;
+  return (
+    <section className="panel shelter-tile">
+      <div className="shelter-tile-head">
+        <h2>{t('squad.shelter.tileTitle')}</h2>
+        <Link to="/oddzial/schronisko">{t('squad.shelter.openShelter')}</Link>
+      </div>
+      <p className="shelter-tile-line">
+        <span>{t('squad.shelter.ember')}: <b>{shelter.vault.ember}</b></span>
+        <span>{t('squad.shelter.stamps')}: <b>{shelter.vault.stamps}</b></span>
+        <span>{t('squad.shelter.coins')}: <b>{formatCoins(shelter.vault.cents)}</b></span>
+      </p>
+      {shelter.build && (
+        <>
+          <p className="shelter-tile-build">{t('squad.shelter.buildingLine', { room: t(`squad.shelter.rooms.${shelter.build.room}`), level: shelter.build.level, until: formatDateTime(shelter.build.finish_at) })}</p>
+          <BuildProgress build={shelter.build} />
+        </>
+      )}
+    </section>
   );
 }

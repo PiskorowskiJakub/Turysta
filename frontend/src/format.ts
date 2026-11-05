@@ -94,3 +94,8 @@ export function formatDateTime(iso: string): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${formatDate(iso)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
+
+/** Procent z przecinkiem dziesietnym, bez zbednych zer (np. 0,63 albo 12,5). */
+export function formatPercent(value: number): string {
+  return value.toLocaleString('pl-PL', { maximumFractionDigits: 2 });
+}

@@ -16,6 +16,7 @@ use Turysta\Mailer;
 use Turysta\Squad\SquadChronicle;
 use Turysta\Squad\SquadService;
 use Turysta\Squad\SquadShelter;
+use Turysta\Squad\SquadView;
 
 /** Schronisko oddzialow (Etap 3): koszty bez maksymalnego poziomu, magazyn, wplaty, budowa i efekty (prawdziwy MySQL). */
 final class SquadShelterTest extends TestCase
@@ -212,6 +213,35 @@ final class SquadShelterTest extends TestCase
         $next = array_column($after['rooms'], null, 'code')['mapping']['next'];
         $this->assertGreaterThan(240, $next['ember']);
         $this->assertSame(24, $next['hours']);
+    }
+
+    /** @return list<string> typy powiadomien gracza */
+    private function notificationTypes(int $userId): array
+    {
+        return $this->pdo->query("SELECT type FROM notifications WHERE user_id = $userId ORDER BY id")->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function testBuildNotifiesMembersAndLevelsArePublic(): void
+    {
+        [$lead, $mem, $id] = $this->squad();
+        $outsider = $this->user('SchObc');
+        $start = $this->at('2026-04-01', '08:00:00');
+        $this->pdo->prepare('UPDATE squads SET ember = 5000, ember_spent = 0, stamps = 20, vault_cents = 200000 WHERE id = ?')->execute([$id]);
+
+        $this->shelter->upgrade($lead, $id, 'kitchen', $start);
+        $this->assertContains('squad_shelter_start', $this->notificationTypes((int) $mem['id']), 'Członkowie dostają powiadomienie o starcie budowy.');
+        $this->assertNotContains('squad_shelter_start', $this->notificationTypes((int) $outsider['id']));
+
+        SquadShelter::finalizeDue($this->pdo, $this->at('2026-04-01', '21:00:00'), $id);
+        $types = $this->notificationTypes((int) $mem['id']);
+        $this->assertContains('squad_kitchen_bonus', $types, 'Kuchnia ma własne powiadomienie z nową premią.');
+        $payload = json_decode((string) $this->pdo->query("SELECT payload FROM notifications WHERE user_id = {$mem['id']} AND type = 'squad_kitchen_bonus'")->fetchColumn(), true);
+        $this->assertSame(1, $payload['level']);
+        $this->assertGreaterThan(0, $payload['pct']);
+
+        $profile = (new SquadView($this->pdo, $this->squads))->profile($outsider, $id);
+        $this->assertSame(1, $profile['shelter_levels']['kitchen'], 'Poziomy pomieszczeń widzi każdy.');
+        $this->assertSame(0, $profile['shelter_levels']['mapping']);
     }
 
     public function testKitchenBonusAndMappingStamps(): void
