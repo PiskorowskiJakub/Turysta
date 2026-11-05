@@ -260,7 +260,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
           </div>
           <p>{fire.today.lit ? t('squad.fire.litToday', { active: fire.today.active, members: fire.today.members }) : t('squad.fire.todayProgress', { active: fire.today.active, needed: fire.today.needed, members: fire.today.members })}</p>
           <ul className="squad-stats">
-            <li><b>{fire.ember}</b><small>{t('squad.fire.ember')}</small></li>
+            <li><b>{fire.ember}{fire.ember_gain > 0 && <span className="ember-gain" title={t('squad.fire.gainTitle')}> +{fire.ember_gain}</span>}</b><small>{t('squad.fire.ember')}</small></li>
             <li><b>{fire.best_streak}</b><small>{t('squad.fire.best')}</small></li>
             <li><b>{fire.lit_days}</b><small>{t('squad.fire.litDays')}</small></li>
           </ul>

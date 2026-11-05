@@ -236,6 +236,8 @@ final class SquadView
             'best_streak' => (int) $squad['best_streak'],
             'lit_days' => (int) $squad['lit_days'],
             'ember' => (int) $squad['ember'],
+            // Przyrost zaru z ostatniego rozliczonego dnia (0, gdy ognisko wtedy nie plonelo).
+            'ember_gain' => $history ? $history[0]['ember'] : 0,
             'next_level' => $next,
             'today' => ['day' => $today, 'members' => $count, 'active' => $active, 'needed' => $needed, 'lit' => $count >= SquadRules::FIRE_MIN_ACTIVE && $active >= $needed],
             'history' => $history,

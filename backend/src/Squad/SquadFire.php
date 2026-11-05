@@ -44,11 +44,11 @@ final class SquadFire
         return $share >= 0.7 ? 1500 : ($share >= 0.5 ? 1250 : 1000);
     }
 
-    /** Zar za dzien: 100 x premia dnia x premia serii (serii liczonej z tym dniem). */
+    /** Zar za dzien: 10 x premia dnia x premia serii (serii liczonej z tym dniem), zaokraglone do calosci. */
     public static function ember(int $active, int $members, int $streak): int
     {
         $bonus = SquadRules::FLAME_BONUS_PERCENT[self::level($streak)];
-        return (int) floor(SquadRules::FIRE_BASE_EMBER * self::dayMultiplierPermille($active, $members) / 1000 * (100 + $bonus) / 100);
+        return intdiv(SquadRules::FIRE_BASE_EMBER * self::dayMultiplierPermille($active, $members) * (100 + $bonus) + 50000, 100000);
     }
 
     /** Seria po nieudanym dniu: ognisko tli sie i spada o jeden poziom plomienia, ale nie do zera dni. */
