@@ -807,7 +807,6 @@
     "invalid_difficulty": "Wybierz poziom trudności.",
     "name_cooldown": "Nazwę postaci możesz zmienić raz na 180 dni.",
     "deposit_limit": "Przekroczysz dzienny limit wpłat do magazynu.",
-    "vault_full": "Magazyn ma już dość dukatów na kolejną rozbudowę.",
     "build_in_progress": "Oddział już coś buduje. Poczekaj na zakończenie rozbudowy.",
     "not_enough_resources": "W magazynie brakuje składników na tę rozbudowę."
   },
@@ -1546,7 +1545,7 @@
       "bannerGo": "Przejdź do wyprawy"
     },
     "shelter": {
-      "info": "Schronisko to wspólna baza oddziału. Magazyn nie ma limitu i zbiera trzy składniki: żar z ogniska, pieczątki ze szlaków oraz dukaty z wpłat członków. Każde pomieszczenie można rozbudowywać bez końca, ale każdy kolejny poziom kosztuje więcej (żar, pieczątki i dukaty) i dłużej się buduje. Rozbudowę rozpoczyna przywódca, zastępca lub kwatermistrz: składniki schodzą z magazynu od razu, a poziom (i jego efekt) pojawia się dopiero po zakończeniu budowy. Naraz można budować jedno pomieszczenie. Wpłacone dukaty zostają w oddziale także po odejściu członka. Dzienny limit wpłat na osobę rośnie wraz z cenami rozbudów, a magazyn nie przyjmuje więcej dukatów, niż kosztuje najdroższa kolejna rozbudowa.",
+      "info": "Schronisko to wspólna baza oddziału. Magazyn nie ma limitu i zbiera trzy składniki: żar z ogniska, pieczątki ze szlaków oraz dukaty z wpłat członków. Każde pomieszczenie można rozbudowywać bez końca, ale każdy kolejny poziom kosztuje więcej (żar, pieczątki i dukaty) i dłużej się buduje. Rozbudowę rozpoczyna przywódca, zastępca lub kwatermistrz: składniki schodzą z magazynu od razu, a poziom (i jego efekt) pojawia się dopiero po zakończeniu budowy. Naraz można budować jedno pomieszczenie. Wpłacone dukaty zostają w oddziale także po odejściu członka. Dzienny limit wpłat na osobę rośnie wraz z cenami rozbudów. Pojemność magazynu jest nieograniczona.",
       "vault": "Magazyn",
       "ember": "żar",
       "stamps": "pieczątki",
@@ -1556,7 +1555,6 @@
       "depositInvalid": "Podaj całkowitą liczbę dukatów (co najmniej 1).",
       "depositHint": "Dziś możesz wpłacić jeszcze {{left}} dk (limit dzienny: {{limit}} dk).",
       "limitReached": "Dzienny limit wpłat ({{limit}} dk) wykorzystany. Wróć jutro.",
-      "vaultFull": "Magazyn ma już dość dukatów na kolejną rozbudowę.",
       "record": "Rekord wpłat oddziału w ciągu dnia: {{amount}} dk.",
       "building": "Trwa rozbudowa",
       "buildingLine": "{{room}}, poziom {{level}}: gotowe {{until}}.",

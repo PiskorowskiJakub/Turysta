@@ -12,7 +12,7 @@ use Turysta\Game\Wallet;
 use Turysta\Http\ApiException;
 
 /**
- * Schronisko oddzialu: magazyn bez limitu (zar z ogniska, pieczatki ze szlakow, dukaty z wplat czlonkow)
+ * Schronisko oddzialu: magazyn o nieograniczonej pojemnosci (zar z ogniska, pieczatki ze szlakow, dukaty z wplat czlonkow)
  * i pomieszczenia bez maksymalnego poziomu. Kazdy kolejny poziom kosztuje wiecej (baza x n^wykladnik) i dluzej sie buduje.
  * Skladniki schodza z magazynu w chwili rozpoczecia budowy, a poziom (i jego efekt) przybywa dopiero po jej zakonczeniu.
  */
@@ -66,20 +66,6 @@ final class SquadShelter
         }
         $avgCoins = $sum / count(SquadRules::ROOMS) / 100;
         return max(SquadRules::DEPOSIT_MIN_COINS, (int) round($avgCoins / SquadRules::DEPOSIT_DIVISOR)) * 100;
-    }
-
-    /**
-     * Pojemnosc magazynu na dukaty: najdrozsza kolejna rozbudowa. Wiecej nie ma sensu wplacac, wiec dukaty nie zalegaja.
-     *
-     * @param array<string,int> $levels
-     */
-    public static function vaultCapCents(array $levels): int
-    {
-        $max = 0;
-        foreach (array_keys(SquadRules::ROOMS) as $room) {
-            $max = max($max, self::cost($room, ($levels[$room] ?? 0) + 1)['cents']);
-        }
-        return $max;
     }
 
     /** @return array<string,int> */
@@ -194,14 +180,13 @@ final class SquadShelter
 
         $limit = self::depositLimitCents($levels);
         $used = $this->depositedToday($uid, Clock::gameDay($now));
-        $cap = self::vaultCapCents($levels);
-        $remaining = max(0, min($limit - $used, $cap - $cents));
+        $remaining = max(0, $limit - $used);
 
         $hist = $this->pdo->prepare('SELECT room, level, started_at, finished_at FROM squad_builds WHERE squad_id = ? ORDER BY id DESC LIMIT 10');
         $hist->execute([$squadId]);
 
         return [
-            'vault' => ['ember' => $ember, 'stamps' => $stamps, 'cents' => $cents, 'cap_cents' => $cap],
+            'vault' => ['ember' => $ember, 'stamps' => $stamps, 'cents' => $cents],
             'rooms' => $rooms,
             'build' => $build ? [
                 'room' => (string) $build['room'],
@@ -213,7 +198,6 @@ final class SquadShelter
                 'limit_cents' => $limit,
                 'used_cents' => $used,
                 'remaining_cents' => $remaining,
-                'vault_full' => $cents >= $cap,
                 'record_cents' => (int) $squad['deposit_record_cents'],
             ],
             'can_build' => $this->canBuild($uid, $squadId),
@@ -250,9 +234,6 @@ final class SquadShelter
             $used = $this->depositedToday($uid, $day);
             if ($used + $cents > $limit) {
                 throw new ApiException(409, 'deposit_limit', 'Przekroczysz dzienny limit wpłat do magazynu.');
-            }
-            if ((int) $row['vault_cents'] + $cents > self::vaultCapCents($levels)) {
-                throw new ApiException(409, 'vault_full', 'Magazyn ma już dość dukatów na kolejną rozbudowę.');
             }
             Wallet::apply($this->pdo, $uid, 'coins', -$cents, 'squad_deposit', 'squad', $squadId, 'sqdep:' . $squadId . ':' . $uid . ':' . bin2hex(random_bytes(6)));
             $this->pdo->prepare('INSERT INTO squad_deposits (squad_id, user_id, day, cents) VALUES (?, ?, ?, ?)')->execute([$squadId, $uid, $day, $cents]);

@@ -809,10 +809,10 @@ export interface SquadShelterRoom {
 }
 
 export interface SquadShelter {
-  vault: { ember: number; stamps: number; cents: number; cap_cents: number };
+  vault: { ember: number; stamps: number; cents: number };
   rooms: SquadShelterRoom[];
   build: { room: ShelterRoomCode; level: number; started_at: string; finish_at: string } | null;
-  deposit: { limit_cents: number; used_cents: number; remaining_cents: number; vault_full: boolean; record_cents: number };
+  deposit: { limit_cents: number; used_cents: number; remaining_cents: number; record_cents: number };
   can_build: boolean;
   history: { room: ShelterRoomCode; level: number; started_at: string; finished_at: string | null }[];
 }

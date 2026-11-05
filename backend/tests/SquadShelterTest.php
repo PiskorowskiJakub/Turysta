@@ -106,7 +106,7 @@ final class SquadShelterTest extends TestCase
         $this->assertGreaterThan(900, SquadShelter::depositLimitCents(array_fill_keys(array_keys($zero), 20)));
     }
 
-    public function testDepositLimitAndVaultCap(): void
+    public function testDepositLimitAndUnlimitedVault(): void
     {
         [$lead, $mem, $id] = $this->squad();
         $now = $this->at('2026-03-10');
@@ -135,14 +135,10 @@ final class SquadShelterTest extends TestCase
             $this->assertSame(422, $e->status);
         }
 
-        // Magazyn pelny (najdrozsza kolejna rozbudowa to 600 dk): dalsze wplaty sa odrzucane.
-        $this->pdo->prepare('UPDATE squads SET vault_cents = 60000 WHERE id = ?')->execute([$id]);
-        try {
-            $this->shelter->deposit($lead, $id, 1, $this->at('2026-03-12'));
-            $this->fail('Pełny magazyn nie przyjmuje dukatów.');
-        } catch (ApiException $e) {
-            $this->assertSame('vault_full', $e->errorCode);
-        }
+        // Magazyn nie ma pojemnosci maksymalnej: wplaty przyjmuje takze przy bardzo duzym stanie dukatow.
+        $this->pdo->prepare('UPDATE squads SET vault_cents = 100000000 WHERE id = ?')->execute([$id]);
+        $this->shelter->deposit($lead, $id, 1, $this->at('2026-03-12'));
+        $this->assertSame(100000100, $this->shelter->view($lead, $id, $this->at('2026-03-12'))['vault']['cents']);
     }
 
     public function testDepositRecordGoesToChronicle(): void
