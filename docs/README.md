@@ -18,6 +18,7 @@ Dokumentacja zasad gry.
   - [Ognisko](#ognisko)
   - [Szlaki (wyprawy oddziału)](#szlaki-wyprawy-oddziału)
   - [Schronisko](#schronisko)
+  - [Powiadomienia oddziału](#powiadomienia-oddziału)
   - [Kronika](#kronika)
 - [Nazwa postaci](#nazwa-postaci)
 
@@ -277,7 +278,7 @@ Co tydzień (od poniedziałku do niedzieli, czas polski) oddział wyrusza na wsp
 
 ### Schronisko
 
-Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i pięciu pomieszczeń. Widzą ją wszyscy członkowie, ale rozbudowę zaczynają tylko wybrane role.
+Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i pięciu pomieszczeń. Widzą ją wszyscy członkowie (skrót z magazynem i poziomami jest też na Przeglądzie oddziału), ale rozbudowę zaczynają tylko wybrane role.
 
 **Magazyn** ma nieograniczoną pojemność i zbiera trzy składniki:
 
@@ -301,7 +302,7 @@ Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i
 | 5 | 1 656 | 36 | 4 139 dk | 2,5 dnia |
 | 10 | 3 804 | 76 | 9 509 dk | 5 dni |
 
-**Rozbudowa.** Rozpoczyna ją Przywódca, Zastępca albo Kwatermistrz. Składniki schodzą z magazynu od razu, i poziom, a z nim jego efekt, przybywa dopiero po zakończeniu budowy. Oddział buduje jedno pomieszczenie naraz. Kronika zapisuje rozpoczęcie i ukończenie rozbudowy.
+**Rozbudowa.** Rozpoczyna ją Przywódca, Zastępca albo Kwatermistrz. Przed startem trzeba potwierdzić rozbudowę: składniki schodzą z magazynu od razu, a budowy **nie można anulować** ani odzyskać składników. Poziom, a z nim jego efekt, przybywa dopiero po zakończeniu budowy. Oddział buduje jedno pomieszczenie naraz. Kronika zapisuje rozpoczęcie i ukończenie rozbudowy.
 
 **Efekty.** Maleją z poziomem (maksimum × L / (L + połowa)), więc nigdy nie osiągają sufitu, a bonusy dukatowe pozostają małe:
 
@@ -314,6 +315,21 @@ Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i
 | Izba pamięci | kosmetyka oddziału i widok zdobytych odznak | wkrótce | wkrótce | wkrótce |
 
 Pomieszczenia z efektem „wkrótce” można już rozbudowywać, a ich poziomy zachowają się, gdy efekty pojawią się w kolejnych etapach. Gracz bez oddziału nie traci nic: bonusy są małe, a wpłaty dobrowolne.
+
+**Poziomy pomieszczeń są publiczne.** Widać je na profilu oddziału w katalogu, jako element prestiżu. Stan magazynu i koszty widzą tylko członkowie.
+
+**Rozwiązanie oddziału.** Gdy oddział zostanie rozwiązany albo zarchiwizowany, dukaty z magazynu **znikają** (nie wracają do wpłacających), podobnie jak żar i pieczątki. Dukaty wydane na wpłaty i rozbudowy są ujściem z obiegu gry.
+
+### Powiadomienia oddziału
+
+Członkowie oddziału dostają powiadomienia (dzwonek na stronie głównej) o ważnych zdarzeniach oddziału:
+
+- rozpoczęcie i ukończenie rozbudowy pomieszczenia w schronisku, a przy Kuchni i Mapowni także nowa wartość premii (np. „Twoje wypłaty z prac rosną o 0,6%”);
+- rekord dziennych wpłat oddziału (od 50 dk, jedno powiadomienie na dzień);
+- zakończenie wyprawy z jej wynikiem i liczbą pieczątek;
+- awans ogniska na wyższy poziom płomienia i spadek poziomu po przerwanej serii.
+
+Gdy oddział ma Kuchnię, powiadomienie o zakończonej pracy podaje też, ile premii z Kuchni dodano do wypłaty. Zaproszenia, prośby o przyjęcie, usunięcie z oddziału i zmiana roli mają osobne powiadomienia dla zainteresowanych.
 
 ### Kronika
 

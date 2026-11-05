@@ -4,7 +4,7 @@ Monorepo:
 
 - `frontend/` React + TypeScript + Vite
 - `backend/` PHP 8.3 + Apache, REST pod `/api`
-- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii), simulate_squads.py (symulacja ekonomii oddziałów), simulate_shelter.py (tempo rozbudowy schroniska)
+- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii), simulate_squads.py (symulacja ekonomii oddziałów), simulate_shelter.py (tempo rozbudowy schroniska), dev-grant-squad.sh (lokalnie: `make squad-grant SQUAD=1 EMBER=5000 STAMPS=50 COINS=20000` dosypuje oddziałowi składniki schroniska)
 - `docker-compose.yml` wspolny stos
 
 ## Uruchomienie calosci

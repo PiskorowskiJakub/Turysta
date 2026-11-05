@@ -905,7 +905,16 @@
     "squad_request_declined": "Oddział „{{squad}}” odrzucił Twoją prośbę o dołączenie.",
     "squad_kicked": "Usunięto Cię z oddziału „{{squad}}”.",
     "squad_role": "W oddziale „{{squad}}” otrzymałeś rolę: {{role}}.",
-    "squad_name_forced": "Nazwa Twojego oddziału została zmieniona przez administratora na „{{name}}”. Ustaw nową nazwę zgodną z regulaminem."
+    "squad_name_forced": "Nazwa Twojego oddziału została zmieniona przez administratora na „{{name}}”. Ustaw nową nazwę zgodną z regulaminem.",
+    "job_kitchen": "W tym premia z Kuchni oddziału: {{kitchen}} dk.",
+    "squad_shelter_start": "Oddział „{{squad}}” rozpoczął rozbudowę: {{room}}, poziom {{level}}.",
+    "squad_shelter_done": "W oddziale „{{squad}}” ukończono rozbudowę: {{room}} ma poziom {{level}}.",
+    "squad_kitchen_bonus": "Kuchnia oddziału „{{squad}}” ma poziom {{level}}: Twoje wypłaty z prac rosną o {{pct}}%.",
+    "squad_mapping_bonus": "Mapownia oddziału „{{squad}}” ma poziom {{level}}: wyprawy dają oddziałowi o {{pct}}% więcej pieczątek.",
+    "squad_deposit_record": "Rekord wpłat oddziału „{{squad}}”: {{amount}} dk w ciągu jednego dnia.",
+    "squad_trail_done": "Wyprawa „{{theme}}” oddziału „{{squad}}” zakończona wynikiem {{percent}}%. Pieczątki dla oddziału: {{stamps}}.",
+    "squad_fire_level": "Ognisko oddziału „{{squad}}” osiągnęło poziom: {{flame}} (seria {{days}} dni).",
+    "squad_fire_dim": "Seria ogniska oddziału „{{squad}}” przerwana, poziom spada do: {{flame}}."
   },
   "fact": "Ciekawostka",
   "world": {
@@ -1591,7 +1600,14 @@
       "effect": {
         "kitchen": "Efekt: +{{pct}}% do wypłat z prac.",
         "mapping": "Efekt: +{{pct}}% pieczątek z wypraw."
-      }
+      },
+      "confirmTitle": "Potwierdź rozbudowę",
+      "confirmText": "Rozbudować: {{room}} do poziomu {{n}}? Z magazynu zejdzie żar {{ember}}, pieczątki {{stamps}} i {{coins}} dk. Budowa potrwa {{time}} i nie można jej anulować ani odzyskać składników.",
+      "confirmYes": "Potwierdzam, rozpocznij budowę",
+      "confirmNo": "Anuluj",
+      "tileTitle": "Schronisko",
+      "openShelter": "Przejdź do schroniska",
+      "publicTitle": "Schronisko"
     }
   },
   "cookies": {

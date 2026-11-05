@@ -112,6 +112,8 @@ final class SquadView
             'name_locked' => (int) $squad['name_locked'] === 1,
             'name_forced' => (int) $squad['name_forced'] === 1,
             'badges' => [],
+            // Poziomy pomieszczen schroniska sa publiczne (prestiz oddzialu).
+            'shelter_levels' => SquadShelter::levels($this->pdo, $squadId),
             'member_list' => $members,
             'me' => [
                 'is_member' => $isMember,

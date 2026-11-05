@@ -75,6 +75,18 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
       </section>
 
       <section className="panel">
+        <h2>{t('squad.shelter.publicTitle')}</h2>
+        <ul className="shelter-levels">
+          {(Object.keys(squad.shelter_levels) as (keyof typeof squad.shelter_levels)[]).map((room) => (
+            <li key={room}>
+              <span>{t(`squad.shelter.rooms.${room}`)}</span>
+              <b>{squad.shelter_levels[room] > 0 ? t('squad.shelter.level', { n: squad.shelter_levels[room] }) : '—'}</b>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="panel">
         <h2>{t('squad.members.title', { n: squad.member_list.length, max: squad.max_members })}</h2>
         <div className="table-scroll">
           <table className="ranking-table">

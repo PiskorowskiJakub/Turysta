@@ -329,6 +329,11 @@ final class SquadTrail
                     'bonus_stamps' => $bonusStamps,
                     'difficulty' => $difficulty,
                 ]);
+                SquadNotifier::toMembers($pdo, (int) $trail['squad_id'], 'squad_trail_done', [
+                    'theme_name' => SquadTrailThemes::get((string) $trail['theme'])['name'] ?? (string) $trail['theme'],
+                    'percent' => round($calc['percent'], 1),
+                    'stamps' => $stamps + $bonusStamps,
+                ]);
             }
             $pdo->commit();
         } catch (Throwable $e) {

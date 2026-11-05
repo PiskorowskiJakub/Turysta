@@ -114,11 +114,13 @@ final class SquadFire
                 $ember += $gain;
                 if (self::level($streak) > $before) {
                     SquadChronicle::record($pdo, $squadId, 'fire_level', $d, ['level' => self::level($streak), 'streak' => $streak]);
+                    SquadNotifier::toMembers($pdo, $squadId, 'squad_fire_level', ['flame' => self::level($streak), 'streak' => $streak]);
                 }
             } elseif ($streak > 0) {
                 $streak = self::streakAfterMiss($streak);
                 if (self::level($streak) < $before) {
                     SquadChronicle::record($pdo, $squadId, 'fire_dim', $d, ['level' => self::level($streak)]);
+                    SquadNotifier::toMembers($pdo, $squadId, 'squad_fire_dim', ['flame' => self::level($streak)]);
                 }
             }
             $pdo->prepare(

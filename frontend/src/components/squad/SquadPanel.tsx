@@ -8,6 +8,7 @@ import PlayerAvatar from '../PlayerAvatar';
 import { formatCoins, formatDate, formatDateTime } from '../../format';
 import InfoHint from '../InfoHint';
 import SquadFields, { type SquadDraft } from './SquadFields';
+import { SquadShelterTile } from './SquadShelterPanel';
 import { SquadTrailBanner } from './SquadTrailPanel';
 
 export type SquadSection = 'przeglad' | 'czlonkowie' | 'zaproszeni' | 'oczekujacy' | 'ustawienia' | 'kronika';
@@ -255,6 +256,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
       )}
 
       {section === 'przeglad' && <SquadTrailBanner squadId={squad.id} />}
+      {section === 'przeglad' && <SquadShelterTile squadId={squad.id} />}
 
       {section === 'przeglad' && fire && (
         <section className="panel squad-fire">

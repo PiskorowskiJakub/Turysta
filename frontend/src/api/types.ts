@@ -660,6 +660,7 @@ export interface SquadProfile extends SquadCard {
   name_locked: boolean;
   name_forced: boolean;
   badges: unknown[];
+  shelter_levels: Record<ShelterRoomCode, number>;
   member_list: SquadMember[];
   me: {
     is_member: boolean;
