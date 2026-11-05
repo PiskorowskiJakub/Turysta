@@ -24,7 +24,7 @@ final class SquadRules
     // Ognisko
     public const FIRE_THRESHOLD_PERCENT = 30;
     public const FIRE_MIN_ACTIVE = 2;
-    public const FIRE_BASE_EMBER = 100;
+    public const FIRE_BASE_EMBER = 10;
     /** Dni serii potrzebne na kolejne poziomy plomienia: iskra, plomien, ognisko, watra, wielka watra. */
     public const FLAME_STREAKS = [0, 3, 7, 14, 30];
     /** Premia serii w procentach dla poziomow plomienia. */

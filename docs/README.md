@@ -245,7 +245,7 @@ Ognisko płonie danego dnia gry, gdy aktywnych jest co najmniej 30% członków (
 
 - **Rozliczenie.** Dzień rozlicza się po północy: wtedy dochodzi seria i żar. Gdy wymagania są spełnione już dziś, ognisko pokazuje „Ognisko płonie”, choć seria zwiększy się dopiero po północy.
 
-- **Żar** za dzień z płonącym ogniskiem to 100 × mnożnik dnia × premia serii.
+- **Żar** za dzień z płonącym ogniskiem to 10 × mnożnik dnia × premia serii (zaokrąglone do całości), czyli od 10 do 18 dziennie. W panelu ogniska widać sumę żaru i przyrost z ostatniego rozliczonego dnia, np. „46 +16”.
 - **Mnożnik dnia:** ×1,0 przy 30% aktywnych, ×1,25 przy 50% i ×1,5 przy 70%.
 - **Seria** to kolejne dni z płonącym ogniskiem. Premia serii: +0% (poniżej 3 dni), +5% (3 dni), +10% (7 dni), +15% (14 dni), +20% (30 dni).
 - **Poziomy:** Brak ogniska, Żar, Płomyk, Ognisko, Wielkie ognisko (progi serii 0, 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera.

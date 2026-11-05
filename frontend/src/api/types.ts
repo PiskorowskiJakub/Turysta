@@ -634,6 +634,7 @@ export interface SquadFireState {
   best_streak: number;
   lit_days: number;
   ember: number;
+  ember_gain: number;
   next_level: { level: number; in_days: number } | null;
   today: { day: string; members: number; active: number; needed: number; lit: boolean };
   history: { day: string; members: number; active: number; needed: number; lit: boolean; ember: number }[];

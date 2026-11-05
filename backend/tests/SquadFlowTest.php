@@ -303,10 +303,10 @@ final class SquadFlowTest extends TestCase
         $this->assertSame(2, SquadFire::needed(1));
         $this->assertSame(3, SquadFire::needed(10));
         $this->assertSame(9, SquadFire::needed(30));
-        $this->assertSame(100, SquadFire::ember(3, 10, 1));
-        $this->assertSame(125, SquadFire::ember(5, 10, 1));
-        $this->assertSame(150, SquadFire::ember(7, 10, 1));
-        $this->assertSame(157, SquadFire::ember(7, 10, 3));
+        $this->assertSame(10, SquadFire::ember(3, 10, 1));
+        $this->assertSame(13, SquadFire::ember(5, 10, 1));
+        $this->assertSame(15, SquadFire::ember(7, 10, 1));
+        $this->assertSame(16, SquadFire::ember(7, 10, 3));
         $this->assertSame(7, SquadFire::streakAfterMiss(14));
         $this->assertSame(0, SquadFire::streakAfterMiss(2));
 
@@ -330,7 +330,7 @@ final class SquadFlowTest extends TestCase
         $this->assertSame(0, (int) $s['flame_streak']);
         $this->assertSame(3, (int) $s['best_streak']);
         $this->assertSame(3, (int) $s['lit_days']);
-        $this->assertSame(150 + 150 + 157, (int) $s['ember']);
+        $this->assertSame(15 + 15 + 16, (int) $s['ember']);
         $this->assertSame('2026-01-05', (string) $s['last_fire_day']);
 
         // Ponowne rozliczenie tych samych dni niczego nie zmienia.
@@ -341,7 +341,8 @@ final class SquadFlowTest extends TestCase
 
         $fire = $this->view->profile($lead, $id)['fire'];
         $this->assertSame(0, $fire['level']);
-        $this->assertSame(457, $fire['ember']);
+        $this->assertSame(46, $fire['ember']);
+        $this->assertSame(0, $fire['ember_gain']); // ostatni rozliczony dzien (5 stycznia) byl bez ogniska
         $this->assertCount(4, $fire['history']);
     }
 
