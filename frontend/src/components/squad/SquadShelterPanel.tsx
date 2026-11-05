@@ -227,23 +227,22 @@ export function SquadShelterTile({ squadId }: { squadId: number }) {
 
   if (!shelter) return null;
   return (
-    <section className="panel">
-      <h2>{t('squad.shelter.tileTitle')}</h2>
-      <ul className="squad-stats">
-        <li><b>{shelter.vault.ember}</b><small>{t('squad.shelter.ember')}</small></li>
-        <li><b>{shelter.vault.stamps}</b><small>{t('squad.shelter.stamps')}</small></li>
-        <li><b>{formatCoins(shelter.vault.cents)}</b><small>{t('squad.shelter.coins')}</small></li>
-      </ul>
-      <p className="muted">
-        {shelter.rooms.map((r) => `${t(`squad.shelter.rooms.${r.code}`)} ${r.level}`).join(' · ')}
+    <section className="panel shelter-tile">
+      <div className="shelter-tile-head">
+        <h2>{t('squad.shelter.tileTitle')}</h2>
+        <Link to="/oddzial/schronisko">{t('squad.shelter.openShelter')}</Link>
+      </div>
+      <p className="shelter-tile-line">
+        <span>{t('squad.shelter.ember')}: <b>{shelter.vault.ember}</b></span>
+        <span>{t('squad.shelter.stamps')}: <b>{shelter.vault.stamps}</b></span>
+        <span>{t('squad.shelter.coins')}: <b>{formatCoins(shelter.vault.cents)}</b></span>
       </p>
       {shelter.build && (
         <>
-          <p>{t('squad.shelter.buildingLine', { room: t(`squad.shelter.rooms.${shelter.build.room}`), level: shelter.build.level, until: formatDateTime(shelter.build.finish_at) })}</p>
+          <p className="shelter-tile-build">{t('squad.shelter.buildingLine', { room: t(`squad.shelter.rooms.${shelter.build.room}`), level: shelter.build.level, until: formatDateTime(shelter.build.finish_at) })}</p>
           <BuildProgress build={shelter.build} />
         </>
       )}
-      <p><Link to="/oddzial/schronisko">{t('squad.shelter.openShelter')}</Link></p>
     </section>
   );
 }

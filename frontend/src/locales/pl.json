@@ -1551,6 +1551,9 @@
       "bannerJoin": "Trwa wyprawa „{{name}}”. Dołącz za {{fee}} dk do {{date}}.",
       "bannerMarch": "Wyprawa „{{name}}”: nie zapomnij o dzisiejszym Marszu.",
       "bannerOn": "Wyprawa „{{name}}” trwa, postęp {{percent}}%.",
+      "nextTrail": "Następna wyprawa i zapisy: {{date}}.",
+      "bannerTitle": "Wyprawa",
+      "bannerNext": "Nie bierzesz udziału w wyprawie. Zapisy na następną ruszą {{date}}.",
       "bannerGo": "Przejdź do wyprawy"
     },
     "shelter": {

@@ -757,6 +757,7 @@ export interface SquadTrail {
   week_start: string;
   week_end: string;
   join_until: string;
+  next_week_start: string;
   plan_until: string;
   difficulty: TrailDifficulty;
   theme: { code: string; name: string; description: string };

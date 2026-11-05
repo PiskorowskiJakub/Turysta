@@ -124,6 +124,7 @@ function CurrentTrail({ squadId }: { squadId: number }) {
         </div>
         {!trail.joined && trail.can_join && <p className="field-hint">{t('squad.trail.joinHint', { date: formatDate(trail.join_until) })}</p>}
         {trail.joined && !trail.marched_today && <p className="field-hint">{t('squad.trail.marchHint')}</p>}
+        <p className="field-hint">{t('squad.trail.nextTrail', { date: dateWithWeekday(trail.next_week_start) })}</p>
       </section>
 
       <section className="panel">
@@ -183,7 +184,13 @@ function TrailHistory({ squadId }: { squadId: number }) {
   );
 }
 
-/** Informacja na Przegladzie oddzialu: trwa wyprawa, do ktorej mozna jeszcze dolaczyc. */
+/** Data z dniem tygodnia: DD.MM.RRRR (poniedzialek). Data bez godziny, wiec liczona w UTC. */
+function dateWithWeekday(iso: string): string {
+  const weekday = new Date(iso).toLocaleDateString('pl-PL', { weekday: 'long', timeZone: 'UTC' });
+  return `${formatDate(iso)} (${weekday})`;
+}
+
+/** Kompaktowa karta wyprawy na Przegladzie oddzialu: stan i link do zakladki. */
 export function SquadTrailBanner({ squadId }: { squadId: number }) {
   const { t } = useTranslation();
   const [trail, setTrail] = useState<SquadTrail | null>(null);
@@ -193,23 +200,21 @@ export function SquadTrailBanner({ squadId }: { squadId: number }) {
   }, [squadId]);
 
   if (!trail) return null;
+  let line: string;
   if (trail.joined) {
-    return (
-      <section className="panel trail-banner">
-        <p>
-          {trail.can_march ? t('squad.trail.bannerMarch', { name: trail.theme.name }) : t('squad.trail.bannerOn', { name: trail.theme.name, percent: trail.percent })}{' '}
-          <Link to="/oddzial/szlaki/wyprawa">{t('squad.trail.bannerGo')}</Link>
-        </p>
-      </section>
-    );
+    line = trail.can_march ? t('squad.trail.bannerMarch', { name: trail.theme.name }) : t('squad.trail.bannerOn', { name: trail.theme.name, percent: trail.percent });
+  } else if (trail.can_join) {
+    line = t('squad.trail.bannerJoin', { name: trail.theme.name, fee: formatCoins(trail.fee_cents), date: formatDate(trail.join_until) });
+  } else {
+    line = t('squad.trail.bannerNext', { date: dateWithWeekday(trail.next_week_start) });
   }
-  if (!trail.can_join) return null;
   return (
-    <section className="panel trail-banner">
-      <p>
-        {t('squad.trail.bannerJoin', { name: trail.theme.name, fee: formatCoins(trail.fee_cents), date: formatDate(trail.join_until) })}{' '}
+    <section className="panel shelter-tile trail-banner">
+      <div className="shelter-tile-head">
+        <h2>{t('squad.trail.bannerTitle')}</h2>
         <Link to="/oddzial/szlaki/wyprawa">{t('squad.trail.bannerGo')}</Link>
-      </p>
+      </div>
+      <p className="shelter-tile-build">{line}</p>
     </section>
   );
 }

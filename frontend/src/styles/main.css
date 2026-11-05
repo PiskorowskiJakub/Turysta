@@ -925,3 +925,10 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .shelter-confirm { margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 2px solid var(--orange); }
 .shelter-levels { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 6px; }
 .shelter-levels li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; border-radius: 10px; background: var(--tile); }
+
+.shelter-tile { padding-top: 12px; padding-bottom: 12px; }
+.shelter-tile-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.shelter-tile-head h2 { margin: 0; }
+.shelter-tile-line { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 6px 0 0; font-size: 0.9rem; }
+.shelter-tile-build { margin: 8px 0 0; font-size: 0.9rem; }
+.shelter-tile .muted { margin: 2px 0 0; font-size: 0.85rem; }
