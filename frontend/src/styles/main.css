@@ -906,3 +906,19 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .period-nav { margin: 8px 0 12px; }
 .period-nav .btn { width: auto; }
 
+
+/* Schronisko oddzialu */
+.shelter-deposit { margin-top: 14px; }
+.shelter-deposit label { display: block; font-weight: 600; font-size: 0.85rem; color: var(--khaki); margin-bottom: 5px; }
+.shelter-deposit-row { display: flex; gap: 10px; align-items: stretch; }
+.shelter-deposit-row input { flex: 1 1 auto; min-width: 0; padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg2); color: var(--cream); font: inherit; }
+.shelter-deposit-row input:focus { outline: 0; border-color: var(--orange); }
+.shelter-deposit-row .btn { width: auto; flex: 0 0 auto; }
+.shelter-rooms { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 12px; }
+.shelter-room { padding: 12px 14px; border-radius: 12px; background: var(--tile); }
+.shelter-room.building { outline: 2px solid var(--orange); }
+.shelter-room-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.shelter-room-head h3 { margin: 0; }
+.shelter-room p { margin: 6px 0; }
+.shelter-cost .ok { color: #4caf7a; }
+.shelter-cost .lack { color: #e0584f; }

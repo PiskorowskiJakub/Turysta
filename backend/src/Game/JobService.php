@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use PDO;
 use Throwable;
 use Turysta\Http\ApiException;
+use Turysta\Squad\SquadShelter;
 
 final class JobService
 {
@@ -142,6 +143,7 @@ final class JobService
                 ->execute([Clock::fmt($now), $payout, $run['id']]);
             if ($payout > 0) {
                 Wallet::earn($this->pdo, $userId, 'job:' . $run['job_code'], $payout, 'job_payout', 'job_run', (int) $run['id']);
+                SquadShelter::payKitchenBonus($this->pdo, $userId, $payout, (int) $run['id']);
                 $points = Economy::jobPoints($payout);
                 if ($points > 0) {
                     Wallet::apply($this->pdo, $userId, 'points', $points, 'job_points', 'job_run', (int) $run['id']);

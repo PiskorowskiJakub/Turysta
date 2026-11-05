@@ -794,3 +794,25 @@ export interface SquadTrailHistoryItem {
   my_reward_cents: number;
   my_eligible: boolean;
 }
+
+export type ShelterRoomCode = 'kitchen' | 'pantry' | 'infirmary' | 'mapping' | 'memory';
+
+export interface SquadShelterRoom {
+  code: ShelterRoomCode;
+  level: number;
+  effect_percent: number | null;
+  next_effect_percent: number | null;
+  effect_soon: boolean;
+  next: { level: number; ember: number; stamps: number; cents: number; hours: number };
+  building: boolean;
+  affordable: boolean;
+}
+
+export interface SquadShelter {
+  vault: { ember: number; stamps: number; cents: number };
+  rooms: SquadShelterRoom[];
+  build: { room: ShelterRoomCode; level: number; started_at: string; finish_at: string } | null;
+  deposit: { limit_cents: number; used_cents: number; remaining_cents: number; record_cents: number };
+  can_build: boolean;
+  history: { room: ShelterRoomCode; level: number; started_at: string; finished_at: string | null }[];
+}

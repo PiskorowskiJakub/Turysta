@@ -555,6 +555,7 @@ final class SquadService
             'recruit' => in_array($role, ['leader', 'deputy', 'recruiter'], true),
             'manage', 'lead' => in_array($role, ['leader', 'deputy'], true),
             'plan' => in_array($role, ['leader', 'deputy', 'guide'], true),
+            'build' => in_array($role, ['leader', 'deputy', 'quartermaster'], true),
             default => false,
         };
         if (!$ok) {

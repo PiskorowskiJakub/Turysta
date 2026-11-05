@@ -5,7 +5,7 @@ import type { TFunction } from 'i18next';
 import { api, ApiError } from '../../api/client';
 import type { SquadChronicleEntry, SquadMember, SquadMeta, SquadMine, SquadProfile } from '../../api/types';
 import PlayerAvatar from '../PlayerAvatar';
-import { formatDate, formatDateTime } from '../../format';
+import { formatCoins, formatDate, formatDateTime } from '../../format';
 import InfoHint from '../InfoHint';
 import SquadFields, { type SquadDraft } from './SquadFields';
 import { SquadTrailBanner } from './SquadTrailPanel';
@@ -52,6 +52,12 @@ export function chronicleText(t: TFunction, e: SquadChronicleEntry, specLabel: (
       return t('squad.chronicle.fireDim', { level: t(`squad.flame.${Number(p.level)}`) });
     case 'trail_done':
       return t('squad.chronicle.trailDone', { theme: String(p.theme_name ?? ''), percent: Number(p.percent), count: Number(p.stamps) });
+    case 'shelter_start':
+      return t('squad.chronicle.shelterStart', { room: t(`squad.shelter.rooms.${String(p.room)}`, { defaultValue: String(p.room) }), level: Number(p.level) });
+    case 'shelter_done':
+      return t('squad.chronicle.shelterDone', { room: t(`squad.shelter.rooms.${String(p.room)}`, { defaultValue: String(p.room) }), level: Number(p.level) });
+    case 'deposit_record':
+      return t('squad.chronicle.depositRecord', { amount: formatCoins(Number(p.cents)) });
     default:
       return e.type;
   }

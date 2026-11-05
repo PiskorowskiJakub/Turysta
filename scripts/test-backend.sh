@@ -14,6 +14,8 @@ for path in src bin migrations tests; do
   docker compose cp "backend/$path" backend:/var/www/html/ >/dev/null
 done
 docker compose cp backend/phpunit.xml backend:/var/www/html/phpunit.xml >/dev/null
+# docker cp zachowuje wlasciciela i prawa plikow z dysku (np. 600 dla jednego pliku), a Apache dziala jako www-data: bez tego klasa daje 500 w przegladarce.
+docker compose exec -T -u root backend sh -c 'chown -R www-data:www-data src bin migrations tests phpunit.xml && chmod -R a+rX src bin migrations tests phpunit.xml'
 docker compose exec -T backend composer dump-autoload --quiet
 docker compose exec -T backend php bin/migrate.php >/dev/null
 

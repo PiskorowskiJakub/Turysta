@@ -805,7 +805,10 @@
     "not_participant": "Najpierw dołącz do wyprawy.",
     "difficulty_locked": "Trudność trasy można zmieniać tylko w poniedziałek.",
     "invalid_difficulty": "Wybierz poziom trudności.",
-    "name_cooldown": "Nazwę postaci możesz zmienić raz na 180 dni."
+    "name_cooldown": "Nazwę postaci możesz zmienić raz na 180 dni.",
+    "deposit_limit": "Przekroczysz dzienny limit wpłat do magazynu.",
+    "build_in_progress": "Oddział już coś buduje. Poczekaj na zakończenie rozbudowy.",
+    "not_enough_resources": "W magazynie brakuje składników na tę rozbudowę."
   },
   "training": {
     "title": "Szkolenia",
@@ -1291,7 +1294,8 @@
       "chronicle": "Kronika",
       "trails": "Szlaki",
       "trailNow": "Wyprawa",
-      "trailHistory": "Historia"
+      "trailHistory": "Historia",
+      "shelter": "Schronisko"
     },
     "player": {
       "member": "Oddział:"
@@ -1451,7 +1455,7 @@
       "transfer": "Przekaż przywództwo",
       "transferConfirm": "Przekaż przywództwo graczowi {{name}}",
       "transferred": "Przywództwo przekazane: {{name}}.",
-      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz i Kronikarz (po 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału."
+      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz (do 2): razem z przywódcą i zastępcą rozpoczyna rozbudowę pomieszczeń w zakładce Schronisko. Kronikarz (do 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału."
     },
     "recruit": {
       "title": "Rekrutacja",
@@ -1494,7 +1498,10 @@
       "trailDone_one": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątkę.",
       "trailDone_few": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątki.",
       "trailDone_many": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątek.",
-      "trailDone_other": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątek."
+      "trailDone_other": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątek.",
+      "shelterStart": "Oddział rozpoczął rozbudowę: {{room}}, poziom {{level}}.",
+      "shelterDone": "Rozbudowa zakończona: {{room}} ma teraz poziom {{level}}.",
+      "depositRecord": "Rekord wpłat oddziału w ciągu dnia: {{amount}} dk."
     },
     "trail": {
       "info": "Co tydzień (od poniedziałku do niedzieli) oddział wyrusza na nową wyprawę. Wpisowe wynosi {{fee}} dk i znika z obiegu; dołączyć można do środy. Twój udział w trasie to 50% dni aktywności w grze i 50% codziennego, darmowego Marszu, liczone od dnia dołączenia do końca wyprawy. Kilometry oddziału to suma kilometrów uczestników, a cel to długość trasy razy liczba uczestników (każdy nowy uczestnik zwiększa cel o całą trasę). Pasek pokazuje to samo jako procent, czyli średnią ze wszystkich uczestników. Punkty gracza nie mają na niego wpływu. Cyfry na pasku to progi pieczątek. Po niedzieli oddział dostaje pieczątki do wspólnej puli, a każdy uczestnik z co najmniej {{days}} dniami aktywności dostaje {{perStamp}} dk za każdą pieczątkę i zalicza wyprawę do odznaki „Szlakowiec”. Pieczątki dostaje oddział, w którym wyprawę zaliczyło minimum {{min}} osoby.",
@@ -1536,6 +1543,55 @@
       "bannerMarch": "Wyprawa „{{name}}”: nie zapomnij o dzisiejszym Marszu.",
       "bannerOn": "Wyprawa „{{name}}” trwa, postęp {{percent}}%.",
       "bannerGo": "Przejdź do wyprawy"
+    },
+    "shelter": {
+      "info": "Schronisko to wspólna baza oddziału. Magazyn nie ma limitu i zbiera trzy składniki: żar z ogniska, pieczątki ze szlaków oraz dukaty z wpłat członków. Każde pomieszczenie można rozbudowywać bez końca, ale każdy kolejny poziom kosztuje więcej (żar, pieczątki i dukaty) i dłużej się buduje. Rozbudowę rozpoczyna przywódca, zastępca lub kwatermistrz: składniki schodzą z magazynu od razu, a poziom (i jego efekt) pojawia się dopiero po zakończeniu budowy. Naraz można budować jedno pomieszczenie. Wpłacone dukaty zostają w oddziale także po odejściu członka. Dzienny limit wpłat na osobę rośnie wraz z cenami rozbudów. Pojemność magazynu jest nieograniczona.",
+      "vault": "Magazyn",
+      "ember": "żar",
+      "stamps": "pieczątki",
+      "coins": "dukaty",
+      "depositLabel": "Wpłać dukaty do magazynu",
+      "deposit": "Wpłać",
+      "depositInvalid": "Podaj całkowitą liczbę dukatów (co najmniej 1).",
+      "depositHint": "Dziś możesz wpłacić jeszcze {{left}} dk (limit dzienny: {{limit}} dk).",
+      "limitReached": "Dzienny limit wpłat ({{limit}} dk) wykorzystany. Wróć jutro.",
+      "record": "Rekord wpłat oddziału w ciągu dnia: {{amount}} dk.",
+      "building": "Trwa rozbudowa",
+      "buildingLine": "{{room}}, poziom {{level}}: gotowe {{until}}.",
+      "roomsTitle": "Pomieszczenia",
+      "level": "poziom {{n}}",
+      "nextLevel": "Poziom {{n}}",
+      "costEmber": "żar {{n}}",
+      "costStamps": "pieczątki {{n}}",
+      "costCoins": "{{n}} dk",
+      "buildTime": "budowa: {{time}}",
+      "hours": "{{n}} godz.",
+      "days_one": "{{count}} dzień",
+      "days_few": "{{count}} dni",
+      "days_many": "{{count}} dni",
+      "days_other": "{{count}} dni",
+      "upgrade": "Rozbuduj do poziomu {{n}}",
+      "noPower": "Rozbudowę rozpoczyna przywódca, zastępca lub kwatermistrz.",
+      "effectSoon": "Efekt: wkrótce",
+      "nextEffect": "Następny poziom: {{pct}}%.",
+      "rooms": {
+        "kitchen": "Kuchnia",
+        "pantry": "Spiżarnia",
+        "infirmary": "Izba chorych",
+        "mapping": "Mapownia",
+        "memory": "Izba pamięci"
+      },
+      "desc": {
+        "kitchen": "Zwiększa wypłaty z prac wszystkich członków oddziału.",
+        "pantry": "Podniesie limit umiejętności oddziałowych.",
+        "infirmary": "Wzmocni tarczę ogniska.",
+        "mapping": "Dokłada oddziałowi dodatkowe pieczątki z każdej wyprawy (nagrody graczy za pieczątki z trasy się nie zmieniają).",
+        "memory": "Kosmetyka oddziału i widok zdobytych odznak."
+      },
+      "effect": {
+        "kitchen": "Efekt: +{{pct}}% do wypłat z prac.",
+        "mapping": "Efekt: +{{pct}}% pieczątek z wypraw."
+      }
     }
   },
   "cookies": {

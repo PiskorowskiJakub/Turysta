@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use PDO;
 use Throwable;
 use Turysta\Social\ActivityFeed;
+use Turysta\Squad\SquadShelter;
 
 /** Rozlicza zakonczone szkolenia i prace. Idempotentne: drugie wywolanie nic nie zmienia. */
 final class Settler
@@ -103,6 +104,7 @@ final class Settler
         $this->pdo->prepare("UPDATE job_runs SET status = 'done', finished_at = ends_at, payout_cents = ? WHERE id = ?")
             ->execute([$payout, $run['id']]);
         Wallet::earn($this->pdo, $userId, 'job:' . $run['job_code'], $payout, 'job_payout', 'job_run', (int) $run['id']);
+        SquadShelter::payKitchenBonus($this->pdo, $userId, $payout, (int) $run['id']);
         $points = Economy::jobPoints($payout);
         if ($points > 0) {
             Wallet::apply($this->pdo, $userId, 'points', $points, 'job_points', 'job_run', (int) $run['id']);

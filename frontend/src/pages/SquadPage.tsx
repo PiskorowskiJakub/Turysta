@@ -9,6 +9,7 @@ import Tabs, { type TabItem } from '../components/Tabs';
 import SquadFields, { type SquadDraft } from '../components/squad/SquadFields';
 import SquadPanel, { type SquadSection } from '../components/squad/SquadPanel';
 import SquadPublic from '../components/squad/SquadPublic';
+import SquadShelterPanel from '../components/squad/SquadShelterPanel';
 import SquadTrailPanel, { type TrailSection } from '../components/squad/SquadTrailPanel';
 import { formatDate } from '../format';
 
@@ -76,6 +77,7 @@ export default function SquadPage() {
                 ],
               }]
             : []),
+          ...(squad ? [{ path: 'schronisko', label: t('squad.tabs.shelter') }] : []),
           { path: 'katalog', label: t('squad.tabs.catalog') },
         ]}
       />
@@ -92,6 +94,7 @@ export default function SquadPage() {
         ) : (
           <Route path="szlaki/*" element={<Navigate to="/oddzial/moj" replace />} />
         )}
+        {squad ? <Route path="schronisko" element={<SquadShelterPanel squadId={squad.id} />} /> : <Route path="schronisko" element={<Navigate to="/oddzial/moj" replace />} />}
         <Route path="katalog" element={<CatalogTab meta={mine.meta} />} />
         <Route path=":id" element={<ProfileTab mine={mine} reload={reload} />} />
       </Routes>
