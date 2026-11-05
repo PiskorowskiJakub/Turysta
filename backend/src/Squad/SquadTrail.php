@@ -82,7 +82,10 @@ final class SquadTrail
             'theme' => $theme ?? ['code' => (string) $trail['theme'], 'name' => (string) $trail['theme'], 'description' => ''],
             'length_km' => SquadRules::TRAIL_LENGTH_KM[$difficulty],
             'percent' => round($calc['percent'], 1),
-            'km' => round($calc['percent'] / 100 * SquadRules::TRAIL_LENGTH_KM[$difficulty], 1),
+            // Cel oddzialu rosnie z kazdym uczestnikiem (dlugosc trasy na osobe), a km oddzialu to suma km uczestnikow.
+            'goal_km' => SquadRules::TRAIL_LENGTH_KM[$difficulty] * max(1, count($calc['rows'])),
+            'km' => round(array_sum(array_map(static fn (array $r): float => $r['share'], $calc['rows'])) * SquadRules::TRAIL_LENGTH_KM[$difficulty], 1),
+            'my_km' => $me ? round($me['share'] * SquadRules::TRAIL_LENGTH_KM[$difficulty], 1) : 0.0,
             'thresholds' => SquadRules::TRAIL_THRESHOLDS[$difficulty],
             'max_stamps' => SquadRules::TRAIL_MAX_STAMPS[$difficulty],
             'stamps_now' => $stamps,

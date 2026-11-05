@@ -183,6 +183,10 @@ final class SquadTrailTest extends TestCase
         $live = $this->trails->view($lead, $squadId, $this->at('2026-01-11', '20:00:00'));
         $this->assertSame(75.0, $live['percent']);
         $this->assertSame(2, $live['stamps_now']);
+        // Kilometry to suma uczestnikow, a cel rosnie z ich liczba (trudna trasa = 80 km na osobe).
+        $this->assertSame(160, $live['goal_km']);
+        $this->assertSame(120.0, $live['km']);
+        $this->assertSame(80.0, $live['my_km']);
 
         // Rozliczenie (nowy tydzien): 2 pieczatki (trudna trasa, prog 70%), nagroda po 1 dk dla obu uczestnikow, tylko raz.
         $this->assertGreaterThanOrEqual(1, SquadTrail::finalizeDue($this->pdo, Clock::now($this->pdo)));

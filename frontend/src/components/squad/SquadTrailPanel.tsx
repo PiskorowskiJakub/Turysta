@@ -102,11 +102,12 @@ function CurrentTrail({ squadId }: { squadId: number }) {
           ))}
         </div>
         <ul className="squad-stats">
-          <li><b>{trail.km} / {trail.length_km}</b><small>{t('squad.trail.km')}</small></li>
+          <li><b>{trail.km} / {trail.goal_km}</b><small>{t('squad.trail.km')}</small></li>
           <li><b>{trail.percent}%</b><small>{t('squad.trail.percent')}</small></li>
           <li><b>{trail.stamps_now} / {trail.max_stamps}</b><small>{t('squad.trail.stampsNow')}</small></li>
           <li><b>{trail.squad_stamps}</b><small>{t('squad.trail.pool')}</small></li>
         </ul>
+        <p className="muted">{t('squad.trail.perPerson', { km: trail.length_km })}{trail.joined && ` ${t('squad.trail.mine', { done: trail.my_km, goal: trail.length_km, left: Math.max(0, Math.round((trail.length_km - trail.my_km) * 10) / 10) })}`}</p>
         <p className="muted">{trail.stamps_now > 0 ? t('squad.trail.rewardNow', { count: trail.stamps_now, reward: formatCoins(trail.stamps_now * trail.reward_per_stamp_cents) }) : t('squad.trail.rewardNone', { percent: trail.thresholds[0] })}</p>
 
         {error && <p className="form-error" role="alert">{error}</p>}
