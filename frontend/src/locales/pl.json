@@ -1607,7 +1607,10 @@
       "confirmNo": "Anuluj",
       "tileTitle": "Schronisko",
       "openShelter": "Przejdź do schroniska",
-      "publicTitle": "Schronisko"
+      "publicTitle": "Schronisko",
+      "buildProgress": "Postęp rozbudowy",
+      "buildRemaining": "{{percent}}% · do końca: {{time}}",
+      "buildFinished": "Budowa zakończona."
     }
   },
   "cookies": {
