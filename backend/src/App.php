@@ -33,6 +33,7 @@ use Turysta\Social\FriendService;
 use Turysta\Social\GiftService;
 use Turysta\Squad\SquadAdminService;
 use Turysta\Squad\SquadService;
+use Turysta\Squad\SquadShelter;
 use Turysta\Squad\SquadTrail;
 use Turysta\Squad\SquadView;
 use Turysta\Support\BugReportService;
