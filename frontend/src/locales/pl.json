@@ -1496,9 +1496,9 @@
       "trailDone_other": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątek."
     },
     "trail": {
-      "info": "Co tydzień (od poniedziałku do niedzieli) oddział wyrusza na nową wyprawę. Wpisowe wynosi {{fee}} dk i znika z obiegu; dołączyć można do środy. Twój udział w trasie to 50% dni aktywności w grze i 50% codziennego, darmowego Marszu, liczone od dnia dołączenia do końca wyprawy. Postęp oddziału to średnia ze wszystkich uczestników, a punkty gracza nie mają na niego wpływu. Cyfry na pasku to progi pieczątek. Po niedzieli oddział dostaje pieczątki do wspólnej puli, a każdy uczestnik z co najmniej {{days}} dniami aktywności dostaje {{perStamp}} dk za każdą pieczątkę i zalicza wyprawę do odznaki „Szlakowiec”. Pieczątki dostaje oddział, w którym wyprawę zaliczyło minimum {{min}} osoby.",
+      "info": "Co tydzień (od poniedziałku do niedzieli) oddział wyrusza na nową wyprawę. Wpisowe wynosi {{fee}} dk i znika z obiegu; dołączyć można do środy. Twój udział w trasie to 50% dni aktywności w grze i 50% codziennego, darmowego Marszu, liczone od dnia dołączenia do końca wyprawy. Kilometry oddziału to suma kilometrów uczestników, a cel to długość trasy razy liczba uczestników (każdy nowy uczestnik zwiększa cel o całą trasę). Pasek pokazuje to samo jako procent, czyli średnią ze wszystkich uczestników. Punkty gracza nie mają na niego wpływu. Cyfry na pasku to progi pieczątek. Po niedzieli oddział dostaje pieczątki do wspólnej puli, a każdy uczestnik z co najmniej {{days}} dniami aktywności dostaje {{perStamp}} dk za każdą pieczątkę i zalicza wyprawę do odznaki „Szlakowiec”. Pieczątki dostaje oddział, w którym wyprawę zaliczyło minimum {{min}} osoby.",
       "week": "Wyprawa {{from}} – {{to}}",
-      "length": "trasa {{km}} km",
+      "length": "{{km}} km na uczestnika",
       "difficulty": {
         "easy": "Łatwa",
         "medium": "Średnia",
@@ -1508,7 +1508,9 @@
       "planHint": "Trudność trasy ustawia przywódca, zastępca lub przewodnik, najpóźniej do końca dnia {{date}}.",
       "progress": "Postęp wyprawy",
       "stampAt": "Pieczątka {{n}} od {{percent}}%",
-      "km": "km trasy",
+      "km": "km oddziału (cel rośnie z każdym uczestnikiem)",
+      "perPerson": "Na jednego uczestnika przypada {{km}} km.",
+      "mine": "Ty: {{done}} / {{goal}} km, zostało {{left}} km.",
       "percent": "postęp",
       "stampsNow": "pieczątki (obecnie)",
       "pool": "pieczątki oddziału",

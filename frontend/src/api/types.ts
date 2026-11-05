@@ -761,6 +761,8 @@ export interface SquadTrail {
   length_km: number;
   percent: number;
   km: number;
+  goal_km: number;
+  my_km: number;
   thresholds: number[];
   max_stamps: number;
   stamps_now: number;
