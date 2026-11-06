@@ -113,7 +113,7 @@ final class SquadTrailTest extends TestCase
         $lead = $this->user('SzlLid');
         $a = $this->user('SzlA');
         $b = $this->user('SzlB');
-        $squadId = $this->squads->create($lead, ['name' => "Szlak {$this->suffix}", 'specialization' => 'gorska', 'join_mode' => 'open'], '10.6.1.1')['id'];
+        $squadId = $this->squads->create($lead, ['name' => "Szlak {$this->suffix}", 'specialization' => 'gorska', 'join_mode' => 'open'], '10.6.' . random_int(1, 250) . '.' . random_int(1, 250))['id'];
         $this->squads->join($a, $squadId);
         $this->squads->join($b, $squadId);
 
@@ -218,7 +218,7 @@ final class SquadTrailTest extends TestCase
     public function testNoStampsWithoutEnoughActiveParticipants(): void
     {
         $lead = $this->user('SzlSolo');
-        $squadId = $this->squads->create($lead, ['name' => "Solo {$this->suffix}", 'specialization' => 'ogolna', 'join_mode' => 'open'], '10.6.2.2')['id'];
+        $squadId = $this->squads->create($lead, ['name' => "Solo {$this->suffix}", 'specialization' => 'ogolna', 'join_mode' => 'open'], '10.6.' . random_int(1, 250) . '.' . random_int(1, 250))['id'];
         $mon = $this->at('2025-12-01');
         $this->trails->join($lead, $squadId, $mon);
         for ($d = 1; $d <= 7; $d++) {

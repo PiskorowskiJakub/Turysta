@@ -979,3 +979,8 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .badge-sq.featured .badge-sq-icon { box-shadow: 0 0 22px 0 var(--tier); }
 .badge-sq.featured .badge-sq-name { color: var(--orange); }
 .book-list { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; }
+
+.squad-tag-emblem { display: inline-flex; }
+@media (max-width: 600px) {
+  .squad-tag .squad-tag-name { display: none; }
+}

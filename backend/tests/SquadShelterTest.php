@@ -78,7 +78,7 @@ final class SquadShelterTest extends TestCase
     {
         $lead = $this->user('SchLid');
         $mem = $this->user('SchCz');
-        $id = $this->squads->create($lead, ['name' => "Schron {$this->suffix}", 'specialization' => 'gorska', 'join_mode' => 'open'], '10.8.1.1')['id'];
+        $id = $this->squads->create($lead, ['name' => "Schron {$this->suffix}", 'specialization' => 'gorska', 'join_mode' => 'open'], '10.8.' . random_int(1, 250) . '.' . random_int(1, 250))['id'];
         $this->squads->join($mem, $id);
         return [$lead, $mem, $id];
     }
