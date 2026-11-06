@@ -265,6 +265,7 @@
       "logins": "Logowania",
       "audit": "Działania administratorów",
       "bugs": "Zgłoszenia błędów",
+      "bugList": "Zgłoszenia",
       "updates": "Aktualizacje",
       "squads": "Oddziały",
       "squadList": "Lista",
@@ -579,7 +580,7 @@
       "resolve": "Załatwione",
       "dismiss": "Odrzuć",
       "reopen": "Otwórz ponownie",
-      "wordsTitle": "Słowa zakazane w nazwach oddziałów",
+      "wordsTitle": "Słowa zakazane (nazwy graczy i oddziałów)",
       "wordLabel": "Nowe słowo",
       "wordHint": "Słowo jest normalizowane (bez wielkości liter, polskich znaków i typowych podmian cyfr). Nazwy zawierające je zostaną odrzucone."
     }

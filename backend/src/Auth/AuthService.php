@@ -7,6 +7,7 @@ use PDO;
 use PDOException;
 use Turysta\Http\ApiException;
 use Turysta\Mailer;
+use Turysta\Squad\NameFilter;
 
 final class AuthService
 {
@@ -41,6 +42,9 @@ final class AuthService
         $accepted = $in['accept_terms'] ?? false;
         if ($accepted !== true && $accepted !== 1 && $accepted !== '1' && $accepted !== 'true') {
             $errors['accept_terms'] = 'Aby założyć konto, zaakceptuj regulamin i politykę prywatności.';
+        }
+        if (!isset($errors['character_name']) && NameFilter::isBanned($this->pdo, $name)) {
+            $errors['character_name'] = 'Ta nazwa jest niedozwolona.';
         }
         if ($errors) {
             throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', $errors);
