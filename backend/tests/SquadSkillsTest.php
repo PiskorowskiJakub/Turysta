@@ -71,6 +71,11 @@ final class SquadSkillsTest extends TestCase
         return (int) $this->pdo->query("SELECT coins_cents FROM wallets WHERE user_id = $userId")->fetchColumn();
     }
 
+    private function points(int $userId): int
+    {
+        return (int) $this->pdo->query("SELECT points FROM wallets WHERE user_id = $userId")->fetchColumn();
+    }
+
     private function setLevel(int $userId, string $skill, int $level): void
     {
         $this->pdo->prepare('INSERT INTO user_squad_skills (user_id, skill, level) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE level = VALUES(level)')
@@ -117,11 +122,14 @@ final class SquadSkillsTest extends TestCase
         $u = $this->user('SkSolo');
         $uid = (int) $u['id'];
         $before = $this->coins($uid);
+        $pointsBefore = $this->points($uid);
 
         $state = $this->skills->train($uid, 'campfire');
         $this->assertNotNull($state['active']);
         $this->assertSame(1, $state['active']['target_level']);
         $this->assertSame($before - 648, $this->coins($uid));
+        // Punkty dopiero po zakonczeniu szkolenia, nie przy starcie.
+        $this->assertSame($pointsBefore, $this->points($uid));
         $this->skills->train($uid, 'campfire');
         $this->skills->train($uid, 'guidance');
         try {
@@ -143,6 +151,8 @@ final class SquadSkillsTest extends TestCase
         $state = $this->skills->state($uid);
         $this->assertSame(1, SquadSkills::levels($this->pdo, $uid)['campfire']);
         $this->assertSame('guidance', $state['active']['skill']);
+        // Poziom 1 trwa 2 godziny: 1 punkt za kazde rozpoczete 20 minut = 6 punktow.
+        $this->assertSame($pointsBefore + 6, $this->points($uid));
         $n = $this->pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND type = 'squad_skill_finished'");
         $n->execute([$uid]);
         $this->assertSame(1, (int) $n->fetchColumn());
@@ -151,6 +161,8 @@ final class SquadSkillsTest extends TestCase
         $coinsBefore = $this->coins($uid);
         $this->skills->cancel($uid, $state['active']['id']);
         $this->assertSame($coinsBefore + intdiv(648, 2), $this->coins($uid));
+        // Anulowane szkolenie nie daje punktow.
+        $this->assertSame($pointsBefore + 6, $this->points($uid));
     }
 
     public function testProfileAveragesActiveMembersWithRoleBonusAndMinimum(): void

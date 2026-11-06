@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use PDO;
 use Throwable;
 use Turysta\Game\Clock;
+use Turysta\Game\Economy;
 use Turysta\Game\Notifier;
 use Turysta\Game\TrainingQueue;
 use Turysta\Game\Wallet;
@@ -391,6 +392,8 @@ final class SquadSkills
             $pdo->prepare("UPDATE squad_skill_queue SET status = 'done', finished_at = ends_at WHERE id = ?")->execute([$row['id']]);
             $pdo->prepare('INSERT INTO user_squad_skills (user_id, skill, level) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE level = level + 1')
                 ->execute([$userId, $row['skill']]);
+            // Punkty jak za zwykle szkolenie (1 za kazde rozpoczete 20 minut), dopiero po jego zakonczeniu; anulowane nie daje punktow.
+            Wallet::apply($pdo, $userId, 'points', Economy::trainingPoints((int) $row['duration_seconds']), 'squad_skill_points', 'squad_skill', (int) $row['id']);
             Notifier::add($pdo, $userId, 'squad_skill_finished', ['skill' => (string) $row['skill'], 'level' => (int) $row['target_level']]);
             self::startNext($pdo, $userId, Clock::parse((string) $row['ends_at']));
         }

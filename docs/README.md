@@ -111,11 +111,12 @@ Punkty to miara postępu gracza do rankingu i rang, nie waluta (nie da się nimi
 | Źródło | Zasada |
 |---|---|
 | Szkolenie umiejętności (bazowych i światów) | 1 punkt za każde rozpoczęte 20 minut szkolenia, minimum 1 |
+| Szkolenie umiejętności oddziałowych | tak samo: 1 punkt za każde rozpoczęte 20 minut szkolenia, minimum 1 |
 | Awans do kolejnego rozdziału | 50 × numer świata (50 w świecie 1, 250 w świecie 5) |
 | Wejście do nowego świata (rozdział 1 świata) | 1000 |
 | Praca | 1 punkt za każde pełne 50 dk wypłaty |
 
-Punkty za szkolenia są proporcjonalne do czasu, a nie do poziomu, więc rosną mniej więcej liniowo z czasem gry: dłuższe szkolenia dają więcej, a aktywny i zwykły gracz zdobywają podobnie dużo, bo tempo ogranicza kolejka. Awanse i wejścia do światów są największymi pojedynczymi nagrodami.
+Punkty za szkolenie (zwykłe i oddziałowe) dostajesz dopiero po jego zakończeniu, a anulowane szkolenie ich nie daje. Punkty za szkolenia są proporcjonalne do czasu, a nie do poziomu, więc rosną mniej więcej liniowo z czasem gry: dłuższe szkolenia dają więcej, a aktywny i zwykły gracz zdobywają podobnie dużo, bo tempo ogranicza kolejka. Awanse i wejścia do światów są największymi pojedynczymi nagrodami.
 
 ## Codzienna nagroda
 
