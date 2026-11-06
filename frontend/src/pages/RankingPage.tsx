@@ -5,6 +5,7 @@ import { api, ApiError } from '../api/client';
 import type { RankingResponse, SkillsResponse } from '../api/types';
 import FriendsRanking from '../components/FriendsRanking';
 import Points from '../components/Points';
+import SquadTag from '../components/squad/SquadTag';
 
 /** Ranking: wszyscy gracze albo tylko znajomi (?widok=znajomi). */
 export default function RankingPage() {
@@ -122,17 +123,19 @@ function AllPlayersRanking() {
           <tr>
             <th className="num">{t('ranking.place')}</th>
             <th>{t('ranking.player')}</th>
+            <th>{t('ranking.squad')}</th>
             <th className="num">{t('ranking.worldChapter')}</th>
             <th className="num">{t('wallet.points')}</th>
           </tr>
         </thead>
         <tbody>
           {data.rows.length === 0 ? (
-            <tr><td colSpan={4} className="ranking-empty">{t('ranking.empty')}</td></tr>
+            <tr><td colSpan={5} className="ranking-empty">{t('ranking.empty')}</td></tr>
           ) : data.rows.map((r) => (
             <tr key={r.id} className={r.me ? 'me' : undefined}>
               <td className="num">{r.rank}</td>
               <td><Link to={r.me ? '/profil' : `/gracz/${r.id}`}>{r.name}</Link></td>
+              <td data-label={t('ranking.squad')}><SquadTag squad={r.squad} /></td>
               <td className="num">{r.world !== null ? `${r.world} / ${r.chapter}` : '–'}</td>
               <td className="num"><Points value={r.points} /></td>
             </tr>

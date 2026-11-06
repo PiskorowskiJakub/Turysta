@@ -198,6 +198,7 @@ export interface RankingRow {
   id: number;
   rank: number;
   name: string;
+  squad: { id: number; display_name: string; emblem: string | null; frame: string | null } | null;
   points: number;
   world: number | null;
   chapter: number | null;
@@ -306,6 +307,7 @@ export interface FriendRankingRow {
   id: number;
   rank: number;
   name: string;
+  squad: { id: number; display_name: string; emblem: string | null; frame: string | null } | null;
   /** Zdobyte w okresie (punkty albo setne dukata, zaleznie od miary). */
   gained: number;
   /** Aktualny stan (punkty albo setne dukata). */

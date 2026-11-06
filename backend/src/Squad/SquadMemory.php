@@ -106,6 +106,40 @@ final class SquadMemory
         return ['emblem' => self::emblemOf($squad, $level), 'frame' => self::frameOf($squad, $level)];
     }
 
+    /**
+     * Oddzialy wielu graczy naraz (rankingi): user_id => {id, display_name, emblem, frame}; gracze bez oddzialu sa pominieci.
+     *
+     * @param list<int> $userIds
+     * @return array<int,array{id:int,display_name:string,emblem:?string,frame:?string}>
+     */
+    public static function forUsers(PDO $pdo, array $userIds): array
+    {
+        $userIds = array_values(array_unique(array_map('intval', $userIds)));
+        if (!$userIds) {
+            return [];
+        }
+        $in = implode(',', array_fill(0, count($userIds), '?'));
+        $stmt = $pdo->prepare(
+            "SELECT m.user_id, s.id, s.name, s.specialization, s.emblem, s.frame, COALESCE(r.level, 0) AS memory_level
+             FROM squad_members m
+             JOIN squads s ON s.id = m.squad_id AND s.archived_at IS NULL
+             LEFT JOIN squad_rooms r ON r.squad_id = s.id AND r.room = 'memory'
+             WHERE m.user_id IN ($in)"
+        );
+        $stmt->execute($userIds);
+        $out = [];
+        foreach ($stmt->fetchAll() as $r) {
+            $level = (int) $r['memory_level'];
+            $out[(int) $r['user_id']] = [
+                'id' => (int) $r['id'],
+                'display_name' => SquadRules::displayName((string) $r['name'], (string) $r['specialization']),
+                'emblem' => self::emblemOf($r, $level),
+                'frame' => self::frameOf($r, $level),
+            ];
+        }
+        return $out;
+    }
+
     /** Emblemat i ramka, o ile oddzial nadal ma poziom, ktory je odblokowuje. */
     public static function emblemOf(array $squad, int $level): ?string
     {
