@@ -992,3 +992,14 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .confirm-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
 
 .last-seen { font-size: .8rem; white-space: nowrap; }
+
+.squad-stats li { position: relative; }
+.squad-stats .info-hint { position: static; }
+.squad-stats .info-hint-btn { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; }
+.squad-stats .info-hint-btn svg { width: 13px; height: 13px; }
+.squad-stats .info-hint-text { left: 0; right: auto; top: calc(100% + 4px); z-index: 6; width: min(260px, 70vw); text-align: left; }
+.deposit-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.deposit-columns h3 { margin: 0 0 6px; font-size: 1rem; }
+.deposit-list { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow: auto; }
+.deposit-list li { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line); }
+.deposit-list b { white-space: nowrap; }
