@@ -26,7 +26,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     api<{ squad_skills: SquadSkillsState }>('GET', '/squad-skills')
-      .then((r) => setSquadSkills(r.squad_skills.skills.filter((s) => s.level > 0).map((s) => ({ code: s.code, level: s.level }))))
+      .then((r) => setSquadSkills(r.squad_skills.skills.map((s) => ({ code: s.code, level: s.level }))))
       .catch(() => setSquadSkills([]));
   }, []);
 
