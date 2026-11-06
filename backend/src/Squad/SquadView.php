@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use PDO;
 use Turysta\Admin\Paging;
 use Turysta\Game\Clock;
+use Turysta\Social\LastSeen;
 
 /** Widoki oddzialow dla gracza: katalog, profil publiczny, panel czlonka oraz zaproszenia. */
 final class SquadView
@@ -177,6 +178,7 @@ final class SquadView
     {
         $stmt = $this->pdo->prepare(
             "SELECT m.user_id, m.role, m.joined_at, u.character_name, av.image_url, st.last_active_day,
+                    " . LastSeen::sql('u.id') . " AS last_seen,
                     EXISTS(SELECT 1 FROM sessions s WHERE s.user_id = u.id AND s.last_activity > UTC_TIMESTAMP() - INTERVAL 5 MINUTE) AS online
              FROM squad_members m
              JOIN users u ON u.id = m.user_id
@@ -230,6 +232,7 @@ final class SquadView
             if ($viewerIsMember) {
                 $entry['role'] = (string) $r['role'];
                 $entry['online'] = (bool) $r['online'];
+                $entry['last_seen'] = $r['last_seen'] === null ? null : Clock::iso((string) $r['last_seen']);
             }
             $out[] = $entry;
         }

@@ -1,3 +1,4 @@
+import LastSeenText from '../components/LastSeenText';
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -212,7 +213,7 @@ export default function FriendsPage() {
                         </span>
                       ) : <span className="muted">—</span>}
                     </td>
-                    <td><span className={`online-dot${f.online ? ' on' : ''}`} aria-hidden="true" />{f.online ? t('friends.online') : t('friends.offline')}</td>
+                    <td><span className={`online-dot${f.online ? ' on' : ''}`} aria-hidden="true" />{f.online ? t('friends.online') : <LastSeenText iso={f.last_seen} />}</td>
                     <td className="num" data-label={t('friends.cols.coins')}><Coins cents={f.coins_cents} /> {t('wallet.coinsShort')}</td>
                     <td className="num" data-label={t('friends.cols.points')}><Points value={f.points} /></td>
                     <td className="num">

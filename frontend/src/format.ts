@@ -99,3 +99,14 @@ export function formatDateTime(iso: string): string {
 export function formatPercent(value: number): string {
   return value.toLocaleString('pl-PL', { maximumFractionDigits: 2 });
 }
+
+/**
+ * Ostatnia aktywnosc w zaokragleniu w dol: pelne minuty (do godziny), pelne godziny (do doby), potem pelne dni.
+ * Zwraca jednostke i liczbe; tekst sklada komponent z tlumaczen (liczby mnogie).
+ */
+export function lastSeenAgo(iso: string, now: number = Date.now()): { unit: 'minutes' | 'hours' | 'days'; count: number } {
+  const minutes = Math.max(1, Math.floor((now - new Date(iso).getTime()) / 60_000));
+  if (minutes < 60) return { unit: 'minutes', count: minutes };
+  if (minutes < 60 * 24) return { unit: 'hours', count: Math.floor(minutes / 60) };
+  return { unit: 'days', count: Math.floor(minutes / (60 * 24)) };
+}

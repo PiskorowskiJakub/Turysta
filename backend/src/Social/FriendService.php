@@ -34,6 +34,7 @@ final class FriendService
         $stmt = $this->pdo->prepare(
             "SELECT f.status, f.requested_by, u.id, u.character_name, av.image_url, w.coins_cents, w.points,
                     sq.id AS squad_id, sq.name AS squad_name, sq.specialization AS squad_spec, sq.emblem AS squad_emblem, sq.frame AS squad_frame,
+                    " . LastSeen::sql('u.id') . " AS last_seen,
                     EXISTS(SELECT 1 FROM sessions s WHERE s.user_id = u.id AND s.last_activity > UTC_TIMESTAMP() - INTERVAL ? MINUTE) AS online
              FROM friendships f
              JOIN users u ON u.id = IF(f.user_a = ?, f.user_b, f.user_a)
@@ -53,6 +54,7 @@ final class FriendService
             if ($r['status'] === 'accepted') {
                 $friends[] = $base + [
                     'online' => (bool) $r['online'],
+                    'last_seen' => $r['last_seen'] === null ? null : Clock::iso((string) $r['last_seen']),
                     'coins_cents' => (int) ($r['coins_cents'] ?? 0),
                     'points' => (int) ($r['points'] ?? 0),
                     'squad' => $r['squad_id'] === null ? null : [

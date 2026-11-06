@@ -7,6 +7,7 @@ use PDO;
 use PDOException;
 use Turysta\Admin\Paging;
 use Turysta\Game\Clock;
+use Turysta\Social\LastSeen;
 use Turysta\Game\Notifier;
 use Turysta\Http\ApiException;
 
@@ -81,7 +82,9 @@ final class SquadAdminService
             throw new ApiException(404, 'squad_not_found', 'Nie znaleziono oddziału.');
         }
         $stmt = $this->pdo->prepare(
-            'SELECT m.user_id, m.role, m.joined_at, u.character_name FROM squad_members m JOIN users u ON u.id = m.user_id WHERE m.squad_id = ? ORDER BY m.joined_at'
+            'SELECT m.user_id, m.role, m.joined_at, u.character_name, ' . LastSeen::sql('u.id') . ' AS last_seen,
+                    EXISTS(SELECT 1 FROM sessions s WHERE s.user_id = u.id AND s.last_activity > UTC_TIMESTAMP() - INTERVAL 5 MINUTE) AS online
+             FROM squad_members m JOIN users u ON u.id = m.user_id WHERE m.squad_id = ? ORDER BY m.joined_at'
         );
         $stmt->execute([$id]);
         $members = array_map(static fn(array $m): array => [
@@ -89,6 +92,8 @@ final class SquadAdminService
             'name' => (string) $m['character_name'],
             'role' => (string) $m['role'],
             'joined_at' => Clock::iso((string) $m['joined_at']),
+            'online' => (bool) $m['online'],
+            'last_seen' => $m['last_seen'] === null ? null : Clock::iso((string) $m['last_seen']),
         ], $stmt->fetchAll());
 
         $stmt = $this->pdo->prepare(
