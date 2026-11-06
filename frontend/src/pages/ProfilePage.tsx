@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
-import type { Avatar } from '../api/types';
+import type { Avatar, SquadSkillsState } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import ProfileCard from '../components/ProfileCard';
 import BadgeBook from '../components/BadgeBook';
@@ -16,11 +16,18 @@ export default function ProfilePage() {
   const { me } = useAuth();
   const badges = useBadges();
   const [avatars, setAvatars] = useState<Avatar[]>([]);
+  const [squadSkills, setSquadSkills] = useState<{ code: string; level: number }[]>([]);
 
   useEffect(() => {
     api<{ avatars: Avatar[] }>('GET', '/avatars')
       .then((r) => setAvatars(r.avatars))
       .catch(() => setAvatars([]));
+  }, []);
+
+  useEffect(() => {
+    api<{ squad_skills: SquadSkillsState }>('GET', '/squad-skills')
+      .then((r) => setSquadSkills(r.squad_skills.skills.filter((s) => s.level > 0).map((s) => ({ code: s.code, level: s.level }))))
+      .catch(() => setSquadSkills([]));
   }, []);
 
   if (!me) return null;
@@ -124,6 +131,19 @@ export default function ProfilePage() {
               </ul>
             </div>
           ))}
+          {squadSkills.length > 0 && (
+            <div className="skill-level-group">
+              <h4>{t('profile.squadSkills')}</h4>
+              <ul className="stats stats-cols">
+                {squadSkills.map((sk) => (
+                  <li key={sk.code}>
+                    <span>{t(`training.squadSkills.names.${sk.code}`)}</span>
+                    <strong>{sk.level}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       </div>
 

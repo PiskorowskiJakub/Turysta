@@ -681,6 +681,7 @@
     "resources": "Zasoby",
     "activity": "Aktywność",
     "basicSkills": "Podstawowe",
+    "squadSkills": "Oddziałowe",
     "skills": "Umiejętności",
     "level": "poziom {{level}}",
     "tabs": {
