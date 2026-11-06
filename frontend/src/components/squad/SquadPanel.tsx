@@ -85,7 +85,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
   const [kickReason, setKickReason] = useState('inactive');
   const [inviteName, setInviteName] = useState('');
   const [draft, setDraft] = useState<SquadDraft>({ name: squad.name, specialization: squad.specialization, join_mode: squad.join_mode });
-  const [memberSort, setMemberSort] = useState<'role' | 'top' | 'sum'>('role');
+  const [memberSort, setMemberSort] = useState<'role' | 'top' | 'sum'>('sum');
 
   const specLabel = (code: string) => meta.specializations.find((s) => s.code === code)?.label ?? code;
   const me = squad.me;
@@ -336,7 +336,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
           <button type="button" className={'sort-btn' + (memberSort === 'sum' ? ' active' : '')} onClick={() => setMemberSort('sum')}>{t('squad.members.skillSum')}</button>
         </div>
         <div className="table-scroll">
-          <table className="ranking-table cards-table">
+          <table className="ranking-table cards-table members-table">
             <thead>
               <tr>
                 <th>{t('squad.members.player')}</th>
@@ -353,9 +353,15 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
                   <td>
                     <span className="friend-who">
                       <PlayerAvatar src={m.avatar_url ?? undefined} name={m.name} size={32} />
-                      <Link to={`/gracz/${m.id}`}>{m.name}</Link>
-                      {m.online ? <span className="online-dot on" title={t('friends.online')} /> : m.last_seen !== undefined && <span className="muted last-seen"><LastSeenText iso={m.last_seen} /></span>}
-                      {m.recruit && <span className="recruit-badge">{t('squad.members.recruit')}</span>}
+                      <span className="who-text">
+                        <span className="who-name">
+                          <Link to={`/gracz/${m.id}`}>{m.name}</Link>
+                          {m.recruit && <span className="recruit-badge">{t('squad.members.recruit')}</span>}
+                        </span>
+                        {m.online ? (
+                          <small className="who-sub"><span className="online-dot on" aria-hidden="true" />{t('friends.online')}</small>
+                        ) : m.last_seen !== undefined && <small className="who-sub muted"><LastSeenText iso={m.last_seen} /></small>}
+                      </span>
                     </span>
                   </td>
                   <td data-label={t('squad.members.role')}>

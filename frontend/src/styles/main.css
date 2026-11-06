@@ -1003,3 +1003,20 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .deposit-list { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow: auto; }
 .deposit-list li { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line); }
 .deposit-list b { white-space: nowrap; }
+
+.who-text { display: flex; flex-direction: column; min-width: 0; }
+.who-name { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.who-sub { font-size: 12px; line-height: 1.2; }
+.who-sub .online-dot { margin-right: 4px; }
+@media (min-width: 601px) {
+  /* Tabela czlonkow: wieksza czcionka i odstepy, kolumna gracza zawsze najszersza, akcje w jednym rzedzie. */
+  .members-table { font-size: 14px; }
+  .members-table th, .members-table td { padding: 9px 12px; vertical-align: middle; }
+  .members-table th:first-child, .members-table td:first-child { width: 34%; min-width: 220px; }
+  .members-table td { white-space: nowrap; }
+  .members-table td:first-child { white-space: normal; }
+  .members-table td.num { width: auto; text-align: right; }
+  .members-table th:nth-child(5) { text-align: right; }
+  .members-table td.cards-wide { white-space: normal; }
+  .members-table td.cards-wide .actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+}
