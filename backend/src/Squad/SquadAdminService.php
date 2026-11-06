@@ -97,13 +97,13 @@ final class SquadAdminService
         ], $stmt->fetchAll());
 
         $stmt = $this->pdo->prepare(
-            'SELECT h.id, h.name, h.created_at, u.character_name AS by_name FROM squad_name_history h LEFT JOIN users u ON u.id = h.changed_by WHERE h.squad_id = ? ORDER BY h.id DESC LIMIT 30'
+            'SELECT h.id, h.name, h.created_at, u.character_name AS by_name, u.role AS by_role FROM squad_name_history h LEFT JOIN users u ON u.id = h.changed_by WHERE h.squad_id = ? ORDER BY h.id DESC LIMIT 30'
         );
         $stmt->execute([$id]);
         $history = array_map(static fn(array $h): array => [
             'id' => (int) $h['id'],
             'name' => (string) $h['name'],
-            'by' => $h['by_name'],
+            'by' => $h['by_name'] === null ? null : ($h['by_role'] === 'admin' ? 'Administrator (' . $h['by_name'] . ')' : $h['by_name']),
             'created_at' => Clock::iso((string) $h['created_at']),
         ], $stmt->fetchAll());
 
