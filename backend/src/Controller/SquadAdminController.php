@@ -58,6 +58,19 @@ final class SquadAdminController
      * @param array<string,string> $params
      * @return array{0:int,1:array<string,mixed>}
      */
+    public function rename(Request $r, array $params = []): array
+    {
+        $admin = Session::requireAdmin($r);
+        $id = $this->id($params);
+        $this->service->rename($id, $r->body['name'] ?? null, (int) $admin['id']);
+        AdminAudit::log($this->pdo, (int) $admin['id'], 'squad.rename', null, ['squad_id' => $id, 'name' => $r->body['name'] ?? null], $r->ip());
+        return [200, $this->service->show($id)];
+    }
+
+    /**
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
     public function lockName(Request $r, array $params = []): array
     {
         $admin = Session::requireAdmin($r);

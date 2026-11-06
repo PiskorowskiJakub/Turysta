@@ -38,7 +38,7 @@ const ACTIONS = [
   'user.update', 'user.ban', 'user.unban', 'user.suspend', 'user.unsuspend', 'user.wallet', 'user.logout',
   'announcement.create', 'announcement.update', 'announcement.delete', 'fact.create', 'fact.update', 'fact.delete',
   'bugreport.status', 'bugreport.delete', 'update.create', 'update.update', 'update.delete',
-  'squad.force_name', 'squad.lock_name', 'squad.report_status', 'bannedword.add', 'bannedword.delete',
+  'squad.force_name', 'squad.rename', 'squad.lock_name', 'squad.report_status', 'bannedword.add', 'bannedword.delete',
 ] as const;
 
 /** Dziennik dzialan administratorow z filtrem po rodzaju dzialania. */

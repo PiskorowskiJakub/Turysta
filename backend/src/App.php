@@ -147,6 +147,7 @@ final class App
         $router->get('/v1/admin/squads', [$squadAdmin, 'list']);
         $router->get('/v1/admin/squads/{id}', [$squadAdmin, 'show']);
         $router->post('/v1/admin/squads/{id}/force-name', [$squadAdmin, 'forceName']);
+        $router->post('/v1/admin/squads/{id}/rename', [$squadAdmin, 'rename']);
         $router->post('/v1/admin/squads/{id}/lock-name', [$squadAdmin, 'lockName']);
         $router->get('/v1/admin/squad-reports', [$squadAdmin, 'reports']);
         $router->patch('/v1/admin/squad-reports/{id}', [$squadAdmin, 'setReportStatus']);

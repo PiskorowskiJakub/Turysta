@@ -50,7 +50,7 @@ export function chronicleText(t: TFunction, e: SquadChronicleEntry, specLabel: (
     case 'leader':
       return t(p.why === 'succession' ? 'squad.chronicle.leaderSuccession' : 'squad.chronicle.leader', { target });
     case 'name':
-      return t(p.forced ? 'squad.chronicle.nameForced' : 'squad.chronicle.name', { who, name: String(p.name) });
+      return t(p.forced || p.admin ? 'squad.chronicle.nameForced' : 'squad.chronicle.name', { who, name: String(p.name) });
     case 'spec':
       return t('squad.chronicle.spec', { who, spec: specLabel(String(p.spec)) });
     case 'fire_level':

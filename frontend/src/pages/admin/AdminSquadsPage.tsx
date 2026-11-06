@@ -111,6 +111,7 @@ function SquadDetail({ id, onChanged }: { id: number; onChanged: () => void }) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [confirmForce, setConfirmForce] = useState(false);
+  const [newName, setNewName] = useState('');
 
   const act = async (path: string, body?: unknown) => {
     setBusy(true);
@@ -118,6 +119,7 @@ function SquadDetail({ id, onChanged }: { id: number; onChanged: () => void }) {
     try {
       setData(await api<AdminSquadDetail>('POST', path, body));
       setConfirmForce(false);
+      setNewName('');
       onChanged();
     } catch (e) {
       setMessage(errText(e));
@@ -152,6 +154,12 @@ function SquadDetail({ id, onChanged }: { id: number; onChanged: () => void }) {
             {data.name_locked ? t('admin.squads.detail.unlock') : t('admin.squads.detail.lock')}
           </button>
         </div>
+      )}
+      {!data.archived && (
+        <form className="actions" onSubmit={(e) => { e.preventDefault(); void act(`/admin/squads/${id}/rename`, { name: newName }); }}>
+          <input type="text" value={newName} maxLength={40} placeholder={t('admin.squads.detail.renamePlaceholder')} aria-label={t('admin.squads.detail.rename')} onChange={(e) => setNewName(e.target.value)} />
+          <button type="submit" className="button small" disabled={busy || newName.trim().length === 0}>{t('admin.squads.detail.rename')}</button>
+        </form>
       )}
       <h3>{t('admin.squads.detail.members')}</h3>
       <ul className="admin-list">
