@@ -635,6 +635,8 @@ export interface SquadFireState {
   lit_days: number;
   ember: number;
   ember_gain: number;
+  shield: { charges: number; cap: number; cooldown_days: number; next_day: string | null };
+  campfire_bonus_percent: number;
   next_level: { level: number; in_days: number } | null;
   today: { day: string; members: number; active: number; needed: number; lit: boolean };
   history: { day: string; members: number; active: number; needed: number; lit: boolean; ember: number }[];
@@ -739,7 +741,7 @@ export interface AdminSquadDetail {
   reports: AdminSquadReport[];
 }
 
-export type TrailDifficulty = 'easy' | 'medium' | 'hard';
+export type TrailDifficulty = 'easy' | 'medium' | 'hard' | 'expert' | 'legend';
 
 export interface SquadTrailParticipant {
   user_id: number;
@@ -760,6 +762,8 @@ export interface SquadTrail {
   next_week_start: string;
   plan_until: string;
   difficulty: TrailDifficulty;
+  difficulties: TrailDifficulty[];
+  guidance_percent: number;
   theme: { code: string; name: string; description: string };
   length_km: number;
   percent: number;
@@ -812,9 +816,46 @@ export interface SquadShelterRoom {
 
 export interface SquadShelter {
   vault: { ember: number; stamps: number; cents: number };
+  supplies_percent: number;
   rooms: SquadShelterRoom[];
   build: { room: ShelterRoomCode; level: number; started_at: string; finish_at: string } | null;
   deposit: { limit_cents: number; used_cents: number; remaining_cents: number; record_cents: number };
   can_build: boolean;
   history: { room: ShelterRoomCode; level: number; started_at: string; finished_at: string | null }[];
+}
+
+export type SquadSkillCode = 'campfire' | 'guidance' | 'cartography' | 'supplies' | 'first_aid';
+
+export interface SquadSkillItem {
+  code: SquadSkillCode;
+  level: number;
+  in_queue: number;
+  next_level: number;
+  next_cost_cents: number;
+  next_duration_seconds: number;
+  max_percent: number | null;
+  squad_avg: number | null;
+  squad_effect_percent: number | null;
+  role_bonus: string[];
+}
+
+export interface SquadSkillTraining {
+  id: number;
+  skill: SquadSkillCode;
+  target_level: number;
+  cost_cents: number;
+  duration_seconds: number;
+  started_at: string | null;
+  ends_at: string | null;
+  refund_cents: number;
+}
+
+export interface SquadSkillsState {
+  server_time: string;
+  max_slots: number;
+  active: SquadSkillTraining | null;
+  queue: SquadSkillTraining[];
+  skills: SquadSkillItem[];
+  squad: { id: number; active_members: number; enough: boolean; min_active: number; discount_percent: number } | null;
+  half: number;
 }

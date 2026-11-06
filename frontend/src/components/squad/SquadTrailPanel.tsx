@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { api, ApiError } from '../../api/client';
 import type { SquadTrail, SquadTrailHistoryItem, TrailDifficulty } from '../../api/types';
-import { formatCoins, formatDate } from '../../format';
+import { formatCoins, formatDate, formatPercent } from '../../format';
 import InfoHint from '../InfoHint';
 
 export type TrailSection = 'wyprawa' | 'historia';
 
-const DIFFICULTIES: TrailDifficulty[] = ['easy', 'medium', 'hard'];
+const BASE_DIFFICULTIES: TrailDifficulty[] = ['easy', 'medium', 'hard'];
 
 function errText(t: TFunction, e: unknown): string {
   return e instanceof ApiError ? t(`errors.${e.code}`, { defaultValue: e.message }) : t('errors.network');
@@ -80,10 +80,11 @@ function CurrentTrail({ squadId }: { squadId: number }) {
           <span className={`trail-chip diff-${trail.difficulty}`}>{t(`squad.trail.difficulty.${trail.difficulty}`)}</span>
           <span className="muted"> · {t('squad.trail.length', { km: trail.length_km })}</span>
         </p>
+        {trail.guidance_percent > 0 && <p className="muted">{t('squad.trail.guidanceBonus', { pct: formatPercent(trail.guidance_percent) })}</p>}
         {trail.can_plan && (
           <div className="trail-plan">
             <div className="segmented" role="group" aria-label={t('squad.trail.planLabel')}>
-              {DIFFICULTIES.map((d) => (
+              {(trail.difficulties ?? BASE_DIFFICULTIES).map((d) => (
                 <button key={d} type="button" className={'seg' + (d === trail.difficulty ? ' active' : '')} aria-pressed={d === trail.difficulty} disabled={busy} onClick={() => d !== trail.difficulty && void act('PUT', 'difficulty', { difficulty: d })}>
                   {t(`squad.trail.difficulty.${d}`)}
                 </button>

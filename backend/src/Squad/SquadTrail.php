@@ -80,6 +80,8 @@ final class SquadTrail
             'next_week_start' => $weekStart->modify('+7 days')->format('Y-m-d'),
             'plan_until' => $weekStart->modify('+' . SquadRules::TRAIL_PLAN_LAST_DAY . ' days')->format('Y-m-d'),
             'difficulty' => $difficulty,
+            'difficulties' => SquadSkills::unlockedDifficulties($this->pdo, $squadId),
+            'guidance_percent' => SquadSkills::effectFor($this->pdo, $squadId, 'guidance', $today),
             'theme' => $theme ?? ['code' => (string) $trail['theme'], 'name' => (string) $trail['theme'], 'description' => ''],
             'length_km' => SquadRules::TRAIL_LENGTH_KM[$difficulty],
             'percent' => round($calc['percent'], 1),
@@ -188,6 +190,9 @@ final class SquadTrail
         if (!in_array($difficulty, SquadRules::TRAIL_DIFFICULTIES, true)) {
             throw new ApiException(422, 'validation_failed', 'Wybierz poziom trudności.', ['difficulty' => 'invalid_difficulty']);
         }
+        if (!in_array($difficulty, SquadSkills::unlockedDifficulties($this->pdo, $squadId), true)) {
+            throw new ApiException(409, 'difficulty_locked_skill', 'Ta trasa odblokuje się wraz z poziomem Kartografii oddziału.');
+        }
         $trail = $this->ensureCurrent($squadId, $now);
         if (self::dayIndex($now) > SquadRules::TRAIL_PLAN_LAST_DAY) {
             throw new ApiException(409, 'difficulty_locked', 'Trudność trasy można zmieniać tylko w poniedziałek.');
@@ -252,9 +257,13 @@ final class SquadTrail
         $prev = $this->pdo->prepare('SELECT theme, difficulty FROM squad_trails WHERE squad_id = ? AND week_start < ? ORDER BY week_start DESC LIMIT 1');
         $prev->execute([$squadId, $week->format('Y-m-d')]);
         $p = $prev->fetch() ?: null;
+        $inherited = (string) ($p['difficulty'] ?? 'medium');
+        if (!in_array($inherited, SquadSkills::unlockedDifficulties($this->pdo, $squadId), true)) {
+            $inherited = 'hard';
+        }
         $theme = SquadTrailThemes::pick($squadId, (string) $squad['specialization'], $week, $p['theme'] ?? null);
         $this->pdo->prepare('INSERT IGNORE INTO squad_trails (squad_id, week_start, difficulty, theme) VALUES (?, ?, ?, ?)')
-            ->execute([$squadId, $week->format('Y-m-d'), $p['difficulty'] ?? 'medium', $theme]);
+            ->execute([$squadId, $week->format('Y-m-d'), $inherited, $theme]);
         $sel->execute([$squadId, $week->format('Y-m-d')]);
         return $sel->fetch();
     }
@@ -394,12 +403,14 @@ final class SquadTrail
         $stmt->execute([$upTo, $trail['squad_id'], $trail['id']]);
         $rows = [];
         $sum = 0.0;
+        // Przewodnictwo przyspiesza postep kazdego uczestnika (udzial nadal nie przekracza 100%).
+        $boost = 1 + SquadSkills::effectFor($pdo, (int) $trail['squad_id'], 'guidance', $upTo) / 100;
         foreach ($stmt->fetchAll() as $r) {
             $joined = new DateTimeImmutable((string) $r['joined_day']);
             $span = max(1, (int) $joined->diff($weekEnd)->days + 1);
             $active = (int) $r['active_days'];
             $march = (int) $r['march_days'];
-            $share = 0.5 * min(1.0, $active / $span) + 0.5 * min(1.0, $march / $span);
+            $share = min(1.0, (0.5 * min(1.0, $active / $span) + 0.5 * min(1.0, $march / $span)) * $boost);
             $sum += $share;
             $rows[] = [
                 'user_id' => (int) $r['user_id'],

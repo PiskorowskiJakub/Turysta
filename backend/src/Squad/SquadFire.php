@@ -45,10 +45,11 @@ final class SquadFire
     }
 
     /** Zar za dzien: 10 x premia dnia x premia serii (serii liczonej z tym dniem), zaokraglone do calosci. */
-    public static function ember(int $active, int $members, int $streak): int
+    public static function ember(int $active, int $members, int $streak, float $skillPercent = 0.0): int
     {
         $bonus = SquadRules::FLAME_BONUS_PERCENT[self::level($streak)];
-        return intdiv(SquadRules::FIRE_BASE_EMBER * self::dayMultiplierPermille($active, $members) * (100 + $bonus) + 50000, 100000);
+        $skill = 1000 + (int) round($skillPercent * 10);
+        return intdiv(SquadRules::FIRE_BASE_EMBER * self::dayMultiplierPermille($active, $members) * (100 + $bonus) * $skill + 50000000, 100000000);
     }
 
     /** Seria po nieudanym dniu: ognisko tli sie i spada o jeden poziom plomienia, ale nie do zera dni. */
@@ -98,6 +99,12 @@ final class SquadFire
         $ember = (int) $squad['ember'];
         $count = 0;
         $lastDone = (string) $from;
+        // Umiejetnosci i Izba chorych dzialaja wg stanu z chwili rozliczenia.
+        $profile = SquadSkills::profile($pdo, $squadId, $upTo);
+        $skillPercent = $profile['effect']['campfire'];
+        $shield = SquadSkills::shield($profile, SquadShelter::levels($pdo, $squadId)['infirmary']);
+        $charges = (int) $squad['shield_charges'];
+        $nextShield = $squad['shield_next_day'] !== null ? (string) $squad['shield_next_day'] : null;
 
         while ($day <= $last && $count < self::CATCH_UP_DAYS) {
             $d = $day->format('Y-m-d');
@@ -106,16 +113,34 @@ final class SquadFire
             $lit = $members >= SquadRules::FIRE_MIN_ACTIVE && $active >= $needed;
             $before = self::level($streak);
             $gain = 0;
+            // Tarcza: pierwszy ladunek pojawia sie od razu, kolejne wracaja co "odnowienie" dni.
+            if ($charges < $shield['cap']) {
+                if ($nextShield === null) {
+                    $charges++;
+                    $nextShield = $charges < $shield['cap'] ? $day->modify('+' . (int) ceil($shield['cooldown_days']) . ' days')->format('Y-m-d') : null;
+                } elseif ($d >= $nextShield) {
+                    $charges++;
+                    $nextShield = $charges < $shield['cap'] ? $day->modify('+' . (int) ceil($shield['cooldown_days']) . ' days')->format('Y-m-d') : null;
+                }
+            } else {
+                $charges = $shield['cap'];
+                $nextShield = null;
+            }
             if ($lit) {
                 $streak++;
                 $best = max($best, $streak);
                 $litDays++;
-                $gain = self::ember($active, $members, $streak);
+                $gain = self::ember($active, $members, $streak, $skillPercent);
                 $ember += $gain;
                 if (self::level($streak) > $before) {
                     SquadChronicle::record($pdo, $squadId, 'fire_level', $d, ['level' => self::level($streak), 'streak' => $streak]);
                     SquadNotifier::toMembers($pdo, $squadId, 'squad_fire_level', ['flame' => self::level($streak), 'streak' => $streak]);
                 }
+            } elseif ($streak > 0 && $charges > 0) {
+                $charges--;
+                $nextShield ??= $day->modify('+' . (int) ceil($shield['cooldown_days']) . ' days')->format('Y-m-d');
+                SquadChronicle::record($pdo, $squadId, 'fire_shield', $d, ['streak' => $streak]);
+                SquadNotifier::toMembers($pdo, $squadId, 'squad_fire_shield', ['streak' => $streak]);
             } elseif ($streak > 0) {
                 $streak = self::streakAfterMiss($streak);
                 if (self::level($streak) < $before) {
@@ -133,8 +158,8 @@ final class SquadFire
 
         if ($count > 0) {
             $pdo->prepare(
-                'UPDATE squads SET flame_streak = ?, best_streak = ?, lit_days = ?, ember = ?, last_fire_day = ? WHERE id = ?'
-            )->execute([$streak, $best, $litDays, $ember, $lastDone, $squadId]);
+                'UPDATE squads SET flame_streak = ?, best_streak = ?, lit_days = ?, ember = ?, last_fire_day = ?, shield_charges = ?, shield_next_day = ? WHERE id = ?'
+            )->execute([$streak, $best, $litDays, $ember, $lastDone, $charges, $nextShield, $squadId]);
         }
         return $count;
     }

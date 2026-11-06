@@ -232,9 +232,18 @@ final class SquadView
                 break;
             }
         }
+        $profile = SquadSkills::profile($this->pdo, (int) $squad['id'], $today);
+        $shield = SquadSkills::shield($profile, SquadShelter::levels($this->pdo, (int) $squad['id'])['infirmary']);
         return [
             'level' => $level,
             'streak' => $streak,
+            'shield' => [
+                'charges' => min((int) $squad['shield_charges'], $shield['cap']),
+                'cap' => $shield['cap'],
+                'cooldown_days' => $shield['cooldown_days'],
+                'next_day' => $squad['shield_next_day'] !== null ? (string) $squad['shield_next_day'] : null,
+            ],
+            'campfire_bonus_percent' => $profile['effect']['campfire'],
             'best_streak' => (int) $squad['best_streak'],
             'lit_days' => (int) $squad['lit_days'],
             'ember' => (int) $squad['ember'],

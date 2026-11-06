@@ -96,7 +96,8 @@ final class SquadShelterTest extends TestCase
             $prev = $cost;
         }
         $this->assertSame(360, SquadShelter::cost('memory', 1)['cents'] / 100, 'Izba pamięci ma 60% ceny.');
-        $this->assertNull(SquadShelter::effectPercent('pantry', 5));
+        $this->assertNotNull(SquadShelter::effectPercent('pantry', 5));
+        $this->assertNull(SquadShelter::effectPercent('memory', 5));
         $this->assertSame(0.0, SquadShelter::effectPercent('kitchen', 0));
         $this->assertSame(2.5, SquadShelter::effectPercent('kitchen', 7));
         $this->assertLessThan(5.0, SquadShelter::effectPercent('kitchen', 1000));

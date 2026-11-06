@@ -4,7 +4,7 @@ Monorepo:
 
 - `frontend/` React + TypeScript + Vite
 - `backend/` PHP 8.3 + Apache, REST pod `/api`
-- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii), simulate_squads.py (symulacja ekonomii oddziałów), simulate_shelter.py (tempo rozbudowy schroniska), dev-grant-squad.sh (lokalnie: `make squad-grant SQUAD=1 EMBER=5000 STAMPS=50 COINS=20000` dosypuje oddziałowi składniki schroniska)
+- `scripts/` backup.sh, restore.sh, simulate_economy.py (symulacja ekonomii), simulate_squads.py (symulacja ekonomii oddziałów), simulate_shelter.py (tempo rozbudowy schroniska), simulate_squad_skills.py (umiejętności oddziałowe), dev-grant-squad.sh (lokalnie: `make squad-grant SQUAD=1 EMBER=5000 STAMPS=50 COINS=20000` dosypuje oddziałowi składniki schroniska)
 - `docker-compose.yml` wspolny stos
 
 ## Uruchomienie calosci
@@ -239,3 +239,111 @@ Skrypt `scripts/simulate_shelter.py` (`python scripts/simulate_shelter.py --mark
 ## Wiki gry na stronie
 
 Podstrona `/wiki` jest renderowana bezpośrednio z `docs/README.md` (import `?raw` w `frontend/src/pages/WikiPage.tsx`), więc zasady gry opisujemy tylko w jednym miejscu. Dlatego obraz frontendu jest budowany z katalogu głównego repozytorium (`frontend/Dockerfile`, `frontend/Dockerfile.dockerignore`).
+
+## Symulacja umiejętności oddziałowych (etap 4)
+
+Skrypt `scripts/simulate_squad_skills.py` (`python scripts/simulate_squad_skills.py --runs 60 --days 1825 --markdown`) to symulacja Monte Carlo na zasadach z etapów 1-3 (ognisko od 10 żaru, szlaki, schronisko bez limitu poziomów) razem z umiejętnościami oddziałowymi. Starszy `simulate_squads.py` liczy jeszcze wg poprzedniego modelu.
+
+### Zasady zastosowane w modelu
+
+- Umiejętności: Rozpalanie, Przewodnictwo, Kartografia, Zaopatrzenie, Pierwsza pomoc. Osobny slot treningowy, bez maksymalnego poziomu. Poziom n trwa 2 h × n i kosztuje 6,48 dk × n (15% ceny zwykłej umiejętności, 3,24 dk/h).
+- Efekt = maksimum × L / (L + 40), z średniej poziomów aktywnych członków (≥ 3 aktywne dni z 14), od 3 aktywnych członków. Maksima: Rozpalanie 30% żaru, Przewodnictwo 15% postępu szlaku, Kartografia 12% pieczątek, Zaopatrzenie 15% zniżki dukatów w koszcie pomieszczeń (podnosi też dzienny limit wpłat).
+- Mapownia (do 25% pieczątek) i Kartografia mnożą się, więc łącznie nie więcej niż ×1,4.
+- Spiżarnia: zniżka kosztu dukatowego szkoleń oddziałowych, maksimum 15% × L / (L + 10), bez limitu poziomu.
+- Izba chorych: poziom 3 daje drugą tarczę ogniska, poziom 15 trzecią; kolejne poziomy skracają odnowienie tarczy (14 dni → min. 7 dni razem z Pierwszą pomocą).
+- Nowe trasy: czwarta trudność odblokowuje się przy średnim poziomie Kartografii 25, piąta przy 60.
+
+### Wyniki
+
+#### Średni poziom umiejętności oddziałowych (aktywni członkowie) i efekty
+
+| Oddział | Dzień | Śr. poziom | Rozpalanie (żar) | Przewodnictwo (szlak) | Kartografia (pieczątki) | Zaopatrzenie (dk) |
+|---|---|---|---|---|---|---|
+| garstka (4, zgrana) | 180 | 26.4 | +11,9% | +6,0% | +4,8% | +5,9% |
+| garstka (4, zgrana) | 365 | 36.7 | +14,3% | +7,1% | +5,7% | +7,1% |
+| garstka (4, zgrana) | 730 | 49.1 | +16,5% | +8,2% | +6,6% | +8,2% |
+| garstka (4, zgrana) | 1825 | 61.6 | +18,0% | +9,0% | +7,2% | +8,9% |
+| mały zgrany (8) | 180 | 25.7 | +11,7% | +5,9% | +4,7% | +5,8% |
+| mały zgrany (8) | 365 | 35.0 | +14,0% | +6,9% | +5,5% | +6,9% |
+| mały zgrany (8) | 730 | 45.7 | +15,9% | +8,0% | +6,4% | +7,9% |
+| mały zgrany (8) | 1825 | 62.2 | +18,2% | +9,1% | +7,3% | +9,1% |
+| typowy (15) | 180 | 22.5 | +10,8% | +5,4% | +4,3% | +5,3% |
+| typowy (15) | 365 | 31.0 | +13,1% | +6,5% | +5,2% | +6,5% |
+| typowy (15) | 730 | 39.8 | +14,9% | +7,5% | +5,9% | +7,4% |
+| typowy (15) | 1825 | 52.2 | +16,9% | +8,4% | +6,7% | +8,4% |
+| duży typowy (30) | 180 | 21.9 | +10,6% | +5,3% | +4,2% | +5,2% |
+| duży typowy (30) | 365 | 30.3 | +12,9% | +6,4% | +5,1% | +6,4% |
+| duży typowy (30) | 730 | 39.3 | +14,9% | +7,4% | +5,9% | +7,4% |
+| duży typowy (30) | 1825 | 52.7 | +17,0% | +8,5% | +6,8% | +8,5% |
+| duży senny (30) | 180 | 18.5 | +9,5% | +4,7% | +3,8% | +4,7% |
+| duży senny (30) | 365 | 25.2 | +11,6% | +5,8% | +4,6% | +5,7% |
+| duży senny (30) | 730 | 32.1 | +13,3% | +6,6% | +5,3% | +6,6% |
+| duży senny (30) | 1825 | 42.7 | +15,4% | +7,7% | +6,1% | +7,7% |
+
+#### Schronisko z umiejętnościami: suma poziomów pomieszczeń (5 pomieszczeń) i bonusy
+
+| Oddział | Dzień | Suma poziomów | Poz. Spiżarni | Zniżka szkoleń (Spiżarnia) | Poz. Izby chorych | Ładunki tarczy | Odnowienie tarczy (dni) |
+|---|---|---|---|---|---|---|---|
+| garstka (4, zgrana) | 365 | 11.2 | 2.3 | 2,8% | 2.0 | 1.0 | 10.0 |
+| garstka (4, zgrana) | 1825 | 32.0 | 7.0 | 6,2% | 6.0 | 2.0 | 8.6 |
+| mały zgrany (8) | 365 | 13.0 | 3.0 | 3,5% | 3.0 | 2.0 | 9.8 |
+| mały zgrany (8) | 1825 | 32.0 | 7.0 | 6,2% | 6.0 | 2.0 | 8.6 |
+| typowy (15) | 365 | 12.7 | 3.0 | 3,5% | 2.6 | 1.6 | 10.0 |
+| typowy (15) | 1825 | 31.4 | 6.4 | 5,9% | 6.0 | 2.0 | 8.8 |
+| duży typowy (30) | 365 | 12.4 | 3.0 | 3,5% | 2.4 | 1.4 | 10.1 |
+| duży typowy (30) | 1825 | 31.1 | 6.2 | 5,8% | 6.0 | 2.0 | 8.7 |
+| duży senny (30) | 365 | 10.5 | 2.1 | 2,6% | 2.0 | 1.0 | 10.5 |
+| duży senny (30) | 1825 | 27.8 | 6.0 | 5,6% | 5.7 | 2.0 | 9.0 |
+
+#### Tempo schroniska: suma poziomów 5 pomieszczeń bez umiejętności i z nimi, oraz odblokowanie nowych trudności (Kartografia, śr. poziom 25 i 60)
+
+| Oddział | Dzień | Suma poziomów bez | Suma poziomów z | Trudność 4 (dzień) | Trudność 5 (dzień) |
+|---|---|---|---|---|---|
+| garstka (4, zgrana) | 365 | 10.2 | 11.2 | 162 | 1156 |
+| garstka (4, zgrana) | 730 | 18.4 | 20.0 | 162 | 1156 |
+| garstka (4, zgrana) | 1825 | 30.0 | 32.0 | 162 | 1156 |
+| mały zgrany (8) | 365 | 12.7 | 13.0 | 172 | 1303 |
+| mały zgrany (8) | 730 | 18.6 | 20.0 | 172 | 1303 |
+| mały zgrany (8) | 1825 | 30.0 | 32.0 | 172 | 1303 |
+| typowy (15) | 365 | 12.0 | 12.7 | 224 | 1566 |
+| typowy (15) | 730 | 17.8 | 19.4 | 224 | 1566 |
+| typowy (15) | 1825 | 29.6 | 31.4 | 224 | 1566 |
+| duży typowy (30) | 365 | 11.8 | 12.4 | 239 | 1602 |
+| duży typowy (30) | 730 | 17.5 | 18.9 | 239 | 1602 |
+| duży typowy (30) | 1825 | 29.2 | 31.1 | 239 | 1602 |
+| duży senny (30) | 365 | 10.0 | 10.5 | 351 | - |
+| duży senny (30) | 730 | 15.4 | 16.2 | 351 | - |
+| duży senny (30) | 1825 | 26.0 | 27.8 | 351 | - |
+
+#### Żar i pieczątki w całym okresie (1825 dni): bez umiejętności i z nimi
+
+| Oddział | Żar/dzień bez | Żar/dzień z | Pieczątek/tydz. bez (trasa średnia) | Pieczątek/tydz. z (+Mapownia, +Kartografia) | Uratowane dni tarczą |
+|---|---|---|---|---|---|
+| garstka (4, zgrana) | 17.6 | 20.4 | 3.68 | 4.53 | 11.9 |
+| mały zgrany (8) | 17.8 | 20.5 | 3.71 | 4.54 | 0.1 |
+| typowy (15) | 17.0 | 19.5 | 3.89 | 4.50 | 0.5 |
+| duży typowy (30) | 16.7 | 19.2 | 3.94 | 4.50 | 0.0 |
+| duży senny (30) | 13.6 | 15.4 | 3.41 | 4.12 | 16.4 |
+
+#### Bilans dukatów na członka (dk/dzień, średnia z 1825 dni, przychód gracza ok. 1000 dk/dzień)
+
+| Oddział | Wpłaty (sink) | Szkolenia oddz. (sink) | Szkolenia bez zniżki | Bonus Kuchni (emisja) | Netto sink | Sink / przychód | Emisja / przychód |
+|---|---|---|---|---|---|---|---|
+| garstka (4, zgrana) | 24.9 | 64.8 | 67.7 | 18.2 | +71.5 | 9,0% | 1,82% |
+| mały zgrany (8) | 25.2 | 63.7 | 66.6 | 18.8 | +70.1 | 8,9% | 1,88% |
+| typowy (15) | 21.0 | 54.2 | 56.7 | 17.9 | +57.3 | 7,5% | 1,79% |
+| duży typowy (30) | 19.9 | 51.7 | 54.0 | 17.2 | +54.4 | 7,2% | 1,72% |
+| duży senny (30) | 12.5 | 36.6 | 38.2 | 13.6 | +35.6 | 4,9% | 1,36% |
+
+#### Pojedynczy gracz (osobny slot, rozłożone na 5 umiejętności, bez Spiżarni)
+
+| Regularność | Dzień | Poziom każdej umiejętności | Efekt Rozpalania | Koszt dzienny (dk) | Czas do poziomu 20 / 50 (dni) |
+|---|---|---|---|---|---|
+| aktywny (95%) | 365 | 40.3 | +15,1% | 74 | 92 / 559 |
+| aktywny (95%) | 1825 | 90.7 | +20,8% | 74 | 92 / 559 |
+| zwykly (80%) | 365 | 36.9 | +14,4% | 62 | 109 / 664 |
+| zwykly (80%) | 1825 | 83.2 | +20,3% | 62 | 109 / 664 |
+| okazjonalny (45%) | 365 | 27.6 | +12,2% | 35 | 194 / 1181 |
+| okazjonalny (45%) | 1825 | 62.3 | +18,3% | 35 | 194 / 1181 |
+| rzadki (12%) | 365 | 14.0 | +7,8% | 9 | 729 / 4427 |
+| rzadki (12%) | 1825 | 31.9 | +13,3% | 9 | 729 / 4427 |

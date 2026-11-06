@@ -135,6 +135,7 @@ export default function SquadShelterPanel({ squadId }: { squadId: number }) {
               ? t('squad.shelter.limitReached', { limit: formatCoins(deposit.limit_cents) })
               : t('squad.shelter.depositHint', { left: maxCoins, limit: formatCoins(deposit.limit_cents) })}
           </p>
+          {shelter.supplies_percent > 0 && <p className="field-hint">{t('squad.shelter.suppliesNote', { pct: formatPercent(shelter.supplies_percent) })}</p>}
           {deposit.record_cents > 0 && <p className="field-hint">{t('squad.shelter.record', { amount: formatCoins(deposit.record_cents) })}</p>}
         </form>
         {error && <p className="form-error" role="alert">{error}</p>}

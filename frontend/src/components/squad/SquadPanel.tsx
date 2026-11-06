@@ -5,7 +5,7 @@ import type { TFunction } from 'i18next';
 import { api, ApiError } from '../../api/client';
 import type { SquadChronicleEntry, SquadMember, SquadMeta, SquadMine, SquadProfile } from '../../api/types';
 import PlayerAvatar from '../PlayerAvatar';
-import { formatCoins, formatDate, formatDateTime } from '../../format';
+import { formatCoins, formatDate, formatDateTime, formatPercent } from '../../format';
 import InfoHint from '../InfoHint';
 import SquadFields, { type SquadDraft } from './SquadFields';
 import { SquadShelterTile } from './SquadShelterPanel';
@@ -49,6 +49,8 @@ export function chronicleText(t: TFunction, e: SquadChronicleEntry, specLabel: (
       return t('squad.chronicle.spec', { who, spec: specLabel(String(p.spec)) });
     case 'fire_level':
       return t('squad.chronicle.fireLevel', { level: t(`squad.flame.${Number(p.level)}`), days: Number(p.streak) });
+    case 'fire_shield':
+      return t('squad.chronicle.fireShield', { days: Number(p.streak) });
     case 'fire_dim':
       return t('squad.chronicle.fireDim', { level: t(`squad.flame.${Number(p.level)}`) });
     case 'trail_done':
@@ -272,6 +274,13 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
             <li><b>{fire.best_streak}</b><small>{t('squad.fire.best')}</small></li>
             <li><b>{fire.lit_days}</b><small>{t('squad.fire.litDays')}</small></li>
           </ul>
+          {fire.shield.cap > 0 && (
+            <p className="muted">
+              {t('squad.fire.shield', { charges: fire.shield.charges, cap: fire.shield.cap, days: fire.shield.cooldown_days })}
+              {fire.shield.next_day && fire.shield.charges < fire.shield.cap && ` ${t('squad.fire.shieldNext', { date: formatDate(fire.shield.next_day) })}`}
+            </p>
+          )}
+          {fire.campfire_bonus_percent > 0 && <p className="muted">{t('squad.fire.skillBonus', { pct: formatPercent(fire.campfire_bonus_percent) })}</p>}
           {fire.next_level && <p className="muted">{t('squad.fire.next', { level: t(`squad.flame.${fire.next_level.level}`), days: fire.next_level.in_days })}</p>}
           {fire.history.length > 0 && (
             <ul className="fire-history" aria-label={t('squad.fire.history')}>

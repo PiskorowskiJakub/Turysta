@@ -34,7 +34,7 @@ export default function Notifications() {
     const p = n.payload;
     const base = t(`notifications.${n.type}`, {
       defaultValue: n.type,
-      skill: p.skill,
+      skill: n.type === 'squad_skill_finished' && typeof p.skill === 'string' ? t(`training.squadSkills.names.${p.skill}`, { defaultValue: p.skill }) : p.skill,
       level: p.level,
       job: p.job,
       name: p.name,
