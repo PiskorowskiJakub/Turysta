@@ -783,6 +783,18 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
   .friends-table td:last-child .actions { width: 100%; flex-wrap: nowrap; gap: 6px; }
   .friends-table td:last-child .actions .button { flex: 1 1 auto; text-align: center; padding-inline: 8px; font-size: 12px; white-space: nowrap; }
   .friends-table td:last-child .gift-confirm .actions { flex-wrap: wrap; }
+  /* Ogolne karty zamiast szerokich tabel (czlonkowie, katalog, rankingi) */
+  .cards-table thead { display: none; }
+  .cards-table, .cards-table tbody { display: block; }
+  .cards-table tbody tr { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 10px 0; border-bottom: 1px solid var(--line); background: none; }
+  .cards-table tbody tr.me { background: #f0c23f26; padding-inline: 6px; }
+  .cards-table td { display: block; padding: 0; border: 0; width: auto; text-align: left; white-space: normal; }
+  .cards-table td:first-child { flex-basis: 100%; }
+  .cards-table.cards-inline td:first-child { flex-basis: auto; }
+  .cards-table td.num { width: auto; text-align: left; }
+  .cards-table td[data-label]::before { content: attr(data-label) ': '; color: var(--muted); font-weight: 400; }
+  .cards-table td.cards-wide { flex-basis: 100%; }
+  .cards-table td.cards-wide .actions { flex-wrap: wrap; }
   .friends-table .gift-confirm { width: 100%; max-width: none; margin-left: 0; align-items: stretch; text-align: left; }
   .friends-table .gift-confirm .actions .button { flex: 1 1 0; }
   .admin-list li .actions { width: 100%; }

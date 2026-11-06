@@ -51,7 +51,7 @@ export default function Notifications() {
       stamps: p.stamps,
       days: p.streak,
       badge: typeof p.code === 'string' ? t(`squad.badges.names.${p.code}`, { defaultValue: p.code }) : '',
-      tier: typeof p.tier === 'number' ? t(`training.tier.${tierName(p.tier)}`) : '',
+      tier: typeof p.tier === 'number' ? t(`badges.tally.${tierName(p.tier)}`) : '',
       flame: typeof p.flame === 'number' ? t(`squad.flame.${p.flame}`) : '',
     });
     // Premia z Kuchni oddzialu dopisana do wyplaty z pracy.

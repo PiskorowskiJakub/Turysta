@@ -285,7 +285,7 @@ function CatalogTab({ meta }: { meta: SquadMeta }) {
       ) : (
         <>
           <div className="table-scroll">
-            <table className="ranking-table">
+            <table className="ranking-table cards-table">
               <thead>
                 <tr>
                   <th>{t('squad.catalog.name')}</th>

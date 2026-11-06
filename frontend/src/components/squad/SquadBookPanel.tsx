@@ -74,7 +74,7 @@ export default function SquadBookPanel({ squad }: { squad: SquadProfile }) {
             {book.milestones.map((m) => (
               <li key={`${m.kind}:${m.ref ?? ''}:${m.tier ?? ''}`}>
                 <b>{formatDate(m.at)}</b> {m.kind === 'badge'
-                  ? t('squad.book.mBadge', { badge: t(`squad.badges.names.${m.ref}`, { defaultValue: m.ref ?? '' }), tier: t(`training.tier.${tierName(m.tier ?? 1)}`) })
+                  ? t('squad.book.mBadge', { badge: t(`squad.badges.names.${m.ref}`, { defaultValue: m.ref ?? '' }), tier: t(`badges.tally.${tierName(m.tier ?? 1)}`) })
                   : t(`squad.book.${m.kind === 'founded' ? 'mFounded' : 'mFirstTrail'}`)}
               </li>
             ))}

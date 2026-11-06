@@ -98,7 +98,7 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
       <section className="panel">
         <h2>{t('squad.members.title', { n: squad.member_list.length, max: squad.max_members })}</h2>
         <div className="table-scroll">
-          <table className="ranking-table">
+          <table className="ranking-table cards-table">
             <thead>
               <tr>
                 <th>{t('squad.members.player')}</th>

@@ -1521,6 +1521,8 @@
       "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz (do 2): razem z przywódcą i zastępcą rozpoczyna rozbudowę pomieszczeń w zakładce Schronisko. Kronikarz (do 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału.",
       "topSkill": "Najlepsza umiejętność",
       "skillSum": "Suma poziomów",
+      "sortBy": "Sortuj",
+      "sortRole": "Rola",
       "sortHint": "Kliknij, aby posortować członków (kliknij ponownie, aby wrócić do podziału według ról)."
     },
     "recruit": {

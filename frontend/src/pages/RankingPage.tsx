@@ -118,7 +118,7 @@ function AllPlayersRanking() {
       {error && <p className="form-error">{error}</p>}
 
       <div className="table-scroll">
-      <table className="ranking-table">
+      <table className="ranking-table cards-table cards-inline">
         <thead>
           <tr>
             <th className="num">{t('ranking.place')}</th>
@@ -133,11 +133,11 @@ function AllPlayersRanking() {
             <tr><td colSpan={5} className="ranking-empty">{t('ranking.empty')}</td></tr>
           ) : data.rows.map((r) => (
             <tr key={r.id} className={r.me ? 'me' : undefined}>
-              <td className="num">{r.rank}</td>
+              <td className="num" data-label={t('ranking.place')}>{r.rank}</td>
               <td><Link to={r.me ? '/profil' : `/gracz/${r.id}`}>{r.name}</Link></td>
-              <td data-label={t('ranking.squad')}><SquadTag squad={r.squad} /></td>
-              <td className="num">{r.world !== null ? `${r.world} / ${r.chapter}` : '–'}</td>
-              <td className="num"><Points value={r.points} /></td>
+              <td><SquadTag squad={r.squad} /></td>
+              <td className="num" data-label={t('ranking.worldChapter')}>{r.world !== null ? `${r.world} / ${r.chapter}` : '–'}</td>
+              <td className="num" data-label={t('wallet.points')}><Points value={r.points} /></td>
             </tr>
           ))}
         </tbody>

@@ -55,7 +55,7 @@ export function chronicleText(t: TFunction, e: SquadChronicleEntry, specLabel: (
     case 'fire_level':
       return t('squad.chronicle.fireLevel', { level: t(`squad.flame.${Number(p.level)}`), days: Number(p.streak) });
     case 'badge':
-      return t('squad.chronicle.badge', { badge: t(`squad.badges.names.${String(p.code)}`, { defaultValue: String(p.code) }), tier: t(`training.tier.${tierName(Number(p.tier))}`) });
+      return t('squad.chronicle.badge', { badge: t(`squad.badges.names.${String(p.code)}`, { defaultValue: String(p.code) }), tier: t(`badges.tally.${tierName(Number(p.tier))}`) });
     case 'fire_shield':
       return t('squad.chronicle.fireShield', { days: Number(p.streak) });
     case 'fire_dim':
@@ -328,8 +328,14 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
       <section className="panel">
         <InfoHint wide text={t('squad.members.rolesInfo')} label={t('badges.moreInfo')} />
         <h2>{t('squad.members.title', { n: squad.member_list.length, max: squad.max_members })}</h2>
+        <div className="friends-sort">
+          <span>{t('squad.members.sortBy')}:</span>
+          <button type="button" className={'sort-btn' + (memberSort === 'role' ? ' active' : '')} onClick={() => setMemberSort('role')}>{t('squad.members.sortRole')}</button>
+          <button type="button" className={'sort-btn' + (memberSort === 'top' ? ' active' : '')} onClick={() => setMemberSort('top')}>{t('squad.members.topSkill')}</button>
+          <button type="button" className={'sort-btn' + (memberSort === 'sum' ? ' active' : '')} onClick={() => setMemberSort('sum')}>{t('squad.members.skillSum')}</button>
+        </div>
         <div className="table-scroll">
-          <table className="ranking-table">
+          <table className="ranking-table cards-table">
             <thead>
               <tr>
                 <th>{t('squad.members.player')}</th>
@@ -357,7 +363,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
                   <td data-label={t('squad.members.joined')}>{formatDate(m.joined_at)}</td>
                   <td data-label={t('squad.members.topSkill')}>{m.skill_top ? `${t(`training.squadSkills.names.${m.skill_top.code}`)} ${m.skill_top.level}` : '—'}</td>
                   <td className="num" data-label={t('squad.members.skillSum')}>{m.skill_sum > 0 ? m.skill_sum : '—'}</td>
-                  {(me.can_manage || me.is_leader) && <td className="num">{memberActions(m)}</td>}
+                  {(me.can_manage || me.is_leader) && <td className="num cards-wide">{memberActions(m)}</td>}
                 </tr>
               ))}
             </tbody>
