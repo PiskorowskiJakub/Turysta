@@ -49,9 +49,11 @@ final class SquadAdminController
     {
         $admin = Session::requireAdmin($r);
         $id = $this->id($params);
+        $before = $this->service->show($id)['display_name'];
         $this->service->forceName($id);
-        AdminAudit::log($this->pdo, (int) $admin['id'], 'squad.force_name', null, ['squad_id' => $id], $r->ip());
-        return [200, $this->service->show($id)];
+        $after = $this->service->show($id);
+        AdminAudit::log($this->pdo, (int) $admin['id'], 'squad.force_name', null, ['squad_id' => $id, 'nazwa' => ['from' => $before, 'to' => $after['display_name']]], $r->ip());
+        return [200, $after];
     }
 
     /**
@@ -62,9 +64,11 @@ final class SquadAdminController
     {
         $admin = Session::requireAdmin($r);
         $id = $this->id($params);
+        $before = $this->service->show($id)['display_name'];
         $this->service->rename($id, $r->body['name'] ?? null, (int) $admin['id']);
-        AdminAudit::log($this->pdo, (int) $admin['id'], 'squad.rename', null, ['squad_id' => $id, 'name' => $r->body['name'] ?? null], $r->ip());
-        return [200, $this->service->show($id)];
+        $after = $this->service->show($id);
+        AdminAudit::log($this->pdo, (int) $admin['id'], 'squad.rename', null, ['squad_id' => $id, 'nazwa' => ['from' => $before, 'to' => $after['display_name']]], $r->ip());
+        return [200, $after];
     }
 
     /**

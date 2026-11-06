@@ -49,8 +49,10 @@ export function loadAnalytics(): void {
   if (loaded || typeof document === 'undefined') return;
   loaded = true;
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag(...args: unknown[]) {
-    window.dataLayer?.push(args);
+  // gtag.js rozpoznaje polecenia tylko wtedy, gdy do dataLayer trafia obiekt `arguments` (nie zwykla tablica).
+  window.gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer?.push(arguments);
   };
   window.gtag('js', new Date());
   window.gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });

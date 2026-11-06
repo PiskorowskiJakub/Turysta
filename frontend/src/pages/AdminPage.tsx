@@ -37,10 +37,16 @@ export default function AdminPage() {
       children: [
         { path: 'lista', label: t('admin.tabs.squadList') },
         { path: 'zgloszenia', label: t('admin.tabs.squadReports') },
+      ],
+    },
+    {
+      path: 'zgloszenia',
+      label: t('admin.tabs.bugs'),
+      children: [
+        { path: 'lista', label: t('admin.tabs.bugList') },
         { path: 'slowa', label: t('admin.tabs.bannedWords') },
       ],
     },
-    { path: 'zgloszenia', label: t('admin.tabs.bugs') },
     {
       path: 'logi',
       label: t('admin.tabs.logs'),
@@ -67,8 +73,10 @@ export default function AdminPage() {
         <Route path="oddzialy" element={<Navigate to="lista" replace />} />
         <Route path="oddzialy/lista" element={<AdminSquadListPage />} />
         <Route path="oddzialy/zgloszenia" element={<AdminSquadReportsPage />} />
-        <Route path="oddzialy/slowa" element={<AdminBannedWordsPage />} />
-        <Route path="zgloszenia" element={<AdminBugReportsPage />} />
+        <Route path="zgloszenia" element={<Navigate to="lista" replace />} />
+        <Route path="zgloszenia/lista" element={<AdminBugReportsPage />} />
+        <Route path="zgloszenia/slowa" element={<AdminBannedWordsPage />} />
+        <Route path="oddzialy/slowa" element={<Navigate to="/admin/zgloszenia/slowa" replace />} />
         <Route path="logi" element={<Navigate to="logowania" replace />} />
         <Route path="logi/logowania" element={<AdminLoginsPage />} />
         <Route path="logi/dzialania" element={<AdminAuditPage />} />
