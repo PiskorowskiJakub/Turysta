@@ -226,12 +226,17 @@ h1, h2, h3 { font-weight: 600; }
 /* Zdobyta odznaka: wypelniona kolorem stopnia, z ikona danej umiejetnosci */
 .tier.reached { background: radial-gradient(circle at 30% 25%, #fff6 0, transparent 45%), currentColor; border-color: currentColor; box-shadow: 0 0 14px -1px currentColor; }
 .tier.reached svg { color: #1a1208; stroke-width: 2.4; }
-/* Kolory stopni (4 i 5 zarezerwowane na przyszlosc) */
+/* Kolory stopni. Zmienne pomocnicze: --tier-glow (poswiata i obrys) oraz --tier-ink (kolor ikony na wypelnieniu). */
 .tier-bronze { --tier: #cd8a4a; }
 .tier-silver { --tier: #cfd6dc; }
 .tier-gold { --tier: #f0c23f; }
 .tier-diamond { --tier: #6fd8ee; }
 .tier-ruby { --tier: #e0577a; }
+/* Stopnie rezerwowe na przyszlosc (amethyst, obsidian, aurora): kolory gotowe, odznaki jeszcze ich nie uzywaja. */
+.tier-amethyst { --tier: #a77bf0; }
+.tier-obsidian { --tier: #2b2338; --tier-glow: #9a6bff; --tier-ink: #efe4ff; }
+.tier-aurora { --tier: #7de3c8; --tier-glow: #b58cff; --aurora: linear-gradient(120deg, #6ff2c1, #6fb8ff, #b58cff, #ff8fd0, #ffd36f, #6ff2c1); }
+@keyframes aurora-shift { to { background-position: 300% 0; } }
 .tier.reached { color: var(--tier); }
 .tier:not(.reached):hover, .tier:not(.reached):focus-visible { border-color: var(--tier); }
 /* Podpowiedz po najechaniu */
@@ -327,9 +332,11 @@ h1, h2, h3 { font-weight: 600; }
 .badge-sq { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; cursor: help; outline: 0; }
 .badge-sq-icon {
   position: relative; width: 100%; max-width: 88px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
-  background: radial-gradient(circle at 30% 25%, #fff6 0, transparent 45%), var(--tier); box-shadow: 0 0 14px -2px var(--tier);
+  background: radial-gradient(circle at 30% 25%, #fff6 0, transparent 45%), var(--tier); box-shadow: 0 0 14px -2px var(--tier-glow, var(--tier));
 }
-.badge-sq-icon svg { width: 56%; height: 56%; color: #1a1208; stroke-width: 2.4; }
+.badge-sq-icon svg { width: 56%; height: 56%; color: var(--tier-ink, #1a1208); stroke-width: 2.4; }
+.badge-sq-icon.tier-obsidian { border: 2px solid var(--tier-glow); }
+.badge-sq-icon.tier-aurora { background: radial-gradient(circle at 30% 25%, #fff6 0, transparent 45%), var(--aurora); background-size: auto, 300% 100%; animation: aurora-shift 8s linear infinite; }
 .badge-sub { margin: 16px 0 6px; font-size: 1rem; color: var(--orange); }
 .badge-actions { display: flex; gap: 8px; margin-top: 12px; }
 button.badge-sq { background: none; border: 2px solid transparent; border-radius: 14px; padding: 6px 4px; color: inherit; font: inherit; }
@@ -935,3 +942,21 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 
 .info-hint-text { white-space: pre-line; }
 .badge-sq.locked .badge-sq-icon { --tier: #3b4a40; opacity: 0.5; box-shadow: none; }
+
+.squad-title { display: inline-flex; align-items: center; gap: 10px; }
+.squad-emblem { display: inline-grid; place-items: center; flex: none; border-radius: 50%; color: var(--cream); background: #102018; border: 2px solid var(--line); --emblem-bg: #102018; }
+.squad-emblem svg { width: 70%; height: 70%; }
+.squad-emblem.framed { border-width: 3px; border-color: var(--tier-glow, var(--tier)); box-shadow: 0 0 10px -2px var(--tier-glow, var(--tier)); }
+.squad-emblem.framed.tier-aurora { border-color: transparent; background: linear-gradient(#102018, #102018) padding-box, var(--aurora) border-box; background-size: auto, 300% 100%; animation: aurora-shift 8s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .badge-sq-icon.tier-aurora, .squad-emblem.framed.tier-aurora { animation: none; } }
+.emblem-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
+.emblem-opt { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 4px; background: none; border: 2px solid transparent; border-radius: 14px; color: inherit; font: inherit; cursor: pointer; }
+.emblem-opt:hover:not(:disabled), .emblem-opt:focus-visible { border-color: var(--line); }
+.emblem-opt.selected { border-color: var(--orange); background: var(--bg2); }
+.emblem-opt.locked { opacity: 0.45; cursor: not-allowed; }
+.emblem-opt small { font-size: 12px; color: var(--muted); text-align: center; }
+.emblem-none { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; border: 2px dashed var(--line); color: var(--muted); }
+.badge-showcase { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.badge-sq.featured .badge-sq-icon { box-shadow: 0 0 22px 0 var(--tier); }
+.badge-sq.featured .badge-sq-name { color: var(--orange); }
+.book-list { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; }

@@ -608,6 +608,8 @@ export interface SquadCard {
   members: number;
   max_members: number;
   flame_level: number;
+  emblem: string | null;
+  frame: string | null;
 }
 
 export interface SquadMember {
@@ -665,6 +667,7 @@ export interface SquadProfile extends SquadCard {
   name_locked: boolean;
   name_forced: boolean;
   badges: SquadBadge[];
+  memory: SquadMemoryState;
   shelter_levels: Record<ShelterRoomCode, number>;
   member_list: SquadMember[];
   me: {
@@ -871,4 +874,41 @@ export interface SquadBadge {
   earned_at: string | null;
   next_min: number | null;
   tiers: number[];
+}
+
+export interface SquadMemoryState {
+  level: number;
+  emblem: string | null;
+  frame: string | null;
+  slots: number;
+  next_slot_level: number | null;
+  showcase: string[];
+  emblems: { code: string; min_level: number; unlocked: boolean }[];
+  frames: { code: string; min_level: number; unlocked: boolean }[];
+  book: { code: string; min_level: number; unlocked: boolean }[];
+}
+
+export interface SquadBookTrail {
+  week_start: string;
+  difficulty: string;
+  theme: string;
+  percent: number;
+  stamps: number;
+  participants?: number | null;
+}
+
+export interface SquadBook {
+  level: number;
+  chapters: { code: string; min_level: number; unlocked: boolean }[];
+  records?: {
+    founded: string;
+    best_streak: number;
+    lit_days: number;
+    trails_done: number;
+    stamps_total: number;
+    best_trail: SquadBookTrail | null;
+  };
+  trails?: SquadBookTrail[];
+  milestones?: { kind: 'founded' | 'first_trail' | 'badge'; at: string; ref: string | null; tier?: number }[];
+  walkers?: { id: number; name: string; trails: number; march_days: number }[];
 }

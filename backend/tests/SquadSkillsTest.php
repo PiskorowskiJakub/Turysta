@@ -15,6 +15,7 @@ use Turysta\Http\ApiException;
 use Turysta\Mailer;
 use Turysta\Squad\SquadBadges;
 use Turysta\Squad\SquadFire;
+use Turysta\Squad\SquadMemory;
 use Turysta\Squad\SquadRules;
 use Turysta\Squad\SquadService;
 use Turysta\Squad\SquadSkills;
@@ -222,6 +223,16 @@ final class SquadSkillsTest extends TestCase
         $this->assertSame(1, SquadBadges::tierFor(SquadBadges::BADGES['fire_streak'], 7));
         $this->assertSame(5, SquadBadges::tierFor(SquadBadges::BADGES['fire_streak'], 9999));
 
+        // Dodanie odznaki lub stopnia to tylko nowy prog: progi rosna i mieszcza sie w nazwach stopni (zarezerwowane kolory).
+        $this->assertGreaterThanOrEqual(8, count(SquadBadges::TIERS));
+        foreach (SquadBadges::BADGES as $code => $tiers) {
+            $this->assertLessThanOrEqual(count(SquadBadges::TIERS), count($tiers), $code);
+            $sorted = $tiers;
+            sort($sorted);
+            $this->assertSame($sorted, $tiers, $code);
+        }
+        $this->assertSame(8, SquadBadges::tierFor([1, 2, 3, 4, 5, 6, 7, 8], 99));
+
         [$members, $id] = $this->squad();
         $this->pdo->prepare('UPDATE squads SET best_streak = 30 WHERE id = ?')->execute([$id]);
         SquadBadges::sync($this->pdo, $id);
@@ -251,5 +262,72 @@ final class SquadSkillsTest extends TestCase
         $this->assertSame(['code' => 'supplies', 'level' => 7], $byId[(int) $members[1]['id']]['skill_top']);
         $this->assertSame(10, $byId[(int) $members[1]['id']]['skill_sum']);
         $this->assertNull($byId[(int) $members[0]['id']]['skill_top']);
+    }
+
+    private function setMemoryLevel(int $squadId, int $level): void
+    {
+        $this->pdo->prepare('INSERT INTO squad_rooms (squad_id, room, level) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE level = VALUES(level)')
+            ->execute([$squadId, 'memory', $level]);
+    }
+
+    private function expectInvalid(callable $fn, string $field): void
+    {
+        try {
+            $fn();
+            $this->fail('Oczekiwano bledu walidacji.');
+        } catch (ApiException $e) {
+            $this->assertArrayHasKey($field, $e->fields);
+        }
+    }
+
+    private function expectForbidden(callable $fn): void
+    {
+        try {
+            $fn();
+            $this->fail('Oczekiwano odmowy dostepu.');
+        } catch (ApiException $e) {
+            $this->assertSame(403, $e->status);
+        }
+    }
+
+    public function testMemoryRoomUnlocksEmblemFrameShowcaseAndBook(): void
+    {
+        [$members, $id] = $this->squad();
+        $leader = $members[0];
+
+        // Bez Izby pamieci nic nie jest odblokowane, a Ksiega ma tylko liste rozdzialow.
+        $this->expectInvalid(fn() => $this->squads->update($leader, $id, ['emblem' => 'compass']), 'emblem');
+        $this->expectInvalid(fn() => $this->squads->update($leader, $id, ['frame' => 'bronze']), 'frame');
+        $this->assertSame(0, SquadMemory::slots(0));
+        $book = SquadMemory::book($this->pdo, $this->squads->squad($id));
+        $this->assertArrayNotHasKey('records', $book);
+
+        // Poziom 1: pierwszy emblemat, ramka brazowa, jedno miejsce w gablocie i rozdzial Rekordy.
+        $this->setMemoryLevel($id, 1);
+        $this->squads->update($leader, $id, ['emblem' => 'compass', 'frame' => 'bronze']);
+        $this->expectInvalid(fn() => $this->squads->update($leader, $id, ['emblem' => 'tent']), 'emblem');
+        $this->expectInvalid(fn() => $this->squads->update($leader, $id, ['frame' => 'silver']), 'frame');
+        $card = (new SquadView($this->pdo, $this->squads))->profile($members[2], $id);
+        $this->assertSame('compass', $card['emblem']);
+        $this->assertSame('bronze', $card['frame']);
+
+        // Gablota: tylko zdobyte odznaki i w limicie miejsc.
+        $this->pdo->prepare('UPDATE squads SET best_streak = 30 WHERE id = ?')->execute([$id]);
+        SquadBadges::sync($this->pdo, $id);
+        $this->expectInvalid(fn() => $this->squads->update($leader, $id, ['showcase' => ['trails']]), 'showcase');
+        $this->squads->update($leader, $id, ['showcase' => ['fire_streak']]);
+        $this->expectInvalid(fn() => $this->squads->update($leader, $id, ['showcase' => ['fire_streak', 'fire_streak']]), 'showcase');
+        $profile = (new SquadView($this->pdo, $this->squads))->profile($members[2], $id);
+        $this->assertSame(['fire_streak'], $profile['memory']['showcase']);
+        $this->assertSame(30, $this->squads->book($leader, $id)['records']['best_streak']);
+
+        // Zwykly czlonek nie zmienia wygladu, a obcy nie widzi Ksiegi.
+        $this->expectForbidden(fn() => $this->squads->update($members[2], $id, ['emblem' => null]));
+
+        // Spadek poziomu ukrywa to, co nie jest juz odblokowane.
+        $this->setMemoryLevel($id, 3);
+        $this->squads->update($leader, $id, ['emblem' => 'tent']);
+        $this->setMemoryLevel($id, 1);
+        $this->assertNull((new SquadView($this->pdo, $this->squads))->profile($members[2], $id)['emblem']);
     }
 }

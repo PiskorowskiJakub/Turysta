@@ -115,6 +115,7 @@ final class App
         $router->post('/v1/squads', [$squads, 'create']);
         $router->get('/v1/squads/{id}', [$squads, 'show']);
         $router->patch('/v1/squads/{id}', [$squads, 'update']);
+        $router->get('/v1/squads/{id}/book', [$squads, 'book']);
         $router->delete('/v1/squads/{id}', [$squads, 'disband']);
         $router->post('/v1/squads/{id}/join', [$squads, 'join']);
         $router->delete('/v1/squads/{id}/request', [$squads, 'dropRequest']);

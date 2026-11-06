@@ -5,6 +5,7 @@ import { api, ApiError } from '../../api/client';
 import type { SquadMeta, SquadProfile } from '../../api/types';
 import PlayerAvatar from '../PlayerAvatar';
 import { SquadBadgeSquares } from './SquadBadgesPanel';
+import SquadEmblem from './SquadEmblem';
 import { formatDate } from '../../format';
 
 interface Props {
@@ -45,7 +46,7 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
   return (
     <>
       <section className="panel squad-head">
-        <h2>{squad.display_name}</h2>
+        <h2 className="squad-title"><SquadEmblem emblem={squad.emblem} frame={squad.frame} size={44} />{squad.display_name}</h2>
         <p className="muted">
           {specLabel} · {t('squad.head.members', { n: squad.members, max: squad.max_members })} · {t(`squad.flame.${squad.flame_level}`)}
         </p>
@@ -90,7 +91,7 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
       {squad.badges.some((b) => b.tier > 0) && (
         <section className="panel">
           <h2>{t('squad.badges.title')}</h2>
-          <SquadBadgeSquares badges={squad.badges} />
+          <SquadBadgeSquares badges={squad.badges} featured={squad.memory.showcase} />
         </section>
       )}
 

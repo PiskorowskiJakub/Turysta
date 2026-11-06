@@ -107,7 +107,10 @@
       "silver": "Srebro",
       "gold": "Złoto",
       "diamond": "Diament",
-      "ruby": "Rubin"
+      "ruby": "Rubin",
+      "amethyst": "Ametyst",
+      "obsidian": "Obsydian",
+      "aurora": "Aurora"
     },
     "none": "Jeszcze nie masz tu żadnej odznaki.",
     "count": "Zdobyte: {{got}} z {{total}}",
@@ -884,7 +887,10 @@
       "silver": "Odznaka srebrna",
       "gold": "Odznaka złota",
       "diamond": "Odznaka diamentowa",
-      "ruby": "Odznaka rubinowa"
+      "ruby": "Odznaka rubinowa",
+      "amethyst": "Odznaka ametystowa",
+      "obsidian": "Odznaka obsydianowa",
+      "aurora": "Odznaka aurora"
     },
     "rank": "Stopień"
   },
@@ -1341,7 +1347,8 @@
       "trails": "Szlaki",
       "trailNow": "Wyprawa",
       "trailHistory": "Historia",
-      "shelter": "Schronisko"
+      "shelter": "Schronisko",
+      "book": "Księga"
     },
     "player": {
       "member": "Oddział:"
@@ -1691,6 +1698,65 @@
         "trails": "Wyprawy z pieczątkami: {{count}}",
         "shelter": "Suma poziomów: {{count}}",
         "skills": "Suma poziomów: {{count}}"
+      }
+    },
+    "memory": {
+      "title": "Wygląd oddziału (Izba pamięci)",
+      "intro": "Emblemat, ramka i gablota odznak są widoczne dla wszystkich w katalogu i w profilu oddziału. Poziom Izby pamięci: {{level}}. Im wyższy poziom, tym więcej i tym bardziej szczegółowych emblematów, ramek i miejsc w gablocie.",
+      "needRoom": "Aby ustawić wygląd oddziału, rozbuduj Izbę pamięci w Schronisku.",
+      "emblem": "Emblemat",
+      "frame": "Ramka",
+      "none": "Brak",
+      "unlockAt": "poziom {{n}}",
+      "showcase": "Gablota odznak ({{used}}/{{max}})",
+      "showcaseHint": "Wybierz zdobyte odznaki, które mają być wyróżnione na górze profilu oddziału.",
+      "nextSlot": "Kolejne miejsce w gablocie od poziomu {{n}} Izby pamięci.",
+      "noBadges": "Oddział nie zdobył jeszcze żadnej odznaki.",
+      "emblemNames": {
+        "compass": "Kompas",
+        "flame": "Płomień",
+        "peak": "Szczyt",
+        "tent": "Namiot",
+        "pine": "Sosna",
+        "lantern": "Latarnia",
+        "boot": "Wędrowny but",
+        "eagle": "Orzeł",
+        "scroll": "Mapa",
+        "stag": "Jeleń",
+        "tower": "Wieża",
+        "phoenix": "Feniks"
+      }
+    },
+    "book": {
+      "title": "Księga wypraw",
+      "intro": "Pamiątkowa księga oddziału rośnie razem z Izbą pamięci (poziom {{level}}): wyższe poziomy odkrywają kolejne rozdziały.",
+      "needRoom": "Rozbuduj Izbę pamięci w Schronisku, aby otworzyć pierwszy rozdział Księgi.",
+      "locked": "Odblokuje się na poziomie {{n}} Izby pamięci.",
+      "records": "Rekordy oddziału",
+      "trailsDone": "wypraw z pieczątkami",
+      "stampsTotal": "zdobytych pieczątek",
+      "bestTrail": "Najlepsza wyprawa",
+      "recent": "Ostatnie wyprawy",
+      "fullHistory": "Pełna historia wypraw (ostatni rok)",
+      "noTrails": "Oddział nie ukończył jeszcze żadnej wyprawy.",
+      "trailLine_one": "{{date}}: „{{theme}}” ({{difficulty}}), wynik {{percent}}%, {{count}} pieczątka",
+      "trailLine_few": "{{date}}: „{{theme}}” ({{difficulty}}), wynik {{percent}}%, {{count}} pieczątki",
+      "trailLine_many": "{{date}}: „{{theme}}” ({{difficulty}}), wynik {{percent}}%, {{count}} pieczątek",
+      "trailLine_other": "{{date}}: „{{theme}}” ({{difficulty}}), wynik {{percent}}%, {{count}} pieczątek",
+      "milestones": "Kamienie milowe",
+      "mFounded": "Założenie oddziału.",
+      "mFirstTrail": "Pierwsza wyprawa z pieczątkami.",
+      "mBadge": "Odznaka „{{badge}}” – stopień: {{tier}}.",
+      "walkers": "Najwytrwalsi piechurzy",
+      "noWalkers": "Brak zaliczonych wypraw.",
+      "walkerLine": "{{name}}: wypraw {{trails}}, dni Marszu {{days}}",
+      "next": "Kolejne rozdziały",
+      "chapter": {
+        "records": "Rekordy",
+        "recent": "Ostatnie wyprawy",
+        "milestones": "Kamienie milowe",
+        "walkers": "Najwytrwalsi piechurzy",
+        "full": "Pełna historia"
       }
     }
   },

@@ -88,6 +88,8 @@ final class SquadView
             'members' => (int) $r['members'],
             'max_members' => SquadRules::MAX_MEMBERS,
             'flame_level' => SquadFire::level((int) $r['flame_streak']),
+            'emblem' => SquadMemory::emblemOf($r, $this->memoryLevel((int) $r['id'])),
+            'frame' => SquadMemory::frameOf($r, $this->memoryLevel((int) $r['id'])),
         ];
     }
 
@@ -112,6 +114,9 @@ final class SquadView
             'name_locked' => (int) $squad['name_locked'] === 1,
             'name_forced' => (int) $squad['name_forced'] === 1,
             'badges' => SquadBadges::view($this->pdo, $squadId),
+            'memory' => SquadMemory::view($this->pdo, $squad, $this->memoryLevel($squadId)) + [
+                'showcase' => SquadMemory::showcase($squad['showcase'] ?? null, SquadMemory::slots($this->memoryLevel($squadId)), SquadMemory::earnedCodes($this->pdo, $squadId)),
+            ],
             // Poziomy pomieszczen schroniska sa publiczne (prestiz oddzialu).
             'shelter_levels' => SquadShelter::levels($this->pdo, $squadId),
             'member_list' => $members,
@@ -135,6 +140,14 @@ final class SquadView
             }
         }
         return $out;
+    }
+
+    /** @var array<int,int> */
+    private array $memoryLevels = [];
+
+    private function memoryLevel(int $squadId): int
+    {
+        return $this->memoryLevels[$squadId] ??= SquadMemory::level($this->pdo, $squadId);
     }
 
     /** Czy i do kiedy gracz ma zgloszenie albo zaproszenie do oddzialu: 'request', 'invite' albo null. */

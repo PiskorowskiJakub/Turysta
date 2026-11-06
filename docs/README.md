@@ -349,13 +349,23 @@ Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i
 | Mapownia | do +25% dodatkowych pieczątek z wypraw (ułamki sumują się między wyprawami; nagrody graczy dotyczą tylko pieczątek z trasy) | +2,3% | +8,3% | +12,5% |
 | Spiżarnia | do 15% niższy dukatowy koszt szkoleń umiejętności oddziałowych | −1,4% | −5,0% | −7,5% |
 | Izba chorych | do 50% krótsze odnowienie tarczy ogniska; poziom 3 dokłada drugi ładunek tarczy, poziom 15 trzeci | −5,6% | −19,2% | −27,8% |
-| Izba pamięci | kosmetyka oddziału i widok zdobytych odznak | wkrótce | wkrótce | wkrótce |
+| Izba pamięci | emblematy, ramki, gablota odznak i Księga wypraw (kosmetyka i prestiż) | bez limitu | bez limitu | bez limitu |
 
-Izba pamięci ma na razie efekt „wkrótce”, ale można ją rozbudowywać, a jej poziomy zachowają się, gdy efekt się pojawi. Zaopatrzenie (umiejętność oddziałowa) dodatkowo obniża dukatowy koszt rozbudowy i podnosi dzienny limit wpłat. Gracz bez oddziału nie traci nic: bonusy są małe, a wpłaty dobrowolne.
+Izba pamięci nie daje bonusów w grze, tylko prestiż (szczegóły niżej). Zaopatrzenie (umiejętność oddziałowa) dodatkowo obniża dukatowy koszt rozbudowy i podnosi dzienny limit wpłat. Gracz bez oddziału nie traci nic: bonusy są małe, a wpłaty dobrowolne.
 
 **Poziomy pomieszczeń są publiczne.** Widać je na profilu oddziału w katalogu, jako element prestiżu. Stan magazynu i koszty widzą tylko członkowie.
 
 **Rozwiązanie oddziału.** Gdy oddział zostanie rozwiązany albo zarchiwizowany, dukaty z magazynu **znikają** (nie wracają do wpłacających), podobnie jak żar i pieczątki. Dukaty wydane na wpłaty i rozbudowy są ujściem z obiegu gry.
+
+### Izba pamięci
+
+Izba pamięci odblokowuje wygląd oddziału i jego pamiątki. Wszystko, co ustawisz, widać publicznie w katalogu i w profilu oddziału. Wygląd zmieniają Przywódca i Zastępca w Moim oddziale → Ustawienia.
+
+- **Emblematy** (rysunki tym bardziej szczegółowe, im wyższy poziom): od poziomu 1 Kompas, Płomień i Szczyt; od 3 Namiot i Sosna; od 6 Latarnia i Wędrowny but; od 10 Orzeł i Mapa; od 15 Jeleń i Wieża; od 20 Feniks.
+- **Ramki** w stopniach odznak: brąz od poziomu 1, srebro od 4, złoto od 8, diament od 14, rubin od 20. Oddział wybiera emblemat i ramkę spośród odblokowanych.
+- **Gablota odznak.** Oddział wyróżnia w profilu zdobyte odznaki: 1 miejsce od poziomu 1, 2 od poziomu 3, 3 od poziomu 6 i 4 od poziomu 10. Wyróżnione odznaki wyświetlają się na górze profilu.
+- **Księga wypraw** (Mój oddział → Księga, tylko dla członków) rośnie z poziomem: od 1 Rekordy oddziału, od 2 ostatnie 5 wypraw, od 4 Kamienie milowe, od 7 Najwytrwalsi piechurzy, od 10 pełna historia wypraw (ostatni rok).
+- Gdy poziom Izby pamięci spadłby poniżej wymagań (np. po zmianach w grze), nieodblokowany emblemat lub ramka znikają z widoku, a po odzyskaniu poziomu wracają.
 
 ### Powiadomienia oddziału
 

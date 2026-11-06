@@ -8,6 +8,7 @@ import Pager from '../components/Pager';
 import Tabs, { type TabItem } from '../components/Tabs';
 import SquadFields, { type SquadDraft } from '../components/squad/SquadFields';
 import SquadPanel, { type SquadSection } from '../components/squad/SquadPanel';
+import SquadEmblem from '../components/squad/SquadEmblem';
 import SquadPublic from '../components/squad/SquadPublic';
 import SquadShelterPanel from '../components/squad/SquadShelterPanel';
 import SquadTrailPanel, { type TrailSection } from '../components/squad/SquadTrailPanel';
@@ -58,6 +59,7 @@ export default function SquadPage() {
           : []),
         { path: 'ustawienia', label: t('squad.tabs.settings') },
         { path: 'odznaki', label: t('squad.tabs.badges') },
+        { path: 'ksiega', label: t('squad.tabs.book') },
         { path: 'kronika', label: t('squad.tabs.chronicle') },
       ]
     : undefined;
@@ -122,6 +124,7 @@ function MineTab({ mine, squad, setSquad, setMine, reload }: { mine: SquadMine; 
       ) : null}
       <Route path="ustawienia" element={panel('ustawienia')} />
       <Route path="odznaki" element={panel('odznaki')} />
+      <Route path="ksiega" element={panel('ksiega')} />
       <Route path="kronika" element={panel('kronika')} />
       <Route path="*" element={<Navigate to="/oddzial/moj/przeglad" replace />} />
     </Routes>
@@ -170,6 +173,7 @@ function Onboarding({ mine, reload, title }: { mine: SquadMine; reload: () => Pr
 
   const cardRow = (c: SquadCard, actions: ReactNode) => (
     <li key={c.id}>
+      <SquadEmblem emblem={c.emblem} frame={c.frame} size={24} />
       <Link to={`/oddzial/${c.id}`}>{c.display_name}</Link>
       <span className="muted"> · {c.members}/{c.max_members}</span>
       <span className="actions">{actions}</span>
@@ -293,7 +297,7 @@ function CatalogTab({ meta }: { meta: SquadMeta }) {
               <tbody>
                 {data.squads.map((c) => (
                   <tr key={c.id}>
-                    <td><Link to={`/oddzial/${c.id}`}>{c.display_name}</Link></td>
+                    <td><span className="squad-title"><SquadEmblem emblem={c.emblem} frame={c.frame} size={28} /><Link to={`/oddzial/${c.id}`}>{c.display_name}</Link></span></td>
                     <td className="num" data-label={t('squad.catalog.members')}>{c.members}/{c.max_members}</td>
                     <td data-label={t('squad.catalog.fire')}>{t(`squad.flame.${c.flame_level}`)}</td>
                     <td data-label={t('squad.fields.joinMode')}>{t(`squad.modes.${c.join_mode}`)}</td>

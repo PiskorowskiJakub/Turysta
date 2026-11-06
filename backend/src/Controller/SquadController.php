@@ -138,6 +138,19 @@ final class SquadController
     }
 
     /**
+     * Ksiega wypraw (tylko dla czlonkow oddzialu).
+     *
+     * @param array<string,string> $params
+     * @return array{0:int,1:array<string,mixed>}
+     */
+    public function book(Request $r, array $params = []): array
+    {
+        $user = Session::requireUser($r);
+        $id = $this->id($params);
+        return [200, ['book' => $this->squads->book($user, $id)]];
+    }
+
+    /**
      * @param array<string,string> $params
      * @return array{0:int,1:array<string,mixed>}
      */

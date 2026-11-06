@@ -5,14 +5,18 @@ import type { TFunction } from 'i18next';
 import { api, ApiError } from '../../api/client';
 import type { SquadChronicleEntry, SquadMember, SquadMeta, SquadMine, SquadProfile } from '../../api/types';
 import PlayerAvatar from '../PlayerAvatar';
+import { tierName } from '../../badges';
 import { formatCoins, formatDate, formatDateTime, formatPercent } from '../../format';
 import InfoHint from '../InfoHint';
 import SquadFields, { type SquadDraft } from './SquadFields';
+import SquadAppearancePanel from './SquadAppearancePanel';
 import SquadBadgesPanel from './SquadBadgesPanel';
+import SquadBookPanel from './SquadBookPanel';
+import SquadEmblem from './SquadEmblem';
 import { SquadShelterTile } from './SquadShelterPanel';
 import { SquadTrailBanner } from './SquadTrailPanel';
 
-export type SquadSection = 'przeglad' | 'czlonkowie' | 'zaproszeni' | 'oczekujacy' | 'ustawienia' | 'kronika' | 'odznaki';
+export type SquadSection = 'przeglad' | 'czlonkowie' | 'zaproszeni' | 'oczekujacy' | 'ustawienia' | 'kronika' | 'odznaki' | 'ksiega';
 
 interface Props {
   section: SquadSection;
@@ -51,7 +55,7 @@ export function chronicleText(t: TFunction, e: SquadChronicleEntry, specLabel: (
     case 'fire_level':
       return t('squad.chronicle.fireLevel', { level: t(`squad.flame.${Number(p.level)}`), days: Number(p.streak) });
     case 'badge':
-      return t('squad.chronicle.badge', { badge: t(`squad.badges.names.${String(p.code)}`, { defaultValue: String(p.code) }), tier: t(`training.tier.${['bronze', 'silver', 'gold', 'diamond', 'ruby'][Number(p.tier) - 1] ?? 'bronze'}`) });
+      return t('squad.chronicle.badge', { badge: t(`squad.badges.names.${String(p.code)}`, { defaultValue: String(p.code) }), tier: t(`training.tier.${tierName(Number(p.tier))}`) });
     case 'fire_shield':
       return t('squad.chronicle.fireShield', { days: Number(p.streak) });
     case 'fire_dim':
@@ -216,7 +220,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
   return (
     <>
       <section className="panel squad-head">
-        <h2>{squad.display_name}</h2>
+        <h2 className="squad-title"><SquadEmblem emblem={squad.emblem} frame={squad.frame} size={44} />{squad.display_name}</h2>
         <p className="muted">
           {t('squad.head.members', { n: squad.members, max: squad.max_members })} · {t(`squad.modes.${squad.join_mode}`)} · {t('squad.head.founded', { date: formatDate(squad.created_at) })}
         </p>
@@ -241,6 +245,17 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
             <button className="button" type="submit" disabled={busy}>{t('squad.settings.save')}</button>
           </div>
         </form>
+      )}
+
+      {section === 'ustawienia' && me.can_manage && (
+        <SquadAppearancePanel
+          key={`${squad.memory.level}:${squad.memory.emblem}:${squad.memory.frame}:${squad.memory.showcase.join()}`}
+          squad={squad}
+          busy={busy}
+          onSave={async (body) => {
+            await run(() => api('PATCH', `/squads/${squad.id}`, body), t('squad.settings.saved'));
+          }}
+        />
       )}
 
       {section === 'ustawienia' && (
@@ -306,7 +321,8 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
         </section>
       )}
 
-      {section === 'odznaki' && <SquadBadgesPanel badges={squad.badges} />}
+      {section === 'odznaki' && <SquadBadgesPanel badges={squad.badges} featured={squad.memory.showcase} />}
+      {section === 'ksiega' && <SquadBookPanel squad={squad} />}
 
       {section === 'czlonkowie' && (
       <section className="panel">

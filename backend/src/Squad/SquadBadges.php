@@ -14,7 +14,11 @@ use Turysta\Game\Clock;
  */
 final class SquadBadges
 {
-    public const TIERS = ['bronze', 'silver', 'gold', 'diamond', 'ruby'];
+    /**
+     * Nazwy stopni od najnizszego. Ostatnie trzy sa zarezerwowane: zadna odznaka ich jeszcze nie uzywa.
+     * Nowy stopien odznaki to po prostu kolejny prog w BADGES (do liczby pozycji w TIERS).
+     */
+    public const TIERS = ['bronze', 'silver', 'gold', 'diamond', 'ruby', 'amethyst', 'obsidian', 'aurora'];
 
     /** Odznaka => progi kolejnych stopni. fire_streak: najlepsza seria ogniska (dni); trails: wyprawy z pieczatkami; shelter: suma poziomow pomieszczen; skills: suma poziomow umiejetnosci oddzialowych czlonkow. */
     public const BADGES = [
@@ -41,7 +45,7 @@ final class SquadBadges
         ];
     }
 
-    /** Stopien (0 = brak, 1-5) dla wartosci. @param list<int> $tiers */
+    /** Stopien (0 = brak, 1..liczba progow) dla wartosci. @param list<int> $tiers */
     public static function tierFor(array $tiers, int $value): int
     {
         $tier = 0;
