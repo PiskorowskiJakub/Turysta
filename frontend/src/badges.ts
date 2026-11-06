@@ -85,4 +85,9 @@ export const SPECIAL_BADGES: SpecialBadge[] = [
 ];
 
 /** Kolejnosc stopni od najnizszego; sluzy do wyboru najwyzszej zdobytej odznaki. */
-export const TIER_ORDER = ['bronze', 'silver', 'gold', 'diamond', 'ruby'];
+export const TIER_ORDER = ['bronze', 'silver', 'gold', 'diamond', 'ruby', 'amethyst', 'obsidian', 'aurora'];
+
+/** Nazwa stopnia (klucz tlumaczen i klasa CSS) dla numeru stopnia 1..n; poza zakresem zwraca najnizszy. */
+export function tierName(n: number): string {
+  return TIER_ORDER[n - 1] ?? TIER_ORDER[0];
+}

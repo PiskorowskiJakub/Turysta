@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../../api/client';
 import type { SquadMeta, SquadProfile } from '../../api/types';
 import PlayerAvatar from '../PlayerAvatar';
+import { SquadBadgeSquares } from './SquadBadgesPanel';
+import SquadEmblem from './SquadEmblem';
 import { formatDate } from '../../format';
 
 interface Props {
@@ -44,7 +46,7 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
   return (
     <>
       <section className="panel squad-head">
-        <h2>{squad.display_name}</h2>
+        <h2 className="squad-title"><SquadEmblem emblem={squad.emblem} frame={squad.frame} size={44} />{squad.display_name}</h2>
         <p className="muted">
           {specLabel} · {t('squad.head.members', { n: squad.members, max: squad.max_members })} · {t(`squad.flame.${squad.flame_level}`)}
         </p>
@@ -86,15 +88,24 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
         </ul>
       </section>
 
+      {squad.badges.some((b) => b.tier > 0) && (
+        <section className="panel">
+          <h2>{t('squad.badges.title')}</h2>
+          <SquadBadgeSquares badges={squad.badges} featured={squad.memory.showcase} />
+        </section>
+      )}
+
       <section className="panel">
         <h2>{t('squad.members.title', { n: squad.member_list.length, max: squad.max_members })}</h2>
         <div className="table-scroll">
-          <table className="ranking-table">
+          <table className="ranking-table cards-table">
             <thead>
               <tr>
                 <th>{t('squad.members.player')}</th>
                 <th>{t('squad.members.role')}</th>
                 <th>{t('squad.members.joined')}</th>
+                <th>{t('squad.members.topSkill')}</th>
+                <th>{t('squad.members.skillSum')}</th>
               </tr>
             </thead>
             <tbody>
@@ -109,6 +120,8 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
                   </td>
                   <td data-label={t('squad.members.role')}>{m.title ? t(`squad.roles.${m.title}`) : '—'}</td>
                   <td data-label={t('squad.members.joined')}>{formatDate(m.joined_at)}</td>
+                  <td data-label={t('squad.members.topSkill')}>{m.skill_top ? `${t(`training.squadSkills.names.${m.skill_top.code}`)} ${m.skill_top.level}` : '—'}</td>
+                  <td className="num" data-label={t('squad.members.skillSum')}>{m.skill_sum > 0 ? m.skill_sum : '—'}</td>
                 </tr>
               ))}
             </tbody>

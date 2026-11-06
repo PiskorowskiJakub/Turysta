@@ -41,18 +41,22 @@ final class SquadRules
     /** Minimum uprawnionych uczestnikow, zeby oddzial dostal pieczatki. */
     public const TRAIL_MIN_ELIGIBLE = 2;
     /** Dlugosc trasy w km wg trudnosci. */
-    public const TRAIL_LENGTH_KM = ['easy' => 30, 'medium' => 50, 'hard' => 80];
+    public const TRAIL_LENGTH_KM = ['easy' => 30, 'medium' => 50, 'hard' => 80, 'expert' => 120, 'legend' => 170];
     /** Progi postepu (%) kolejnych pieczatek wg trudnosci. */
     public const TRAIL_THRESHOLDS = [
         'easy' => [40, 60, 75, 88],
         'medium' => [40, 65, 80, 92],
         'hard' => [40, 70, 88, 97],
+        'expert' => [35, 55, 72, 85, 94, 100],
+        'legend' => [30, 45, 60, 72, 83, 92, 100],
     ];
     /** Maksimum pieczatek wg trudnosci (trudna trasa daje piata za ostatni prog). */
-    public const TRAIL_MAX_STAMPS = ['easy' => 3, 'medium' => 4, 'hard' => 5];
+    public const TRAIL_MAX_STAMPS = ['easy' => 3, 'medium' => 4, 'hard' => 5, 'expert' => 6, 'legend' => 7];
     /** Nagroda gracza za kazda pieczatke oddzialu (w setnych dukata): 0,50 dk. */
     public const TRAIL_REWARD_PER_STAMP_CENTS = 50;
-    public const TRAIL_DIFFICULTIES = ['easy', 'medium', 'hard'];
+    public const TRAIL_DIFFICULTIES = ['easy', 'medium', 'hard', 'expert', 'legend'];
+    /** Srednia poziomow Kartografii oddzialu potrzebna do trudnosci, ktore nie sa dostepne od poczatku. */
+    public const TRAIL_UNLOCK_CARTOGRAPHY = ['expert' => 25, 'legend' => 60];
     public const TRAIL_HISTORY = 12;
 
     // Schronisko (magazyn i pomieszczenia bez maksymalnego poziomu)
@@ -76,6 +80,39 @@ final class SquadRules
     public const KITCHEN_HALF = 7;
     public const MAPPING_MAX_PERCENT = 25.0;
     public const MAPPING_HALF = 10;
+
+    // Umiejetnosci oddzialowe (osobny slot treningowy, bez maksymalnego poziomu)
+    public const SKILLS = ['campfire', 'guidance', 'cartography', 'supplies', 'first_aid'];
+    /** Poziom n trwa n x 2 h i kosztuje n x 2 h x 3,24 dk (15% ceny zwyklej umiejetnosci), w setnych dukata. */
+    public const SKILL_HOURS_PER_LEVEL = 2;
+    public const SKILL_CENTS_PER_HOUR = 324;
+    /** Efekt = maksimum x L / (L + polowa), z sredniej poziomow aktywnych czlonkow. Maksima w procentach. */
+    public const SKILL_HALF = 40;
+    public const SKILL_MAX_PERCENT = ['campfire' => 30.0, 'guidance' => 15.0, 'cartography' => 12.0, 'supplies' => 15.0];
+    /** Bonusy dzialaja od tylu aktywnych czlonkow (aktywny: co najmniej 3 aktywne dni z ostatnich 14). */
+    public const SKILL_MIN_ACTIVE_MEMBERS = 3;
+    public const ACTIVE_MEMBER_DAYS = 14;
+    public const ACTIVE_MEMBER_MIN_DAYS = 3;
+    /** 1 aktywne + 2 oczekujace szkolenia. */
+    public const SKILL_QUEUE_SLOTS = 3;
+    /** Posiadacz pasujacej roli wnosi do sredniej poziom wiekszy o tyle procent. */
+    public const SKILL_ROLE_BONUS_PERCENT = 10;
+    public const SKILL_ROLES = [
+        'campfire' => ['leader', 'deputy'],
+        'guidance' => ['guide'],
+        'cartography' => ['guide'],
+        'supplies' => ['quartermaster'],
+        'first_aid' => ['recruiter'],
+    ];
+    /** Spizarnia: zniznka dukatowego kosztu szkolen oddzialowych (maksimum % i polowa). */
+    public const PANTRY_MAX_PERCENT = 15.0;
+    public const PANTRY_HALF = 10;
+    /** Izba chorych: skrocenie odnowienia tarczy (maksimum % odnowienia i polowa); drugi i trzeci ladunek od poziomow. */
+    public const INFIRMARY_MAX_PERCENT = 50.0;
+    public const INFIRMARY_HALF = 8;
+    public const INFIRMARY_CHARGE_LEVELS = [3, 15];
+    public const SHIELD_COOLDOWN_DAYS = 14;
+    public const SHIELD_COOLDOWN_MIN_DAYS = 7;
 
     // Zastepczosc
     public const ROLE_INACTIVE_DAYS = 7;

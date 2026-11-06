@@ -88,6 +88,8 @@ final class SquadView
             'members' => (int) $r['members'],
             'max_members' => SquadRules::MAX_MEMBERS,
             'flame_level' => SquadFire::level((int) $r['flame_streak']),
+            'emblem' => SquadMemory::emblemOf($r, $this->memoryLevel((int) $r['id'])),
+            'frame' => SquadMemory::frameOf($r, $this->memoryLevel((int) $r['id'])),
         ];
     }
 
@@ -111,7 +113,10 @@ final class SquadView
             'created_at' => Clock::iso((string) $squad['created_at']),
             'name_locked' => (int) $squad['name_locked'] === 1,
             'name_forced' => (int) $squad['name_forced'] === 1,
-            'badges' => [],
+            'badges' => SquadBadges::view($this->pdo, $squadId),
+            'memory' => SquadMemory::view($this->pdo, $squad, $this->memoryLevel($squadId)) + [
+                'showcase' => SquadMemory::showcase($squad['showcase'] ?? null, SquadMemory::slots($this->memoryLevel($squadId)), SquadMemory::earnedCodes($this->pdo, $squadId)),
+            ],
             // Poziomy pomieszczen schroniska sa publiczne (prestiz oddzialu).
             'shelter_levels' => SquadShelter::levels($this->pdo, $squadId),
             'member_list' => $members,
@@ -135,6 +140,14 @@ final class SquadView
             }
         }
         return $out;
+    }
+
+    /** @var array<int,int> */
+    private array $memoryLevels = [];
+
+    private function memoryLevel(int $squadId): int
+    {
+        return $this->memoryLevels[$squadId] ??= SquadMemory::level($this->pdo, $squadId);
     }
 
     /** Czy i do kiedy gracz ma zgloszenie albo zaproszenie do oddzialu: 'request', 'invite' albo null. */
@@ -177,8 +190,32 @@ final class SquadView
         $rows = $stmt->fetchAll();
         usort($rows, static fn(array $a, array $b): int => ($order[$a['role']] <=> $order[$b['role']]) ?: strcasecmp((string) $a['character_name'], (string) $b['character_name']));
 
+        // Najwyzsza umiejetnosc oddzialowa i suma poziomow kazdego czlonka (ranking w zakladce Czlonkowie).
+        $skills = [];
+        if ($rows) {
+            $ids = array_map(static fn (array $r): int => (int) $r['user_id'], $rows);
+            $in = implode(',', array_fill(0, count($ids), '?'));
+            try {
+                $sk = $this->pdo->prepare("SELECT user_id, skill, level FROM user_squad_skills WHERE user_id IN ($in) AND level > 0");
+                $sk->execute($ids);
+                foreach ($sk->fetchAll() as $s) {
+                    $skills[(int) $s['user_id']][(string) $s['skill']] = (int) $s['level'];
+                }
+            } catch (\Throwable $e) {
+                error_log('SquadView::members skills: ' . $e->getMessage());
+            }
+        }
         $out = [];
         foreach ($rows as $r) {
+            $mine = $skills[(int) $r['user_id']] ?? [];
+            $topCode = null;
+            $top = 0;
+            foreach (SquadRules::SKILLS as $code) {
+                if (($mine[$code] ?? 0) > $top) {
+                    $top = $mine[$code];
+                    $topCode = $code;
+                }
+            }
             $joined = Clock::parse((string) $r['joined_at']);
             $entry = [
                 'id' => (int) $r['user_id'],
@@ -187,6 +224,8 @@ final class SquadView
                 'title' => $r['role'] !== 'member' ? (string) $r['role'] : null,
                 'joined_at' => Clock::iso((string) $r['joined_at']),
                 'recruit' => $joined->modify('+' . SquadRules::RECRUIT_DAYS . ' days') > $now,
+                'skill_top' => $topCode === null ? null : ['code' => $topCode, 'level' => $top],
+                'skill_sum' => array_sum($mine),
             ];
             if ($viewerIsMember) {
                 $entry['role'] = (string) $r['role'];
@@ -232,9 +271,18 @@ final class SquadView
                 break;
             }
         }
+        $profile = SquadSkills::profile($this->pdo, (int) $squad['id'], $today);
+        $shield = SquadSkills::shield($profile, SquadShelter::levels($this->pdo, (int) $squad['id'])['infirmary']);
         return [
             'level' => $level,
             'streak' => $streak,
+            'shield' => [
+                'charges' => min((int) $squad['shield_charges'], $shield['cap']),
+                'cap' => $shield['cap'],
+                'cooldown_days' => $shield['cooldown_days'],
+                'next_day' => $squad['shield_next_day'] !== null ? (string) $squad['shield_next_day'] : null,
+            ],
+            'campfire_bonus_percent' => $profile['effect']['campfire'],
             'best_streak' => (int) $squad['best_streak'],
             'lit_days' => (int) $squad['lit_days'],
             'ember' => (int) $squad['ember'],
@@ -307,7 +355,7 @@ final class SquadView
     public function badgeFor(int $userId): ?array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT s.id, s.name, s.specialization, m.role, u.show_squad_title FROM squad_members m
+            'SELECT s.id, s.name, s.specialization, s.emblem, s.frame, m.role, u.show_squad_title FROM squad_members m
              JOIN squads s ON s.id = m.squad_id JOIN users u ON u.id = m.user_id WHERE m.user_id = ? AND s.archived_at IS NULL'
         );
         $stmt->execute([$userId]);
@@ -319,6 +367,6 @@ final class SquadView
             'id' => (int) $r['id'],
             'display_name' => SquadRules::displayName((string) $r['name'], (string) $r['specialization']),
             'title' => ((int) $r['show_squad_title'] === 1 && $r['role'] !== 'member') ? (string) $r['role'] : null,
-        ];
+        ] + SquadMemory::appearance($this->pdo, $r);
     }
 }

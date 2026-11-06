@@ -54,7 +54,7 @@ final class SquadAdminService
              FROM squads s $w ORDER BY $col $direction, s.id DESC",
             $params,
             $page,
-            static fn(array $r): array => [
+            fn(array $r): array => SquadMemory::appearance($this->pdo, $r) + [
                 'id' => (int) $r['id'],
                 'name' => (string) $r['name'],
                 'display_name' => SquadRules::displayName((string) $r['name'], (string) $r['specialization']),
@@ -102,7 +102,7 @@ final class SquadAdminService
             'created_at' => Clock::iso((string) $h['created_at']),
         ], $stmt->fetchAll());
 
-        return [
+        return SquadMemory::appearance($this->pdo, $s) + [
             'id' => (int) $s['id'],
             'name' => (string) $s['name'],
             'display_name' => SquadRules::displayName((string) $s['name'], (string) $s['specialization']),
@@ -170,12 +170,12 @@ final class SquadAdminService
         return Paging::run(
             $this->pdo,
             "SELECT COUNT(*) FROM squad_name_reports r $w",
-            "SELECT r.*, s.name AS current_name, s.specialization, s.archived_at, u.character_name AS reporter
+            "SELECT r.*, s.name AS current_name, s.specialization, s.archived_at, s.emblem, s.frame, u.character_name AS reporter
              FROM squad_name_reports r JOIN squads s ON s.id = r.squad_id JOIN users u ON u.id = r.reporter_id
              $w ORDER BY (r.status = 'new') DESC, r.created_at DESC",
             $params,
             $page,
-            static fn(array $r): array => [
+            fn(array $r): array => SquadMemory::appearance($this->pdo, ['id' => $r['squad_id'], 'emblem' => $r['emblem'], 'frame' => $r['frame']]) + [
                 'id' => (int) $r['id'],
                 'squad_id' => (int) $r['squad_id'],
                 'reported_name' => (string) $r['reported_name'],

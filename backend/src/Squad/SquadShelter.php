@@ -36,6 +36,13 @@ final class SquadShelter
         ];
     }
 
+    /** Koszt po zniżce Zaopatrzenia: tylko dukaty, zaokraglone do pelnych dukatow. @param array{ember:int,stamps:int,cents:int} $cost @return array{ember:int,stamps:int,cents:int} */
+    public static function discounted(array $cost, float $suppliesPercent): array
+    {
+        $cost['cents'] = (int) round($cost['cents'] / 100 * (1 - $suppliesPercent / 100)) * 100;
+        return $cost;
+    }
+
     public static function buildHours(int $level): int
     {
         return SquadRules::ROOM_HOURS_PER_LEVEL * max(1, $level);
@@ -48,6 +55,8 @@ final class SquadShelter
         return match ($room) {
             'kitchen' => round(SquadRules::KITCHEN_MAX_PERCENT * $level / ($level + SquadRules::KITCHEN_HALF), 2),
             'mapping' => round(SquadRules::MAPPING_MAX_PERCENT * $level / ($level + SquadRules::MAPPING_HALF), 2),
+            'pantry' => round(SquadSkills::pantryDiscountPercent($level), 2),
+            'infirmary' => round(SquadSkills::infirmaryCooldownPercent($level), 2),
             default => null,
         };
     }
@@ -58,14 +67,14 @@ final class SquadShelter
      *
      * @param array<string,int> $levels
      */
-    public static function depositLimitCents(array $levels): int
+    public static function depositLimitCents(array $levels, float $suppliesPercent = 0.0): int
     {
         $sum = 0;
         foreach (array_keys(SquadRules::ROOMS) as $room) {
             $sum += self::cost($room, ($levels[$room] ?? 0) + 1)['cents'];
         }
         $avgCoins = $sum / count(SquadRules::ROOMS) / 100;
-        return max(SquadRules::DEPOSIT_MIN_COINS, (int) round($avgCoins / SquadRules::DEPOSIT_DIVISOR)) * 100;
+        return max(SquadRules::DEPOSIT_MIN_COINS, (int) round($avgCoins / SquadRules::DEPOSIT_DIVISOR * (1 + $suppliesPercent / 100))) * 100;
     }
 
     /** @return array<string,int> */
@@ -130,12 +139,16 @@ final class SquadShelter
             return 0;
         }
         $level = self::levels($pdo, $squadId)['mapping'];
-        if ($level <= 0) {
+        // Mapownia i Kartografia mnoza sie: (1 + m) x (1 + k) - 1.
+        $mapping = $level > 0 ? (self::effectPercent('mapping', $level) ?? 0.0) / 100 : 0.0;
+        $carto = SquadSkills::effectFor($pdo, $squadId, 'cartography') / 100;
+        $factor = (1 + $mapping) * (1 + $carto) - 1;
+        if ($factor <= 0) {
             return 0;
         }
         $stmt = $pdo->prepare('SELECT stamp_carry FROM squads WHERE id = ? FOR UPDATE');
         $stmt->execute([$squadId]);
-        $exact = $stamps * (self::effectPercent('mapping', $level) ?? 0.0) / 100 + (float) $stmt->fetchColumn();
+        $exact = $stamps * $factor + (float) $stmt->fetchColumn();
         $extra = (int) floor($exact + 1e-9);
         $pdo->prepare('UPDATE squads SET stamp_carry = ? WHERE id = ?')->execute([round(max(0.0, $exact - $extra), 4), $squadId]);
         return $extra;
@@ -161,10 +174,11 @@ final class SquadShelter
         $stamps = (int) $squad['stamps'];
         $cents = (int) $squad['vault_cents'];
 
+        $supplies = SquadSkills::effectFor($this->pdo, $squadId, 'supplies');
         $rooms = [];
         foreach (array_keys(SquadRules::ROOMS) as $room) {
             $level = $levels[$room];
-            $next = self::cost($room, $level + 1);
+            $next = self::discounted(self::cost($room, $level + 1), $supplies);
             $effect = self::effectPercent($room, $level);
             $rooms[] = [
                 'code' => $room,
@@ -178,7 +192,7 @@ final class SquadShelter
             ];
         }
 
-        $limit = self::depositLimitCents($levels);
+        $limit = self::depositLimitCents($levels, $supplies);
         $used = $this->depositedToday($uid, Clock::gameDay($now));
         $remaining = max(0, $limit - $used);
 
@@ -187,6 +201,7 @@ final class SquadShelter
 
         return [
             'vault' => ['ember' => $ember, 'stamps' => $stamps, 'cents' => $cents],
+            'supplies_percent' => round($supplies, 2),
             'rooms' => $rooms,
             'build' => $build ? [
                 'room' => (string) $build['room'],
@@ -230,7 +245,7 @@ final class SquadShelter
             $lock->execute([$squadId]);
             $row = $lock->fetch();
             $levels = self::levels($this->pdo, $squadId);
-            $limit = self::depositLimitCents($levels);
+            $limit = self::depositLimitCents($levels, SquadSkills::effectFor($this->pdo, $squadId, 'supplies'));
             $used = $this->depositedToday($uid, $day);
             if ($used + $cents > $limit) {
                 throw new ApiException(409, 'deposit_limit', 'Przekroczysz dzienny limit wpłat do magazynu.');
@@ -290,7 +305,7 @@ final class SquadShelter
                 throw new ApiException(409, 'build_in_progress', 'Oddział już coś buduje. Poczekaj na zakończenie rozbudowy.');
             }
             $level = self::levels($this->pdo, $squadId)[$room] + 1;
-            $cost = self::cost($room, $level);
+            $cost = self::discounted(self::cost($room, $level), SquadSkills::effectFor($this->pdo, $squadId, 'supplies'));
             $ember = (int) $s['ember'] - (int) $s['ember_spent'];
             if ($ember < $cost['ember'] || (int) $s['stamps'] < $cost['stamps'] || (int) $s['vault_cents'] < $cost['cents']) {
                 throw new ApiException(409, 'not_enough_resources', 'W magazynie brakuje składników na tę rozbudowę.');

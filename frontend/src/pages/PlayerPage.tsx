@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
-import type { FriendsResponse, FriendshipState, PlayerProfile, SkillsResponse } from '../api/types';
+import type { FriendsResponse, FriendshipState, PlayerProfile, SkillsResponse, SquadMine } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import BadgeBook from '../components/BadgeBook';
 import ProfileCard from '../components/ProfileCard';
+import SquadEmblem from '../components/squad/SquadEmblem';
 import { useBadgeView, type BadgesData } from '../hooks/useBadges';
 
 /** Podglad profilu innego gracza: karta i ksiazeczka odznak (bez szczegolowych statystyk). */
@@ -19,6 +20,39 @@ export default function PlayerPage() {
   const [error, setError] = useState<string | null>(null);
   const [friendship, setFriendship] = useState<FriendshipState>('none');
   const [friendMsg, setFriendMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  // Zapraszanie do oddzialu: dostepne dla czlonka z uprawnieniem rekrutacji, gdy gracz nie ma oddzialu.
+  const [mySquad, setMySquad] = useState<SquadMine['squad']>(null);
+  const [inviteMsg, setInviteMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [inviting, setInviting] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    api<SquadMine>('GET', '/squads/mine')
+      .then((m) => !cancelled && setMySquad(m.squad))
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    setInviteMsg(null);
+  }, [playerId]);
+
+  const onSquadInvite = async () => {
+    if (!mySquad || !player) return;
+    setInviting(true);
+    setInviteMsg(null);
+    try {
+      const r = await api<{ joined?: boolean }>('POST', `/squads/${mySquad.id}/invite`, { name: player.name });
+      setInviteMsg({ ok: true, text: t(r.joined ? 'squad.invite.joined' : 'squad.invite.sent', { name: player.name }) });
+    } catch (e) {
+      const text = e instanceof ApiError ? (e.fields.name ?? t(`errors.${e.code}`, { defaultValue: e.message })) : t('errors.network');
+      setInviteMsg({ ok: false, text });
+    } finally {
+      setInviting(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -93,9 +127,15 @@ export default function PlayerPage() {
         {friendship === 'friends' && <span className="muted">{t('friends.isFriend')} <Link className="button small" to={`/profil/znajomi/porownaj/${playerId}`}>{t('friends.compare')}</Link> <button type="button" className="button small secondary" onClick={() => void onFriend('remove')}>{t('friends.remove')}</button></span>}
         {friendMsg && <span className="form-error" role="alert"> {friendMsg.text}</span>}
       </p>
+      {!player.squad && mySquad?.me.can_recruit && (
+        <p className="friend-action">
+          <button type="button" className="button small" disabled={inviting} onClick={() => void onSquadInvite()}>{t('squad.invite.toSquad')}</button>
+          {inviteMsg && <span className={inviteMsg.ok ? 'form-success' : 'form-error'} role={inviteMsg.ok ? 'status' : 'alert'}> {inviteMsg.text}</span>}
+        </p>
+      )}
       {player.squad && (
         <p className="player-squad">
-          {t('squad.player.member')} <Link to={`/oddzial/${player.squad.id}`}>{player.squad.display_name}</Link>
+          {t('squad.player.member')} <SquadEmblem emblem={player.squad.emblem} frame={player.squad.frame} size={24} /> <Link to={`/oddzial/${player.squad.id}`}>{player.squad.display_name}</Link>
           {player.squad.title && <span className="muted"> · {t(`squad.roles.${player.squad.title}`)}</span>}
         </p>
       )}

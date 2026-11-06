@@ -17,6 +17,7 @@ Dokumentacja zasad gry.
   - [Role](#role)
   - [Ognisko](#ognisko)
   - [Szlaki (wyprawy oddziału)](#szlaki-wyprawy-oddziału)
+  - [Umiejętności oddziałowe](#umiejętności-oddziałowe)
   - [Schronisko](#schronisko)
   - [Powiadomienia oddziału](#powiadomienia-oddziału)
   - [Kronika](#kronika)
@@ -215,7 +216,7 @@ Nagrody trafiają na konto przy Twojej najbliższej aktywności w grze.
 
 ## Oddziały
 
-Oddział to drużyna podróżników, która wspólnie rozpala ognisko, chodzi na szlaki i rozbudowuje schronisko. Menu „Oddział” ma zakładki: Mój oddział (przegląd, członkowie, rekrutacja, ustawienia, kronika), Szlaki (wyprawa i historia), Schronisko oraz Katalog. Wspólne umiejętności oddziału pojawią się w kolejnym etapie.
+Oddział to drużyna podróżników, która wspólnie rozpala ognisko, chodzi na szlaki i rozbudowuje schronisko. Menu „Oddział” ma zakładki: Mój oddział (przegląd, członkowie, rekrutacja, ustawienia, odznaki, kronika), Szlaki (wyprawa i historia), Schronisko oraz Katalog. Umiejętności oddziałowe trenujesz w zakładce Oddział w menu Umiejętności.
 
 **Jak to wszystko działa razem.** Trzy mechaniki dostarczają trzech składników, a schronisko zamienia je w trwałe bonusy:
 
@@ -224,7 +225,8 @@ Oddział to drużyna podróżników, która wspólnie rozpala ognisko, chodzi na
 | Dzień | Ognisko | **Żar** (i poziom płomienia) |
 | Tydzień | Szlak (wyprawa) | **Pieczątki** (i nagrody dla graczy) |
 | Na bieżąco | Wpłaty członków | **Dukaty** do magazynu |
-| Bez końca | Schronisko | Pomieszczenia: małe bonusy do wypłat z prac i do pieczątek |
+| Bez końca | Schronisko | Pomieszczenia: małe bonusy do wypłat z prac, pieczątek, kosztu szkoleń i tarczy ogniska |
+| Bez końca | Umiejętności oddziałowe | Procentowe bonusy do żaru, szlaków, pieczątek i kosztów rozbudowy |
 
 Żaden z tych składników nie wymaga bycia lepszym od innych oddziałów: liczy się regularność. Oddział nie ma czatu, a wszystko, co się w nim dzieje, zapisuje się w kronice.
 
@@ -234,7 +236,7 @@ Oddział to drużyna podróżników, która wspólnie rozpala ognisko, chodzi na
 - **Limit.** W oddziale może być do 30 członków, a gracz należy naraz tylko do jednego oddziału.
 - **Nazwa.** Ma od 3 do 40 znaków i musi być unikalna (wielkość liter i polskie znaki nie mają znaczenia). Nazwy wulgarne, obraźliwe lub podszywające się pod inne osoby są zabronione; można je zgłosić administratorowi, który może wymusić zmianę nazwy. Wyświetla się jako „Oddział <nazwa> – <specjalizacja>”, a przy specjalizacji „ogólna” bez dopisku.
 - **Specjalizacja.** Jedyna kategoria oddziału (np. piesza, górska, rowerowa, kajakowa, historyczna, kulinarna lub ogólna). Ma charakter informacyjny. Nazwę oddziału można zmienić raz na 30 dni, a specjalizację raz na 90 dni.
-- **Tryby przyjmowania.** Oddział jest otwarty (każdy uprawniony dołącza od razu), na prośbę (prośbę zatwierdza przywódca, zastępca lub rekruter) albo tylko na zaproszenie. Zaproszenie może dostać każdy gracz, nie musi być znajomym.
+- **Tryby przyjmowania.** Oddział jest otwarty (każdy uprawniony dołącza od razu), na prośbę (prośbę zatwierdza przywódca, zastępca lub rekruter) albo tylko na zaproszenie. Zaproszenie może dostać każdy gracz, nie musi być znajomym. Zapraszać mogą przywódca, zastępca i rekruter: po nazwie postaci w zakładce Rekrutacja albo przyciskiem „Zaproś do oddziału” w profilu gracza, który nie ma jeszcze oddziału.
 - **Karencja.** Po opuszczeniu oddziału albo usunięciu z niego nie dołączysz do kolejnego przez 3 dni.
 - **Rekrut.** Przez tydzień od dołączenia przy nazwie gracza na liście członków widać odznakę „Rekrut”. Lista członków jest publiczna i pokazuje datę dołączenia; członkostwa nie można ukryć.
 
@@ -262,6 +264,8 @@ Ognisko to codzienny nawyk oddziału. Płonie danego dnia gry, gdy aktywnych jes
 - **Mnożnik dnia:** ×1,0 przy 30% aktywnych, ×1,25 przy 50% i ×1,5 przy 70%.
 - **Seria** to kolejne dni z płonącym ogniskiem. Premia serii: +0% (poniżej 3 dni), +5% (3 dni), +10% (7 dni), +15% (14 dni), +20% (30 dni).
 - **Poziomy płomienia:** Brak ogniska, Żar, Płomyk, Ognisko, Wielkie ognisko (progi serii 0, 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera.
+- **Tarcza.** Dzięki umiejętności Pierwsza pomoc (średni poziom aktywnych członków co najmniej 1) oddział ma tarczę: gdy ognisko miałoby zgasnąć, tarcza chroni serię i poziom płomienia, a kronika zapisuje, że ją wykorzystano. Pierwszy ładunek pojawia się od razu, kolejne wracają co ok. 14 dni; Pierwsza pomoc i Izba chorych skracają to odnowienie do minimum 7 dni. Izba chorych na poziomie 3 dokłada drugi ładunek tarczy, a na poziomie 15 trzeci. Tarcza nie działa, gdy oddział ma mniej niż 3 aktywnych członków.
+- **Rozpalanie ogniska** (umiejętność oddziałowa) zwiększa dzienny żar nawet o 30% (patrz niżej).
 - **Panel ogniska** pokazuje dzisiejszych aktywnych, serię, **żar łącznie** (suma z całej historii) z przyrostem z ostatniego rozliczonego dnia (np. „46 +16”), najlepszą serię, liczbę dni z ogniskiem i historię ostatnich dni. Żar jest składnikiem rozbudowy schroniska, więc to, co zostało po rozbudowach, widać w magazynie schroniska.
 
 ### Szlaki (wyprawy oddziału)
@@ -269,12 +273,45 @@ Ognisko to codzienny nawyk oddziału. Płonie danego dnia gry, gdy aktywnych jes
 Co tydzień (od poniedziałku do niedzieli, czas polski) oddział wyrusza na wspólną wyprawę. Zakładka „Szlaki” w menu oddziału pokazuje motyw i opis wyprawy, jej trudność, pasek postępu, uczestników i historię. Na Przeglądzie oddziału członek, który jeszcze nie dołączył, widzi zaproszenie do trwającej wyprawy.
 
 - **Motyw.** Losuje się go automatycznie spośród motywów ogólnych i motywów specjalizacji oddziału („ogólna” korzysta tylko z ogólnych). Motywy związane z porą roku wypadają tylko w swojej porze, a ten sam motyw nie wypada dwa tygodnie z rzędu.
-- **Trudność.** Łatwa (30 km na uczestnika), średnia (50 km) albo trudna (80 km). Wybiera ją przywódca, zastępca lub przewodnik, najpóźniej do końca poniedziałku; nowa wyprawa dziedziczy trudność poprzedniej. Im trudniejsza trasa, tym wyższe progi pieczątek, ale i więcej pieczątek do zdobycia (łatwa najwyżej 3, średnia 4, trudna 5).
+- **Trudność.** Łatwa (30 km na uczestnika), średnia (50 km) albo trudna (80 km). Wybiera ją przywódca, zastępca lub przewodnik, najpóźniej do końca poniedziałku; nowa wyprawa dziedziczy trudność poprzedniej. Im trudniejsza trasa, tym wyższe progi pieczątek, ale i więcej pieczątek do zdobycia (łatwa najwyżej 3, średnia 4, trudna 5). Oddziały o wysokim średnim poziomie Kartografii odblokowują dwie dodatkowe trudności: Wyzwanie (120 km, do 6 pieczątek; od średniego poziomu 25) i Legendę (170 km, do 7 pieczątek; od 60).
 - **Dołączenie.** Wpisowe to 2 dk i znika z obiegu. Dołączyć można od poniedziałku do środy; kto wyjdzie z oddziału, przestaje się liczyć w wyprawie.
 - **Twój udział.** To w połowie Twoje dni aktywności w grze, a w połowie codzienny, darmowy **Marsz** (przycisk, odnawia się o północy), oba liczone od dnia dołączenia do końca wyprawy. Sama aktywność daje więc do 50% trasy. Punkty gracza nie mają na postęp żadnego wpływu.
 - **Pasek i kilometry.** Kilometry oddziału to suma kilometrów wszystkich uczestników, a cel to długość trasy razy liczba uczestników: każdy nowy uczestnik zwiększa cel o całą trasę. Pod paskiem widać też Twój wkład („Ty: 20 / 50 km, zostało 30 km”). Pasek i progi pieczątek liczą się w procentach, czyli jako średnia z uczestników; cyfry na pasku to progi kolejnych pieczątek. Przykład: pięć osób na trasie średniej ma cel 250 km, a przy łącznie 80 km pasek stoi na 32%.
-- **Pieczątki.** Pierwsza już od 40% (średnia trasa: kolejne od 65%, 80% i 92%; łatwa: 60%, 75%, 88%; trudna: 70%, 88%, 97%). Pieczątki trafiają do magazynu schroniska, gdzie razem z żarem i dukatami wystarczają na rozbudowę pomieszczeń. Oddział dostaje je, jeśli wyprawę zaliczyły co najmniej 2 osoby. Mapownia w schronisku dokłada oddziałowi dodatkowe pieczątki (patrz niżej).
+- **Pieczątki.** Pierwsza już od 40% (średnia trasa: kolejne od 65%, 80% i 92%; łatwa: 60%, 75%, 88%; trudna: 70%, 88%, 97%). Pieczątki trafiają do magazynu schroniska, gdzie razem z żarem i dukatami wystarczają na rozbudowę pomieszczeń. Oddział dostaje je, jeśli wyprawę zaliczyły co najmniej 2 osoby. Mapownia w schronisku i umiejętność Kartografia dokładają oddziałowi dodatkowe pieczątki (patrz niżej). Przewodnictwo przyspiesza postęp uczestników o kilka procent.
 - **Zaliczenie i nagroda.** Wyprawę zalicza uczestnik, który w jej trakcie miał co najmniej 3 dni aktywności. Po niedzieli dostaje 0,50 dk za każdą pieczątkę zdobytą na trasie, a wyprawa liczy się do odznaki „Szlakowiec”. Wyprawa bez pieczątek nie daje ani nagrody, ani postępu odznaki.
+
+### Umiejętności oddziałowe
+
+Pięć umiejętności oddziałowych trenujesz w zakładce **Oddział** w menu Umiejętności, w **osobnym slocie** (jedno aktywne szkolenie i dwa w kolejce), który nie blokuje zwykłych szkoleń. Płacisz dukatami i czasem, a korzyść trafia do oddziału. Umiejętności nie mają maksymalnego poziomu.
+
+| Umiejętność | Co daje oddziałowi | Maksimum |
+| --- | --- | --- |
+| Rozpalanie ogniska | więcej żaru z ogniska | +30% |
+| Przewodnictwo | szybszy postęp uczestników na szlakach | +15% |
+| Kartografia | więcej pieczątek z wypraw; odblokowuje trasy Wyzwanie i Legenda | +12% |
+| Zaopatrzenie | niższy dukatowy koszt rozbudowy pomieszczeń i wyższy dzienny limit wpłat | +15% |
+| Pierwsza pomoc | tarcza ogniska i krótsze jej odnowienie | tarcza |
+
+- **Czas i koszt.** Poziom n trwa 2 godziny razy n i kosztuje 6,48 dk razy n (poziom 10: 20 godz. i 64,80 dk; poziom 50: 100 godz. i 324 dk). Zwrot po anulowaniu: 100% dla kolejki, 50% dla aktywnego szkolenia.
+- **Efekt** to maksimum × L / (L + 40), gdzie L jest **średnim poziomem aktywnych członków** (aktywny to ktoś z co najmniej 3 aktywnymi dniami w ostatnich 14). Dwunastu zaangażowanych daje więc ten sam efekt co trzydziestu mało zaangażowanych. Połowa maksimum przypada na poziom 40, więc kolejne poziomy dają korzyść nawet po latach, ale coraz mniejszą.
+- **Minimum 3 aktywnych członków.** Przy mniejszej liczbie aktywnych bonusy oddziałowe wynoszą 0.
+- **Rola.** Posiadacz pasującej roli wnosi do średniej poziom większy o 10% (Przywódca i Zastępca: Rozpalanie, Przewodnik: Przewodnictwo i Kartografia, Kwatermistrz: Zaopatrzenie, Rekruter: Pierwsza pomoc).
+- **Poza oddziałem.** Poziomy zachowujesz, ale bonus działa tylko w oddziale. Odchodząc z oddziału, zabierasz swoje poziomy ze średniej.
+- **Przykład.** Po roku regularnej gry typowy oddział (15 osób) ma ok. +13% żaru, +6,5% postępu szlaków, +5% pieczątek i 6,5% zniżki w kosztach pomieszczeń; po pięciu latach ok. +17%, +8,5%, +7% i +8,5%.
+- **Mapownia i Kartografia mnożą się** (razem nie więcej niż ×1,4). Dodatkowe pieczątki trafiają do magazynu schroniska.
+- **Wszystkie naraz czy jedna jak najwyżej?** Na początku rozkładaj równomiernie. Poziom 10 to już 20% maksymalnego efektu (ok. 5 dni ciągłego treningu), poziom 20 to 33% (ok. 17 dni), poziom 40 to 50% (ok. 68 dni), a poziom 80 dopiero 67% (ok. 9 miesięcy). Najpierw doprowadź wszystkie do ok. 20–30, potem dociągaj tę, na której oddziałowi najbardziej zależy (największe maksimum ma Rozpalanie). Wyjątki: Pierwsza pomoc potrzebuje średnio tylko poziomu 1, by oddział miał tarczę, a Kartografia na średnim poziomie 25 i 60 odblokowuje nowe trasy. Bonus liczy się ze średniej oddziału, więc uzgodnijcie wspólną kolejność.
+- **Ranking w oddziale.** W zakładce Członkowie widać najlepszą umiejętność każdego członka i sumę jego poziomów; kliknięcie nagłówka sortuje listę.
+
+### Odznaki oddziału
+
+Odznaki oddziału zdobywa się za wspólne cele. Mają stopnie: brąz, srebro, złoto, diament i rubin. Zdobytego stopnia oddział nie traci, a odznaki widać w zakładce Odznaki oraz publicznie w profilu oddziału w katalogu. Sprawdzane są raz dziennie.
+
+| Odznaka | Za co | Brąz | Srebro | Złoto | Diament | Rubin |
+| --- | --- | --- | --- | --- | --- | --- |
+| Ciągłość ogniska | najlepsza seria dni ogniska | 7 | 30 | 100 | 250 | 500 |
+| Wyprawy | ukończone wyprawy z pieczątkami | 3 | 10 | 30 | 75 | 150 |
+| Budowniczowie | suma poziomów pomieszczeń schroniska | 5 | 15 | 40 | 80 | 150 |
+| Wspólna nauka | suma poziomów umiejętności oddziałowych członków | 100 | 500 | 2000 | 6000 | 15000 |
 
 ### Schronisko
 
@@ -310,15 +347,25 @@ Zakładka „Schronisko” to wspólna baza oddziału. Składa się z magazynu i
 | --- | --- | --- | --- | --- |
 | Kuchnia | do +5% do wypłat z prac wszystkich członków | +0,6% | +2,1% | +2,9% |
 | Mapownia | do +25% dodatkowych pieczątek z wypraw (ułamki sumują się między wyprawami; nagrody graczy dotyczą tylko pieczątek z trasy) | +2,3% | +8,3% | +12,5% |
-| Spiżarnia | podniesie limit umiejętności oddziałowych | wkrótce | wkrótce | wkrótce |
-| Izba chorych | wzmocni tarczę ogniska | wkrótce | wkrótce | wkrótce |
-| Izba pamięci | kosmetyka oddziału i widok zdobytych odznak | wkrótce | wkrótce | wkrótce |
+| Spiżarnia | do 15% niższy dukatowy koszt szkoleń umiejętności oddziałowych | −1,4% | −5,0% | −7,5% |
+| Izba chorych | do 50% krótsze odnowienie tarczy ogniska; poziom 3 dokłada drugi ładunek tarczy, poziom 15 trzeci | −5,6% | −19,2% | −27,8% |
+| Izba pamięci | emblematy, ramki, gablota odznak i Księga wypraw (kosmetyka i prestiż) | bez limitu | bez limitu | bez limitu |
 
-Pomieszczenia z efektem „wkrótce” można już rozbudowywać, a ich poziomy zachowają się, gdy efekty pojawią się w kolejnych etapach. Gracz bez oddziału nie traci nic: bonusy są małe, a wpłaty dobrowolne.
+Izba pamięci nie daje bonusów w grze, tylko prestiż (szczegóły niżej). Zaopatrzenie (umiejętność oddziałowa) dodatkowo obniża dukatowy koszt rozbudowy i podnosi dzienny limit wpłat. Gracz bez oddziału nie traci nic: bonusy są małe, a wpłaty dobrowolne.
 
 **Poziomy pomieszczeń są publiczne.** Widać je na profilu oddziału w katalogu, jako element prestiżu. Stan magazynu i koszty widzą tylko członkowie.
 
 **Rozwiązanie oddziału.** Gdy oddział zostanie rozwiązany albo zarchiwizowany, dukaty z magazynu **znikają** (nie wracają do wpłacających), podobnie jak żar i pieczątki. Dukaty wydane na wpłaty i rozbudowy są ujściem z obiegu gry.
+
+### Izba pamięci
+
+Izba pamięci odblokowuje wygląd oddziału i jego pamiątki. Wszystko, co ustawisz, widać publicznie w katalogu i w profilu oddziału. Wygląd zmieniają Przywódca i Zastępca w Moim oddziale → Ustawienia.
+
+- **Emblematy** (rysunki tym bardziej szczegółowe, im wyższy poziom): od poziomu 1 Kompas, Płomień i Szczyt; od 3 Namiot i Sosna; od 6 Latarnia i Wędrowny but; od 10 Orzeł i Mapa; od 15 Jeleń i Wieża; od 20 Feniks.
+- **Ramki** w stopniach odznak: brąz od poziomu 1, srebro od 4, złoto od 8, diament od 14, rubin od 20. Oddział wybiera emblemat i ramkę spośród odblokowanych.
+- **Gablota odznak.** Oddział wyróżnia w profilu zdobyte odznaki: 1 miejsce od poziomu 1, 2 od poziomu 3, 3 od poziomu 6 i 4 od poziomu 10. Wyróżnione odznaki wyświetlają się na górze profilu.
+- **Księga wypraw** (Mój oddział → Księga, tylko dla członków) rośnie z poziomem: od 1 Rekordy oddziału, od 2 ostatnie 5 wypraw, od 4 Kamienie milowe, od 7 Najwytrwalsi piechurzy, od 10 pełna historia wypraw (ostatni rok).
+- Gdy poziom Izby pamięci spadłby poniżej wymagań (np. po zmianach w grze), nieodblokowany emblemat lub ramka znikają z widoku, a po odzyskaniu poziomu wracają.
 
 ### Powiadomienia oddziału
 
@@ -327,13 +374,14 @@ Członkowie oddziału dostają powiadomienia (dzwonek na stronie głównej) o wa
 - rozpoczęcie i ukończenie rozbudowy pomieszczenia w schronisku, a przy Kuchni i Mapowni także nowa wartość premii (np. „Twoje wypłaty z prac rosną o 0,6%”);
 - rekord dziennych wpłat oddziału (od 50 dk, jedno powiadomienie na dzień);
 - zakończenie wyprawy z jej wynikiem i liczbą pieczątek;
-- awans ogniska na wyższy poziom płomienia i spadek poziomu po przerwanej serii.
+- awans ogniska na wyższy poziom płomienia, spadek poziomu po przerwanej serii oraz użycie tarczy, która ochroniła ognisko;
+- ukończenie szkolenia umiejętności oddziałowej (powiadomienie dla trenującego gracza).
 
 Gdy oddział ma Kuchnię, powiadomienie o zakończonej pracy podaje też, ile premii z Kuchni dodano do wypłaty. Zaproszenia, prośby o przyjęcie, usunięcie z oddziału i zmiana roli mają osobne powiadomienia dla zainteresowanych.
 
 ### Kronika
 
-Kronika dostępna jest tylko dla członków i zapisuje się sama: założenie oddziału, dołączenia i odejścia, usunięcia, zmiany ról i przywództwa, zmiany nazwy i specjalizacji, awanse i spadki ogniska, zakończone wyprawy oraz rozbudowy schroniska i rekordy wpłat. Gracze, którzy w ustawieniach prywatności ukryli swoją aktywność, są w kronice anonimowi.
+Kronika dostępna jest tylko dla członków i zapisuje się sama: założenie oddziału, dołączenia i odejścia, usunięcia, zmiany ról i przywództwa, zmiany nazwy i specjalizacji, awanse i spadki ogniska, zakończone wyprawy oraz rozbudowy schroniska, użycia tarczy ogniska i rekordy wpłat. Gracze, którzy w ustawieniach prywatności ukryli swoją aktywność, są w kronice anonimowi.
 
 ## Nazwa postaci
 

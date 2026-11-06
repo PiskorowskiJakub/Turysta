@@ -198,6 +198,7 @@ export interface RankingRow {
   id: number;
   rank: number;
   name: string;
+  squad: { id: number; display_name: string; emblem: string | null; frame: string | null } | null;
   points: number;
   world: number | null;
   chapter: number | null;
@@ -243,7 +244,7 @@ export interface PlayerProfile {
   badges: EarnedBadge[];
   featured: string[];
   friendship: FriendshipState;
-  squad: { id: number; display_name: string; title: string | null } | null;
+  squad: { id: number; display_name: string; title: string | null; emblem: string | null; frame: string | null } | null;
 }
 
 export type FriendshipState = 'self' | 'none' | 'friends' | 'outgoing' | 'incoming';
@@ -255,6 +256,7 @@ export interface FriendPerson {
 }
 
 export interface Friend extends FriendPerson {
+  squad: { id: number; display_name: string; emblem: string | null; frame: string | null } | null;
   online: boolean;
   coins_cents: number;
   points: number;
@@ -305,6 +307,7 @@ export interface FriendRankingRow {
   id: number;
   rank: number;
   name: string;
+  squad: { id: number; display_name: string; emblem: string | null; frame: string | null } | null;
   /** Zdobyte w okresie (punkty albo setne dukata, zaleznie od miary). */
   gained: number;
   /** Aktualny stan (punkty albo setne dukata). */
@@ -608,6 +611,8 @@ export interface SquadCard {
   members: number;
   max_members: number;
   flame_level: number;
+  emblem: string | null;
+  frame: string | null;
 }
 
 export interface SquadMember {
@@ -617,6 +622,9 @@ export interface SquadMember {
   title: SquadRole | null;
   joined_at: string;
   recruit: boolean;
+  /** Najwyzsza umiejetnosc oddzialowa i suma poziomow (ranking w zakladce Czlonkowie). */
+  skill_top: { code: SquadSkillCode; level: number } | null;
+  skill_sum: number;
   /** Pola tylko dla czlonkow oddzialu. */
   role?: SquadRole;
   online?: boolean;
@@ -635,6 +643,8 @@ export interface SquadFireState {
   lit_days: number;
   ember: number;
   ember_gain: number;
+  shield: { charges: number; cap: number; cooldown_days: number; next_day: string | null };
+  campfire_bonus_percent: number;
   next_level: { level: number; in_days: number } | null;
   today: { day: string; members: number; active: number; needed: number; lit: boolean };
   history: { day: string; members: number; active: number; needed: number; lit: boolean; ember: number }[];
@@ -659,7 +669,8 @@ export interface SquadProfile extends SquadCard {
   created_at: string;
   name_locked: boolean;
   name_forced: boolean;
-  badges: unknown[];
+  badges: SquadBadge[];
+  memory: SquadMemoryState;
   shelter_levels: Record<ShelterRoomCode, number>;
   member_list: SquadMember[];
   me: {
@@ -695,6 +706,8 @@ export interface SquadCatalog {
 }
 
 export interface AdminSquadRow {
+  emblem: string | null;
+  frame: string | null;
   id: number;
   name: string;
   display_name: string;
@@ -710,6 +723,8 @@ export interface AdminSquadRow {
 }
 
 export interface AdminSquadReport {
+  emblem: string | null;
+  frame: string | null;
   id: number;
   squad_id: number;
   reported_name: string;
@@ -723,6 +738,8 @@ export interface AdminSquadReport {
 }
 
 export interface AdminSquadDetail {
+  emblem: string | null;
+  frame: string | null;
   id: number;
   name: string;
   display_name: string;
@@ -739,7 +756,7 @@ export interface AdminSquadDetail {
   reports: AdminSquadReport[];
 }
 
-export type TrailDifficulty = 'easy' | 'medium' | 'hard';
+export type TrailDifficulty = 'easy' | 'medium' | 'hard' | 'expert' | 'legend';
 
 export interface SquadTrailParticipant {
   user_id: number;
@@ -760,6 +777,8 @@ export interface SquadTrail {
   next_week_start: string;
   plan_until: string;
   difficulty: TrailDifficulty;
+  difficulties: TrailDifficulty[];
+  guidance_percent: number;
   theme: { code: string; name: string; description: string };
   length_km: number;
   percent: number;
@@ -812,9 +831,93 @@ export interface SquadShelterRoom {
 
 export interface SquadShelter {
   vault: { ember: number; stamps: number; cents: number };
+  supplies_percent: number;
   rooms: SquadShelterRoom[];
   build: { room: ShelterRoomCode; level: number; started_at: string; finish_at: string } | null;
   deposit: { limit_cents: number; used_cents: number; remaining_cents: number; record_cents: number };
   can_build: boolean;
   history: { room: ShelterRoomCode; level: number; started_at: string; finished_at: string | null }[];
+}
+
+export type SquadSkillCode = 'campfire' | 'guidance' | 'cartography' | 'supplies' | 'first_aid';
+
+export interface SquadSkillItem {
+  code: SquadSkillCode;
+  level: number;
+  in_queue: number;
+  next_level: number;
+  next_cost_cents: number;
+  next_duration_seconds: number;
+  max_percent: number | null;
+  squad_avg: number | null;
+  squad_effect_percent: number | null;
+  role_bonus: string[];
+}
+
+export interface SquadSkillTraining {
+  id: number;
+  skill: SquadSkillCode;
+  target_level: number;
+  cost_cents: number;
+  duration_seconds: number;
+  started_at: string | null;
+  ends_at: string | null;
+  refund_cents: number;
+}
+
+export interface SquadSkillsState {
+  server_time: string;
+  max_slots: number;
+  active: SquadSkillTraining | null;
+  queue: SquadSkillTraining[];
+  skills: SquadSkillItem[];
+  squad: { id: number; active_members: number; enough: boolean; min_active: number; discount_percent: number } | null;
+  half: number;
+}
+
+export interface SquadBadge {
+  code: 'fire_streak' | 'trails' | 'shelter' | 'skills';
+  value: number;
+  tier: number;
+  tier_name: 'bronze' | 'silver' | 'gold' | 'diamond' | 'ruby' | null;
+  earned_at: string | null;
+  next_min: number | null;
+  tiers: number[];
+}
+
+export interface SquadMemoryState {
+  level: number;
+  emblem: string | null;
+  frame: string | null;
+  slots: number;
+  next_slot_level: number | null;
+  showcase: string[];
+  emblems: { code: string; min_level: number; unlocked: boolean }[];
+  frames: { code: string; min_level: number; unlocked: boolean }[];
+  book: { code: string; min_level: number; unlocked: boolean }[];
+}
+
+export interface SquadBookTrail {
+  week_start: string;
+  difficulty: string;
+  theme: string;
+  percent: number;
+  stamps: number;
+  participants?: number | null;
+}
+
+export interface SquadBook {
+  level: number;
+  chapters: { code: string; min_level: number; unlocked: boolean }[];
+  records?: {
+    founded: string;
+    best_streak: number;
+    lit_days: number;
+    trails_done: number;
+    stamps_total: number;
+    best_trail: SquadBookTrail | null;
+  };
+  trails?: SquadBookTrail[];
+  milestones?: { kind: 'founded' | 'first_trail' | 'badge'; at: string; ref: string | null; tier?: number }[];
+  walkers?: { id: number; name: string; trails: number; march_days: number }[];
 }

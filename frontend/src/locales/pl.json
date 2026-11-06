@@ -56,6 +56,7 @@
     "perPageN": "{{n}} na stronę",
     "place": "Miejsce",
     "player": "Gracz",
+    "squad": "Oddział",
     "worldChapter": "Świat / rozdział",
     "empty": "Nie znaleziono żadnego gracza.",
     "prev": "Poprzednia",
@@ -107,7 +108,10 @@
       "silver": "Srebro",
       "gold": "Złoto",
       "diamond": "Diament",
-      "ruby": "Rubin"
+      "ruby": "Rubin",
+      "amethyst": "Ametyst",
+      "obsidian": "Obsydian",
+      "aurora": "Aurora"
     },
     "none": "Jeszcze nie masz tu żadnej odznaki.",
     "count": "Zdobyte: {{got}} z {{total}}",
@@ -122,6 +126,10 @@
     "seeAll": "Zobacz wszystkie odznaki",
     "moreInfo": "Dowiedz się więcej",
     "tierDays": "{{n}} dni",
+    "tier_days_one": "{{count}} dzień",
+    "tier_days_few": "{{count}} dni",
+    "tier_days_many": "{{count}} dni",
+    "tier_days_other": "{{count}} dni",
     "special_streak": "Seria dni",
     "special_activity": "Dni aktywności",
     "seasonal": "Odznaki sezonowe",
@@ -263,6 +271,7 @@
     "cols": {
       "player": "Gracz",
       "role": "Rola",
+      "squad": "Oddział",
       "status": "Status",
       "registered": "Rejestracja",
       "lastLogin": "Ostatnie logowanie",
@@ -804,6 +813,7 @@
     "march_done": "Dzisiejszy Marsz został już wykonany.",
     "not_participant": "Najpierw dołącz do wyprawy.",
     "difficulty_locked": "Trudność trasy można zmieniać tylko w poniedziałek.",
+    "difficulty_locked_skill": "Ta trasa odblokuje się wraz z poziomem Kartografii oddziału.",
     "invalid_difficulty": "Wybierz poziom trudności.",
     "name_cooldown": "Nazwę postaci możesz zmienić raz na 180 dni.",
     "deposit_limit": "Przekroczysz dzienny limit wpłat do magazynu.",
@@ -818,7 +828,39 @@
       "squad": "Oddział",
       "advance": "Awans"
     },
-    "squadHint": "Umiejętności oddziału pojawią się wkrótce",
+    "squadSkills": {
+      "title": "Umiejętności oddziału",
+      "slot": "Ćwiczysz dla oddziału ({{used}}/{{max}})",
+      "empty": "Nic nie ćwiczysz dla oddziału. To osobny slot: nie blokuje zwykłych szkoleń.",
+      "info": "Umiejętności oddziału trenujesz w osobnym slocie, za dukaty i czas, bez górnego limitu poziomu. Poziom n trwa 2 h × n. Efekt dla oddziału to maksimum × L / (L + {{half}}), gdzie L to średni poziom aktywnych członków (co najmniej 3 aktywne dni z ostatnich 14). Bonusy działają od {{min}} aktywnych członków; przy mniejszej liczbie ich efekt wynosi 0. Posiadacz pasującej roli wnosi do średniej poziom większy o 10%. Poza oddziałem zachowujesz poziomy, ale bonus działa tylko w oddziale.",
+      "noSquad": "Nie jesteś w oddziale. Możesz trenować i zachowasz poziomy, ale bonusy zadziałają dopiero po dołączeniu do oddziału.",
+      "squadOk": "Aktywni członkowie oddziału: {{n}}. Bonusy działają.",
+      "squadNotEnough": "Aktywnych członków oddziału: {{n}} (potrzeba co najmniej {{min}}). Bonusy nie działają, dopóki oddział nie ma ich więcej.",
+      "discount": "Spiżarnia obniża koszt szkoleń o {{pct}}%.",
+      "max": "Maksymalny efekt: {{pct}}%",
+      "names": {
+        "campfire": "Rozpalanie ogniska",
+        "guidance": "Przewodnictwo",
+        "cartography": "Kartografia",
+        "supplies": "Zaopatrzenie",
+        "first_aid": "Pierwsza pomoc"
+      },
+      "strategy": "Co się bardziej opłaca: wszystkie umiejętności naraz czy jedna jak najwyżej?\nNa początku rozkładaj równomiernie. Pierwsze poziomy są tanie i dają najwięcej: poziom 10 to już 20% maksymalnego efektu (ok. 5 dni ciągłego treningu), poziom 20 to 33% (ok. 17 dni), poziom 40 to 50% (ok. 68 dni), a poziom 80 dopiero 67% (ok. 9 miesięcy). Każdy kolejny poziom trwa dłużej i kosztuje więcej, a daje mniej.\nDlatego najpierw doprowadź wszystkie do ok. 20–30, a potem dociągaj tę, na której oddziałowi najbardziej zależy (największe maksimum ma Rozpalanie: 30%).\nWyjątki: Pierwsza pomoc potrzebuje średnio tylko poziomu 1, żeby oddział miał tarczę (dalej tylko skraca jej odnowienie). Kartografia na średnim poziomie 25 i 60 odblokowuje nowe trasy.\nBonus liczy się ze średniej całego oddziału, więc uzgodnijcie w oddziale wspólną kolejność: gdy każdy ciągnie co innego, średnie wszystkich umiejętności są niższe.",
+      "story": {
+        "campfire": "Dobrze rozpalone ognisko daje więcej żaru dla całego oddziału.",
+        "guidance": "Pewny przewodnik skraca drogę: uczestnicy szybciej posuwają się na szlakach.",
+        "cartography": "Dobre mapy to więcej pieczątek z wypraw. Wysoki średni poziom odblokowuje dwie nowe, trudniejsze trasy (od poziomu 25 i 60).",
+        "supplies": "Mądre zaopatrzenie obniża koszt dukatowy rozbudowy schroniska i podnosi dzienny limit wpłat.",
+        "first_aid": "Opatrzony oddział nie gaśnie: tarcza chroni serię ogniska, a wyższy poziom skraca jej odnowienie."
+      },
+      "effect": {
+        "campfire": "Oddział: średni poziom {{avg}}, więcej żaru o {{pct}}%.",
+        "guidance": "Oddział: średni poziom {{avg}}, szybszy postęp o {{pct}}%.",
+        "cartography": "Oddział: średni poziom {{avg}}, więcej pieczątek o {{pct}}%.",
+        "supplies": "Oddział: średni poziom {{avg}}, zniżka kosztu pomieszczeń {{pct}}%.",
+        "first_aid": "Oddział: średni poziom {{avg}} (tarcza od poziomu 1), odnowienie krótsze o {{pct}}%."
+      }
+    },
     "worldLockedHint": "Odblokujesz w świecie {{n}}",
     "worldLockedTitle": "Świat {{n}}",
     "worldSkills": "Świat {{n}}: {{name}}",
@@ -851,7 +893,10 @@
       "silver": "Odznaka srebrna",
       "gold": "Odznaka złota",
       "diamond": "Odznaka diamentowa",
-      "ruby": "Odznaka rubinowa"
+      "ruby": "Odznaka rubinowa",
+      "amethyst": "Odznaka ametystowa",
+      "obsidian": "Odznaka obsydianowa",
+      "aurora": "Odznaka aurora"
     },
     "rank": "Stopień"
   },
@@ -914,7 +959,10 @@
     "squad_deposit_record": "Rekord wpłat oddziału „{{squad}}”: {{amount}} dk w ciągu jednego dnia.",
     "squad_trail_done": "Wyprawa „{{theme}}” oddziału „{{squad}}” zakończona wynikiem {{percent}}%. Pieczątki dla oddziału: {{stamps}}.",
     "squad_fire_level": "Ognisko oddziału „{{squad}}” osiągnęło poziom: {{flame}} (seria {{days}} dni).",
-    "squad_fire_dim": "Seria ogniska oddziału „{{squad}}” przerwana, poziom spada do: {{flame}}."
+    "squad_fire_dim": "Seria ogniska oddziału „{{squad}}” przerwana, poziom spada do: {{flame}}.",
+    "squad_badge": "Oddział „{{squad}}” zdobył odznakę „{{badge}}” (stopień: {{tier}}).",
+    "squad_fire_shield": "Tarcza ochroniła ognisko oddziału „{{squad}}” przed zgaśnięciem (seria {{days}} dni).",
+    "squad_skill_finished": "Ukończono szkolenie oddziałowe: {{skill}} (poziom {{level}})."
   },
   "fact": "Ciekawostka",
   "world": {
@@ -1195,6 +1243,7 @@
     "empty": "Nie masz jeszcze znajomych. Wpisz nazwę postaci gracza powyżej albo zaproś kogoś z profilu w rankingu.",
     "cols": {
       "player": "Gracz",
+      "squad": "Oddział",
       "status": "Status",
       "coins": "Dukaty",
       "points": "Punkty"
@@ -1301,10 +1350,12 @@
       "waitingCount": "Oczekujący ({{n}})",
       "settings": "Ustawienia",
       "chronicle": "Kronika",
+      "badges": "Odznaki",
       "trails": "Szlaki",
       "trailNow": "Wyprawa",
       "trailHistory": "Historia",
-      "shelter": "Schronisko"
+      "shelter": "Schronisko",
+      "book": "Księga"
     },
     "player": {
       "member": "Oddział:"
@@ -1446,7 +1497,10 @@
       "dayTitle": "{{day}}: aktywnych {{active}} z {{needed}}, żar {{ember}}",
       "info": "Ognisko to wspólny cel oddziału. Płonie danego dnia gry, gdy aktywnych jest co najmniej {{percent}}% członków (zaokrąglone w górę, minimum {{min}} osoby); aktywny to gracz, który tego dnia coś zrobił w grze. Za każdy dzień z płonącym ogniskiem oddział dostaje żar: 10 × mnożnik dnia (×1,0 przy 30% aktywnych, ×1,25 przy 50%, ×1,5 przy 70%) × premia serii, zaokrąglone do całości. Obok sumy żaru widać przyrost z ostatniego rozliczonego dnia (+5% od 3 dni, +10% od 7, +15% od 14, +20% od 30 dni z rzędu). Poziomy ogniska: Żar, Płomyk, Ognisko i Wielkie ognisko (progi serii 3, 7, 14 i 30 dni). Gdy ognisko zgaśnie, seria spada o jeden poziom, a nie do zera.",
       "burning": "Ognisko płonie",
-      "streakPending": "(dzisiejszy dzień doliczy się do serii po północy)"
+      "streakPending": "(dzisiejszy dzień doliczy się do serii po północy)",
+      "shield": "Tarcza: {{charges}}/{{cap}} (odnawia się co ok. {{days}} dni).",
+      "shieldNext": "Następna: {{date}}.",
+      "skillBonus": "Rozpalanie ogniska zwiększa dzienny żar o {{pct}}%."
     },
     "members": {
       "title": "Członkowie ({{n}}/{{max}})",
@@ -1464,7 +1518,12 @@
       "transfer": "Przekaż przywództwo",
       "transferConfirm": "Przekaż przywództwo graczowi {{name}}",
       "transferred": "Przywództwo przekazane: {{name}}.",
-      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz (do 2): razem z przywódcą i zastępcą rozpoczyna rozbudowę pomieszczeń w zakładce Schronisko. Kronikarz (do 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału."
+      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz (do 2): razem z przywódcą i zastępcą rozpoczyna rozbudowę pomieszczeń w zakładce Schronisko. Kronikarz (do 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału.",
+      "topSkill": "Najlepsza umiejętność",
+      "skillSum": "Suma poziomów",
+      "sortBy": "Sortuj",
+      "sortRole": "Rola",
+      "sortHint": "Kliknij, aby posortować członków (kliknij ponownie, aby wrócić do podziału według ról)."
     },
     "recruit": {
       "title": "Rekrutacja",
@@ -1485,6 +1544,7 @@
       "noRequests": "Nikt nie czeka na przyjęcie."
     },
     "invite": {
+      "toSquad": "Zaproś do oddziału",
       "sent": "Zaproszenie dla {{name}} wysłane.",
       "joined": "{{name}} dołączył do oddziału."
     },
@@ -1504,6 +1564,8 @@
       "spec": "Oddział zmienił specjalizację na: {{spec}}.",
       "fireLevel": "Ognisko osiągnęło poziom: {{level}} (seria {{days}} dni).",
       "fireDim": "Seria ogniska przerwana, poziom spada do: {{level}}.",
+      "badge": "Oddział zdobył odznakę „{{badge}}” (stopień: {{tier}}).",
+      "fireShield": "Tarcza ochroniła ognisko przed zgaśnięciem (seria {{days}} dni).",
       "trailDone_one": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątkę.",
       "trailDone_few": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątki.",
       "trailDone_many": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątek.",
@@ -1519,8 +1581,11 @@
       "difficulty": {
         "easy": "Łatwa",
         "medium": "Średnia",
-        "hard": "Trudna"
+        "hard": "Trudna",
+        "expert": "Wyzwanie",
+        "legend": "Legenda"
       },
+      "guidanceBonus": "Przewodnictwo oddziału przyspiesza postęp uczestników o {{pct}}%.",
       "planLabel": "Trudność trasy",
       "planHint": "Trudność trasy ustawia przywódca, zastępca lub przewodnik, najpóźniej do końca dnia {{date}}.",
       "progress": "Postęp wyprawy",
@@ -1595,15 +1660,18 @@
       },
       "desc": {
         "kitchen": "Zwiększa wypłaty z prac wszystkich członków oddziału.",
-        "pantry": "Podniesie limit umiejętności oddziałowych.",
-        "infirmary": "Wzmocni tarczę ogniska.",
+        "pantry": "Obniża dukatowy koszt szkoleń umiejętności oddziałowych (bez limitu poziomu).",
+        "infirmary": "Skraca odnowienie tarczy ogniska. Poziom 3 daje drugą tarczę, poziom 15 trzecią.",
         "mapping": "Dokłada oddziałowi dodatkowe pieczątki z każdej wyprawy (nagrody graczy za pieczątki z trasy się nie zmieniają).",
         "memory": "Kosmetyka oddziału i widok zdobytych odznak."
       },
       "effect": {
         "kitchen": "Efekt: +{{pct}}% do wypłat z prac.",
-        "mapping": "Efekt: +{{pct}}% pieczątek z wypraw."
+        "mapping": "Efekt: +{{pct}}% pieczątek z wypraw.",
+        "pantry": "Efekt: koszt szkoleń umiejętności oddziałowych niższy o {{pct}}%.",
+        "infirmary": "Efekt: odnowienie tarczy ogniska krótsze o {{pct}}%."
       },
+      "suppliesNote": "Zaopatrzenie oddziału obniża dukatowy koszt rozbudowy o {{pct}}% i podnosi dzienny limit wpłat.",
       "confirmTitle": "Potwierdź rozbudowę",
       "confirmText": "Rozbudować: {{room}} do poziomu {{n}}? Z magazynu zejdzie żar {{ember}}, pieczątki {{stamps}} i {{coins}} dk. Budowa potrwa {{time}} i nie można jej anulować ani odzyskać składników.",
       "confirmYes": "Potwierdzam, rozpocznij budowę",
@@ -1614,6 +1682,92 @@
       "buildProgress": "Postęp rozbudowy",
       "buildRemaining": "{{percent}}% · do końca: {{time}}",
       "buildFinished": "Budowa zakończona."
+    },
+    "badges": {
+      "title": "Odznaki oddziału",
+      "intro": "Odznaki oddziału zdobywa się za wspólne cele i widzą je wszyscy w profilu oddziału w katalogu. Zdobytego stopnia nie można stracić.",
+      "notYet": "jeszcze nie zdobyta",
+      "next": "następny stopień: {{n}}",
+      "names": {
+        "fire_streak": "Ciągłość ogniska",
+        "trails": "Wyprawy",
+        "shelter": "Budowniczowie",
+        "skills": "Wspólna nauka"
+      },
+      "need": {
+        "fire_streak_one": "seria ogniska: {{count}} dzień",
+        "fire_streak_few": "seria ogniska: {{count}} dni",
+        "fire_streak_many": "seria ogniska: {{count}} dni",
+        "fire_streak_other": "seria ogniska: {{count}} dni",
+        "trails": "ukończone wyprawy: {{count}}",
+        "shelter": "suma poziomów pomieszczeń: {{count}}",
+        "skills": "suma poziomów umiejętności oddziałowych: {{count}}"
+      },
+      "value": {
+        "fire_streak": "Najlepsza seria: {{count}} dni",
+        "trails": "Wyprawy z pieczątkami: {{count}}",
+        "shelter": "Suma poziomów: {{count}}",
+        "skills": "Suma poziomów: {{count}}"
+      }
+    },
+    "memory": {
+      "title": "Wygląd oddziału (Izba pamięci)",
+      "intro": "Emblemat, ramka i gablota odznak są widoczne dla wszystkich w katalogu i w profilu oddziału. Poziom Izby pamięci: {{level}}. Im wyższy poziom, tym więcej i tym bardziej szczegółowych emblematów, ramek i miejsc w gablocie.",
+      "needRoom": "Aby ustawić wygląd oddziału, rozbuduj Izbę pamięci w Schronisku.",
+      "emblem": "Emblemat",
+      "frame": "Ramka",
+      "none": "Brak",
+      "unlockAt": "poziom {{n}}",
+      "showcase": "Gablota odznak ({{used}}/{{max}})",
+      "showcaseHint": "Wybierz zdobyte odznaki, które mają być wyróżnione na górze profilu oddziału.",
+      "nextSlot": "Kolejne miejsce w gablocie od poziomu {{n}} Izby pamięci.",
+      "noBadges": "Oddział nie zdobył jeszcze żadnej odznaki.",
+      "emblemNames": {
+        "compass": "Kompas",
+        "flame": "Płomień",
+        "peak": "Szczyt",
+        "tent": "Namiot",
+        "pine": "Sosna",
+        "lantern": "Latarnia",
+        "boot": "Wędrowny but",
+        "eagle": "Orzeł",
+        "scroll": "Mapa",
+        "stag": "Jeleń",
+        "tower": "Wieża",
+        "phoenix": "Feniks"
+      }
+    },
+    "book": {
+      "title": "Księga wypraw",
+      "intro": "Pamiątkowa księga oddziału rośnie razem z Izbą pamięci (poziom {{level}}): wyższe poziomy odkrywają kolejne rozdziały.",
+      "needRoom": "Rozbuduj Izbę pamięci w Schronisku, aby otworzyć pierwszy rozdział Księgi.",
+      "locked": "Odblokuje się na poziomie {{n}} Izby pamięci.",
+      "records": "Rekordy oddziału",
+      "trailsDone": "wypraw z pieczątkami",
+      "stampsTotal": "zdobytych pieczątek",
+      "bestTrail": "Najlepsza wyprawa",
+      "recent": "Ostatnie wyprawy",
+      "fullHistory": "Pełna historia wypraw (ostatni rok)",
+      "noTrails": "Oddział nie ukończył jeszcze żadnej wyprawy.",
+      "trailLine_one": "{{date}}: „{{theme}}” ({{difficulty}}), wynik {{percent}}%, {{count}} pieczątka",
+      "trailLine_few": "{{date}}: „{{theme}}” ({{difficulty}}), wynik {{percent}}%, {{count}} pieczątki",
+      "trailLine_many": "{{date}}: „{{theme}}” ({{difficulty}}), wynik {{percent}}%, {{count}} pieczątek",
+      "trailLine_other": "{{date}}: „{{theme}}” ({{difficulty}}), wynik {{percent}}%, {{count}} pieczątek",
+      "milestones": "Kamienie milowe",
+      "mFounded": "Założenie oddziału.",
+      "mFirstTrail": "Pierwsza wyprawa z pieczątkami.",
+      "mBadge": "Odznaka „{{badge}}” – stopień: {{tier}}.",
+      "walkers": "Najwytrwalsi piechurzy",
+      "noWalkers": "Brak zaliczonych wypraw.",
+      "walkerLine": "{{name}}: wypraw {{trails}}, dni Marszu {{days}}",
+      "next": "Kolejne rozdziały",
+      "chapter": {
+        "records": "Rekordy",
+        "recent": "Ostatnie wyprawy",
+        "milestones": "Kamienie milowe",
+        "walkers": "Najwytrwalsi piechurzy",
+        "full": "Pełna historia"
+      }
     }
   },
   "cookies": {

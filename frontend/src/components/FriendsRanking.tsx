@@ -6,6 +6,7 @@ import type { FriendRanking } from '../api/types';
 import { formatDate } from '../format';
 import Coins from './Coins';
 import Points from './Points';
+import SquadTag from './squad/SquadTag';
 
 const PERIODS = ['week', 'month', 'all'] as const;
 const METRICS = ['points', 'coins'] as const;
@@ -82,11 +83,12 @@ export default function FriendsRanking() {
           <p className="muted">{t(`ranking.friends.note_${metric}_${period}`, { range })}</p>
           {data.rows.length <= 1 && <p className="muted">{t('ranking.friends.empty')}</p>}
           <div className="table-scroll">
-            <table className="ranking-table">
+            <table className="ranking-table cards-table cards-inline">
               <thead>
                 <tr>
                   <th className="num">{t('ranking.place')}</th>
                   <th>{t('ranking.player')}</th>
+                  <th>{t('ranking.squad')}</th>
                   <th className="num">{t(`ranking.friends.gained_${metric}${period === 'all' && metric === 'points' ? '_all' : ''}`)}</th>
                   {period !== 'all' && !past && <th className="num">{t(`ranking.friends.total_${metric}`)}</th>}
                 </tr>
@@ -94,10 +96,11 @@ export default function FriendsRanking() {
               <tbody>
                 {data.rows.map((r) => (
                   <tr key={r.id} className={r.me ? 'me' : undefined}>
-                    <td className="num">{r.rank}</td>
+                    <td className="num" data-label={t('ranking.place')}>{r.rank}</td>
                     <td><Link to={r.me ? '/profil' : `/gracz/${r.id}`}>{r.name}</Link></td>
-                    <td className="num">{value(r.gained)}</td>
-                    {period !== 'all' && !past && <td className="num">{value(r.total)}</td>}
+                    <td><SquadTag squad={r.squad} /></td>
+                    <td className="num" data-label={t(`ranking.friends.gained_${metric}${period === 'all' && metric === 'points' ? '_all' : ''}`)}>{value(r.gained)}</td>
+                    {period !== 'all' && !past && <td className="num" data-label={t(`ranking.friends.total_${metric}`)}>{value(r.total)}</td>}
                   </tr>
                 ))}
               </tbody>

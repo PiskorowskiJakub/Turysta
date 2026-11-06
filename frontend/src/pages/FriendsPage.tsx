@@ -6,6 +6,7 @@ import type { FriendsResponse } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import Coins from '../components/Coins';
 import InfoHint from '../components/InfoHint';
+import SquadEmblem from '../components/squad/SquadEmblem';
 import PlayerAvatar from '../components/PlayerAvatar';
 import Points from '../components/Points';
 import { formatCoins } from '../format';
@@ -187,6 +188,7 @@ export default function FriendsPage() {
               <thead>
                 <tr>
                   <th>{t('friends.cols.player')}</th>
+                  <th>{t('friends.cols.squad')}</th>
                   <th>{t('friends.cols.status')}</th>
                   <th className="num" aria-sort={ariaSort('coins')}>{sortHeader('coins', t('friends.cols.coins'))}</th>
                   <th className="num" aria-sort={ariaSort('points')}>{sortHeader('points', t('friends.cols.points'))}</th>
@@ -201,6 +203,14 @@ export default function FriendsPage() {
                         <PlayerAvatar src={f.avatar_url ?? undefined} name={f.name} size={32} />
                         <Link to={`/gracz/${f.id}`}>{f.name}</Link>
                       </span>
+                    </td>
+                    <td data-label={t('friends.cols.squad')}>
+                      {f.squad ? (
+                        <span className="squad-title">
+                          <SquadEmblem emblem={f.squad.emblem} frame={f.squad.frame} size={28} />
+                          <Link to={`/oddzial/${f.squad.id}`}>{f.squad.display_name}</Link>
+                        </span>
+                      ) : <span className="muted">—</span>}
                     </td>
                     <td><span className={`online-dot${f.online ? ' on' : ''}`} aria-hidden="true" />{f.online ? t('friends.online') : t('friends.offline')}</td>
                     <td className="num" data-label={t('friends.cols.coins')}><Coins cents={f.coins_cents} /> {t('wallet.coinsShort')}</td>

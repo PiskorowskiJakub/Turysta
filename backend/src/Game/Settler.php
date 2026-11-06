@@ -8,6 +8,7 @@ use PDO;
 use Throwable;
 use Turysta\Social\ActivityFeed;
 use Turysta\Squad\SquadShelter;
+use Turysta\Squad\SquadSkills;
 
 /** Rozlicza zakonczone szkolenia i prace. Idempotentne: drugie wywolanie nic nie zmienia. */
 final class Settler
@@ -23,6 +24,7 @@ final class Settler
             $this->pdo->prepare('SELECT id FROM users WHERE id = ? FOR UPDATE')->execute([$userId]);
             $now = Clock::now($this->pdo);
             $this->settleTraining($userId, $now);
+            $this->settleSquadSkills($userId, $now);
             $this->settleJob($userId, $now);
             $this->pdo->commit();
         } catch (Throwable $e) {
@@ -30,6 +32,16 @@ final class Settler
                 $this->pdo->rollBack();
             }
             throw $e;
+        }
+    }
+
+    /** Szkolenia umiejetnosci oddzialowych (osobny slot); blad nie moze zablokowac reszty rozliczen. */
+    private function settleSquadSkills(int $userId, DateTimeImmutable $now): void
+    {
+        try {
+            SquadSkills::settle($this->pdo, $userId, $now);
+        } catch (Throwable $e) {
+            error_log('Settler::settleSquadSkills: ' . $e->getMessage());
         }
     }
 

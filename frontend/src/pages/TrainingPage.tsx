@@ -8,6 +8,7 @@ import { Icon, SkillIcon } from '../components/icons';
 import ProgressBar from '../components/ProgressBar';
 import Tabs, { type TabItem } from '../components/Tabs';
 import WorldPanel from '../components/WorldPanel';
+import SquadSkillsPanel from '../components/squad/SquadSkillsPanel';
 import Coins from '../components/Coins';
 import InfoHint from '../components/InfoHint';
 import { tiersFor } from '../badges';
@@ -24,7 +25,7 @@ export default function TrainingPage() {
   const { pathname } = useLocation();
   // /umiejetnosci/podstawowe | /umiejetnosci/awans | /umiejetnosci/swiaty/<numer swiata>
   const worldMatch = /\/swiaty\/(\d+)$/.exec(pathname);
-  const tab = pathname.endsWith('/awans') ? 'awans' : pathname.endsWith('/swiaty') || worldMatch ? 'swiaty' : 'podstawowe';
+  const tab = pathname.endsWith('/awans') ? 'awans' : pathname.endsWith('/oddzial') ? 'oddzial' : pathname.endsWith('/swiaty') || worldMatch ? 'swiaty' : 'podstawowe';
   const worldTab = worldMatch ? Number(worldMatch[1]) : null;
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -129,10 +130,19 @@ export default function TrainingPage() {
         };
       }),
     },
-    // Umiejetnosci oddzialu: zakladka zapowiedziana, jeszcze nieaktywna.
-    { path: 'oddzial', label: `${t('training.tabs.squad')} (${t('nav.soon')})`, disabled: true, hint: t('training.squadHint') },
+    // Umiejetnosci oddzialu: osobny slot szkolen, korzysc trafia do oddzialu.
+    { path: 'oddzial', label: t('training.tabs.squad') },
     { path: 'awans', label: t('training.tabs.advance') },
   ];
+
+  if (tab === 'oddzial') {
+    return (
+      <>
+        <Tabs base="/umiejetnosci" items={skillTabs} />
+        <SquadSkillsPanel />
+      </>
+    );
+  }
 
   // Przewidywane zakonczenie: aktywne konczy sie o ends_at, kolejne startuja jedno po drugim.
   const endTimes = new Map<number, number>();

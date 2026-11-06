@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
+import { tierName } from '../badges';
 import type { NotificationItem } from '../api/types';
 import { useAuth } from '../auth/AuthContext';
 import { formatCoins, formatDate, formatPercent } from '../format';
@@ -34,7 +35,7 @@ export default function Notifications() {
     const p = n.payload;
     const base = t(`notifications.${n.type}`, {
       defaultValue: n.type,
-      skill: p.skill,
+      skill: n.type === 'squad_skill_finished' && typeof p.skill === 'string' ? t(`training.squadSkills.names.${p.skill}`, { defaultValue: p.skill }) : p.skill,
       level: p.level,
       job: p.job,
       name: p.name,
@@ -49,6 +50,8 @@ export default function Notifications() {
       percent: p.percent,
       stamps: p.stamps,
       days: p.streak,
+      badge: typeof p.code === 'string' ? t(`squad.badges.names.${p.code}`, { defaultValue: p.code }) : '',
+      tier: typeof p.tier === 'number' ? t(`badges.tally.${tierName(p.tier)}`) : '',
       flame: typeof p.flame === 'number' ? t(`squad.flame.${p.flame}`) : '',
     });
     // Premia z Kuchni oddzialu dopisana do wyplaty z pracy.

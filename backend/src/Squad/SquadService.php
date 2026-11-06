@@ -421,6 +421,16 @@ final class SquadService
      * @param array<string,mixed> $actor
      * @param array<string,mixed> $in
      */
+    /** @return array<string,mixed> */
+    public function book(array $user, int $squadId): array
+    {
+        $m = $this->memberRow((int) $user['id']);
+        if ($m === null || (int) $m['squad_id'] !== $squadId) {
+            throw new ApiException(403, 'forbidden', 'Księga wypraw jest dostępna tylko dla członków oddziału.');
+        }
+        return SquadMemory::book($this->pdo, $this->squad($squadId));
+    }
+
     public function update(array $actor, int $squadId, array $in): void
     {
         $this->requirePower($actor, $squadId, 'manage');
@@ -461,6 +471,9 @@ final class SquadService
             $sets[] = 'join_mode = ?';
             $params[] = $this->mode($in['join_mode']);
         }
+        [$memSets, $memParams] = SquadMemory::changes($this->pdo, $squad, $in);
+        array_push($sets, ...$memSets);
+        array_push($params, ...$memParams);
         if (!$sets) {
             return;
         }

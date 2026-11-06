@@ -6,6 +6,7 @@ namespace Turysta\Game;
 use DateTimeImmutable;
 use DateTimeZone;
 use PDO;
+use Turysta\Squad\SquadMemory;
 
 /** Ranking graczy wg lacznej sumy punktow (remisy: to samo miejsce, kolejnosc wg rejestracji). */
 final class RankingService
@@ -112,7 +113,9 @@ final class RankingService
         $rows = [];
         $rank = 0;
         $prev = null;
-        foreach ($stmt->fetchAll() as $i => $r) {
+        $fetched = $stmt->fetchAll();
+        $squads = SquadMemory::forUsers($this->pdo, array_column($fetched, 'id'));
+        foreach ($fetched as $i => $r) {
             $gained = (int) $r['gained'];
             if ($prev === null || $gained !== $prev) {
                 $rank = $i + 1;
@@ -122,6 +125,7 @@ final class RankingService
                 'id' => (int) $r['id'],
                 'rank' => $rank,
                 'name' => (string) $r['name'],
+                'squad' => $squads[(int) $r['id']] ?? null,
                 'gained' => $gained,
                 'total' => (int) $r['total'],
                 'me' => (int) $r['id'] === $userId,
@@ -223,11 +227,14 @@ final class RankingService
         $stmt = $this->pdo->prepare("WITH r AS ($base) SELECT * FROM r$filter ORDER BY pos LIMIT $perPage OFFSET $offset");
         $stmt->execute($params);
         $rows = [];
-        foreach ($stmt->fetchAll() as $row) {
+        $fetched = $stmt->fetchAll();
+        $squads = SquadMemory::forUsers($this->pdo, array_column($fetched, 'id'));
+        foreach ($fetched as $row) {
             $rows[] = [
                 'id' => (int) $row['id'],
                 'rank' => (int) $row['rnk'],
                 'name' => (string) $row['name'],
+                'squad' => $squads[(int) $row['id']] ?? null,
                 'points' => (int) $row['points'],
                 'world' => $row['world'] !== null ? (int) $row['world'] : null,
                 'chapter' => $row['chapter'] !== null ? (int) $row['chapter'] : null,
