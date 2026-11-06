@@ -5,6 +5,9 @@
     "register": "Załóż konto",
     "profile": "Profil",
     "logout": "Wyloguj się",
+    "logoutCancel": "Zostań",
+    "logoutConfirmTitle": "Wylogować się?",
+    "logoutConfirmText": "Po wylogowaniu będziesz musiał zalogować się ponownie.",
     "training": "Szkolenia",
     "jobs": "Praca",
     "menu": "Menu",
@@ -1777,5 +1780,19 @@
     "more": "Polityka prywatności",
     "accept": "Zgadzam się",
     "reject": "Tylko niezbędne"
+  },
+  "lastSeen": {
+    "minutes_one": "{{count}} min temu",
+    "hours_one": "{{count}} godz. temu",
+    "minutes_few": "{{count}} min temu",
+    "hours_few": "{{count}} godz. temu",
+    "minutes_many": "{{count}} min temu",
+    "hours_many": "{{count}} godz. temu",
+    "minutes_other": "{{count}} min temu",
+    "hours_other": "{{count}} godz. temu",
+    "days_one": "{{count}} dzień temu",
+    "days_few": "{{count}} dni temu",
+    "days_many": "{{count}} dni temu",
+    "days_other": "{{count}} dnia temu"
   }
 }

@@ -1,3 +1,4 @@
+import LastSeenText from '../../components/LastSeenText';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -157,7 +158,7 @@ function SquadDetail({ id, onChanged }: { id: number; onChanged: () => void }) {
         {data.members.map((m) => (
           <li key={m.id}>
             <Link to={`/admin/gracze/${m.id}`}>{m.name}</Link>
-            <span className="muted">{t(`squad.roles.${m.role}`)} · {formatDate(m.joined_at)}</span>
+            <span className="muted">{t(`squad.roles.${m.role}`)} · {formatDate(m.joined_at)} · {m.online ? t('friends.online') : <LastSeenText iso={m.last_seen} />}</span>
           </li>
         ))}
       </ul>

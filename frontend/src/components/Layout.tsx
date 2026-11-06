@@ -81,6 +81,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [fact, setFact] = useState<string | null>(null);
+  const [confirmLogout, setConfirmLogout] = useState(false);
   const [avatars, setAvatars] = useState<Avatar[]>([]);
 
   useEffect(() => {
@@ -103,6 +104,7 @@ export default function Layout() {
   }, [status]);
 
   const onLogout = async () => {
+    setConfirmLogout(false);
     await logout();
     navigate('/');
   };
@@ -173,7 +175,7 @@ export default function Layout() {
                 <MenuLink to="/ranking" icon="points" label={t('nav.ranking')} />
                 {me?.user.role === 'admin' && <MenuLink to="/admin" icon="admin" label={t('nav.admin')} />}
                 <li>
-                  <button type="button" className="menu-item" onClick={() => void onLogout()}>
+                  <button type="button" className="menu-item" onClick={() => setConfirmLogout(true)}>
                     <Icon name="logout" />
                     <span>{t('nav.logout')}</span>
                   </button>
@@ -194,6 +196,18 @@ export default function Layout() {
         </main>
       </div>
 
+      {confirmLogout && (
+        <div className="confirm-backdrop" onClick={() => setConfirmLogout(false)}>
+          <div className="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="logout-title" onClick={(e) => e.stopPropagation()}>
+            <h3 id="logout-title">{t('nav.logoutConfirmTitle')}</h3>
+            <p>{t('nav.logoutConfirmText')}</p>
+            <div className="confirm-actions">
+              <button type="button" className="button secondary" autoFocus onClick={() => setConfirmLogout(false)}>{t('nav.logoutCancel')}</button>
+              <button type="button" className="button danger" onClick={() => void onLogout()}>{t('nav.logout')}</button>
+            </div>
+          </div>
+        </div>
+      )}
       <CookieBanner />
 
       <footer className="site-footer">

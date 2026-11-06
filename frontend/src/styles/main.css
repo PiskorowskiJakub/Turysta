@@ -984,3 +984,11 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 @media (max-width: 600px) {
   .squad-tag .squad-tag-name { display: none; }
 }
+
+.confirm-backdrop { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0, 0, 0, .6); }
+.confirm-dialog { width: 100%; max-width: 380px; padding: 20px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-hi); box-shadow: 0 12px 40px rgba(0, 0, 0, .5); }
+.confirm-dialog h3 { margin: 0 0 8px; }
+.confirm-dialog p { margin: 0 0 16px; }
+.confirm-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+.last-seen { font-size: .8rem; white-space: nowrap; }

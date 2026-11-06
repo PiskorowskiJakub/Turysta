@@ -1,3 +1,4 @@
+import LastSeenText from '../LastSeenText';
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -353,7 +354,7 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
                     <span className="friend-who">
                       <PlayerAvatar src={m.avatar_url ?? undefined} name={m.name} size={32} />
                       <Link to={`/gracz/${m.id}`}>{m.name}</Link>
-                      {m.online && <span className="online-dot on" title={t('friends.online')} />}
+                      {m.online ? <span className="online-dot on" title={t('friends.online')} /> : m.last_seen !== undefined && <span className="muted last-seen"><LastSeenText iso={m.last_seen} /></span>}
                       {m.recruit && <span className="recruit-badge">{t('squad.members.recruit')}</span>}
                     </span>
                   </td>

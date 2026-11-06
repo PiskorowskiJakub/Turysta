@@ -258,6 +258,7 @@ export interface FriendPerson {
 export interface Friend extends FriendPerson {
   squad: { id: number; display_name: string; emblem: string | null; frame: string | null } | null;
   online: boolean;
+  last_seen: string | null;
   coins_cents: number;
   points: number;
 }
@@ -628,6 +629,7 @@ export interface SquadMember {
   /** Pola tylko dla czlonkow oddzialu. */
   role?: SquadRole;
   online?: boolean;
+  last_seen?: string | null;
 }
 
 export interface SquadEligibility {
@@ -751,7 +753,7 @@ export interface AdminSquadDetail {
   name_forced: boolean;
   archived: boolean;
   created_at: string;
-  members: { id: number; name: string; role: SquadRole; joined_at: string }[];
+  members: { id: number; name: string; role: SquadRole; joined_at: string; online: boolean; last_seen: string | null }[];
   name_history: { id: number; name: string; by: string | null; created_at: string }[];
   reports: AdminSquadReport[];
 }
