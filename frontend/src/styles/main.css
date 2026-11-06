@@ -963,6 +963,8 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .squad-title { display: inline-flex; align-items: center; gap: 10px; }
 .squad-emblem { display: inline-grid; place-items: center; flex: none; border-radius: 50%; color: var(--cream); background: #102018; border: 2px solid var(--line); --emblem-bg: #102018; }
 .squad-emblem svg { width: 70%; height: 70%; }
+.squad-emblem.default { color: var(--muted); opacity: 0.75; }
+.squad-emblem.default:not(.framed) { border-style: dashed; }
 .squad-emblem.framed { border-width: 3px; border-color: var(--tier-glow, var(--tier)); box-shadow: 0 0 10px -2px var(--tier-glow, var(--tier)); }
 .squad-emblem.framed.tier-aurora { border-color: transparent; background: linear-gradient(#102018, #102018) padding-box, var(--aurora) border-box; background-size: auto, 300% 100%; animation: aurora-shift 8s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .badge-sq-icon.tier-aurora, .squad-emblem.framed.tier-aurora { animation: none; } }

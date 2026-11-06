@@ -34,3 +34,6 @@ export const EMBLEM_SVG: Record<EmblemCode, string> = {
   // --- poziom 20: najbogatszy
   phoenix: `<g ${S}><path d="M29 36C21 36 11 30 7 14c6 4 10 4 13 4-2 4 2 7 6 7-2 4 1 7 4 7"/><path d="M35 36c8 0 18-6 22-22-6 4-10 4-13 4 2 4-2 7-6 7 2 4-1 7-4 7"/><path d="M29 24c0-5 6-5 6 0l1 12-4 7-4-7Z"/><path d="M32 42c-1 7-5 11-10 16M32 42v16M32 42c1 7 5 11 10 16"/><path d="M32 4c1 4 4 5 3 9-1 2-2 3-3 3s-2-1-3-3c-1-4 2-5 3-9Z"/></g><path ${FA} d="M29 36C21 36 11 30 7 14c6 4 10 4 13 4-2 4 2 7 6 7-2 4 1 7 4 7ZM35 36c8 0 18-6 22-22-6 4-10 4-13 4 2 4-2 7-6 7 2 4-1 7-4 7Z"/><path ${FA} d="M29 24c0-5 6-5 6 0l1 12-4 7-4-7Z"/><circle cx="32" cy="22" r="1.100" ${F}/><g ${S} stroke-width="1.5"><path d="M12 8l2 3M52 8l-2 3M20 4l1 3M44 4l-1 3M32 28v8M30 33l2 3 2-3"/></g>`,
 };
+
+/** Domyslny znak oddzialu bez wlasnego emblematu: prosta tarcza, rysowana na szaro. */
+export const DEFAULT_EMBLEM_SVG = `<g ${S}><path d="M32 10 50 17v14c0 11-7 19-18 23C21 50 14 42 14 31V17Z"/><path d="M32 10v44"/></g>`;
