@@ -837,6 +837,8 @@ export interface SquadShelter {
   rooms: SquadShelterRoom[];
   build: { room: ShelterRoomCode; level: number; started_at: string; finish_at: string } | null;
   deposit: { limit_cents: number; used_cents: number; remaining_cents: number; record_cents: number };
+  deposits: { user_id: number; name: string; cents: number; created_at: string }[];
+  ranking: { user_id: number; name: string; cents: number; count: number }[];
   can_build: boolean;
   history: { room: ShelterRoomCode; level: number; started_at: string; finished_at: string | null }[];
 }

@@ -199,6 +199,18 @@ final class SquadShelter
         $hist = $this->pdo->prepare('SELECT room, level, started_at, finished_at FROM squad_builds WHERE squad_id = ? ORDER BY id DESC LIMIT 10');
         $hist->execute([$squadId]);
 
+        // Historia wplat (ostatnie 30) i ranking wplacajacych (suma od poczatku, takze osoby, ktore juz odeszly).
+        $dep = $this->pdo->prepare(
+            'SELECT d.user_id, d.cents, d.created_at, u.character_name FROM squad_deposits d JOIN users u ON u.id = d.user_id
+             WHERE d.squad_id = ? ORDER BY d.id DESC LIMIT 30'
+        );
+        $dep->execute([$squadId]);
+        $top = $this->pdo->prepare(
+            'SELECT d.user_id, SUM(d.cents) AS total, COUNT(*) AS n, u.character_name FROM squad_deposits d JOIN users u ON u.id = d.user_id
+             WHERE d.squad_id = ? GROUP BY d.user_id, u.character_name ORDER BY total DESC, u.character_name LIMIT 20'
+        );
+        $top->execute([$squadId]);
+
         return [
             'vault' => ['ember' => $ember, 'stamps' => $stamps, 'cents' => $cents],
             'supplies_percent' => round($supplies, 2),
@@ -215,6 +227,18 @@ final class SquadShelter
                 'remaining_cents' => $remaining,
                 'record_cents' => (int) $squad['deposit_record_cents'],
             ],
+            'deposits' => array_map(static fn (array $d): array => [
+                'user_id' => (int) $d['user_id'],
+                'name' => (string) $d['character_name'],
+                'cents' => (int) $d['cents'],
+                'created_at' => Clock::iso((string) $d['created_at']),
+            ], $dep->fetchAll()),
+            'ranking' => array_map(static fn (array $d): array => [
+                'user_id' => (int) $d['user_id'],
+                'name' => (string) $d['character_name'],
+                'cents' => (int) $d['total'],
+                'count' => (int) $d['n'],
+            ], $top->fetchAll()),
             'can_build' => $this->canBuild($uid, $squadId),
             'history' => array_map(static fn (array $h): array => [
                 'room' => (string) $h['room'],

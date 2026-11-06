@@ -1,5 +1,5 @@
 import LastSeenText from '../components/LastSeenText';
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../api/client';
@@ -190,7 +190,6 @@ export default function FriendsPage() {
                 <tr>
                   <th>{t('friends.cols.player')}</th>
                   <th>{t('friends.cols.squad')}</th>
-                  <th>{t('friends.cols.status')}</th>
                   <th className="num" aria-sort={ariaSort('coins')}>{sortHeader('coins', t('friends.cols.coins'))}</th>
                   <th className="num" aria-sort={ariaSort('points')}>{sortHeader('points', t('friends.cols.points'))}</th>
                   <th />
@@ -198,11 +197,17 @@ export default function FriendsPage() {
               </thead>
               <tbody>
                 {friends.map((f) => (
-                  <tr key={f.id}>
+                  <Fragment key={f.id}>
+                  <tr>
                     <td>
                       <span className="friend-who">
                         <PlayerAvatar src={f.avatar_url ?? undefined} name={f.name} size={32} />
-                        <Link to={`/gracz/${f.id}`}>{f.name}</Link>
+                        <span className="who-text">
+                          <Link to={`/gracz/${f.id}`}>{f.name}</Link>
+                          <small className={'who-sub' + (f.online ? '' : ' muted')}>
+                            {f.online ? <><span className="online-dot on" aria-hidden="true" />{t('friends.online')}</> : <LastSeenText iso={f.last_seen} />}
+                          </small>
+                        </span>
                       </span>
                     </td>
                     <td data-label={t('friends.cols.squad')}>
@@ -213,19 +218,10 @@ export default function FriendsPage() {
                         </span>
                       ) : <span className="muted">—</span>}
                     </td>
-                    <td><span className={`online-dot${f.online ? ' on' : ''}`} aria-hidden="true" />{f.online ? t('friends.online') : <LastSeenText iso={f.last_seen} />}</td>
                     <td className="num" data-label={t('friends.cols.coins')}><Coins cents={f.coins_cents} /> {t('wallet.coinsShort')}</td>
                     <td className="num" data-label={t('friends.cols.points')}><Points value={f.points} /></td>
                     <td className="num">
-                      {giftId === f.id && data.gifts.per_friend[String(f.id)]?.status === 'ok' ? (
-                        <div className="gift-confirm" role="group" aria-label={t('friends.giftConfirmTitle', { name: f.name })}>
-                          <p>{t('friends.giftConfirm', { name: f.name, amount: formatCoins(data.gifts.cents), bonus: formatCoins(data.gifts.bonus_cents) })}</p>
-                          <span className="actions">
-                            <button type="button" className="button small" disabled={busy} onClick={() => void sendGift(f.id, f.name)}>{t('friends.giftConfirmYes', { amount: formatCoins(data.gifts.cents) })}</button>
-                            <button type="button" className="button small secondary" disabled={busy} onClick={() => setGiftId(null)}>{t('admin.cancel')}</button>
-                          </span>
-                        </div>
-                      ) : confirmId === f.id ? (
+                      {confirmId === f.id ? (
                         <span className="actions">
                           <button type="button" className="button small" disabled={busy} onClick={() => void act(() => api<FriendsResponse>('DELETE', `/friends/${f.id}`), t('friends.removed', { name: f.name }))}>{t('friends.confirmRemove')}</button>
                           <button type="button" className="button small secondary" onClick={() => setConfirmId(null)}>{t('admin.cancel')}</button>
@@ -239,6 +235,20 @@ export default function FriendsPage() {
                       )}
                     </td>
                   </tr>
+                  {giftId === f.id && data.gifts.per_friend[String(f.id)]?.status === 'ok' && (
+                    <tr className="gift-row">
+                      <td colSpan={5}>
+                        <div className="gift-confirm" role="group" aria-label={t('friends.giftConfirmTitle', { name: f.name })}>
+                          <p>{t('friends.giftConfirm', { name: f.name, amount: formatCoins(data.gifts.cents), bonus: formatCoins(data.gifts.bonus_cents) })}</p>
+                          <span className="actions">
+                            <button type="button" className="button small" disabled={busy} onClick={() => void sendGift(f.id, f.name)}>{t('friends.giftConfirmYes', { amount: formatCoins(data.gifts.cents) })}</button>
+                            <button type="button" className="button small secondary" disabled={busy} onClick={() => setGiftId(null)}>{t('admin.cancel')}</button>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  </Fragment>
                 ))}
               </tbody>
             </table>

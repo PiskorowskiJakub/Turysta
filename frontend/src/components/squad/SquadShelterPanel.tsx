@@ -120,25 +120,48 @@ export default function SquadShelterPanel({ squadId }: { squadId: number }) {
         <InfoHint wide label={t('badges.moreInfo')} text={t('squad.shelter.info')} />
         <h2>{t('squad.shelter.vault')}</h2>
         <ul className="squad-stats">
-          <li><b>{vault.ember}</b><small>{t('squad.shelter.ember')}</small></li>
-          <li><b>{vault.stamps}</b><small>{t('squad.shelter.stamps')}</small></li>
-          <li><b>{formatCoins(vault.cents)}</b><small>{t('squad.shelter.coins')}</small></li>
+          <li><InfoHint label={t('badges.moreInfo')} text={t('squad.shelter.emberHint')} /><b>{vault.ember}</b><small>{t('squad.shelter.ember')}</small></li>
+          <li><InfoHint label={t('badges.moreInfo')} text={t('squad.shelter.stampsHint')} /><b>{vault.stamps}</b><small>{t('squad.shelter.stamps')}</small></li>
+          <li><InfoHint label={t('badges.moreInfo')} text={t('squad.shelter.coinsHint')} /><b>{formatCoins(vault.cents)}</b><small>{t('squad.shelter.coins')}</small></li>
         </ul>
+        {maxCoins < 1 && <p className="field-hint">{t('squad.shelter.limitReached', { limit: formatCoins(deposit.limit_cents) })}</p>}
+        {maxCoins >= 1 && (
         <form className="shelter-deposit" onSubmit={(e) => void submitDeposit(e)}>
           <label htmlFor="shelter-coins">{t('squad.shelter.depositLabel')}</label>
           <div className="shelter-deposit-row">
-            <input id="shelter-coins" type="number" inputMode="numeric" min={1} max={Math.max(1, maxCoins)} step={1} value={coins} onChange={(e) => setCoins(e.target.value)} disabled={busy || maxCoins < 1} />
-            <button type="submit" className="btn" disabled={busy || maxCoins < 1 || coins === ''}>{t('squad.shelter.deposit')}</button>
+            <input id="shelter-coins" type="number" inputMode="numeric" min={1} max={Math.max(1, maxCoins)} step={1} value={coins} onChange={(e) => setCoins(e.target.value)} disabled={busy} />
+            <button type="submit" className="btn" disabled={busy || coins === ''}>{t('squad.shelter.deposit')}</button>
           </div>
-          <p className="field-hint">
-            {maxCoins < 1
-              ? t('squad.shelter.limitReached', { limit: formatCoins(deposit.limit_cents) })
-              : t('squad.shelter.depositHint', { left: maxCoins, limit: formatCoins(deposit.limit_cents) })}
-          </p>
+          <p className="field-hint">{t('squad.shelter.depositHint', { left: maxCoins, limit: formatCoins(deposit.limit_cents) })}</p>
           {shelter.supplies_percent > 0 && <p className="field-hint">{t('squad.shelter.suppliesNote', { pct: formatPercent(shelter.supplies_percent) })}</p>}
-          {deposit.record_cents > 0 && <p className="field-hint">{t('squad.shelter.record', { amount: formatCoins(deposit.record_cents) })}</p>}
         </form>
+        )}
+        {deposit.record_cents > 0 && <p className="field-hint">{t('squad.shelter.record', { amount: formatCoins(deposit.record_cents) })}</p>}
         {error && <p className="form-error" role="alert">{error}</p>}
+      </section>
+
+      <section className="panel">
+        <h2>{t('squad.shelter.depositsTitle')}</h2>
+        {shelter.ranking.length === 0 ? <p className="muted">{t('squad.shelter.depositsEmpty')}</p> : (
+          <div className="deposit-columns">
+            <div>
+              <h3>{t('squad.shelter.rankingTitle')}</h3>
+              <ol className="deposit-list">
+                {shelter.ranking.map((r, i) => (
+                  <li key={r.user_id}><span>{i + 1}. <Link to={`/gracz/${r.user_id}`}>{r.name}</Link></span><b>{formatCoins(r.cents)} {t('wallet.coinsShort')}</b></li>
+                ))}
+              </ol>
+            </div>
+            <div>
+              <h3>{t('squad.shelter.historyTitle')}</h3>
+              <ul className="deposit-list">
+                {shelter.deposits.map((d, i) => (
+                  <li key={i}><span><Link to={`/gracz/${d.user_id}`}>{d.name}</Link> <small className="muted">{formatDateTime(d.created_at)}</small></span><b>{formatCoins(d.cents)} {t('wallet.coinsShort')}</b></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
       </section>
 
       {shelter.build && (
