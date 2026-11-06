@@ -97,7 +97,7 @@ final class SquadSkillsTest extends TestCase
         $a = $this->user('SkA');
         $b = $this->user('SkB');
         $c = $this->user('SkC');
-        $id = $this->squads->create($a, ['name' => "Umiej {$this->suffix}", 'specialization' => 'gorska', 'join_mode' => 'open'], '10.9.1.1')['id'];
+        $id = $this->squads->create($a, ['name' => "Umiej {$this->suffix}", 'specialization' => 'gorska', 'join_mode' => 'open'], '10.9.' . random_int(1, 250) . '.' . random_int(1, 250))['id'];
         $this->squads->join($b, $id);
         $this->squads->join($c, $id);
         return [[$a, $b, $c], $id];
