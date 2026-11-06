@@ -617,6 +617,9 @@ export interface SquadMember {
   title: SquadRole | null;
   joined_at: string;
   recruit: boolean;
+  /** Najwyzsza umiejetnosc oddzialowa i suma poziomow (ranking w zakladce Czlonkowie). */
+  skill_top: { code: SquadSkillCode; level: number } | null;
+  skill_sum: number;
   /** Pola tylko dla czlonkow oddzialu. */
   role?: SquadRole;
   online?: boolean;
@@ -661,7 +664,7 @@ export interface SquadProfile extends SquadCard {
   created_at: string;
   name_locked: boolean;
   name_forced: boolean;
-  badges: unknown[];
+  badges: SquadBadge[];
   shelter_levels: Record<ShelterRoomCode, number>;
   member_list: SquadMember[];
   me: {
@@ -858,4 +861,14 @@ export interface SquadSkillsState {
   skills: SquadSkillItem[];
   squad: { id: number; active_members: number; enough: boolean; min_active: number; discount_percent: number } | null;
   half: number;
+}
+
+export interface SquadBadge {
+  code: 'fire_streak' | 'trails' | 'shelter' | 'skills';
+  value: number;
+  tier: number;
+  tier_name: 'bronze' | 'silver' | 'gold' | 'diamond' | 'ruby' | null;
+  earned_at: string | null;
+  next_min: number | null;
+  tiers: number[];
 }

@@ -49,6 +49,8 @@ export default function Notifications() {
       percent: p.percent,
       stamps: p.stamps,
       days: p.streak,
+      badge: typeof p.code === 'string' ? t(`squad.badges.names.${p.code}`, { defaultValue: p.code }) : '',
+      tier: typeof p.tier === 'number' ? t(`training.tier.${['bronze', 'silver', 'gold', 'diamond', 'ruby'][p.tier - 1] ?? 'bronze'}`) : '',
       flame: typeof p.flame === 'number' ? t(`squad.flame.${p.flame}`) : '',
     });
     // Premia z Kuchni oddzialu dopisana do wyplaty z pracy.

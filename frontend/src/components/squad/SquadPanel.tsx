@@ -8,10 +8,11 @@ import PlayerAvatar from '../PlayerAvatar';
 import { formatCoins, formatDate, formatDateTime, formatPercent } from '../../format';
 import InfoHint from '../InfoHint';
 import SquadFields, { type SquadDraft } from './SquadFields';
+import SquadBadgesPanel from './SquadBadgesPanel';
 import { SquadShelterTile } from './SquadShelterPanel';
 import { SquadTrailBanner } from './SquadTrailPanel';
 
-export type SquadSection = 'przeglad' | 'czlonkowie' | 'zaproszeni' | 'oczekujacy' | 'ustawienia' | 'kronika';
+export type SquadSection = 'przeglad' | 'czlonkowie' | 'zaproszeni' | 'oczekujacy' | 'ustawienia' | 'kronika' | 'odznaki';
 
 interface Props {
   section: SquadSection;
@@ -49,6 +50,8 @@ export function chronicleText(t: TFunction, e: SquadChronicleEntry, specLabel: (
       return t('squad.chronicle.spec', { who, spec: specLabel(String(p.spec)) });
     case 'fire_level':
       return t('squad.chronicle.fireLevel', { level: t(`squad.flame.${Number(p.level)}`), days: Number(p.streak) });
+    case 'badge':
+      return t('squad.chronicle.badge', { badge: t(`squad.badges.names.${String(p.code)}`, { defaultValue: String(p.code) }), tier: t(`training.tier.${['bronze', 'silver', 'gold', 'diamond', 'ruby'][Number(p.tier) - 1] ?? 'bronze'}`) });
     case 'fire_shield':
       return t('squad.chronicle.fireShield', { days: Number(p.streak) });
     case 'fire_dim':
@@ -77,10 +80,18 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
   const [kickReason, setKickReason] = useState('inactive');
   const [inviteName, setInviteName] = useState('');
   const [draft, setDraft] = useState<SquadDraft>({ name: squad.name, specialization: squad.specialization, join_mode: squad.join_mode });
+  const [memberSort, setMemberSort] = useState<'role' | 'top' | 'sum'>('role');
 
   const specLabel = (code: string) => meta.specializations.find((s) => s.code === code)?.label ?? code;
   const me = squad.me;
   const fire = squad.fire;
+  // Ranking umiejetnosci oddzialowych: po najwyzszym poziomie jednej umiejetnosci albo po sumie poziomow (domyslnie wedlug roli).
+  const sortedMembers = memberSort === 'role'
+    ? squad.member_list
+    : [...squad.member_list].sort((a, b) =>
+        memberSort === 'top'
+          ? (b.skill_top?.level ?? 0) - (a.skill_top?.level ?? 0) || b.skill_sum - a.skill_sum
+          : b.skill_sum - a.skill_sum || (b.skill_top?.level ?? 0) - (a.skill_top?.level ?? 0));
 
   const fail = (e: unknown) => {
     if (e instanceof ApiError) {
@@ -295,6 +306,8 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
         </section>
       )}
 
+      {section === 'odznaki' && <SquadBadgesPanel badges={squad.badges} />}
+
       {section === 'czlonkowie' && (
       <section className="panel">
         <InfoHint wide text={t('squad.members.rolesInfo')} label={t('badges.moreInfo')} />
@@ -306,11 +319,13 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
                 <th>{t('squad.members.player')}</th>
                 <th>{t('squad.members.role')}</th>
                 <th>{t('squad.members.joined')}</th>
+                <th><button type="button" className={'sort-btn' + (memberSort === 'top' ? ' active' : '')} onClick={() => setMemberSort(memberSort === 'top' ? 'role' : 'top')} title={t('squad.members.sortHint')}>{t('squad.members.topSkill')}{memberSort === 'top' ? ' ▼' : ''}</button></th>
+                <th><button type="button" className={'sort-btn' + (memberSort === 'sum' ? ' active' : '')} onClick={() => setMemberSort(memberSort === 'sum' ? 'role' : 'sum')} title={t('squad.members.sortHint')}>{t('squad.members.skillSum')}{memberSort === 'sum' ? ' ▼' : ''}</button></th>
                 {(me.can_manage || me.is_leader) && <th />}
               </tr>
             </thead>
             <tbody>
-              {squad.member_list.map((m) => (
+              {sortedMembers.map((m) => (
                 <tr key={m.id}>
                   <td>
                     <span className="friend-who">
@@ -324,6 +339,8 @@ export default function SquadPanel({ section, squad, meta, onSquad, onMine }: Pr
                     {t(`squad.roles.${m.role ?? 'member'}`)}
                   </td>
                   <td data-label={t('squad.members.joined')}>{formatDate(m.joined_at)}</td>
+                  <td data-label={t('squad.members.topSkill')}>{m.skill_top ? `${t(`training.squadSkills.names.${m.skill_top.code}`)} ${m.skill_top.level}` : '—'}</td>
+                  <td className="num" data-label={t('squad.members.skillSum')}>{m.skill_sum > 0 ? m.skill_sum : '—'}</td>
                   {(me.can_manage || me.is_leader) && <td className="num">{memberActions(m)}</td>}
                 </tr>
               ))}

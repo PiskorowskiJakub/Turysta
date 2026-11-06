@@ -836,6 +836,7 @@
         "supplies": "Zaopatrzenie",
         "first_aid": "Pierwsza pomoc"
       },
+      "strategy": "Co się bardziej opłaca: wszystkie umiejętności naraz czy jedna jak najwyżej?\nNa początku rozkładaj równomiernie. Pierwsze poziomy są tanie i dają najwięcej: poziom 10 to już 20% maksymalnego efektu (ok. 5 dni ciągłego treningu), poziom 20 to 33% (ok. 17 dni), poziom 40 to 50% (ok. 68 dni), a poziom 80 dopiero 67% (ok. 9 miesięcy). Każdy kolejny poziom trwa dłużej i kosztuje więcej, a daje mniej.\nDlatego najpierw doprowadź wszystkie do ok. 20–30, a potem dociągaj tę, na której oddziałowi najbardziej zależy (największe maksimum ma Rozpalanie: 30%).\nWyjątki: Pierwsza pomoc potrzebuje średnio tylko poziomu 1, żeby oddział miał tarczę (dalej tylko skraca jej odnowienie). Kartografia na średnim poziomie 25 i 60 odblokowuje nowe trasy.\nBonus liczy się ze średniej całego oddziału, więc uzgodnijcie w oddziale wspólną kolejność: gdy każdy ciągnie co innego, średnie wszystkich umiejętności są niższe.",
       "story": {
         "campfire": "Dobrze rozpalone ognisko daje więcej żaru dla całego oddziału.",
         "guidance": "Pewny przewodnik skraca drogę: uczestnicy szybciej posuwają się na szlakach.",
@@ -947,6 +948,7 @@
     "squad_trail_done": "Wyprawa „{{theme}}” oddziału „{{squad}}” zakończona wynikiem {{percent}}%. Pieczątki dla oddziału: {{stamps}}.",
     "squad_fire_level": "Ognisko oddziału „{{squad}}” osiągnęło poziom: {{flame}} (seria {{days}} dni).",
     "squad_fire_dim": "Seria ogniska oddziału „{{squad}}” przerwana, poziom spada do: {{flame}}.",
+    "squad_badge": "Oddział „{{squad}}” zdobył odznakę „{{badge}}” (stopień: {{tier}}).",
     "squad_fire_shield": "Tarcza ochroniła ognisko oddziału „{{squad}}” przed zgaśnięciem (seria {{days}} dni).",
     "squad_skill_finished": "Ukończono szkolenie oddziałowe: {{skill}} (poziom {{level}})."
   },
@@ -1335,6 +1337,7 @@
       "waitingCount": "Oczekujący ({{n}})",
       "settings": "Ustawienia",
       "chronicle": "Kronika",
+      "badges": "Odznaki",
       "trails": "Szlaki",
       "trailNow": "Wyprawa",
       "trailHistory": "Historia",
@@ -1501,7 +1504,10 @@
       "transfer": "Przekaż przywództwo",
       "transferConfirm": "Przekaż przywództwo graczowi {{name}}",
       "transferred": "Przywództwo przekazane: {{name}}.",
-      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz (do 2): razem z przywódcą i zastępcą rozpoczyna rozbudowę pomieszczeń w zakładce Schronisko. Kronikarz (do 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału."
+      "rolesInfo": "Role w oddziale. Przywódca (1 osoba): wszystko, w tym przekazanie przywództwa i rozwiązanie oddziału. Zastępca (1): to samo poza przekazaniem przywództwa i rozwiązaniem oddziału; przejmuje oddział, gdy przywódca jest nieaktywny. Rekruter (do 2): przyjmuje prośby o dołączenie i zaprasza graczy. Przewodnik (do 2): wybiera trudność tygodniowej wyprawy na zakładce Szlaki (do końca poniedziałku). Kwatermistrz (do 2): razem z przywódcą i zastępcą rozpoczyna rozbudowę pomieszczeń w zakładce Schronisko. Kronikarz (do 2): na razie tylko tytuł, funkcje pojawią się w kolejnych etapach. Każdy gracz ma jedną rolę; tytuł zawsze widać na liście członków oddziału.",
+      "topSkill": "Najlepsza umiejętność",
+      "skillSum": "Suma poziomów",
+      "sortHint": "Kliknij, aby posortować członków (kliknij ponownie, aby wrócić do podziału według ról)."
     },
     "recruit": {
       "title": "Rekrutacja",
@@ -1541,6 +1547,7 @@
       "spec": "Oddział zmienił specjalizację na: {{spec}}.",
       "fireLevel": "Ognisko osiągnęło poziom: {{level}} (seria {{days}} dni).",
       "fireDim": "Seria ogniska przerwana, poziom spada do: {{level}}.",
+      "badge": "Oddział zdobył odznakę „{{badge}}” (stopień: {{tier}}).",
       "fireShield": "Tarcza ochroniła ognisko przed zgaśnięciem (seria {{days}} dni).",
       "trailDone_one": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątkę.",
       "trailDone_few": "Wyprawa „{{theme}}” zakończona wynikiem {{percent}}%: oddział zdobywa {{count}} pieczątki.",
@@ -1658,6 +1665,33 @@
       "buildProgress": "Postęp rozbudowy",
       "buildRemaining": "{{percent}}% · do końca: {{time}}",
       "buildFinished": "Budowa zakończona."
+    },
+    "badges": {
+      "title": "Odznaki oddziału",
+      "intro": "Odznaki oddziału zdobywa się za wspólne cele i widzą je wszyscy w profilu oddziału w katalogu. Zdobytego stopnia nie można stracić.",
+      "notYet": "jeszcze nie zdobyta",
+      "next": "następny stopień: {{n}}",
+      "names": {
+        "fire_streak": "Ciągłość ogniska",
+        "trails": "Wyprawy",
+        "shelter": "Budowniczowie",
+        "skills": "Wspólna nauka"
+      },
+      "need": {
+        "fire_streak_one": "seria ogniska: {{count}} dzień",
+        "fire_streak_few": "seria ogniska: {{count}} dni",
+        "fire_streak_many": "seria ogniska: {{count}} dni",
+        "fire_streak_other": "seria ogniska: {{count}} dni",
+        "trails": "ukończone wyprawy: {{count}}",
+        "shelter": "suma poziomów pomieszczeń: {{count}}",
+        "skills": "suma poziomów umiejętności oddziałowych: {{count}}"
+      },
+      "value": {
+        "fire_streak": "Najlepsza seria: {{count}} dni",
+        "trails": "Wyprawy z pieczątkami: {{count}}",
+        "shelter": "Suma poziomów: {{count}}",
+        "skills": "Suma poziomów: {{count}}"
+      }
     }
   },
   "cookies": {

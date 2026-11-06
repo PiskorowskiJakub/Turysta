@@ -111,7 +111,7 @@ final class SquadView
             'created_at' => Clock::iso((string) $squad['created_at']),
             'name_locked' => (int) $squad['name_locked'] === 1,
             'name_forced' => (int) $squad['name_forced'] === 1,
-            'badges' => [],
+            'badges' => SquadBadges::view($this->pdo, $squadId),
             // Poziomy pomieszczen schroniska sa publiczne (prestiz oddzialu).
             'shelter_levels' => SquadShelter::levels($this->pdo, $squadId),
             'member_list' => $members,
@@ -177,8 +177,32 @@ final class SquadView
         $rows = $stmt->fetchAll();
         usort($rows, static fn(array $a, array $b): int => ($order[$a['role']] <=> $order[$b['role']]) ?: strcasecmp((string) $a['character_name'], (string) $b['character_name']));
 
+        // Najwyzsza umiejetnosc oddzialowa i suma poziomow kazdego czlonka (ranking w zakladce Czlonkowie).
+        $skills = [];
+        if ($rows) {
+            $ids = array_map(static fn (array $r): int => (int) $r['user_id'], $rows);
+            $in = implode(',', array_fill(0, count($ids), '?'));
+            try {
+                $sk = $this->pdo->prepare("SELECT user_id, skill, level FROM user_squad_skills WHERE user_id IN ($in) AND level > 0");
+                $sk->execute($ids);
+                foreach ($sk->fetchAll() as $s) {
+                    $skills[(int) $s['user_id']][(string) $s['skill']] = (int) $s['level'];
+                }
+            } catch (\Throwable $e) {
+                error_log('SquadView::members skills: ' . $e->getMessage());
+            }
+        }
         $out = [];
         foreach ($rows as $r) {
+            $mine = $skills[(int) $r['user_id']] ?? [];
+            $topCode = null;
+            $top = 0;
+            foreach (SquadRules::SKILLS as $code) {
+                if (($mine[$code] ?? 0) > $top) {
+                    $top = $mine[$code];
+                    $topCode = $code;
+                }
+            }
             $joined = Clock::parse((string) $r['joined_at']);
             $entry = [
                 'id' => (int) $r['user_id'],
@@ -187,6 +211,8 @@ final class SquadView
                 'title' => $r['role'] !== 'member' ? (string) $r['role'] : null,
                 'joined_at' => Clock::iso((string) $r['joined_at']),
                 'recruit' => $joined->modify('+' . SquadRules::RECRUIT_DAYS . ' days') > $now,
+                'skill_top' => $topCode === null ? null : ['code' => $topCode, 'level' => $top],
+                'skill_sum' => array_sum($mine),
             ];
             if ($viewerIsMember) {
                 $entry['role'] = (string) $r['role'];

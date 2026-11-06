@@ -13,10 +13,12 @@ use Turysta\Database;
 use Turysta\Game\Clock;
 use Turysta\Http\ApiException;
 use Turysta\Mailer;
+use Turysta\Squad\SquadBadges;
 use Turysta\Squad\SquadFire;
 use Turysta\Squad\SquadRules;
 use Turysta\Squad\SquadService;
 use Turysta\Squad\SquadSkills;
+use Turysta\Squad\SquadView;
 
 /** Umiejetnosci oddzialowe (Etap 4): koszty, osobny slot, srednia aktywnych, tarcza i zniżki (prawdziwy MySQL). */
 final class SquadSkillsTest extends TestCase
@@ -212,5 +214,42 @@ final class SquadSkillsTest extends TestCase
         $expected = SquadSkills::costCents(1, SquadSkills::pantryDiscountPercent(10));
         $this->assertSame(599, $expected);
         $this->assertSame($before - $expected, $this->coins($uid));
+    }
+
+    public function testBadgesAreStoredNeverDropAndAreListed(): void
+    {
+        $this->assertSame(0, SquadBadges::tierFor(SquadBadges::BADGES['fire_streak'], 6));
+        $this->assertSame(1, SquadBadges::tierFor(SquadBadges::BADGES['fire_streak'], 7));
+        $this->assertSame(5, SquadBadges::tierFor(SquadBadges::BADGES['fire_streak'], 9999));
+
+        [$members, $id] = $this->squad();
+        $this->pdo->prepare('UPDATE squads SET best_streak = 30 WHERE id = ?')->execute([$id]);
+        SquadBadges::sync($this->pdo, $id);
+        $badges = array_column(SquadBadges::view($this->pdo, $id), null, 'code');
+        $this->assertSame(2, $badges['fire_streak']['tier']);
+        $this->assertSame('silver', $badges['fire_streak']['tier_name']);
+        $this->assertSame(100, $badges['fire_streak']['next_min']);
+        $this->assertSame(0, $badges['trails']['tier']);
+
+        // Spadek wartosci nie odbiera zdobytego stopnia.
+        $this->pdo->prepare('UPDATE squads SET best_streak = 1 WHERE id = ?')->execute([$id]);
+        SquadBadges::sync($this->pdo, $id);
+        $badges = array_column(SquadBadges::view($this->pdo, $id), null, 'code');
+        $this->assertSame(2, $badges['fire_streak']['tier']);
+
+        $events = $this->pdo->prepare("SELECT COUNT(*) FROM squad_events WHERE squad_id = ? AND type = 'badge'");
+        $events->execute([$id]);
+        $this->assertSame(2, (int) $events->fetchColumn());
+
+        // Profil oddzialu (publiczny) zawiera odznaki oraz ranking umiejetnosci czlonkow.
+        $this->setLevel((int) $members[1]['id'], 'supplies', 7);
+        $this->setLevel((int) $members[1]['id'], 'campfire', 3);
+        $view = new SquadView($this->pdo, $this->squads);
+        $profile = $view->profile($members[2], $id);
+        $this->assertCount(4, $profile['badges']);
+        $byId = array_column($profile['member_list'], null, 'id');
+        $this->assertSame(['code' => 'supplies', 'level' => 7], $byId[(int) $members[1]['id']]['skill_top']);
+        $this->assertSame(10, $byId[(int) $members[1]['id']]['skill_sum']);
+        $this->assertNull($byId[(int) $members[0]['id']]['skill_top']);
     }
 }

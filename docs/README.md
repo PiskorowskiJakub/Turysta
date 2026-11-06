@@ -216,7 +216,7 @@ Nagrody trafiają na konto przy Twojej najbliższej aktywności w grze.
 
 ## Oddziały
 
-Oddział to drużyna podróżników, która wspólnie rozpala ognisko, chodzi na szlaki i rozbudowuje schronisko. Menu „Oddział” ma zakładki: Mój oddział (przegląd, członkowie, rekrutacja, ustawienia, kronika), Szlaki (wyprawa i historia), Schronisko oraz Katalog. Umiejętności oddziałowe trenujesz w zakładce Oddział w menu Umiejętności.
+Oddział to drużyna podróżników, która wspólnie rozpala ognisko, chodzi na szlaki i rozbudowuje schronisko. Menu „Oddział” ma zakładki: Mój oddział (przegląd, członkowie, rekrutacja, ustawienia, odznaki, kronika), Szlaki (wyprawa i historia), Schronisko oraz Katalog. Umiejętności oddziałowe trenujesz w zakładce Oddział w menu Umiejętności.
 
 **Jak to wszystko działa razem.** Trzy mechaniki dostarczają trzech składników, a schronisko zamienia je w trwałe bonusy:
 
@@ -299,6 +299,19 @@ Pięć umiejętności oddziałowych trenujesz w zakładce **Oddział** w menu Um
 - **Poza oddziałem.** Poziomy zachowujesz, ale bonus działa tylko w oddziale. Odchodząc z oddziału, zabierasz swoje poziomy ze średniej.
 - **Przykład.** Po roku regularnej gry typowy oddział (15 osób) ma ok. +13% żaru, +6,5% postępu szlaków, +5% pieczątek i 6,5% zniżki w kosztach pomieszczeń; po pięciu latach ok. +17%, +8,5%, +7% i +8,5%.
 - **Mapownia i Kartografia mnożą się** (razem nie więcej niż ×1,4). Dodatkowe pieczątki trafiają do magazynu schroniska.
+- **Wszystkie naraz czy jedna jak najwyżej?** Na początku rozkładaj równomiernie. Poziom 10 to już 20% maksymalnego efektu (ok. 5 dni ciągłego treningu), poziom 20 to 33% (ok. 17 dni), poziom 40 to 50% (ok. 68 dni), a poziom 80 dopiero 67% (ok. 9 miesięcy). Najpierw doprowadź wszystkie do ok. 20–30, potem dociągaj tę, na której oddziałowi najbardziej zależy (największe maksimum ma Rozpalanie). Wyjątki: Pierwsza pomoc potrzebuje średnio tylko poziomu 1, by oddział miał tarczę, a Kartografia na średnim poziomie 25 i 60 odblokowuje nowe trasy. Bonus liczy się ze średniej oddziału, więc uzgodnijcie wspólną kolejność.
+- **Ranking w oddziale.** W zakładce Członkowie widać najlepszą umiejętność każdego członka i sumę jego poziomów; kliknięcie nagłówka sortuje listę.
+
+### Odznaki oddziału
+
+Odznaki oddziału zdobywa się za wspólne cele. Mają stopnie: brąz, srebro, złoto, diament i rubin. Zdobytego stopnia oddział nie traci, a odznaki widać w zakładce Odznaki oraz publicznie w profilu oddziału w katalogu. Sprawdzane są raz dziennie.
+
+| Odznaka | Za co | Brąz | Srebro | Złoto | Diament | Rubin |
+| --- | --- | --- | --- | --- | --- | --- |
+| Ciągłość ogniska | najlepsza seria dni ogniska | 7 | 30 | 100 | 250 | 500 |
+| Wyprawy | ukończone wyprawy z pieczątkami | 3 | 10 | 30 | 75 | 150 |
+| Budowniczowie | suma poziomów pomieszczeń schroniska | 5 | 15 | 40 | 80 | 150 |
+| Wspólna nauka | suma poziomów umiejętności oddziałowych członków | 100 | 500 | 2000 | 6000 | 15000 |
 
 ### Schronisko
 

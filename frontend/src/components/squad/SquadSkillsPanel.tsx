@@ -152,7 +152,7 @@ export default function SquadSkillsPanel() {
     <>
       {error && <p className="panel form-error" role="alert">{error}</p>}
       <section className="panel trail-blue">
-        <InfoHint wide text={t('training.squadSkills.info', { half: state.half, min: state.squad?.min_active ?? 3 })} label={t('badges.moreInfo')} />
+        <InfoHint wide text={`${t('training.squadSkills.info', { half: state.half, min: state.squad?.min_active ?? 3 })}\n\n${t('training.squadSkills.strategy', { half: state.half })}`} label={t('badges.moreInfo')} />
         <h2>{t('training.squadSkills.slot', { used, max: state.max_slots })}</h2>
         {used === 0 ? (
           <p className="page-message">{t('training.squadSkills.empty')}</p>

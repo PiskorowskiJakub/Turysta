@@ -29,6 +29,9 @@ final class SquadMaintenance
             return;
         }
         self::succession($pdo, $now);
+        foreach ($pdo->query('SELECT id FROM squads WHERE archived_at IS NULL')->fetchAll(PDO::FETCH_COLUMN) as $squadId) {
+            SquadBadges::sync($pdo, (int) $squadId);
+        }
         self::archiveInactive($pdo, $now);
     }
 

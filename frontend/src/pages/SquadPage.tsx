@@ -57,6 +57,7 @@ export default function SquadPage() {
             }]
           : []),
         { path: 'ustawienia', label: t('squad.tabs.settings') },
+        { path: 'odznaki', label: t('squad.tabs.badges') },
         { path: 'kronika', label: t('squad.tabs.chronicle') },
       ]
     : undefined;
@@ -120,6 +121,7 @@ function MineTab({ mine, squad, setSquad, setMine, reload }: { mine: SquadMine; 
         </>
       ) : null}
       <Route path="ustawienia" element={panel('ustawienia')} />
+      <Route path="odznaki" element={panel('odznaki')} />
       <Route path="kronika" element={panel('kronika')} />
       <Route path="*" element={<Navigate to="/oddzial/moj/przeglad" replace />} />
     </Routes>

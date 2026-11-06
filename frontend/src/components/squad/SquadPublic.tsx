@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../../api/client';
 import type { SquadMeta, SquadProfile } from '../../api/types';
 import PlayerAvatar from '../PlayerAvatar';
+import { SquadBadgeSquares } from './SquadBadgesPanel';
 import { formatDate } from '../../format';
 
 interface Props {
@@ -86,6 +87,13 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
         </ul>
       </section>
 
+      {squad.badges.some((b) => b.tier > 0) && (
+        <section className="panel">
+          <h2>{t('squad.badges.title')}</h2>
+          <SquadBadgeSquares badges={squad.badges} />
+        </section>
+      )}
+
       <section className="panel">
         <h2>{t('squad.members.title', { n: squad.member_list.length, max: squad.max_members })}</h2>
         <div className="table-scroll">
@@ -95,6 +103,8 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
                 <th>{t('squad.members.player')}</th>
                 <th>{t('squad.members.role')}</th>
                 <th>{t('squad.members.joined')}</th>
+                <th>{t('squad.members.topSkill')}</th>
+                <th>{t('squad.members.skillSum')}</th>
               </tr>
             </thead>
             <tbody>
@@ -109,6 +119,8 @@ export default function SquadPublic({ squad, meta, onChanged }: Props) {
                   </td>
                   <td data-label={t('squad.members.role')}>{m.title ? t(`squad.roles.${m.title}`) : '—'}</td>
                   <td data-label={t('squad.members.joined')}>{formatDate(m.joined_at)}</td>
+                  <td data-label={t('squad.members.topSkill')}>{m.skill_top ? `${t(`training.squadSkills.names.${m.skill_top.code}`)} ${m.skill_top.level}` : '—'}</td>
+                  <td className="num" data-label={t('squad.members.skillSum')}>{m.skill_sum > 0 ? m.skill_sum : '—'}</td>
                 </tr>
               ))}
             </tbody>
