@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api, ApiError } from '../../api/client';
 import type { AdminSquadDetail, AdminSquadReport, AdminSquadRow, Paged } from '../../api/types';
 import Pager from '../../components/Pager';
+import SquadEmblem from '../../components/squad/SquadEmblem';
 import { useAdminData } from '../../hooks/useAdminData';
 import { formatDate, formatDateTime } from '../../format';
 
@@ -79,7 +80,7 @@ export function AdminSquadListPage() {
                   <tr key={r.id}>
                     <td>{r.id}</td>
                     <td>
-                      <Link to={`/oddzial/${r.id}`}>{r.display_name}</Link>
+                      <span className="squad-title"><SquadEmblem emblem={r.emblem} frame={r.frame} size={28} /><Link to={`/oddzial/${r.id}`}>{r.display_name}</Link></span>
                       {r.archived && <small className="muted"> ({t('admin.squads.archived')})</small>}
                       {r.name_locked && <small className="muted"> 🔒</small>}
                     </td>
@@ -129,7 +130,7 @@ function SquadDetail({ id, onChanged }: { id: number; onChanged: () => void }) {
 
   return (
     <section className="panel">
-      <h2>{data.display_name} (ID {data.id})</h2>
+      <h2 className="squad-title"><SquadEmblem emblem={data.emblem} frame={data.frame} size={36} />{data.display_name} (ID {data.id})</h2>
       <p className="muted">
         {t('admin.squads.detail.summary', { members: data.members.length, ember: data.ember, streak: data.flame_streak, date: formatDate(data.created_at) })}
         {data.name_forced && ` · ${t('admin.squads.detail.forced')}`}
@@ -234,7 +235,7 @@ export function AdminSquadReportsPage() {
                 <tr key={r.id}>
                   <td>
                     „{r.reported_name}”
-                    {r.reported_name !== r.current_name && <small className="muted"> → {r.display_name}</small>}
+                    {r.reported_name !== r.current_name && <small className="muted"> → <SquadEmblem emblem={r.emblem} frame={r.frame} size={20} /> {r.display_name}</small>}
                     {r.archived && <small className="muted"> ({t('admin.squads.archived')})</small>}
                     <br /><small className="muted">ID {r.squad_id}</small>
                   </td>

@@ -780,8 +780,9 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
   .friends-table td.num { width: auto; text-align: left; }
   .friends-table td[data-label]::before { content: attr(data-label) ': '; color: var(--muted); font-weight: 400; }
   .friends-table td:last-child { flex-basis: 100%; margin-left: 0; white-space: normal; min-width: 0; }
-  .friends-table td:last-child .actions { width: 100%; flex-wrap: wrap; }
-  .friends-table td:last-child .actions .button { flex: 1 1 auto; text-align: center; }
+  .friends-table td:last-child .actions { width: 100%; flex-wrap: nowrap; gap: 6px; }
+  .friends-table td:last-child .actions .button { flex: 1 1 auto; text-align: center; padding-inline: 8px; font-size: 12px; white-space: nowrap; }
+  .friends-table td:last-child .gift-confirm .actions { flex-wrap: wrap; }
   .friends-table .gift-confirm { width: 100%; max-width: none; margin-left: 0; align-items: stretch; text-align: left; }
   .friends-table .gift-confirm .actions .button { flex: 1 1 0; }
   .admin-list li .actions { width: 100%; }

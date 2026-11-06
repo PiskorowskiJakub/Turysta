@@ -704,6 +704,8 @@ export interface SquadCatalog {
 }
 
 export interface AdminSquadRow {
+  emblem: string | null;
+  frame: string | null;
   id: number;
   name: string;
   display_name: string;
@@ -719,6 +721,8 @@ export interface AdminSquadRow {
 }
 
 export interface AdminSquadReport {
+  emblem: string | null;
+  frame: string | null;
   id: number;
   squad_id: number;
   reported_name: string;
@@ -732,6 +736,8 @@ export interface AdminSquadReport {
 }
 
 export interface AdminSquadDetail {
+  emblem: string | null;
+  frame: string | null;
   id: number;
   name: string;
   display_name: string;
