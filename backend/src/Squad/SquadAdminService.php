@@ -147,6 +147,46 @@ final class SquadAdminService
         }
     }
 
+    /**
+     * Reczna zmiana nazwy przez administratora. Sprawdza format, slowa zakazane i unikalnosc (jak przy zmianie przez dowodce),
+     * nie rusza blokady zmiany nazwy oddzialu i nie uruchamia 30-dniowego odstepu dla dowodcy.
+     */
+    public function rename(int $id, mixed $raw, int $adminId): void
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM squads WHERE id = ? AND archived_at IS NULL');
+        $stmt->execute([$id]);
+        $s = $stmt->fetch();
+        if (!$s) {
+            throw new ApiException(404, 'squad_not_found', 'Nie znaleziono oddziału.');
+        }
+        $name = is_string($raw) ? trim((string) preg_replace('/\s+/u', ' ', $raw)) : '';
+        $err = NameFilter::formatError($name);
+        if ($err !== null) {
+            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', ['name' => $err]);
+        }
+        if ($name === $s['name']) {
+            return;
+        }
+        if (NameFilter::isBanned($this->pdo, $name)) {
+            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', ['name' => 'Ta nazwa zawiera niedozwolone słowo.']);
+        }
+        $dup = $this->pdo->prepare('SELECT id FROM squads WHERE name_key = ? AND id <> ?');
+        $dup->execute([NameFilter::uniqueKey($name), $id]);
+        if ($dup->fetchColumn()) {
+            throw new ApiException(422, 'validation_failed', 'Popraw zaznaczone pola.', ['name' => 'Oddział o takiej nazwie już istnieje.']);
+        }
+        $this->pdo->prepare('UPDATE squads SET name = ?, name_key = ?, name_forced = 0, name_changed_at = NULL WHERE id = ?')
+            ->execute([$name, NameFilter::uniqueKey($name), $id]);
+        $this->pdo->prepare('INSERT INTO squad_name_history (squad_id, name, changed_by) VALUES (?, ?, ?)')->execute([$id, $name, $adminId]);
+        $this->pdo->prepare("UPDATE squad_name_reports SET status = 'resolved' WHERE squad_id = ? AND status = 'new'")->execute([$id]);
+        SquadChronicle::record($this->pdo, $id, 'name', 'name:admin:' . time(), ['name' => $name, 'admin' => true]);
+        $m = $this->pdo->prepare("SELECT user_id FROM squad_members WHERE squad_id = ? AND role IN ('leader','deputy')");
+        $m->execute([$id]);
+        foreach ($m->fetchAll(PDO::FETCH_COLUMN) as $uid) {
+            Notifier::add($this->pdo, (int) $uid, 'squad_name_admin', ['name' => SquadRules::displayName($name, (string) $s['specialization'])]);
+        }
+    }
+
     public function lockName(int $id, bool $locked): void
     {
         $stmt = $this->pdo->prepare('UPDATE squads SET name_locked = ? WHERE id = ?');
