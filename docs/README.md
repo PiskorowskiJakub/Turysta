@@ -236,7 +236,7 @@ Oddział to drużyna podróżników, która wspólnie rozpala ognisko, chodzi na
 - **Limit.** W oddziale może być do 30 członków, a gracz należy naraz tylko do jednego oddziału.
 - **Nazwa.** Ma od 3 do 40 znaków i musi być unikalna (wielkość liter i polskie znaki nie mają znaczenia). Nazwy wulgarne, obraźliwe lub podszywające się pod inne osoby są zabronione; można je zgłosić administratorowi, który może wymusić zmianę nazwy. Wyświetla się jako „Oddział <nazwa> – <specjalizacja>”, a przy specjalizacji „ogólna” bez dopisku.
 - **Specjalizacja.** Jedyna kategoria oddziału (np. piesza, górska, rowerowa, kajakowa, historyczna, kulinarna lub ogólna). Ma charakter informacyjny. Nazwę oddziału można zmienić raz na 30 dni, a specjalizację raz na 90 dni.
-- **Tryby przyjmowania.** Oddział jest otwarty (każdy uprawniony dołącza od razu), na prośbę (prośbę zatwierdza przywódca, zastępca lub rekruter) albo tylko na zaproszenie. Zaproszenie może dostać każdy gracz, nie musi być znajomym.
+- **Tryby przyjmowania.** Oddział jest otwarty (każdy uprawniony dołącza od razu), na prośbę (prośbę zatwierdza przywódca, zastępca lub rekruter) albo tylko na zaproszenie. Zaproszenie może dostać każdy gracz, nie musi być znajomym. Zapraszać mogą przywódca, zastępca i rekruter: po nazwie postaci w zakładce Rekrutacja albo przyciskiem „Zaproś do oddziału” w profilu gracza, który nie ma jeszcze oddziału.
 - **Karencja.** Po opuszczeniu oddziału albo usunięciu z niego nie dołączysz do kolejnego przez 3 dni.
 - **Rekrut.** Przez tydzień od dołączenia przy nazwie gracza na liście członków widać odznakę „Rekrut”. Lista członków jest publiczna i pokazuje datę dołączenia; członkostwa nie można ukryć.
 

@@ -1539,6 +1539,7 @@
       "noRequests": "Nikt nie czeka na przyjęcie."
     },
     "invite": {
+      "toSquad": "Zaproś do oddziału",
       "sent": "Zaproszenie dla {{name}} wysłane.",
       "joined": "{{name}} dołączył do oddziału."
     },
