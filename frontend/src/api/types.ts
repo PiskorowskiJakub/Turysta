@@ -243,7 +243,7 @@ export interface PlayerProfile {
   badges: EarnedBadge[];
   featured: string[];
   friendship: FriendshipState;
-  squad: { id: number; display_name: string; title: string | null } | null;
+  squad: { id: number; display_name: string; title: string | null; emblem: string | null; frame: string | null } | null;
 }
 
 export type FriendshipState = 'self' | 'none' | 'friends' | 'outgoing' | 'incoming';
@@ -255,6 +255,7 @@ export interface FriendPerson {
 }
 
 export interface Friend extends FriendPerson {
+  squad: { id: number; display_name: string; emblem: string | null; frame: string | null } | null;
   online: boolean;
   coins_cents: number;
   points: number;

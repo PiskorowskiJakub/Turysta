@@ -6,6 +6,7 @@ import type { FriendsResponse, FriendshipState, PlayerProfile, SkillsResponse, S
 import { useAuth } from '../auth/AuthContext';
 import BadgeBook from '../components/BadgeBook';
 import ProfileCard from '../components/ProfileCard';
+import SquadEmblem from '../components/squad/SquadEmblem';
 import { useBadgeView, type BadgesData } from '../hooks/useBadges';
 
 /** Podglad profilu innego gracza: karta i ksiazeczka odznak (bez szczegolowych statystyk). */
@@ -134,7 +135,7 @@ export default function PlayerPage() {
       )}
       {player.squad && (
         <p className="player-squad">
-          {t('squad.player.member')} <Link to={`/oddzial/${player.squad.id}`}>{player.squad.display_name}</Link>
+          {t('squad.player.member')} <SquadEmblem emblem={player.squad.emblem} frame={player.squad.frame} size={24} /> <Link to={`/oddzial/${player.squad.id}`}>{player.squad.display_name}</Link>
           {player.squad.title && <span className="muted"> · {t(`squad.roles.${player.squad.title}`)}</span>}
         </p>
       )}

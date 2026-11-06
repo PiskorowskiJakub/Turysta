@@ -270,6 +270,7 @@
     "cols": {
       "player": "Gracz",
       "role": "Rola",
+      "squad": "Oddział",
       "status": "Status",
       "registered": "Rejestracja",
       "lastLogin": "Ostatnie logowanie",

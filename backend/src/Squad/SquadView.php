@@ -355,7 +355,7 @@ final class SquadView
     public function badgeFor(int $userId): ?array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT s.id, s.name, s.specialization, m.role, u.show_squad_title FROM squad_members m
+            'SELECT s.id, s.name, s.specialization, s.emblem, s.frame, m.role, u.show_squad_title FROM squad_members m
              JOIN squads s ON s.id = m.squad_id JOIN users u ON u.id = m.user_id WHERE m.user_id = ? AND s.archived_at IS NULL'
         );
         $stmt->execute([$userId]);
@@ -367,6 +367,6 @@ final class SquadView
             'id' => (int) $r['id'],
             'display_name' => SquadRules::displayName((string) $r['name'], (string) $r['specialization']),
             'title' => ((int) $r['show_squad_title'] === 1 && $r['role'] !== 'member') ? (string) $r['role'] : null,
-        ];
+        ] + SquadMemory::appearance($this->pdo, $r);
     }
 }

@@ -10,6 +10,8 @@ use Turysta\Game\BadgeService;
 use Turysta\Game\Clock;
 use Turysta\Game\Notifier;
 use Turysta\Http\ApiException;
+use Turysta\Squad\SquadMemory;
+use Turysta\Squad\SquadRules;
 
 /**
  * Znajomi: zaproszenia, akceptacja i lista. Dopiero zaakceptowany znajomy widzi status online,
@@ -31,11 +33,14 @@ final class FriendService
     {
         $stmt = $this->pdo->prepare(
             "SELECT f.status, f.requested_by, u.id, u.character_name, av.image_url, w.coins_cents, w.points,
+                    sq.id AS squad_id, sq.name AS squad_name, sq.specialization AS squad_spec, sq.emblem AS squad_emblem, sq.frame AS squad_frame,
                     EXISTS(SELECT 1 FROM sessions s WHERE s.user_id = u.id AND s.last_activity > UTC_TIMESTAMP() - INTERVAL ? MINUTE) AS online
              FROM friendships f
              JOIN users u ON u.id = IF(f.user_a = ?, f.user_b, f.user_a)
              LEFT JOIN avatars av ON av.id = u.avatar_id
              LEFT JOIN wallets w ON w.user_id = u.id
+             LEFT JOIN squad_members sm ON sm.user_id = u.id
+             LEFT JOIN squads sq ON sq.id = sm.squad_id AND sq.archived_at IS NULL
              WHERE (f.user_a = ? OR f.user_b = ?) AND u.status <> 'banned'"
         );
         $stmt->execute([self::ONLINE_MINUTES, $userId, $userId, $userId]);
@@ -50,6 +55,10 @@ final class FriendService
                     'online' => (bool) $r['online'],
                     'coins_cents' => (int) ($r['coins_cents'] ?? 0),
                     'points' => (int) ($r['points'] ?? 0),
+                    'squad' => $r['squad_id'] === null ? null : [
+                        'id' => (int) $r['squad_id'],
+                        'display_name' => SquadRules::displayName((string) $r['squad_name'], (string) $r['squad_spec']),
+                    ] + SquadMemory::appearance($this->pdo, ['id' => $r['squad_id'], 'emblem' => $r['squad_emblem'], 'frame' => $r['squad_frame']]),
                 ];
             } elseif ((int) $r['requested_by'] === $userId) {
                 $outgoing[] = $base;

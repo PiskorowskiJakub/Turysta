@@ -321,6 +321,11 @@ final class SquadSkillsTest extends TestCase
         $this->assertSame(['fire_streak'], $profile['memory']['showcase']);
         $this->assertSame(30, $this->squads->book($leader, $id)['records']['best_streak']);
 
+        // Wyglad oddzialu widac tez przy graczu (profil gracza) i na liscie znajomych.
+        $badge = (new SquadView($this->pdo, $this->squads))->badgeFor((int) $members[1]['id']);
+        $this->assertSame('compass', $badge['emblem']);
+        $this->assertSame('bronze', $badge['frame']);
+
         // Zwykly czlonek nie zmienia wygladu, a obcy nie widzi Ksiegi.
         $this->expectForbidden(fn() => $this->squads->update($members[2], $id, ['emblem' => null]));
 

@@ -712,6 +712,10 @@ button.badge-sq.selected { border-color: var(--orange); background: var(--bg2); 
 .online-dot { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: 50%; background: #6b7a70; vertical-align: middle; }
 .online-dot.on { background: #6fd36f; box-shadow: 0 0 6px rgba(111, 211, 111, 0.7); }
 .friends-table td { vertical-align: middle; }
+/* Przyciski akcji (podaruj, porownaj, usun) obok siebie, a nie jeden pod drugim. */
+.friends-table td:last-child { white-space: nowrap; }
+.friends-table td:last-child .actions { flex-wrap: nowrap; justify-content: flex-end; }
+.friends-table td:last-child .gift-confirm .actions { flex-wrap: wrap; }
 .friend-action { margin: 0 0 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
 /* ---------- Telefon i tablet: dopracowanie ---------- */

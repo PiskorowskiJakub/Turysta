@@ -91,6 +91,21 @@ final class SquadMemory
         ];
     }
 
+    /**
+     * Wyglad oddzialu do pokazania przy jego nazwie (katalog, znajomi, profile graczy).
+     *
+     * @param array<string,mixed> $squad wiersz squads (id, emblem, frame)
+     * @return array{emblem:?string,frame:?string}
+     */
+    public static function appearance(PDO $pdo, array $squad): array
+    {
+        if (empty($squad['emblem']) && empty($squad['frame'])) {
+            return ['emblem' => null, 'frame' => null];
+        }
+        $level = self::level($pdo, (int) $squad['id']);
+        return ['emblem' => self::emblemOf($squad, $level), 'frame' => self::frameOf($squad, $level)];
+    }
+
     /** Emblemat i ramka, o ile oddzial nadal ma poziom, ktory je odblokowuje. */
     public static function emblemOf(array $squad, int $level): ?string
     {
